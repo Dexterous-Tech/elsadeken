@@ -1,0 +1,73 @@
+import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/features/auth/forget_password/presentation/view/forget_password_screen.dart';
+import 'package:elsadeken/features/auth/login/presentation/view/login_screen.dart';
+import 'package:elsadeken/features/auth/new_password/presentation/view/new_password_screen.dart';
+import 'package:elsadeken/features/auth/signup/presentation/view/signup_screen.dart';
+import 'package:elsadeken/features/auth/verification_email/presentation/view/verification_email_screen.dart';
+import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart';
+import 'package:elsadeken/features/on_boarding/presentation/view/on_boarding_screen.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/view/manage_profile_screen.dart';
+import 'package:elsadeken/features/profile/profile/presentation/view/profile_screen.dart';
+// import 'package:elsadeken/features/profile/profile_details/presentation/view/profile_details_screen.dart';
+import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
+import 'package:elsadeken/features/search/presentation/view/search_page.dart';
+import 'package:elsadeken/features/splash/presentation/view/splash_screen.dart';
+import 'package:flutter/material.dart';
+
+class AppRouting {
+  Route onGenerateRouting(RouteSettings setting) {
+    switch (setting.name) {
+      case AppRoutes.splashScreen:
+        return MaterialPageRoute(builder: (_) => SplashScreen());
+      case AppRoutes.onBoardingScreen:
+        return MaterialPageRoute(builder: (_) => OnBoardingScreen());
+      case AppRoutes.signupScreen:
+        return MaterialPageRoute(builder: (_) => SignupScreen());
+      case AppRoutes.loginScreen:
+        return MaterialPageRoute(builder: (_) => LoginScreen());
+      case AppRoutes.forgetPasswordScreen:
+        return MaterialPageRoute(builder: (_) => ForgetPasswordScreen());
+      case AppRoutes.verificationEmailScreen:
+        return MaterialPageRoute(builder: (_) => VerificationEmailScreen());
+      case AppRoutes.newPasswordScreen:
+        return MaterialPageRoute(builder: (_) => NewPasswordScreen());
+      case AppRoutes.profileScreen:
+        return MaterialPageRoute(builder: (_) => ProfileScreen());
+      case AppRoutes.manageProfileScreen:
+        return MaterialPageRoute(builder: (_) => ManageProfileScreen());
+      case AppRoutes.searchScreen:
+        return MaterialPageRoute(builder: (_) => SearchPage());
+      case AppRoutes.searchResultScreen:
+        return MaterialPageRoute(builder: (_) => SearchResultsView());
+      case AppRoutes.homeScreen:
+        return MaterialPageRoute(builder: (_) => HomeScreen());
+      // case AppRoutes.profileDetailsScreen:
+      //   return MaterialPageRoute(builder: (_) => ProfileDetailsScreen());
+      default:
+        return MaterialPageRoute(builder: (_) => Scaffold());
+    }
+  }
+}
+
+PageRouteBuilder pageRouteBuilder(Widget screen) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => screen,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1, 0); // From bottom to top
+      const end = Offset.zero;
+      const curve = Curves.easeInOutQuart;
+
+      final tween = Tween(
+        begin: begin,
+        end: end,
+      ).chain(CurveTween(curve: curve));
+      final offsetAnimation = animation.drive(tween);
+
+      return SlideTransition(
+        position: offsetAnimation,
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    transitionDuration: const Duration(seconds: 2), // Slow and smooth
+  );
+}

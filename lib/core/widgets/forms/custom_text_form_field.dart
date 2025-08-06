@@ -1,0 +1,125 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../theme/app_color.dart';
+import '../../theme/app_text_styles.dart';
+
+class CustomTextFormField extends StatelessWidget {
+  const CustomTextFormField({
+    super.key,
+    required this.hintText,
+    this.hintStyle,
+    this.suffixIcon,
+    this.prefixIcon,
+    this.contentPadding,
+    this.fillBackgroundColor,
+    this.border,
+    this.focusedBorder,
+    this.enabledBorder,
+    this.errorBorder,
+    this.focusedErrorBorder,
+    this.obscureText,
+    this.controller,
+    required this.validator,
+    this.keyboardType,
+    this.labelStyle,
+    this.labelText,
+    this.onTap,
+    this.radius,
+    this.maxLines,
+    this.onChanged,
+  });
+
+  final String? hintText;
+
+  final TextStyle? hintStyle;
+
+  final Widget? suffixIcon;
+  final Widget? prefixIcon;
+  final EdgeInsetsGeometry? contentPadding;
+  final Color? fillBackgroundColor;
+  final InputBorder? border;
+  final InputBorder? focusedBorder;
+  final InputBorder? enabledBorder;
+  final InputBorder? errorBorder;
+  final InputBorder? focusedErrorBorder;
+  final bool? obscureText;
+  final TextEditingController? controller;
+  final Function(String?) validator;
+  final TextInputType? keyboardType;
+  final TextStyle? labelStyle;
+  final String? labelText;
+  final void Function()? onTap;
+  final double? radius;
+  final int? maxLines;
+  final void Function(String)? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      textDirection: TextDirection.rtl,
+      textAlign: TextAlign.right,
+      obscureText: obscureText ?? false,
+      controller: controller,
+      validator: (value) {
+        return validator(value);
+      },
+      onTap: onTap,
+      onChanged: onChanged,
+      onEditingComplete: () {
+        FocusScope.of(context).unfocus();
+      },
+      keyboardType: keyboardType,
+      maxLines: maxLines ?? 1,
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle:
+            hintStyle ??
+            AppTextStyles.font16ChineseBlackMediumLamaSans(context),
+        labelText: labelText,
+        labelStyle:
+            labelStyle ??
+            AppTextStyles.font16ChineseBlackMediumLamaSans(context),
+        suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon,
+        isDense: true,
+        contentPadding:
+            contentPadding ??
+            EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+        filled: true,
+        fillColor: fillBackgroundColor ?? AppColors.snow,
+        errorMaxLines: 3,
+        border:
+            border ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16).r,
+              borderSide: BorderSide(color: AppColors.brown),
+            ),
+        focusedBorder:
+            focusedBorder ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(radius ?? 16).r,
+              borderSide: const BorderSide(color: AppColors.brown),
+            ),
+        enabledBorder:
+            enabledBorder ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(radius ?? 16).r,
+              borderSide: const BorderSide(color: AppColors.brown),
+            ),
+        errorBorder:
+            errorBorder ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(radius ?? 16).r,
+              borderSide: const BorderSide(color: Colors.red),
+            ),
+        focusedErrorBorder:
+            focusedErrorBorder ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(radius ?? 16).r,
+              borderSide: const BorderSide(color: AppColors.brown),
+            ),
+      ),
+    );
+  }
+}
