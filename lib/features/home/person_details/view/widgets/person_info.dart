@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PersonInfoSheet extends StatefulWidget {
-  
   final String personId;
-  
+
   const PersonInfoSheet({
     Key? key,
     required this.personId,
@@ -14,9 +13,10 @@ class PersonInfoSheet extends StatefulWidget {
   @override
   State<PersonInfoSheet> createState() => _PersonInfoSheetState();
 }
-   
+
 class _PersonInfoSheetState extends State<PersonInfoSheet> {
-  final DraggableScrollableController _controller = DraggableScrollableController();
+  final DraggableScrollableController _controller =
+      DraggableScrollableController();
 
   @override
   void dispose() {
@@ -80,8 +80,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
       },
       onPanUpdate: (details) {
         _controller.animateTo(
-          (_controller.size - (details.delta.dy / MediaQuery.of(context).size.height))
-            .clamp(0.4, 0.95),
+          (_controller.size -
+                  (details.delta.dy / MediaQuery.of(context).size.height))
+              .clamp(0.4, 0.95),
           duration: const Duration(milliseconds: 1),
           curve: Curves.easeOut,
         );
@@ -188,11 +189,13 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: AppColors.sunray, // تغيير اللون حسب احتياجاتك
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              color: AppColors.yellowrec, // تغيير اللون حسب احتياجاتك
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
             ),
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: const Center(
+            child: Padding(
+              padding: EdgeInsets.only(right: 15),
               child: Text(
                 'تاريخ السجل',
                 style: TextStyle(
@@ -238,8 +241,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: AppColors.sunray, // تغيير اللون حسب احتياجاتك
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              color: AppColors.yellowrec, // تغيير اللون حسب احتياجاتك
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
             ),
             alignment: Alignment.centerRight,
             child: const Text(
@@ -283,7 +287,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               width: 150.w,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.beer,
+                color: AppColors.orangehighlight,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
@@ -333,7 +337,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               width: 150.w,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.beer,
+                color: AppColors.orangehighlight,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(

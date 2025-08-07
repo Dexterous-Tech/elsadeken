@@ -48,4 +48,9 @@ class AppColors {
   static const Color lightGray = Color(0xff9CA4AB);
   static const Color brightRed = Color(0xffF41F52);
   static const Color lightWhite = Color(0xffFDF3F4);
+  static const Color lightMixGrayAndBlue = Color(0xff66707A);
+  static const Color lightOrange = Color(0xffD2A769);
+  static const Color babyBlue = Color(0xff007AFF);
+  static Color orangehighlight = Color(0xFFE0A25E).withValues(alpha: 0.1);
+  static const Color yellowrec = Color(0xffDBAE48);
 }
