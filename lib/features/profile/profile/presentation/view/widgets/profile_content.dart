@@ -40,7 +40,9 @@ class ProfileContent extends StatelessWidget {
       ProfileContentItemModel(
         image: AppImages.interestingMeIcon,
         title: 'من يهتم بي',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.profileInterestsListScreen);
+        },
       ),
       ProfileContentItemModel(
         image: AppImages.searchAdvancedIcon,
@@ -52,7 +54,9 @@ class ProfileContent extends StatelessWidget {
       ProfileContentItemModel(
         image: AppImages.membersProfileImagesIcon,
         title: 'صور الاعضاء',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.profileMembersProfileScreen);
+        },
       ),
       ProfileContentItemModel(
         image: AppImages.excellencePackageIcon,

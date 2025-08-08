@@ -2,7 +2,7 @@ import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
-import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
+import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
@@ -46,21 +46,7 @@ class _AboutUsBodyState extends State<AboutUsBody> {
               controller: _scrollController,
               physics: const BouncingScrollPhysics(),
               children: [
-                Row(
-                  textDirection: TextDirection.rtl,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const CustomArrowBack(),
-                    Text(
-                      'نبذه عننا',
-                      style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
-                        fontWeight: FontWeightHelper.bold,
-                        color: AppColors.darkBlue,
-                      ),
-                    ),
-                    const SizedBox(),
-                  ],
-                ),
+                ProfileHeader(title: 'نبذه عننا'),
                 verticalSpace(16),
                 Text(
                   'من نحن',

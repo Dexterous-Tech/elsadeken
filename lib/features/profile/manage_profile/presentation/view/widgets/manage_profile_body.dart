@@ -1,12 +1,8 @@
-import 'package:elsadeken/core/helper/app_svg.dart';
-import 'package:elsadeken/core/helper/extensions.dart';
-import 'package:elsadeken/core/theme/app_color.dart';
-import 'package:elsadeken/core/theme/app_text_styles.dart';
-import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/contents/manage_profile_login_data.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/contents/manage_profile_religion.dart';
+import '../../../../widgets/profile_header.dart';
 import 'contents/manage_profile_appearance.dart';
 import 'contents/manage_profile_marital_status.dart';
 import 'contents/manage_profile_personal_information.dart';
@@ -14,7 +10,6 @@ import 'contents/manage_profile_writing_content.dart';
 import 'manage_profile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'contents/manage_profile_national_country.dart';
 
@@ -30,30 +25,7 @@ class ManageProfileBody extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(width: 30),
-                  Text(
-                    'تعديل بياناتي',
-                    style: AppTextStyles.font20WhiteBoldLamaSans(context)
-                        .copyWith(
-                          color: AppColors.jet,
-                          fontWeight: FontWeightHelper.medium,
-                        ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      context.pop();
-                    },
-                    child: SvgPicture.asset(
-                      AppSvg.arrowBack,
-                      width: 30,
-                      height: 30,
-                    ),
-                  ),
-                ],
-              ),
+              ProfileHeader(title: 'تعديل بياناتي'),
               verticalSpace(28),
               ManageProfileCard(
                 title: 'بيانات تسجيل الدخول',

@@ -2,11 +2,9 @@ import 'package:elsadeken/features/profile/my_ignoring_list/presentation/view/wi
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../core/theme/app_color.dart';
-import '../../../../../../core/theme/app_text_styles.dart';
-import '../../../../../../core/theme/font_weight_helper.dart';
 import '../../../../../../core/theme/spacing.dart';
-import '../../../../../../core/widgets/custom_arrow_back.dart';
+import '../../../../widgets/container_success_way.dart';
+import '../../../../widgets/profile_header.dart';
 
 class MyIgnoringListBody extends StatelessWidget {
   const MyIgnoringListBody({super.key});
@@ -23,33 +21,9 @@ class MyIgnoringListBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         textDirection: TextDirection.rtl,
         children: [
-          Row(
-            textDirection: TextDirection.rtl,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomArrowBack(),
-              Text(
-                'قائمة التجاهل',
-                style: AppTextStyles.font20WhiteBoldLamaSans(context).copyWith(
-                  fontWeight: FontWeightHelper.medium,
-                  color: AppColors.jet,
-                ),
-              ),
-              SizedBox(),
-            ],
-          ),
+          ProfileHeader(title: 'قائمة التجاهل'),
           verticalSpace(42),
-          Container(
-            color: AppColors.lighterOrange,
-            padding: EdgeInsets.symmetric(vertical: 15.h),
-            child: Center(
-              child: Text(
-                'دليلـــــك نحــــــو النجــــــــاح',
-                style: AppTextStyles.font20LightOrangeMediumPlexSans
-                    .copyWith(color: AppColors.jasper),
-              ),
-            ),
-          ),
+          ContainerSuccessWay(),
           verticalSpace(32),
           Expanded(child: MyIgnoringListItems()),
         ],

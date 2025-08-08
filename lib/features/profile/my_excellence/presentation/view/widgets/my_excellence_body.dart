@@ -3,12 +3,10 @@ import 'package:elsadeken/features/profile/my_excellence/presentation/view/widge
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../core/theme/app_color.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
-import '../../../../../../core/theme/font_weight_helper.dart';
 import '../../../../../../core/theme/spacing.dart';
-import '../../../../../../core/widgets/custom_arrow_back.dart';
 import '../../../../payment_methods/presentation/view/payment_methods.dart';
+import '../../../../widgets/profile_header.dart';
 
 class MyExcellenceBody extends StatelessWidget {
   const MyExcellenceBody({super.key});
@@ -80,22 +78,7 @@ class MyExcellenceBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             textDirection: TextDirection.rtl,
             children: [
-              Row(
-                textDirection: TextDirection.rtl,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomArrowBack(),
-                  Text(
-                    'باقـــة التميــــز',
-                    style:
-                        AppTextStyles.font20WhiteBoldLamaSans(context).copyWith(
-                      fontWeight: FontWeightHelper.medium,
-                      color: AppColors.jet,
-                    ),
-                  ),
-                  SizedBox(),
-                ],
-              ),
+              ProfileHeader(title: 'باقـــة التميــــز'),
               verticalSpace(42),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,

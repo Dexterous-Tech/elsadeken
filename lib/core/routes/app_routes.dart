@@ -20,4 +20,8 @@ class AppRoutes {
       '/profileMyInterestingListScreen';
   static const String profileMyIgnoringListScreen =
       '/profileMyIgnoringListScreen';
+  static const String profileInterestsListScreen =
+      '/profileInterestsListScreen';
+  static const String profileMembersProfileScreen =
+      '/profileMembersProfileScreen';
 }

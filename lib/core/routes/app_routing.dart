@@ -8,7 +8,9 @@ import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart'
 import 'package:elsadeken/features/on_boarding/presentation/view/on_boarding_screen.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_screen.dart';
 import 'package:elsadeken/features/profile/excellence_package/presentation/view/excellence_package_screen.dart';
+import 'package:elsadeken/features/profile/interests_list/presentation/view/interests_list_screen.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/manage_profile_screen.dart';
+import 'package:elsadeken/features/profile/members_profile/presentation/view/members_profile_screen.dart';
 import 'package:elsadeken/features/profile/my_excellence/presentation/view/my_excellence_screen.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/my_interesting_list_screen.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/profile_screen.dart';
@@ -59,6 +61,10 @@ class AppRouting {
         return MaterialPageRoute(builder: (_) => MyInterestingListScreen());
       case AppRoutes.profileMyIgnoringListScreen:
         return MaterialPageRoute(builder: (_) => MyIgnoringListScreen());
+      case AppRoutes.profileInterestsListScreen:
+        return MaterialPageRoute(builder: (_) => InterestsListScreen());
+      case AppRoutes.profileMembersProfileScreen:
+        return MaterialPageRoute(builder: (_) => MembersProfileScreen());
       default:
         return MaterialPageRoute(builder: (_) => Scaffold());
     }
