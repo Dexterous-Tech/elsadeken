@@ -99,7 +99,9 @@ class ProfileContent extends StatelessWidget {
       ProfileContentItemModel(
         image: AppImages.contactUsIcon,
         title: 'اتصل بنا',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.profileContactUsScreen);
+        },
       ),
     ];
 

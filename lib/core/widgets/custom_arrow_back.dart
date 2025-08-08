@@ -4,18 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomArrowBack extends StatelessWidget {
-  const CustomArrowBack({super.key});
+  const CustomArrowBack({super.key, this.background});
 
+  final Color? background;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         context.pop();
       },
-      child: Image.asset(
-        AppImages.arrowBack,
-        width: 14.w,
-        height: 14.h,
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle, color: background ?? Colors.transparent),
+        child: Image.asset(
+          AppImages.arrowBack,
+          width: 14.w,
+          height: 14.h,
+        ),
       ),
     );
   }

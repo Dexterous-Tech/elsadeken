@@ -15,7 +15,9 @@ class ProfileHeader extends StatelessWidget {
       textDirection: TextDirection.rtl,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const CustomArrowBack(),
+        const CustomArrowBack(
+          background: Color(0xffF9F9F9),
+        ),
         Text(
           title,
           style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
