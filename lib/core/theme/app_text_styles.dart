@@ -243,4 +243,10 @@ class AppTextStyles {
     color: AppColors.babyBlue,
     fontFamily: FontFamilyHelper.lamaSansArabic,
   );
+  static TextStyle font20LightOrangeMediumPlexSans = TextStyle(
+    fontWeight: FontWeightHelper.medium,
+    fontSize: 20.sp,
+    color: AppColors.lightOrange,
+    fontFamily: FontFamilyHelper.plexSansArabic,
+  );
 }

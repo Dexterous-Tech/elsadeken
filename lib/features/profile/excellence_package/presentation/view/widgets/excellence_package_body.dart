@@ -1,4 +1,6 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/excellence_package/presentation/view/widgets/excellence_package_item.dart';
@@ -172,7 +174,9 @@ class ExcellencePackageBody extends StatelessWidget {
                     ),
                     Spacer(),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        context.pushNamed(AppRoutes.profileMyExcellenceScreen);
+                      },
                       child: Image.asset(
                         AppImages.leftArrow,
                         width: 24.w,

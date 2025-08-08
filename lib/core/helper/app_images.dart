@@ -52,6 +52,10 @@ class AppImages {
       '${AppConstants.profileAssetsPath}bold_star.png';
   static const String leftArrow =
       '${AppConstants.profileAssetsPath}left_arrow.png';
+  static const String correctProfile =
+      '${AppConstants.profileAssetsPath}correct.png';
+  static const String wrongProfile =
+      '${AppConstants.profileAssetsPath}wrong.png';
 
   static const String checkCorrect =
       '${AppConstants.authAssetsPath}check-correct.png';
