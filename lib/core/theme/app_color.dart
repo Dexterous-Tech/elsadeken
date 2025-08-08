@@ -51,6 +51,7 @@ class AppColors {
   static const Color lightMixGrayAndBlue = Color(0xff66707A);
   static const Color lightOrange = Color(0xffD2A769);
   static const Color babyBlue = Color(0xff007AFF);
-  static Color orangehighlight = Color(0xFFE0A25E).withValues(alpha: 0.1);
+  static Color lighterOrange = Color(0xFFE0A25E).withValues(alpha: 0.1);
   static const Color yellowrec = Color(0xffDBAE48);
+  static const Color redLight = Color(0xffFD1C1C);
 }

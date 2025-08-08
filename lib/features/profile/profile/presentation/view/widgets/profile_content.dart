@@ -26,12 +26,16 @@ class ProfileContent extends StatelessWidget {
       ProfileContentItemModel(
         image: AppImages.interestsListIcon,
         title: 'قائمه الاهتمام',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.profileMyInterestingListScreen);
+        },
       ),
       ProfileContentItemModel(
         image: AppImages.ignoringListIcon,
         title: 'قائمه التجاهل',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.profileMyIgnoringListScreen);
+        },
       ),
       ProfileContentItemModel(
         image: AppImages.interestingMeIcon,

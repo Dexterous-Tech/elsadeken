@@ -16,4 +16,8 @@ class AppRoutes {
   static const String profileExcellencePackageScreen =
       '/profileExcellencePackageScreen';
   static const String profileMyExcellenceScreen = '/profileMyExcellenceScreen';
+  static const String profileMyInterestingListScreen =
+      '/profileMyInterestingListScreen';
+  static const String profileMyIgnoringListScreen =
+      '/profileMyIgnoringListScreen';
 }

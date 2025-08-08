@@ -287,7 +287,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               width: 150.w,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.orangehighlight,
+                color: AppColors.lighterOrange,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
@@ -337,7 +337,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               width: 150.w,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.orangehighlight,
+                color: AppColors.lighterOrange,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(

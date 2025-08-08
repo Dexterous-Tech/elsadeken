@@ -10,12 +10,15 @@ import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_s
 import 'package:elsadeken/features/profile/excellence_package/presentation/view/excellence_package_screen.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/manage_profile_screen.dart';
 import 'package:elsadeken/features/profile/my_excellence/presentation/view/my_excellence_screen.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/my_interesting_list_screen.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/profile_screen.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/profile_details_screen.dart';
 import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
 import 'package:elsadeken/features/search/presentation/view/search_page.dart';
 import 'package:elsadeken/features/splash/presentation/view/splash_screen.dart';
 import 'package:flutter/material.dart';
+
+import '../../features/profile/my_ignoring_list/presentation/view/my_ignoring_list_screen.dart';
 
 class AppRouting {
   Route onGenerateRouting(RouteSettings setting) {
@@ -52,6 +55,10 @@ class AppRouting {
         return MaterialPageRoute(builder: (_) => ExcellencePackageScreen());
       case AppRoutes.profileMyExcellenceScreen:
         return MaterialPageRoute(builder: (_) => MyExcellenceScreen());
+      case AppRoutes.profileMyInterestingListScreen:
+        return MaterialPageRoute(builder: (_) => MyInterestingListScreen());
+      case AppRoutes.profileMyIgnoringListScreen:
+        return MaterialPageRoute(builder: (_) => MyIgnoringListScreen());
       default:
         return MaterialPageRoute(builder: (_) => Scaffold());
     }

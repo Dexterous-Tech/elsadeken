@@ -178,7 +178,7 @@ class AppTextStyles {
   static TextStyle font18WhiteSemiBoldLamaSans = TextStyle(
     fontWeight: FontWeightHelper.semiBold,
     fontSize: 18.sp,
-    color: AppColors.black,
+    color: AppColors.white,
     fontFamily: FontFamilyHelper.lamaSansArabic,
   );
 
@@ -248,5 +248,19 @@ class AppTextStyles {
     fontSize: 20.sp,
     color: AppColors.lightOrange,
     fontFamily: FontFamilyHelper.plexSansArabic,
+  );
+
+  static TextStyle font14BlackSemiBoldLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.semiBold,
+    fontSize: 14.sp,
+    color: AppColors.black,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
+
+  static TextStyle font12JetRegularLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.regular,
+    fontSize: 12.sp,
+    color: AppColors.jet,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
   );
 }
