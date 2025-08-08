@@ -1,0 +1,30 @@
+import 'package:flutter/material.dart';
+
+import '../../../core/theme/app_color.dart';
+import '../../../core/theme/app_text_styles.dart';
+import '../../../core/theme/font_weight_helper.dart';
+import '../../../core/widgets/custom_arrow_back.dart';
+
+class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({super.key, required this.title});
+
+  final String title;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      textDirection: TextDirection.rtl,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const CustomArrowBack(),
+        Text(
+          title,
+          style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+            fontWeight: FontWeightHelper.bold,
+            color: AppColors.darkBlue,
+          ),
+        ),
+        const SizedBox(),
+      ],
+    );
+  }
+}

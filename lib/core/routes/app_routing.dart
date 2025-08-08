@@ -6,13 +6,21 @@ import 'package:elsadeken/features/auth/signup/presentation/view/signup_screen.d
 import 'package:elsadeken/features/auth/verification_email/presentation/view/verification_email_screen.dart';
 import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart';
 import 'package:elsadeken/features/on_boarding/presentation/view/on_boarding_screen.dart';
+import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_screen.dart';
+import 'package:elsadeken/features/profile/excellence_package/presentation/view/excellence_package_screen.dart';
+import 'package:elsadeken/features/profile/interests_list/presentation/view/interests_list_screen.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/manage_profile_screen.dart';
+import 'package:elsadeken/features/profile/members_profile/presentation/view/members_profile_screen.dart';
+import 'package:elsadeken/features/profile/my_excellence/presentation/view/my_excellence_screen.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/my_interesting_list_screen.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/profile_screen.dart';
-// import 'package:elsadeken/features/profile/profile_details/presentation/view/profile_details_screen.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/view/profile_details_screen.dart';
 import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
 import 'package:elsadeken/features/search/presentation/view/search_page.dart';
 import 'package:elsadeken/features/splash/presentation/view/splash_screen.dart';
 import 'package:flutter/material.dart';
+
+import '../../features/profile/my_ignoring_list/presentation/view/my_ignoring_list_screen.dart';
 
 class AppRouting {
   Route onGenerateRouting(RouteSettings setting) {
@@ -41,8 +49,22 @@ class AppRouting {
         return MaterialPageRoute(builder: (_) => SearchResultsView());
       case AppRoutes.homeScreen:
         return MaterialPageRoute(builder: (_) => HomeScreen());
-      // case AppRoutes.profileDetailsScreen:
-      //   return MaterialPageRoute(builder: (_) => ProfileDetailsScreen());
+      case AppRoutes.profileDetailsScreen:
+        return MaterialPageRoute(builder: (_) => ProfileDetailsScreen());
+      case AppRoutes.profileAboutUsScreen:
+        return MaterialPageRoute(builder: (_) => AboutUsScreen());
+      case AppRoutes.profileExcellencePackageScreen:
+        return MaterialPageRoute(builder: (_) => ExcellencePackageScreen());
+      case AppRoutes.profileMyExcellenceScreen:
+        return MaterialPageRoute(builder: (_) => MyExcellenceScreen());
+      case AppRoutes.profileMyInterestingListScreen:
+        return MaterialPageRoute(builder: (_) => MyInterestingListScreen());
+      case AppRoutes.profileMyIgnoringListScreen:
+        return MaterialPageRoute(builder: (_) => MyIgnoringListScreen());
+      case AppRoutes.profileInterestsListScreen:
+        return MaterialPageRoute(builder: (_) => InterestsListScreen());
+      case AppRoutes.profileMembersProfileScreen:
+        return MaterialPageRoute(builder: (_) => MembersProfileScreen());
       default:
         return MaterialPageRoute(builder: (_) => Scaffold());
     }

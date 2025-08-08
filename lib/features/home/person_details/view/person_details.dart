@@ -11,7 +11,7 @@ class PersonDetailsView extends StatefulWidget {
     required this.personId,
     required this.imageUrl,
   }) : super(key: key);
-  
+
   @override
   State<PersonDetailsView> createState() => _PersonDetailsViewState();
 }

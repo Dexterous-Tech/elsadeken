@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
@@ -180,7 +178,7 @@ class AppTextStyles {
   static TextStyle font18WhiteSemiBoldLamaSans = TextStyle(
     fontWeight: FontWeightHelper.semiBold,
     fontSize: 18.sp,
-    color: AppColors.black,
+    color: AppColors.white,
     fontFamily: FontFamilyHelper.lamaSansArabic,
   );
 
@@ -208,6 +206,60 @@ class AppTextStyles {
   static TextStyle font18JetMediumLamaSans = TextStyle(
     fontWeight: FontWeightHelper.medium,
     fontSize: 18.sp,
+    color: AppColors.jet,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
+
+  static TextStyle font19LightOrangeSemiBoldLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.semiBold,
+    fontSize: 19.sp,
+    color: AppColors.lightOrange,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
+  static TextStyle font19JetRegularLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.regular,
+    fontSize: 19.sp,
+    color: AppColors.jet,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
+
+  static TextStyle font21PhilippineBronzeMediumPlexSans = TextStyle(
+    fontWeight: FontWeightHelper.medium,
+    fontSize: 21.sp,
+    color: AppColors.philippineBronze,
+    fontFamily: FontFamilyHelper.plexSansArabic,
+  );
+
+  static TextStyle font19PhilippineBronzeRegularPlexSans = TextStyle(
+    fontWeight: FontWeightHelper.regular,
+    fontSize: 19.sp,
+    color: AppColors.philippineBronze,
+    fontFamily: FontFamilyHelper.plexSansArabic,
+  );
+
+  static TextStyle font18BabyBlueRegularLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.regular,
+    fontSize: 18.sp,
+    color: AppColors.babyBlue,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
+  static TextStyle font20LightOrangeMediumPlexSans = TextStyle(
+    fontWeight: FontWeightHelper.medium,
+    fontSize: 20.sp,
+    color: AppColors.lightOrange,
+    fontFamily: FontFamilyHelper.plexSansArabic,
+  );
+
+  static TextStyle font14BlackSemiBoldLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.semiBold,
+    fontSize: 14.sp,
+    color: AppColors.black,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
+
+  static TextStyle font12JetRegularLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.regular,
+    fontSize: 12.sp,
     color: AppColors.jet,
     fontFamily: FontFamilyHelper.lamaSansArabic,
   );

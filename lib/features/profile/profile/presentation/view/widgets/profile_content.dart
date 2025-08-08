@@ -5,7 +5,7 @@ import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/toggle_switch/custom_advanced_toggle_switch.dart';
-// import 'package:elsadeken/features/profile/profile/presentation/view/widgets/logout/logout_dialog.dart';
+import 'package:elsadeken/features/profile/profile/presentation/view/widgets/logout/logout_dialog.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_content_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,25 +18,31 @@ class ProfileContent extends StatelessWidget {
     final List<ProfileContentItemModel> personalInformation = [
       ProfileContentItemModel(
         image: AppImages.myProfileIcon,
-        title: 'ادارة حسابي',
+        title: 'حسابي',
         onPressed: () {
-          context.pushNamed(AppRoutes.manageProfileScreen);
+          context.pushNamed(AppRoutes.profileDetailsScreen);
         },
       ),
       ProfileContentItemModel(
         image: AppImages.interestsListIcon,
         title: 'قائمه الاهتمام',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.profileMyInterestingListScreen);
+        },
       ),
       ProfileContentItemModel(
         image: AppImages.ignoringListIcon,
         title: 'قائمه التجاهل',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.profileMyIgnoringListScreen);
+        },
       ),
       ProfileContentItemModel(
         image: AppImages.interestingMeIcon,
         title: 'من يهتم بي',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.profileInterestsListScreen);
+        },
       ),
       ProfileContentItemModel(
         image: AppImages.searchAdvancedIcon,
@@ -48,12 +54,16 @@ class ProfileContent extends StatelessWidget {
       ProfileContentItemModel(
         image: AppImages.membersProfileImagesIcon,
         title: 'صور الاعضاء',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.profileMembersProfileScreen);
+        },
       ),
       ProfileContentItemModel(
         image: AppImages.excellencePackageIcon,
         title: 'باقه التميز',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.profileExcellencePackageScreen);
+        },
       ),
       ProfileContentItemModel(
         image: AppImages.successStoryIcon,
@@ -71,7 +81,9 @@ class ProfileContent extends StatelessWidget {
       ProfileContentItemModel(
         image: AppImages.aboutUsIcon,
         title: 'نبذه عننا',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.profileAboutUsScreen);
+        },
       ),
       ProfileContentItemModel(
         image: AppImages.notificationIcon,
@@ -131,7 +143,7 @@ class ProfileContent extends StatelessWidget {
                     verticalSpace(21),
                     GestureDetector(
                       onTap: () {
-                        // logoutDialog(context);
+                        logoutDialog(context);
                       },
                       child: Row(
                         textDirection: TextDirection.rtl,

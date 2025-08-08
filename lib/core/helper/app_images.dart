@@ -48,6 +48,16 @@ class AppImages {
       '${AppConstants.profileAssetsPath}profile_image_logo.png';
   static const String warningLogo =
       '${AppConstants.profileAssetsPath}warning_logo.png';
+  static const String boldStar =
+      '${AppConstants.profileAssetsPath}bold_star.png';
+  static const String leftArrow =
+      '${AppConstants.profileAssetsPath}left_arrow.png';
+  static const String correctProfile =
+      '${AppConstants.profileAssetsPath}correct.png';
+  static const String wrongProfile =
+      '${AppConstants.profileAssetsPath}wrong.png';
+  static const String bottomArrowProfile =
+      '${AppConstants.profileAssetsPath}bottom_arrow.png';
 
   static const String checkCorrect =
       '${AppConstants.authAssetsPath}check-correct.png';
@@ -55,4 +65,7 @@ class AppImages {
       '${AppConstants.authAssetsPath}check-point.png';
   static const String arrowBack =
       '${AppConstants.authAssetsPath}arrow-back.png';
+
+  static const String homeLocation =
+      '${AppConstants.authHomePath}home_location.png';
 }

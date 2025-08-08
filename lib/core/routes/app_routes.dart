@@ -12,4 +12,16 @@ class AppRoutes {
   static const String homeScreen = '/homeScreen';
   static const String searchResultScreen = '/searchResultScreen';
   static const String profileDetailsScreen = '/profileDetailsScreen';
+  static const String profileAboutUsScreen = '/profileAboutUsScreen';
+  static const String profileExcellencePackageScreen =
+      '/profileExcellencePackageScreen';
+  static const String profileMyExcellenceScreen = '/profileMyExcellenceScreen';
+  static const String profileMyInterestingListScreen =
+      '/profileMyInterestingListScreen';
+  static const String profileMyIgnoringListScreen =
+      '/profileMyIgnoringListScreen';
+  static const String profileInterestsListScreen =
+      '/profileInterestsListScreen';
+  static const String profileMembersProfileScreen =
+      '/profileMembersProfileScreen';
 }

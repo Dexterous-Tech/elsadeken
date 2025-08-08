@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class PersonImageHeader extends StatelessWidget {
   final String imageUrl;
-  
+
   const PersonImageHeader({
     Key? key,
     required this.imageUrl,
@@ -35,30 +35,30 @@ class PersonImageHeader extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        padding: EdgeInsets.all(8),
+                        child:
+                            Icon(Icons.arrow_back_ios_new, color: Colors.black),
                       ),
-                      padding: EdgeInsets.all(8),
-                      child: Icon(Icons.arrow_back_ios_new, color: Colors.black),
                     ),
-                  ),
-                ],
-              ),
-
+                  ],
+                ),
                 const Spacer(),
                 Container(
                   padding: const EdgeInsets.all(8),
@@ -80,4 +80,4 @@ class PersonImageHeader extends StatelessWidget {
       ),
     );
   }
-}    
+}
