@@ -61,6 +61,8 @@ class AppImages {
   static const String contactHeadphoneProfile =
       '${AppConstants.profileAssetsPath}contact_headphone.png';
   static const String sendProfile = '${AppConstants.profileAssetsPath}send.png';
+  static const String cameraProfile =
+      '${AppConstants.profileAssetsPath}profile_camera.png';
 
   static const String checkCorrect =
       '${AppConstants.authAssetsPath}check-correct.png';

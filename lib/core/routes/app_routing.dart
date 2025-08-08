@@ -13,6 +13,7 @@ import 'package:elsadeken/features/profile/interests_list/presentation/view/inte
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/manage_profile_screen.dart';
 import 'package:elsadeken/features/profile/members_profile/presentation/view/members_profile_screen.dart';
 import 'package:elsadeken/features/profile/my_excellence/presentation/view/my_excellence_screen.dart';
+import 'package:elsadeken/features/profile/my_image/presentation/view/my_image_screen.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/my_interesting_list_screen.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/profile_screen.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/profile_details_screen.dart';
@@ -71,6 +72,8 @@ class AppRouting {
         return MaterialPageRoute(builder: (_) => ContactUsScreen());
       case AppRoutes.profileTechnicalSupportScreen:
         return MaterialPageRoute(builder: (_) => TechnicalSupportScreen());
+      case AppRoutes.profileMyImageScreen:
+        return MaterialPageRoute(builder: (_) => MyImageScreen());
       default:
         return MaterialPageRoute(builder: (_) => Scaffold());
     }

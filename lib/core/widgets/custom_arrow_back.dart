@@ -14,14 +14,16 @@ class CustomArrowBack extends StatelessWidget {
         context.pop();
       },
       child: Container(
-        width: 48,
-        height: 48,
+        width: 30.w,
+        height: 30.h,
         decoration: BoxDecoration(
             shape: BoxShape.circle, color: background ?? Colors.transparent),
-        child: Image.asset(
-          AppImages.arrowBack,
-          width: 14.w,
-          height: 14.h,
+        child: Center(
+          child: Image.asset(
+            AppImages.arrowBack,
+            width: 14.w,
+            height: 14.h,
+          ),
         ),
       ),
     );

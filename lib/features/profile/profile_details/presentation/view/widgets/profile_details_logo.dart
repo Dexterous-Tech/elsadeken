@@ -1,4 +1,6 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -18,10 +20,15 @@ class ProfileDetailsLogo extends StatelessWidget {
           Stack(
             alignment: Alignment.bottomRight,
             children: [
-              Image.asset(
-                AppImages.profileImageLogo,
-                width: 145.w,
-                height: 145.h,
+              GestureDetector(
+                onTap: () {
+                  context.pushNamed(AppRoutes.profileMyImageScreen);
+                },
+                child: Image.asset(
+                  AppImages.profileImageLogo,
+                  width: 145.w,
+                  height: 145.h,
+                ),
               ),
               Positioned(
                 bottom: 5,
