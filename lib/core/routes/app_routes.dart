@@ -10,6 +10,8 @@ class AppRoutes {
   static const String manageProfileScreen = '/manageProfileScreen';
   static const String searchScreen = '/searchScreen';
   static const String homeScreen = '/homeScreen';
+  static const String SuccessStoriesScreen = '/successStoriesScreen';
+
   static const String searchResultScreen = '/searchResultScreen';
   static const String profileDetailsScreen = '/profileDetailsScreen';
   static const String profileAboutUsScreen = '/profileAboutUsScreen';

@@ -21,6 +21,7 @@ import 'package:elsadeken/features/profile/technical_support/presentation/view/t
 import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
 import 'package:elsadeken/features/search/presentation/view/search_page.dart';
 import 'package:elsadeken/features/splash/presentation/view/splash_screen.dart';
+import 'package:elsadeken/features/success_stories/presentation/view/success_story_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../features/profile/my_ignoring_list/presentation/view/my_ignoring_list_screen.dart';
@@ -52,6 +53,8 @@ class AppRouting {
         return MaterialPageRoute(builder: (_) => SearchResultsView());
       case AppRoutes.homeScreen:
         return MaterialPageRoute(builder: (_) => HomeScreen());
+      case AppRoutes.SuccessStoriesScreen:
+        return MaterialPageRoute(builder: (_) => SuccessStoriesScreen());
       case AppRoutes.profileDetailsScreen:
         return MaterialPageRoute(builder: (_) => ProfileDetailsScreen());
       case AppRoutes.profileAboutUsScreen:

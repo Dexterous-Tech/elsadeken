@@ -35,11 +35,12 @@ class CustomElevatedButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
+        height: 50.h,
         width: double.infinity,
         padding: paddingButton ??
             EdgeInsets.symmetric(
-              vertical: verticalPadding ?? 25.h,
-              horizontal: horizontalPadding ?? 0,
+              vertical: verticalPadding ?? 10.h,
+              horizontal: horizontalPadding ?? 10.w,
             ),
         decoration: BoxDecoration(
           color: backgroundColor,
