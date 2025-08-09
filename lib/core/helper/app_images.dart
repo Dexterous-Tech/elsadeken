@@ -75,4 +75,19 @@ class AppImages {
 
   static const String homeLocation =
       '${AppConstants.authHomePath}home_location.png';
+
+  //special members images and icons
+  static const String specialMembersAvatar =
+      '${AppConstants.specialMembersPath}Avatar.png';
+
+  static const String specialMembersReportIcon =
+      '${AppConstants.specialMembersPath}report.png';
+  static const String specialMembersMessageIcon =
+      '${AppConstants.specialMembersPath}message.png';
+  static const String specialMembersDislikeIcon =
+      '${AppConstants.specialMembersPath}dislike.png';
+  static const String specialMembersLikeIcon =
+      '${AppConstants.specialMembersPath}like.png';
+  static const String specialMembersShareIcon =
+      '${AppConstants.specialMembersPath}share.png';
 }
