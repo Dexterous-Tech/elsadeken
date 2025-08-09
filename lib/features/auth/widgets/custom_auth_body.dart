@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/helper/app_images.dart';
 import '../../../core/theme/app_color.dart';
-import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/spacing.dart';
 import 'custom_auth_card.dart';
 

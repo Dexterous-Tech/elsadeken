@@ -1,7 +1,7 @@
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/my_excellence/presentation/view/widgets/my_excellence_item.dart';
+import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/spacing.dart';
@@ -67,50 +67,48 @@ class MyExcellenceBody extends StatelessWidget {
         'isCorrect': false,
       },
     ];
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 24.w,
-          vertical: 24.h,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            textDirection: TextDirection.rtl,
-            children: [
-              ProfileHeader(title: 'باقـــة التميــــز'),
-              verticalSpace(42),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: List.generate(
-                  items.length,
-                  (index) {
-                    var item = items[index];
-                    return MyExcellenceItem(
-                        isCorrect: item['isCorrect'], title: item['title']);
-                  },
-                ),
+    return CustomProfileBody(
+      contentBody: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          textDirection: TextDirection.rtl,
+          children: [
+            ProfileHeader(title: 'باقـــة التميــــز'),
+            verticalSpace(42),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: List.generate(
+                items.length,
+                (index) {
+                  var item = items[index];
+                  return MyExcellenceItem(
+                      isCorrect: item['isCorrect'], title: item['title']);
+                },
               ),
-              verticalSpace(15),
-              Text(
+            ),
+            verticalSpace(15),
+            Center(
+              child: Text(
                 'باقـــة التميــــز',
                 style: AppTextStyles.font20LightOrangeMediumPlexSans,
               ),
-              verticalSpace(16),
-              Text(
-                'عند الأشتراك في باقة التميز ، ستقوم بتفعيل جميع الميزات المتاحة و بالتالي زيادة تفاعلك في التطبيق و تحقيق هدفك بشكل أسرع',
-                style: AppTextStyles.font19JetRegularLamaSans,
-              ),
-              verticalSpace(32),
-              CustomElevatedButton(
-                onPressed: () {
-                  showPaymentMethodsBottomSheet(context);
-                },
-                textButton: 'اشترك الان',
-                radius: 100,
-              )
-            ],
-          ),
+            ),
+            verticalSpace(16),
+            Text(
+              'عند الأشتراك في باقة التميز ، ستقوم بتفعيل جميع الميزات المتاحة و بالتالي زيادة تفاعلك في التطبيق و تحقيق هدفك بشكل أسرع',
+              style: AppTextStyles.font19JetRegularLamaSans,
+              textAlign: TextAlign.right,
+              textDirection: TextDirection.rtl,
+            ),
+            verticalSpace(32),
+            CustomElevatedButton(
+              onPressed: () {
+                showPaymentMethodsBottomSheet(context);
+              },
+              textButton: 'اشترك الان',
+              radius: 100,
+            )
+          ],
         ),
       ),
     );

@@ -8,6 +8,7 @@ import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
+import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,10 +18,8 @@ class ContactUsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 25.w),
-      child: Column(
+    return CustomProfileBody(
+      contentBody: Column(
         textDirection: TextDirection.rtl,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -96,6 +95,6 @@ class ContactUsBody extends StatelessWidget {
           ),
         ],
       ),
-    ));
+    );
   }
 }

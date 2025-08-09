@@ -1,5 +1,6 @@
 class AppConstants {
   // images
+  static const String imagesAssetsPath = 'assets/images/';
   static const String splashAssetsPath = 'assets/images/splash/';
   static const String onBoardingAssetsPath = 'assets/images/on_boarding/';
   static const String authAssetsPath = 'assets/images/auth/';

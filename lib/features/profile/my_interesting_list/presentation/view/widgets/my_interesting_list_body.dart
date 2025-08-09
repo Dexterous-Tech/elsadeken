@@ -1,6 +1,6 @@
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/widgets/my_interesting_list_items.dart';
+import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/theme/spacing.dart';
 import '../../../../widgets/container_success_way.dart';
@@ -11,13 +11,8 @@ class MyInterestingListBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 24.w,
-        vertical: 24.h,
-      ),
-      child: Column(
+    return CustomProfileBody(
+      contentBody: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         textDirection: TextDirection.rtl,
         children: [
@@ -28,6 +23,6 @@ class MyInterestingListBody extends StatelessWidget {
           Expanded(child: MyInterestingListItems()),
         ],
       ),
-    ));
+    );
   }
 }
