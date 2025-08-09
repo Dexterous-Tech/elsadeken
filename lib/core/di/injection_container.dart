@@ -4,10 +4,17 @@ import '../../features/search/logic/repository/search_repository.dart';
 import '../../features/search/logic/repository/search_repository_impl.dart';
 import '../../features/search/logic/use_cases/search_use_cases.dart';
 import '../../features/search/presentation/cubit/search_cubit.dart';
+import '../networking/api_services.dart';
+import '../networking/dio_factory.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
+  // Initialize Dio
+  final dio = await DioFactory.getDio();
+
+  // Register ApiServices as a singleton
+  sl.registerSingleton<ApiServices>(ApiServices.internal(dio));
   // Repository
   sl.registerLazySingleton<SearchRepository>(
     () => SearchRepositoryImpl(),
