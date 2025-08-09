@@ -56,4 +56,6 @@ class AppColors {
   static const Color redLight = Color(0xffFD1C1C);
   static const Color orangeLighter = Color(0xffFFF8F5);
   static const Color darkerBlue = Color(0xff0D082C);
+  static const Color beige = Color(0xFFFCF4EA);
+  static const Color orangeHighLight = Color(0xFFFBF5EE);
 }
