@@ -6,6 +6,8 @@ class AppConstants {
   static const String authAssetsPath = 'assets/images/auth/';
   static const String authHomePath = 'assets/images/home/';
   static const String profileAssetsPath = 'assets/images/profile/';
+  static const String specialMembersPath = 'assets/images/special_members/';
+
   // svg
   static const String svgAssetsPath = 'assets/svg/';
   //padding

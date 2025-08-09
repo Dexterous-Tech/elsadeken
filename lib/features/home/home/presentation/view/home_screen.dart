@@ -6,6 +6,7 @@ import 'package:elsadeken/features/profile/profile/presentation/view/widgets/pro
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../members/members_section/view/members_screen.dart';
 import '../../../notification/presentation/view/notification_screen.dart';
 import '../../data/models/user_model.dart';
 
@@ -276,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 1:
         return Center(child: Text('الرسائل'));
       case 2:
-        return Center(child: Text('الاعضاء'));
+        return MembersScreen();
       case 3:
         return ProfileBody();
       default:
