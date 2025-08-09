@@ -7,14 +7,17 @@ import 'package:elsadeken/features/auth/verification_email/presentation/view/ver
 import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart';
 import 'package:elsadeken/features/on_boarding/presentation/view/on_boarding_screen.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_screen.dart';
+import 'package:elsadeken/features/profile/contact_us/presentation/view/contact_us_screen.dart';
 import 'package:elsadeken/features/profile/excellence_package/presentation/view/excellence_package_screen.dart';
 import 'package:elsadeken/features/profile/interests_list/presentation/view/interests_list_screen.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/manage_profile_screen.dart';
 import 'package:elsadeken/features/profile/members_profile/presentation/view/members_profile_screen.dart';
 import 'package:elsadeken/features/profile/my_excellence/presentation/view/my_excellence_screen.dart';
+import 'package:elsadeken/features/profile/my_image/presentation/view/my_image_screen.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/my_interesting_list_screen.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/profile_screen.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/profile_details_screen.dart';
+import 'package:elsadeken/features/profile/technical_support/presentation/view/technical_support_screen.dart';
 import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
 import 'package:elsadeken/features/search/presentation/view/search_page.dart';
 import 'package:elsadeken/features/splash/presentation/view/splash_screen.dart';
@@ -65,6 +68,12 @@ class AppRouting {
         return MaterialPageRoute(builder: (_) => InterestsListScreen());
       case AppRoutes.profileMembersProfileScreen:
         return MaterialPageRoute(builder: (_) => MembersProfileScreen());
+      case AppRoutes.profileContactUsScreen:
+        return MaterialPageRoute(builder: (_) => ContactUsScreen());
+      case AppRoutes.profileTechnicalSupportScreen:
+        return MaterialPageRoute(builder: (_) => TechnicalSupportScreen());
+      case AppRoutes.profileMyImageScreen:
+        return MaterialPageRoute(builder: (_) => MyImageScreen());
       default:
         return MaterialPageRoute(builder: (_) => Scaffold());
     }

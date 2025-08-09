@@ -9,6 +9,7 @@ import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_card.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_card_item.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_logo.dart';
+import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -90,107 +91,99 @@ class ProfileDetailsBody extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 22.w,
-          vertical: 16.h,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            textDirection: TextDirection.ltr,
-            children: [
-              CustomArrowBack(),
-              ProfileDetailsLogo(),
-              verticalSpace(20),
-              Row(
-                textDirection: TextDirection.rtl,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return CustomProfileBody(
+      contentBody: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          textDirection: TextDirection.ltr,
+          children: [
+            CustomArrowBack(),
+            ProfileDetailsLogo(),
+            verticalSpace(20),
+            Row(
+              textDirection: TextDirection.rtl,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Flexible(
+                  child: CustomElevatedButton(
+                    onPressed: () {
+                      context.pushNamed(AppRoutes.manageProfileScreen);
+                    },
+                    textButton: 'ادارة حساب',
+                    radius: 100,
+                    verticalPadding: 12,
+                  ),
+                ),
+                horizontalSpace(16),
+                Flexible(
+                  child: CustomElevatedButton(
+                    onPressed: () {},
+                    textButton: 'باقة التميز',
+                    radius: 100,
+                    backgroundColor: AppColors.sunray,
+                    verticalPadding: 12,
+                  ),
+                ),
+              ],
+            ),
+            verticalSpace(40),
+            ProfileDetailsCard(
+              cardTitle: 'تاريخ السجل',
+              cardContent: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Flexible(
-                    child: CustomElevatedButton(
-                      onPressed: () {
-                        context.pushNamed(AppRoutes.manageProfileScreen);
-                      },
-                      textButton: 'ادارة حساب',
-                      radius: 100,
-                      verticalPadding: 12,
-                    ),
-                  ),
-                  horizontalSpace(16),
-                  Flexible(
-                    child: CustomElevatedButton(
-                      onPressed: () {},
-                      textButton: 'باقة التميز',
-                      radius: 100,
-                      backgroundColor: AppColors.sunray,
-                      verticalPadding: 12,
-                    ),
-                  ),
+                  ...logHistory.map((item) {
+                    return ProfileDetailsCardItem(
+                        itemTitle: item['title'],
+                        itemSubTitle: item['subTitle']);
+                  }),
+                  verticalSpace(11),
                 ],
               ),
-              verticalSpace(40),
-              ProfileDetailsCard(
-                cardTitle: 'تاريخ السجل',
-                cardContent: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    ...logHistory.map((item) {
-                      return ProfileDetailsCardItem(
-                          itemTitle: item['title'],
-                          itemSubTitle: item['subTitle']);
-                    }),
-                    verticalSpace(11),
-                  ],
+            ),
+            verticalSpace(27),
+            ProfileDetailsCard(
+              cardTitle: 'المعلومات',
+              cardContent: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  ...information.map((item) {
+                    return ProfileDetailsCardItem(
+                        itemTitle: item['title'],
+                        itemSubTitle: item['subTitle']);
+                  }),
+                  verticalSpace(11),
+                ],
+              ),
+            ),
+            verticalSpace(16),
+            ProfileDetailsCard(
+              cardTitle: 'موصفات زوجي المستقبلي',
+              cardContent: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Text(
+                  'يكون بيصلي وعارف ربنا ويراعي ربنا في ولادي ويكون ححنين',
+                  textDirection: TextDirection.rtl,
+                  style: AppTextStyles.font18GreyRegularLamaSans
+                      .copyWith(fontFamily: FontFamilyHelper.plexSansArabic),
                 ),
               ),
-              verticalSpace(27),
-              ProfileDetailsCard(
-                cardTitle: 'المعلومات',
-                cardContent: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    ...information.map((item) {
-                      return ProfileDetailsCardItem(
-                          itemTitle: item['title'],
-                          itemSubTitle: item['subTitle']);
-                    }),
-                    verticalSpace(11),
-                  ],
+            ),
+            verticalSpace(16),
+            ProfileDetailsCard(
+              cardTitle: 'موصفاتي انا',
+              cardContent: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Text(
+                  'إنسانة ناضجة الى حد كبير مهتمة ببناء العلاقات حقيقة وببني بيت امن وسكينة بالحب',
+                  textDirection: TextDirection.rtl,
+                  style: AppTextStyles.font18GreyRegularLamaSans
+                      .copyWith(fontFamily: FontFamilyHelper.plexSansArabic),
                 ),
               ),
-              verticalSpace(16),
-              ProfileDetailsCard(
-                cardTitle: 'موصفات زوجي المستقبلي',
-                cardContent: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                  child: Text(
-                    'يكون بيصلي وعارف ربنا ويراعي ربنا في ولادي ويكون ححنين',
-                    textDirection: TextDirection.rtl,
-                    style: AppTextStyles.font18GreyRegularLamaSans
-                        .copyWith(fontFamily: FontFamilyHelper.plexSansArabic),
-                  ),
-                ),
-              ),
-              verticalSpace(16),
-              ProfileDetailsCard(
-                cardTitle: 'موصفاتي انا',
-                cardContent: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                  child: Text(
-                    'إنسانة ناضجة الى حد كبير مهتمة ببناء العلاقات حقيقة وببني بيت امن وسكينة بالحب',
-                    textDirection: TextDirection.rtl,
-                    style: AppTextStyles.font18GreyRegularLamaSans
-                        .copyWith(fontFamily: FontFamilyHelper.plexSansArabic),
-                  ),
-                ),
-              ),
-              verticalSpace(20),
-            ],
-          ),
+            ),
+            verticalSpace(20),
+          ],
         ),
       ),
     );

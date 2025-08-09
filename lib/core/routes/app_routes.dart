@@ -24,4 +24,8 @@ class AppRoutes {
       '/profileInterestsListScreen';
   static const String profileMembersProfileScreen =
       '/profileMembersProfileScreen';
+  static const String profileContactUsScreen = '/profileContactUsScreen';
+  static const String profileTechnicalSupportScreen =
+      '/profileTechnicalSupportScreen';
+  static const String profileMyImageScreen = '/profileMyImageScreen';
 }

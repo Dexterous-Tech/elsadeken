@@ -26,25 +26,29 @@ class MyExcellenceItem extends StatelessWidget {
           SizedBox(
             width: 11,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                title,
-                style: AppTextStyles.font18JetMediumLamaSans.copyWith(
-                  fontSize: 20.sp,
-                  fontFamily: FontFamilyHelper.plexSansArabic,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  title,
+                  style: AppTextStyles.font18JetMediumLamaSans.copyWith(
+                    fontSize: 20.sp,
+                    fontFamily: FontFamilyHelper.plexSansArabic,
+                  ),
+                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.right,
                 ),
-              ),
-              SizedBox(
-                height: 11,
-              ),
-              Container(
-                color: AppColors.black.withValues(alpha: 0.14),
-                height: 1.h,
-                margin: EdgeInsets.only(left: 42.w, right: 42.w, bottom: 13.h),
-              ),
-            ],
+                SizedBox(
+                  height: 11,
+                ),
+                Container(
+                  color: AppColors.black.withValues(alpha: 0.14),
+                  height: 1.h,
+                  margin: EdgeInsets.only(left: 42.w, bottom: 13.h),
+                ),
+              ],
+            ),
           ),
         ],
       ),

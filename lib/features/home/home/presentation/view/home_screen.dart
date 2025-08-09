@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../notification/presentation/view/notification_screen.dart';
-import '../../../person_details/view/person_details.dart';
 import '../../data/models/user_model.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -89,185 +90,184 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
- Widget buildHomeContent() {
-  return SafeArea(
-    child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 23, vertical: 16),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          textDirection: TextDirection.rtl,
-          children: [
-            Column(
-              children: [
-                // ✅ معلومات المستخدم والبحث
-                Row(
-                  children: [
-                    GestureDetector(
-                      child: Container(
-                        width: 47,
-                        height: 47,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xffFCF8F5),
-                        ),
-                        child: Center(
-                          child: Image.asset(
-                            'assets/images/home/home_notification.png',
-                            width: 22,
-                            height: 20,
+  Widget buildHomeContent() {
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 23, vertical: 16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            textDirection: TextDirection.rtl,
+            children: [
+              Column(
+                children: [
+                  // ✅ معلومات المستخدم والبحث
+                  Row(
+                    children: [
+                      GestureDetector(
+                        child: Container(
+                          width: 47,
+                          height: 47,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xffFCF8F5),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              'assets/images/home/home_notification.png',
+                              width: 22,
+                              height: 20,
+                            ),
                           ),
                         ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NotificationScreen(),
+                            ),
+                          );
+                        },
                       ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NotificationScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    Spacer(),
-                    Row(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          textDirection: TextDirection.rtl,
-                          children: [
-                            Text(
-                              'Hend Osama',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeightHelper.semiBold,
+                      Spacer(),
+                      Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            textDirection: TextDirection.rtl,
+                            children: [
+                              Text(
+                                'Hend Osama',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeightHelper.semiBold,
+                                ),
                               ),
-                            ),
-                            Row(
-                              textDirection: TextDirection.rtl,
-                              children: [
-                                Image.asset(
-                                  'assets/images/home/home_location.png',
-                                  width: 15,
-                                  height: 18,
-                                ),
-                                SizedBox(width: 13),
-                                Text(
-                                  'مصر القليوبية',
-                                  style: TextStyle(
-                                      color: Color(0xff000000)
-                                          .withOpacity(0.87),
-                                      fontSize: 15,
-                                      fontWeight: FontWeightHelper.medium),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(width: 12),
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(
-                            'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
+                              Row(
+                                textDirection: TextDirection.rtl,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/home/home_location.png',
+                                    width: 15,
+                                    height: 18,
+                                  ),
+                                  SizedBox(width: 13),
+                                  Text(
+                                    'مصر القليوبية',
+                                    style: TextStyle(
+                                        color:
+                                            Color(0xff000000).withOpacity(0.87),
+                                        fontSize: 15,
+                                        fontWeight: FontWeightHelper.medium),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 21),
-                CustomTextFormField(
-                  hintText: '...بحث',
-                  validator: (value) {},
-                  suffixIcon: Icon(
-                    Icons.search,
-                    color: Color(0xff949494),
-                    size: 19,
+                          SizedBox(width: 12),
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(
+                              'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  hintStyle: TextStyle(
-                    fontWeight: FontWeightHelper.regular,
-                    color: Color(0xff949494),
-                    fontSize: 16,
-                    fontFamily: FontFamilyHelper.lamaSansArabic,
-                  ),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
+                  const SizedBox(height: 21),
+                  CustomTextFormField(
+                    hintText: '...بحث',
+                    validator: (value) {},
+                    suffixIcon: Icon(
+                      Icons.search,
                       color: Color(0xff949494),
-                      width: 1,
+                      size: 19,
                     ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
+                    hintStyle: TextStyle(
+                      fontWeight: FontWeightHelper.regular,
                       color: Color(0xff949494),
-                      width: 1,
+                      fontSize: 16,
+                      fontFamily: FontFamilyHelper.lamaSansArabic,
                     ),
-                    borderRadius: BorderRadius.circular(10),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xff949494),
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xff949494),
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-              ],
-            ),
-            currentUsers.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.favorite_outline,
-                            size: 80, color: Colors.grey[400]),
-                        SizedBox(height: 16),
-                        Text(
-                          'لا توجد مطابقات جديدة',
-                          style:
-                              TextStyle(fontSize: 18, color: Colors.grey[600]),
-                        ),
-                      ],
-                    ),
-                  )
-                : SizedBox(
-                    height: 600, // يمكنك تعديلها حسب الحاجة
-                    child: Stack(
-                      children: currentUsers
-                          .asMap()
-                          .entries
-                          .map((entry) {
-                            final index = entry.key;
-                            final user = entry.value;
+                  const SizedBox(height: 16),
+                ],
+              ),
+              currentUsers.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.favorite_outline,
+                              size: 80, color: Colors.grey[400]),
+                          SizedBox(height: 16),
+                          Text(
+                            'لا توجد مطابقات جديدة',
+                            style: TextStyle(
+                                fontSize: 18, color: Colors.grey[600]),
+                          ),
+                        ],
+                      ),
+                    )
+                  : SizedBox(
+                      height: 600, // يمكنك تعديلها حسب الحاجة
+                      child: Stack(
+                        children: currentUsers
+                            .asMap()
+                            .entries
+                            .map((entry) {
+                              final index = entry.key;
+                              final user = entry.value;
 
-                            final isTopCard = index == 0;
-                            final isSecondCard = index == 1;
+                              final isTopCard = index == 0;
+                              final isSecondCard = index == 1;
 
-                            double scale = 1.0;
-                            double verticalOffset = 0.0;
+                              double scale = 1.0;
+                              double verticalOffset = 0.0;
 
-                            if (isSecondCard) {
-                              scale = 0.95;
-                              verticalOffset = 20;
-                            } else if (!isTopCard) {
-                              scale = 0.9;
-                              verticalOffset = 40;
-                            }
+                              if (isSecondCard) {
+                                scale = 0.95;
+                                verticalOffset = 20;
+                              } else if (!isTopCard) {
+                                scale = 0.9;
+                                verticalOffset = 40;
+                              }
 
-                            return SwipeableCard(
-                              user: user,
-                              onSwipe: isTopCard ? _onSwipe : null,
-                              isTop: isTopCard,
-                              scale: scale,
-                              verticalOffset: verticalOffset,
-                            );
-                          })
-                          .toList()
-                          .reversed
-                          .toList(),
-                    ),
-                  )
-          ],
+                              return SwipeableCard(
+                                user: user,
+                                onSwipe: isTopCard ? _onSwipe : null,
+                                isTop: isTopCard,
+                                scale: scale,
+                                verticalOffset: verticalOffset,
+                              );
+                            })
+                            .toList()
+                            .reversed
+                            .toList(),
+                      ),
+                    )
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget getBody() {
     switch (_currentIndex) {
