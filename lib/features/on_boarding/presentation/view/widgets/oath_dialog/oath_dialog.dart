@@ -89,7 +89,7 @@ Future<void> oathDialog({
                       context.pushNamed(AppRoutes.signupScreen);
                     }
                   : () {},
-              verticalPadding: 17.32.h,
+              // verticalPadding: 17.32.h,
               textButton: 'تسجيل كزوج مجانا (ذكر)',
               backgroundColor: AppColors.darkSunray,
             ),
@@ -100,7 +100,7 @@ Future<void> oathDialog({
                       context.pushNamed(AppRoutes.signupScreen);
                     }
                   : () {},
-              verticalPadding: 17.32.h,
+              // verticalPadding: 17.32.h,
               textButton: 'تسجيل كزوجة مجانا (انثي)',
               backgroundColor: AppColors.desire.withValues(alpha: 0.474),
               border: Border.all(color: AppColors.white),
