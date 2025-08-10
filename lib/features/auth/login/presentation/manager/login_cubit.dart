@@ -14,7 +14,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   static LoginCubit get(BuildContext context) => BlocProvider.of(context);
 
-  final LoginRepo loginRepo;
+  final LoginRepoInterface loginRepo;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
