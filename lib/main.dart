@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/routes/app_routing.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,8 +13,7 @@ void main() async {
 }
 
 class Elsadeken extends StatelessWidget {
-  const Elsadeken({super.key, required this.appRouting});
-
+   Elsadeken({super.key, required this.appRouting});
   final AppRouting appRouting;
   // This widget is the root of your application.
   @override
@@ -31,7 +31,7 @@ class Elsadeken extends StatelessWidget {
         // ],
         theme: ThemeData(scaffoldBackgroundColor: Colors.white),
         onGenerateRoute: appRouting.onGenerateRouting,
-        initialRoute: AppRoutes.splashScreen,
+        initialRoute: AppRoutes.successStoriesScreen,
 
         //start with blog Screen
         // home: BlocProvider.value(

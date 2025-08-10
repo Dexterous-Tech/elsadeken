@@ -32,8 +32,8 @@ Future<void> initializeDependencies() async {
 
   // blog
   sl.registerLazySingleton<BlogApi>(()=> BlogApi());
-  sl.registerLazySingleton<BlogRepo>(()=> BlogRepoImpl(sl()));
   sl.registerLazySingleton<GetBlogPosts>(()=> GetBlogPosts(sl()));
+  sl.registerLazySingleton<BlogRepo>(()=> BlogRepoImpl(sl()));
   sl.registerFactory<BlogCubit>(()=> BlogCubit(sl()));
 
 

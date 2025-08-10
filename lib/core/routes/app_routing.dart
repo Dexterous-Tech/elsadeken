@@ -94,7 +94,7 @@ class AppRouting {
       case AppRoutes.blogScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider.value(
-            value: sl<BlogCubit>()..getBlogPosts,
+            value: sl<BlogCubit>()..loadBlogs(),
             child: BlogScreen(),
           ),
         );

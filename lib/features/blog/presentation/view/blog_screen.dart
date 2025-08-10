@@ -24,8 +24,11 @@ class BlogScreen extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Spacer(),
-                      Icon(Icons.arrow_back_ios, size: 20.sp),
+                      IconButton(
+                        icon:  Icon(Icons.arrow_back_ios, size: 20.sp),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+
                     ],
                   ),
                   SizedBox(height: 8.h),

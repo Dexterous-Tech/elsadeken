@@ -39,7 +39,7 @@ class CustomElevatedButton extends StatelessWidget {
         width: double.infinity,
         padding: paddingButton ??
             EdgeInsets.symmetric(
-              vertical: verticalPadding ?? 10.h,
+              vertical: verticalPadding ?? 3.h,
               horizontal: horizontalPadding ?? 10.w,
             ),
         decoration: BoxDecoration(

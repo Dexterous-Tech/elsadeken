@@ -15,6 +15,18 @@ class SuccessStoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(onPressed: ()=> Navigator.pop(context), icon: Icon(Icons.arrow_back_ios, size: 20.spMax),),
+        centerTitle: true,
+        title: Text(
+          "القصص الناجحة",
+          style: TextStyle(
+              fontSize: 23.spMax,
+              fontWeight: FontWeight.w400,
+              fontFamily: FontFamilyHelper.lamaSansArabic),
+        ),
+      ),
       body: BlocBuilder<SuccessStoryCubit, SuccessStoryState>(
         builder: (context, state) {
           if (state is SuccessStoryLoading) {
@@ -25,14 +37,6 @@ class SuccessStoriesScreen extends StatelessWidget {
               padding: EdgeInsets.all(AppConstants.defaultPadding),
               child: Column(
                 children: [
-                  SizedBox(height: 40.h),
-                  Text(
-                    "القصص الناجحة",
-                    style: TextStyle(
-                        fontSize: 23.sp,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: FontFamilyHelper.lamaSansArabic),
-                  ),
                   // Top Image
                   Padding(
                     padding: EdgeInsets.all(10.w),
@@ -44,35 +48,38 @@ class SuccessStoriesScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text.rich(
-                    TextSpan(
-                      text: 'بحمد الله ',
-                      style: TextStyle(
-                        color: AppColors.primaryOrange,
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: FontFamilyHelper.plexSansArabic,
+                  Padding(
+                    padding:  EdgeInsets.all(15.h),
+                    child: Text.rich(
+                      TextSpan(
+                        text: 'بحمد الله ',
+                        style: TextStyle(
+                          color: AppColors.primaryOrangeMod,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: FontFamilyHelper.plexSansArabic,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: '470,455',
+                            style: TextStyle(
+                              color: AppColors.red,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: FontFamilyHelper.plexSansArabic,
+                            ),
+                          ),
+                          TextSpan(
+                            text: ' قصة ناجحة',
+                            style: TextStyle(
+                              color: AppColors.primaryOrangeMod,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: FontFamilyHelper.plexSansArabic,
+                            ),
+                          ),
+                        ],
                       ),
-                      children: [
-                        TextSpan(
-                          text: '470,455',
-                          style: TextStyle(
-                            color: AppColors.red,
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: FontFamilyHelper.plexSansArabic,
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' قصة ناجحة',
-                          style: TextStyle(
-                            color: AppColors.primaryOrange,
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: FontFamilyHelper.plexSansArabic,
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                    Padding(
@@ -84,9 +91,17 @@ class SuccessStoriesScreen extends StatelessWidget {
                        'assets/images/Blog/success2.png',
                      ),
                    ),
-                  CustomElevatedButton(onPressed: (){},
-                    textButton: "قصص ناجحة حسب البلدان",
-                    horizontalPadding: 10,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: CustomElevatedButton(onPressed: (){},
+                      textButton: "قصص ناجحة حسب البلدان",styleTextButton: TextStyle(
+                        color: Colors.white,
+                        fontFamily: FontFamilyHelper.plexSansArabic,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      horizontalPadding: 10,
+                    ),
                   ),
                   SizedBox(height: 20.h),
                   // Stories List

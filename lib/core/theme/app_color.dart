@@ -31,6 +31,7 @@ class AppColors {
   static const Color philippineBronze = Color(0xFF74370A);
   static const Color desire = Color(0xFFEC4D58);
   static const Color darkSunray = Color(0xFFDBAE48);
+  static const Color primaryOrangeMod = Color(0xFFFFB74D);
   static const Color gray = Color(0xFF7C7D82);
   static const Color charlestonGreen = Color(0xFF292A2E);
   static const Color brightGray = Color(0xFFECECEC);
