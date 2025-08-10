@@ -1,10 +1,14 @@
+import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/features/auth/forget_password/presentation/view/forget_password_screen.dart';
 import 'package:elsadeken/features/auth/login/presentation/view/login_screen.dart';
 import 'package:elsadeken/features/auth/new_password/presentation/view/new_password_screen.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/signup_screen.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/view/verification_email_screen.dart';
+import 'package:elsadeken/features/blog/presentation/cubit/blog_cubit.dart';
+import 'package:elsadeken/features/blog/presentation/view/blog_screen.dart';
 import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart';
+import 'package:elsadeken/features/home/notification/presentation/view/notification_screen.dart';
 import 'package:elsadeken/features/on_boarding/presentation/view/on_boarding_screen.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_screen.dart';
 import 'package:elsadeken/features/profile/contact_us/presentation/view/contact_us_screen.dart';
@@ -21,13 +25,17 @@ import 'package:elsadeken/features/profile/technical_support/presentation/view/t
 import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
 import 'package:elsadeken/features/search/presentation/view/search_page.dart';
 import 'package:elsadeken/features/splash/presentation/view/splash_screen.dart';
+import 'package:elsadeken/features/success_stories/presentation/cubit/success_story_cubit.dart';
 import 'package:elsadeken/features/success_stories/presentation/view/success_story_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/profile/my_ignoring_list/presentation/view/my_ignoring_list_screen.dart';
 
 class AppRouting {
   Route onGenerateRouting(RouteSettings setting) {
+    // final arguments = setting.arguments;
+
     switch (setting.name) {
       case AppRoutes.splashScreen:
         return MaterialPageRoute(builder: (_) => SplashScreen());
@@ -53,8 +61,8 @@ class AppRouting {
         return MaterialPageRoute(builder: (_) => SearchResultsView());
       case AppRoutes.homeScreen:
         return MaterialPageRoute(builder: (_) => HomeScreen());
-      case AppRoutes.SuccessStoriesScreen:
-        return MaterialPageRoute(builder: (_) => SuccessStoriesScreen());
+      case AppRoutes.notificationScreen:
+        return MaterialPageRoute(builder: (_) => NotificationScreen());
       case AppRoutes.profileDetailsScreen:
         return MaterialPageRoute(builder: (_) => ProfileDetailsScreen());
       case AppRoutes.profileAboutUsScreen:
@@ -73,10 +81,23 @@ class AppRouting {
         return MaterialPageRoute(builder: (_) => MembersProfileScreen());
       case AppRoutes.profileContactUsScreen:
         return MaterialPageRoute(builder: (_) => ContactUsScreen());
-      case AppRoutes.profileTechnicalSupportScreen:
-        return MaterialPageRoute(builder: (_) => TechnicalSupportScreen());
       case AppRoutes.profileMyImageScreen:
         return MaterialPageRoute(builder: (_) => MyImageScreen());
+      case AppRoutes.profileTechnicalSupportScreen:
+        return MaterialPageRoute(builder: (_) => TechnicalSupportScreen());
+      case AppRoutes.successStoriesScreen:
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider.value(
+                  value: sl<SuccessStoryCubit>()..loadStories(),
+                  child: SuccessStoriesScreen(),
+                ));
+      case AppRoutes.blogScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: sl<BlogCubit>()..getBlogPosts,
+            child: BlogScreen(),
+          ),
+        );
       default:
         return MaterialPageRoute(builder: (_) => Scaffold());
     }
