@@ -90,4 +90,14 @@ class AppImages {
       '${AppConstants.specialMembersPath}like.png';
   static const String specialMembersShareIcon =
       '${AppConstants.specialMembersPath}share.png';
+
+  // blog
+  static  String weddingBlog =
+      '${AppConstants.blogPath}wedding.png';
+  static  String success1Blog =
+      '${AppConstants.blogPath}success1.png';
+  static  String success2Blog =
+      '${AppConstants.blogPath}success2.png';
+  static  String userBlog =
+      '${AppConstants.blogPath}user.png';
 }

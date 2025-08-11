@@ -68,12 +68,16 @@ class ProfileContent extends StatelessWidget {
       ProfileContentItemModel(
         image: AppImages.successStoryIcon,
         title: 'قصص نجاح',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.successStoriesScreen);
+        },
       ),
       ProfileContentItemModel(
         image: AppImages.elsadekenNotesIcon,
         title: 'مدونه الصادقين والصادقات',
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(AppRoutes.blogScreen);
+        },
       ),
     ];
 
@@ -88,7 +92,9 @@ class ProfileContent extends StatelessWidget {
       ProfileContentItemModel(
         image: AppImages.notificationIcon,
         title: 'الاشعارات',
-        onPressed: () {},
+        onPressed: () {
+          // context.pushNamed(AppRoutes.notificationScreen);
+        },
         leading: CustomAdvancedToggleSwitch(),
       ),
       ProfileContentItemModel(

@@ -2,6 +2,7 @@ import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/features/home/person_details/view/person_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../data/models/user_model.dart';
 
@@ -13,13 +14,13 @@ class SwipeableCard extends StatefulWidget {
   final double verticalOffset;
 
   const SwipeableCard({
-  required this.user,
-  this.onSwipe,
-  this.isTop = false,
-  this.scale = 1.0,
-  this.verticalOffset = 1.0,
-  super.key,
-});
+    required this.user,
+    this.onSwipe,
+    this.isTop = false,
+    this.scale = 1.0,
+    this.verticalOffset = 1.0,
+    super.key,
+  });
 
   @override
   State<SwipeableCard> createState() => _SwipeableCardState();
@@ -65,9 +66,8 @@ class _SwipeableCardState extends State<SwipeableCard>
   void _onPanUpdate(DragUpdateDetails details) {
     if (!widget.isTop || !_isDragging) return;
     setState(() {
-    _dragOffset += Offset(details.delta.dx, 0); 
+      _dragOffset += Offset(details.delta.dx, 0);
     });
-
   }
 
   void _onPanEnd(DragEndDetails details) {
@@ -131,7 +131,7 @@ class _SwipeableCardState extends State<SwipeableCard>
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+    // final screenSize = MediaQuery.of(context).size;
     final cardOffset = widget.isTop
         ? (_isDragging ? _dragOffset : _slideAnimation.value)
         : Offset.zero;
@@ -139,253 +139,262 @@ class _SwipeableCardState extends State<SwipeableCard>
         ? (_isDragging ? _dragOffset.dx * 0.001 : _rotationAnimation.value)
         : 0.0;
 
-  return Positioned(
-  top: 10,
-  left: 0,
-  right: 0,
-  child: Center(
-    child: AnimatedSlide(
-      duration: Duration(milliseconds: 300),
-      offset: Offset(0, widget.verticalOffset / 350),
-      child: AnimatedScale(
-        duration: Duration(milliseconds: 300),
-        scale: widget.scale,
-        child: GestureDetector(
-          onPanStart: _onPanStart,
-          onPanUpdate: _onPanUpdate,
-          onPanEnd: _onPanEnd,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PersonDetailsView(
-                  personId: widget.user.name,
-                  imageUrl: widget.user.imageUrl,
-                ),
-              ),
-            );
-          },
-          child: Transform.translate(
-            offset: cardOffset,
-            child: Transform.rotate(
-              angle: rotation,
-              child: Container(
-                width: 388,
-                padding: EdgeInsets.only(top: 14, left: 14, right: 14),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
+    return Positioned(
+      top: 10,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: AnimatedSlide(
+          duration: Duration(milliseconds: 300),
+          offset: Offset(0, widget.verticalOffset / 350),
+          child: AnimatedScale(
+            duration: Duration(milliseconds: 300),
+            scale: widget.scale,
+            child: GestureDetector(
+              onPanStart: _onPanStart,
+              onPanUpdate: _onPanUpdate,
+              onPanEnd: _onPanEnd,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PersonDetailsView(
+                      personId: widget.user.name,
+                      imageUrl: widget.user.imageUrl,
                     ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      height: 420, 
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              widget.user.imageUrl,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: 420,
-                            ),
-                          ),
-      
-                          // Match percentage
-                          Positioned(
-                            top: 20,
-                            left: 5,
-                            right: 5,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Center(
-                                  child: Container(
-                                    width: 137,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 14.5,
-                                      vertical: 11,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffDBAE48),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'تطابق بنسبة ${widget.user.matchPercentage}%',
-                                        textDirection: TextDirection.rtl,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeightHelper.semiBold,
-                                            fontFamily:
-                                                FontFamilyHelper.lamaSansArabic),
-                                      ),
-                                    ),
-                                  ),
+                  ),
+                );
+              },
+              child: Transform.translate(
+                offset: cardOffset,
+                child: Transform.rotate(
+                  angle: rotation,
+                  child: Container(
+                    width: 388.w,
+                    padding:
+                        EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16).r,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: 420.h,
+                          child: Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12).r,
+                                child: Image.network(
+                                  widget.user.imageUrl,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: 420.h,
                                 ),
-                                SizedBox(height: 280),
-                                Row(
+                              ),
+
+                              // Match percentage
+                              Positioned(
+                                top: 20,
+                                left: 5,
+                                right: 5,
+                                child: Column(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    // Location tag
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 26.5,
-                                        vertical: 11,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xffDBAE48),
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          widget.user.location,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                              fontWeight: FontWeightHelper.medium,
-                                              fontFamily: FontFamilyHelper
-                                                  .lamaSansArabic),
+                                    Center(
+                                      child: Container(
+                                        width: 137.w,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 14.5.w,
+                                          vertical: 11.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffDBAE48),
+                                          borderRadius:
+                                              BorderRadius.circular(8).r,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            'تطابق بنسبة${widget.user.matchPercentage}%',
+                                            textDirection: TextDirection.rtl,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14.sp,
+                                                fontWeight:
+                                                    FontWeightHelper.semiBold,
+                                                fontFamily: FontFamilyHelper
+                                                    .lamaSansArabic),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      textDirection: TextDirection.rtl,
+                                    SizedBox(height: 280.h),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          '${widget.user.name}، ${widget.user.age} سنة',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeightHelper.bold,
-                                              fontFamily: FontFamilyHelper
-                                                  .lamaSansArabic),
+                                        // Location tag
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 26.5.w,
+                                            vertical: 11.h,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xffDBAE48),
+                                            borderRadius:
+                                                BorderRadius.circular(15).r,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              widget.user.location,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15.sp,
+                                                  fontWeight:
+                                                      FontWeightHelper.medium,
+                                                  fontFamily: FontFamilyHelper
+                                                      .lamaSansArabic),
+                                            ),
+                                          ),
                                         ),
-                                        // SizedBox(height: 12),
-                                        Text(
-                                          widget.user.profession,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight:
-                                                  FontWeightHelper.regular,
-                                              fontFamily: FontFamilyHelper
-                                                  .lamaSansArabic),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          textDirection: TextDirection.rtl,
+                                          children: [
+                                            Text(
+                                              '${widget.user.name}، ${widget.user.age} سنة',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16.sp,
+                                                  fontWeight:
+                                                      FontWeightHelper.bold,
+                                                  fontFamily: FontFamilyHelper
+                                                      .lamaSansArabic),
+                                            ),
+                                            // SizedBox(height: 12),
+                                            Text(
+                                              widget.user.profession,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14.sp,
+                                                  fontWeight:
+                                                      FontWeightHelper.regular,
+                                                  fontFamily: FontFamilyHelper
+                                                      .lamaSansArabic),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // Dislike
-                        GestureDetector(
-                          onTap: () => _handleButtonPress(false),
-                          child: Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.08),
-                                  blurRadius: 2,
-                                  offset: Offset(0, 2),
+                        ),
+                        SizedBox(
+                          height: 12.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // Dislike
+                            GestureDetector(
+                              onTap: () => _handleButtonPress(false),
+                              child: Container(
+                                width: 44.w,
+                                height: 44.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.08),
+                                      blurRadius: 2,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.close,
-                                color: Color(0xffE81925),
-                                size: 14,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Color(0xffE81925),
+                                    size: 14,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-      
-                        // Like
-                        GestureDetector(
-                          onTap: () => _handleButtonPress(true),
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Color(0xffEC4D58),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.favorite_border,
-                                color: Colors.white,
-                                size: 22,
+
+                            // Like
+                            GestureDetector(
+                              onTap: () => _handleButtonPress(true),
+                              child: Container(
+                                width: 50.w,
+                                height: 50.h,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffEC4D58),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.favorite_border,
+                                    color: Colors.white,
+                                    size: 22,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-      
-                        // Chat
-                        GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.08),
-                                  blurRadius: 2,
-                                  offset: Offset(0, 2),
+
+                            // Chat
+                            GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                width: 44.w,
+                                height: 44.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.08),
+                                      blurRadius: 2,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                                child: Center(
+                                    child: Image.asset(
+                                  'assets/images/home/home_outline_message.png',
+                                  width: 18.w,
+                                  height: 18.h,
+                                )),
+                              ),
                             ),
-                            child: Center(
-                                child: Image.asset(
-                              'assets/images/home/home_outline_message.png',
-                              width: 18,
-                              height: 18,
-                            )),
-                          ),
+                          ],
                         ),
+                        SizedBox(height: 24),
                       ],
                     ),
-                    SizedBox(height: 24),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-    ),
-    ),
-    ),
+      ),
     );
   }
 }

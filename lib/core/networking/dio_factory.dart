@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
 import '../di/injection_container.dart';
 import '../shared/shared_preferences_helper.dart';
 import '../shared/shared_preferences_key.dart';

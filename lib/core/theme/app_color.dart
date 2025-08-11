@@ -6,7 +6,7 @@ class AppColors {
   static const Color red = Color(0xffE81925);
   static const Color pumpkinOrange = Color(0xffFE7D10);
   static const Color cultured = Color(0xffF8F8F8);
-  static const Color papayaWhip = Color(0xFFF9F2D6);
+  static const Color papayaWhip = Color(0xFFFFF9F2);
   static const Color bistre = Color(0xFF34291C);
   static const Color seashell = Color(0xFFFFF5F2);
   static const Color snow = Color(0xFFFBF9F8);
@@ -31,6 +31,7 @@ class AppColors {
   static const Color philippineBronze = Color(0xFF74370A);
   static const Color desire = Color(0xFFEC4D58);
   static const Color darkSunray = Color(0xFFDBAE48);
+  static const Color primaryOrangeMod = Color(0xFFFFB74D);
   static const Color gray = Color(0xFF7C7D82);
   static const Color charlestonGreen = Color(0xFF292A2E);
   static const Color brightGray = Color(0xFFECECEC);
