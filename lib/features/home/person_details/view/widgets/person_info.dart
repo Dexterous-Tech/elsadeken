@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -55,8 +56,8 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                     const SizedBox(height: 30),
                     _buildDataTable(),
                     const SizedBox(height: 30),
-                    _buildActionButtons(),
-                    const SizedBox(height: 20),
+                    Center(child: _buildActionButtons()),
+                    // verticalSpace(30),
                   ],
                 ),
               ),
@@ -366,7 +367,8 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
 
   Widget _buildActionButtons() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.center,
+      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         GestureDetector(
           onTap: () {
@@ -392,6 +394,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
             ),
           ),
         ),
+        horizontalSpace(21),
         GestureDetector(
           child: Container(
             width: 50.w,
