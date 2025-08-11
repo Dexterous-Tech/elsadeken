@@ -13,7 +13,7 @@ void main() async {
 }
 
 class Elsadeken extends StatelessWidget {
-  Elsadeken({super.key, required this.appRouting});
+  const Elsadeken({super.key, required this.appRouting});
   final AppRouting appRouting;
   // This widget is the root of your application.
   @override
@@ -31,7 +31,7 @@ class Elsadeken extends StatelessWidget {
         // ],
         theme: ThemeData(scaffoldBackgroundColor: Colors.white),
         onGenerateRoute: appRouting.onGenerateRouting,
-        initialRoute: AppRoutes.homeScreen,
+        initialRoute: AppRoutes.splashScreen,
       ),
     );
   }

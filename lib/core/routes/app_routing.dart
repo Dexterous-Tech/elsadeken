@@ -5,12 +5,12 @@ import 'package:elsadeken/features/auth/login/presentation/view/login_screen.dar
 import 'package:elsadeken/features/auth/new_password/presentation/view/new_password_screen.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/signup_screen.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/view/verification_email_screen.dart';
-import 'package:elsadeken/features/blog/presentation/cubit/blog_cubit.dart';
-import 'package:elsadeken/features/blog/presentation/view/blog_screen.dart';
 import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart';
 import 'package:elsadeken/features/home/notification/presentation/view/notification_screen.dart';
 import 'package:elsadeken/features/on_boarding/presentation/view/on_boarding_screen.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_screen.dart';
+import 'package:elsadeken/features/profile/blog/presentation/cubit/blog_cubit.dart';
+import 'package:elsadeken/features/profile/blog/presentation/view/blog_screen.dart';
 import 'package:elsadeken/features/profile/contact_us/presentation/view/contact_us_screen.dart';
 import 'package:elsadeken/features/profile/excellence_package/presentation/view/excellence_package_screen.dart';
 import 'package:elsadeken/features/profile/interests_list/presentation/view/interests_list_screen.dart';
@@ -21,12 +21,12 @@ import 'package:elsadeken/features/profile/my_image/presentation/view/my_image_s
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/my_interesting_list_screen.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/profile_screen.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/profile_details_screen.dart';
+import 'package:elsadeken/features/profile/success_stories/presentation/cubit/success_story_cubit.dart';
+import 'package:elsadeken/features/profile/success_stories/presentation/view/success_story_screen.dart';
 import 'package:elsadeken/features/profile/technical_support/presentation/view/technical_support_screen.dart';
 import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
 import 'package:elsadeken/features/search/presentation/view/search_page.dart';
 import 'package:elsadeken/features/splash/presentation/view/splash_screen.dart';
-import 'package:elsadeken/features/success_stories/presentation/cubit/success_story_cubit.dart';
-import 'package:elsadeken/features/success_stories/presentation/view/success_story_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
