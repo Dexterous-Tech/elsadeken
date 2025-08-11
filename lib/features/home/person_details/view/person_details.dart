@@ -21,11 +21,13 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[800],
-      body: Stack(
-        children: [
-          PersonImageHeader(imageUrl: widget.imageUrl),
-          PersonInfoSheet(personId: widget.personId),
-        ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            PersonImageHeader(imageUrl: widget.imageUrl),
+            PersonInfoSheet(personId: widget.personId),
+          ],
+        ),
       ),
     );
   }

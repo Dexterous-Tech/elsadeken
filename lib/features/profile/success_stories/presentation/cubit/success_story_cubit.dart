@@ -1,8 +1,7 @@
-import 'package:elsadeken/features/success_stories/presentation/cubit/success_story_states.dart';
+import 'package:elsadeken/features/profile/success_stories/presentation/cubit/success_story_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/use_cases/get_success_story.dart';
-
 
 class SuccessStoryCubit extends Cubit<SuccessStoryState> {
   final GetSuccessStories getSuccessStories;

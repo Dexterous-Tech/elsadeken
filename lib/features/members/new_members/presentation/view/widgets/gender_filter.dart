@@ -14,10 +14,10 @@ class GenderFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  return GestureDetector(
+return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        width: 140,
+        width: 100,
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
         decoration: BoxDecoration(

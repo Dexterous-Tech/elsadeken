@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,22 +27,23 @@ class StoryCard extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('assets/images/Blog/success1.png'),
-                fit: BoxFit.cover,
+              image: AssetImage(AppImages.success1Blog),
+              fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(20)),
         child: SingleChildScrollView(
           child: Column(
-            mainAxisSize:MainAxisSize.min,
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/images/Blog/user.png',
+                AppImages.userBlog,
                 width: 50.w, // size
                 height: 50.h,
               ),
               SizedBox(width: 8.w),
-              Text("$name , $age  سنة ",
+              Text(
+                "$name , $age  سنة ",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: FontFamilyHelper.plexSansArabic,
@@ -50,13 +52,13 @@ class StoryCard extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 8.h),
-              Text(message,
-              textAlign: TextAlign.center,
-              maxLines: 3,
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: Colors.orange
-                  ,
+                  color: Colors.orange,
                   fontFamily: FontFamilyHelper.plexSansArabic,
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
