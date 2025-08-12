@@ -46,7 +46,7 @@ class ForgetPasswordForm extends StatelessWidget {
             validator: (value) {
               if (cubit.emailController.text.isNullOrEmpty() ||
                   AppRegex.isEmailValid(value!)) {
-                return 'You must add valid email';
+                return 'يجب ادخال البريد الالكتروني';
               }
             },
           ),

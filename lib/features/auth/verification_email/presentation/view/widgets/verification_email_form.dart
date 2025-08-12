@@ -22,7 +22,7 @@ class VerificationEmailForm extends StatelessWidget {
             controller: cubit.otpController,
             validator: (value) {
               if (value == null || value.length < 6) {
-                return 'You must enter valid OTP code';
+                return 'يجب ادخال رمز التحقق علي بريدك الالكتروني';
               }
             },
           ),

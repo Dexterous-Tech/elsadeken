@@ -1,4 +1,6 @@
-class NationalCountryResponseModel {
+import '../../../widgets/custom_searchable_list.dart';
+
+class NationalCountryResponseModel with ListItemModel {
   NationalCountryResponseModel({
     this.id,
     this.name,

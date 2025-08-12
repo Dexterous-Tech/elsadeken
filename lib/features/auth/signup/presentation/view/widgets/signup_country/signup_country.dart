@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../../../core/theme/app_color.dart';
-import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../../core/theme/spacing.dart';
-import '../../../../../../../core/widgets/forms/custom_text_form_field.dart';
 import '../custom_next_and_previous_button.dart';
+import '../../../manager/signup_cubit.dart';
+import '../../../../data/models/national_country_models.dart';
+import '../../../../../widgets/custom_searchable_list.dart';
 
-class SignupCountry extends StatelessWidget {
+class SignupCountry extends StatefulWidget {
   const SignupCountry({
     super.key,
     required this.onNextPressed,
@@ -15,6 +16,23 @@ class SignupCountry extends StatelessWidget {
 
   final void Function() onNextPressed;
   final void Function() onPreviousPressed;
+
+  @override
+  State<SignupCountry> createState() => _SignupCountryState();
+}
+
+class _SignupCountryState extends State<SignupCountry> {
+  NationalCountryResponseModel? _selectedCountry;
+
+  void _onCountrySelected(ListItemModel country) {
+    final countryModel = country as NationalCountryResponseModel;
+    setState(() {
+      _selectedCountry = countryModel;
+      // Save the country ID to the existing countryIdController
+      context.read<SignupCubit>().countryIdController.text =
+          countryModel.id?.toString() ?? '';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,35 +45,19 @@ class SignupCountry extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  // name
-                  Text(
-                    'ما هي دولتك ؟',
-                    textDirection: TextDirection.rtl,
-                    style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                      context,
+                  // Custom Searchable List
+                  Expanded(
+                    child: CustomSearchableList(
+                      listType: ListType.country,
+                      selectedItem: _selectedCountry,
+                      onItemSelected: _onCountrySelected,
                     ),
                   ),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    keyboardType: TextInputType.text,
-                    hintText: '..بحث',
-                    validator: (value) {},
-                    suffixIcon: Icon(
-                      Icons.search,
-                      size: 25,
-                      color: AppColors.paleBrown,
-                    ),
-                    hintStyle: AppTextStyles.font16PaleBrownRegularLamaSans(
-                      context,
-                    ),
-                  ),
-
                   verticalSpace(50),
-
-                  Spacer(),
                   CustomNextAndPreviousButton(
-                    onNextPressed: onNextPressed,
-                    onPreviousPressed: onPreviousPressed,
+                    onNextPressed: widget.onNextPressed,
+                    onPreviousPressed: widget.onPreviousPressed,
+                    isNextEnabled: _selectedCountry != null,
                   ),
                 ],
               ),

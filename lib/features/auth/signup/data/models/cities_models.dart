@@ -1,4 +1,6 @@
-class CityResponseModels {
+import '../../../widgets/custom_searchable_list.dart';
+
+class CityResponseModels with ListItemModel {
   CityResponseModels({
     this.id,
     this.name,

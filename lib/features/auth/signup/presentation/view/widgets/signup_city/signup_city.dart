@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../../../core/theme/app_color.dart';
-import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../../core/theme/spacing.dart';
-import '../../../../../../../core/widgets/forms/custom_text_form_field.dart';
 import '../custom_next_and_previous_button.dart';
+import '../../../manager/signup_cubit.dart';
+import '../../../../data/models/cities_models.dart';
+import '../../../../../widgets/custom_searchable_list.dart';
 
-class SignupCity extends StatelessWidget {
+class SignupCity extends StatefulWidget {
   const SignupCity({
     super.key,
     required this.onNextPressed,
@@ -17,7 +18,27 @@ class SignupCity extends StatelessWidget {
   final void Function() onPreviousPressed;
 
   @override
+  State<SignupCity> createState() => _SignupCityState();
+}
+
+class _SignupCityState extends State<SignupCity> {
+  CityResponseModels? _selectedCity;
+
+  void _onCitySelected(ListItemModel city) {
+    final cityModel = city as CityResponseModels;
+    setState(() {
+      _selectedCity = cityModel;
+      // Save the city ID to the existing cityIdController
+      context.read<SignupCubit>().cityIdController.text =
+          cityModel.id?.toString() ?? '';
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Get the selected country ID from the signup cubit
+    final countryId = context.read<SignupCubit>().countryIdController.text;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -27,35 +48,35 @@ class SignupCity extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  // name
-                  Text(
-                    'ما هي مديتنك ؟',
-                    textDirection: TextDirection.rtl,
-                    style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                      context,
+                  // Check if country is selected
+                  if (countryId.isEmpty)
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          'يرجى اختيار الدولة أولاً',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey[600],
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ),
+                    )
+                  else
+                    // Custom Searchable List for cities
+                    Expanded(
+                      child: CustomSearchableList(
+                        listType: ListType.city,
+                        selectedItem: _selectedCity,
+                        onItemSelected: _onCitySelected,
+                        countryId: countryId, // Pass the country ID
+                      ),
                     ),
-                  ),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    keyboardType: TextInputType.text,
-                    hintText: '..بحث',
-                    validator: (value) {},
-                    suffixIcon: Icon(
-                      Icons.search,
-                      size: 25,
-                      color: AppColors.paleBrown,
-                    ),
-                    hintStyle: AppTextStyles.font16PaleBrownRegularLamaSans(
-                      context,
-                    ),
-                  ),
-
                   verticalSpace(50),
-
-                  Spacer(),
                   CustomNextAndPreviousButton(
-                    onNextPressed: onNextPressed,
-                    onPreviousPressed: onPreviousPressed,
+                    onNextPressed: widget.onNextPressed,
+                    onPreviousPressed: widget.onPreviousPressed,
+                    isNextEnabled: _selectedCity != null,
                   ),
                 ],
               ),

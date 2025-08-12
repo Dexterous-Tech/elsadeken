@@ -47,7 +47,7 @@ class _LoginFormState extends State<LoginForm> {
             validator: (value) {
               if (cubit.emailController.text.isNullOrEmpty() ||
                   AppRegex.isEmailValid(value!)) {
-                return 'Tou must add valid email';
+                return 'يجب عليك ادخال بريد الكتروني صحيح';
               }
             },
           ),
@@ -64,7 +64,7 @@ class _LoginFormState extends State<LoginForm> {
             hintText: '********',
             validator: (value) {
               if (cubit.passwordController.text.isNullOrEmpty()) {
-                return 'You must add password';
+                return 'يجب عليك ادخال كلمة المرور';
               }
             },
             obscureText: obscurePassword,
@@ -97,7 +97,7 @@ class _LoginFormState extends State<LoginForm> {
           verticalSpace(31),
           CustomElevatedButton(
             onPressed: () {
-              if(cubit.formKey.currentState!.validate()){
+              if (cubit.formKey.currentState!.validate()) {
                 cubit.login();
               }
             },
