@@ -1,7 +1,9 @@
+import 'package:elsadeken/core/helper/app_regex.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +23,9 @@ class _LoginFormState extends State<LoginForm> {
   bool obscurePassword = false;
   @override
   Widget build(BuildContext context) {
+    var cubit = LoginCubit.get(context);
     return Form(
+      key: cubit.formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -37,9 +41,15 @@ class _LoginFormState extends State<LoginForm> {
           ),
           verticalSpace(8),
           CustomTextFormField(
+            controller: cubit.emailController,
             keyboardType: TextInputType.emailAddress,
             hintText: 'user@gmail.com',
-            validator: (value) {},
+            validator: (value) {
+              if (cubit.emailController.text.isNullOrEmpty() ||
+                  AppRegex.isEmailValid(value!)) {
+                return 'Tou must add valid email';
+              }
+            },
           ),
           verticalSpace(24),
           Text(
@@ -49,9 +59,14 @@ class _LoginFormState extends State<LoginForm> {
           ),
           verticalSpace(8),
           CustomTextFormField(
+            controller: cubit.passwordController,
             keyboardType: TextInputType.visiblePassword,
             hintText: '********',
-            validator: (value) {},
+            validator: (value) {
+              if (cubit.passwordController.text.isNullOrEmpty()) {
+                return 'You must add password';
+              }
+            },
             obscureText: obscurePassword,
             prefixIcon: IconButton(
               onPressed: () {
@@ -82,7 +97,9 @@ class _LoginFormState extends State<LoginForm> {
           verticalSpace(31),
           CustomElevatedButton(
             onPressed: () {
-              context.pushNamed(AppRoutes.homeScreen);
+              if(cubit.formKey.currentState!.validate()){
+                cubit.login();
+              }
             },
             textButton: 'تسجيل الدخول',
           ),

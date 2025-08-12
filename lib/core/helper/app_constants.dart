@@ -13,10 +13,12 @@ class AppConstants {
 
   // svg
   static const String svgAssetsPath = 'assets/svg/';
+  // lottie
+  static const String lottiePath = 'assets/lottie/';
   //padding
-  static  const double defaultPadding = 16.0;
-  static  double defaultWidthPadding = 16.0.w;
-  static  double defaultHeightPadding = 16.0.h;
+  static const double defaultPadding = 16.0;
+  static double defaultWidthPadding = 16.0.w;
+  static double defaultHeightPadding = 16.0.h;
 
   static const double defaultBorderRadius = 12.0;
   static const double searchFieldHeight = 50.0;

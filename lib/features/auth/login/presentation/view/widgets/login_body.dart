@@ -1,3 +1,12 @@
+import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
+import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
+import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
+import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.dart';
+import 'package:elsadeken/features/auth/login/presentation/manager/login_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'login_form.dart';
 import '../../../../widgets/custom_auth_body.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +16,21 @@ class LoginBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomAuthBody(cardContent: LoginForm());
+    return CustomAuthBody(cardContent: BlocListener<LoginCubit, LoginState>(
+      listener: (context, state) {
+        if(state is LoginLoading){
+          loadingDialog(context);
+        }else if(state is LoginFailure){
+          context.pop();
+          errorDialog(context: context, error: state.errorMessage);
+        }else if(state is LoginSuccess){
+          context.pop();
+          successDialog(context: context, message: state.loginResponseModel.message, onPressed: (){
+            context.pushNamed(AppRoutes.homeScreen);
+          });
+        }
+      },
+      child: LoginForm(),
+    ));
   }
 }

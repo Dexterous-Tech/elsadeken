@@ -7,6 +7,10 @@ import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.d
 import 'package:elsadeken/features/auth/new_password/data/data_source/reset_password_data_source.dart';
 import 'package:elsadeken/features/auth/new_password/data/repo/reset_password_repo.dart';
 import 'package:elsadeken/features/auth/new_password/presentation/manager/reset_password_cubit.dart';
+import 'package:elsadeken/features/auth/signup/data/data_source/signup_data_source.dart';
+import 'package:elsadeken/features/auth/signup/data/repo/signup_repo.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/nationalities_countries_cubit.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:elsadeken/features/auth/verification_email/data/data_source/verification_data_source.dart';
 import 'package:elsadeken/features/auth/verification_email/data/repo/verification_repo.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/manager/verification_cubit.dart';
@@ -86,4 +90,12 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ResetPasswordRepoInterface>(
       () => ResetPasswordRepoImplementation(sl()));
   sl.registerFactory<ResetPasswordCubit>(() => ResetPasswordCubit(sl()));
+
+  // signup
+  sl.registerLazySingleton<SignupDataSource>(() => SignupDataSource(sl()));
+  sl.registerLazySingleton<SignupRepoInterface>(
+      () => SignupRepoImplementation(sl()));
+  sl.registerFactory<SignupCubit>(() => SignupCubit(sl()));
+  sl.registerFactory<NationalitiesCountriesCubit>(
+      () => NationalitiesCountriesCubit(sl()));
 }
