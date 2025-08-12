@@ -15,11 +15,11 @@ class ForgetCubit extends Cubit<ForgetState> {
 
   TextEditingController emailController = TextEditingController();
 
-  void forgetPassword() async {
+  void forgetPassword({String? email}) async {
     emit(ForgetLoading());
     var response = await forgetRepo.forgetPassword(
       ForgetRequestBodyModel(
-        email: emailController.text,
+        email: email ?? emailController.text,
       ),
     );
 
@@ -27,7 +27,7 @@ class ForgetCubit extends Cubit<ForgetState> {
       (error) {
         emit(ForgetFailure(error.displayMessage));
       },
-      (forgetResponseModel)  {
+      (forgetResponseModel) {
         emit(ForgetSuccess(forgetResponseModel: forgetResponseModel));
       },
     );

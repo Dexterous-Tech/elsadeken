@@ -1,3 +1,5 @@
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/auth/verification_email/data/models/verification_models.dart';
 import 'package:elsadeken/features/auth/verification_email/data/repo/verification_repo.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +19,7 @@ class VerificationCubit extends Cubit<VerificationState> {
 
   TextEditingController otpController = TextEditingController();
 
-  void login(String email) async {
+  void verifyOtp(String email) async {
     emit(VerificationLoading());
     var response = await verificationRepo.verifyOtp(
       VerificationRequestBodyModel(
@@ -30,7 +32,8 @@ class VerificationCubit extends Cubit<VerificationState> {
       (error) {
         emit(VerificationFailure(error.displayMessage));
       },
-      (verificationResponseModel) {
+      (verificationResponseModel) async{
+        await SharedPreferencesHelper.setSecuredString(SharedPreferencesKey.verificationTokenKey, verificationResponseModel.data!.token);
         emit(VerificationSuccess(verificationResponseModel));
       },
     );

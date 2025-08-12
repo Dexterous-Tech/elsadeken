@@ -4,7 +4,7 @@ import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
-import 'package:elsadeken/core/widgets/custom_dialog.dart';
+import 'package:elsadeken/core/widgets/dialog/custom_dialog.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/core/widgets/custom_radio.dart';
 import 'package:flutter/material.dart';

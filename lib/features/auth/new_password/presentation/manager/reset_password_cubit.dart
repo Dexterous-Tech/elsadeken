@@ -1,3 +1,5 @@
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/auth/new_password/data/models/reset_password_models.dart';
 import 'package:elsadeken/features/auth/new_password/data/repo/reset_password_repo.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +20,10 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController newConfirmPasswordController = TextEditingController();
 
-  void login({required String email  , required String token}) async {
+  void resetPassword(String email) async {
     emit(ResetPasswordLoading());
+
+    String token = await SharedPreferencesHelper.getSecuredString(SharedPreferencesKey.verificationTokenKey);
     var response = await resetPasswordRepoInterface.resetPassword(
       ResetPasswordRequestBodyModel(
         newPassword: newPasswordController.text,
