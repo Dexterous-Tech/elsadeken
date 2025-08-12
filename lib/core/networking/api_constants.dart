@@ -3,7 +3,9 @@ class ApiConstants {
 
   static String baseUrl = '';
 
-
   // auth
-  static String login = '/login';
+  static String login = '/user/login';
+  static String forgetPassword = '/user/forget-password';
+  static String verifyOtp = '/user/forget-password/verify';
+  static String resetPassword = '/user/forget-password/reset-password';
 }

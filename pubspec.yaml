@@ -49,6 +49,8 @@ dependencies:
   vs_scrollbar: ^1.0.0
   dio: ^5.9.0
   pretty_dio_logger: ^1.4.0
+  dartz: ^0.10.1
+  flutter_secure_storage: ^9.2.4
 
 
 
