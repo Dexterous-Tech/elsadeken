@@ -32,15 +32,15 @@ class SignupRequestBodyModel {
 }
 
 class RegisterInformationRequestModel {
-  final String nationalId;
-  final String countryId;
-  final String cityId;
+  final int nationalId;
+  final int countryId;
+  final int cityId;
   final String maritalStatus; //single,married,divorced,widwed
   final String typeOfMarriage; //only_one  ,
-  final String age;
+  final int age;
   final String childrenNumber;
-  final String weight;
-  final String height;
+  final int weight;
+  final int height;
   final String skinColor; // white  ,
   final String physique; //
   final String religiousCommitment;
@@ -181,16 +181,16 @@ class SignupResponseModel {
 class SignupDataModel {
   final String phone;
   final String email;
+  final String token;
 
-  SignupDataModel({
-    required this.phone,
-    required this.email,
-  });
+  SignupDataModel(
+      {required this.phone, required this.email, required this.token});
 
   factory SignupDataModel.fromJson(dynamic json) {
     return SignupDataModel(
       phone: json['name'],
       email: json['email'],
+      token: json['token'],
     );
   }
 
@@ -198,6 +198,7 @@ class SignupDataModel {
     final map = <String, dynamic>{};
     map['name'] = phone;
     map['email'] = email;
+    map['token'] = token;
     return map;
   }
 }

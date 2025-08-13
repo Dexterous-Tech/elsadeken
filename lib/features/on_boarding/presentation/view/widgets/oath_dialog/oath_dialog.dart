@@ -86,7 +86,8 @@ Future<void> oathDialog({
             CustomElevatedButton(
               onPressed: value
                   ? () {
-                      context.pushNamed(AppRoutes.signupScreen);
+                      context.pushNamed(AppRoutes.signupScreen,
+                          arguments: 'male');
                     }
                   : () {},
               // verticalPadding: 17.32.h,
@@ -97,7 +98,8 @@ Future<void> oathDialog({
             CustomElevatedButton(
               onPressed: value
                   ? () {
-                      context.pushNamed(AppRoutes.signupScreen);
+                      context.pushNamed(AppRoutes.signupScreen,
+                          arguments: 'female');
                     }
                   : () {},
               // verticalPadding: 17.32.h,

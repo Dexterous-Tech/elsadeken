@@ -17,7 +17,7 @@ class ApiErrorHandler {
         case DioExceptionType.unknown:
           return ApiErrorModel(
               message:
-              "Connection to the server failed due to internet connection");
+                  "Connection to the server failed due to internet connection");
         case DioExceptionType.receiveTimeout:
           return ApiErrorModel(
               message: "Receive timeout in connection with the server");
@@ -42,24 +42,26 @@ class ApiErrorHandler {
       if (data is Map<String, dynamic>) {
         return ApiErrorModel.fromJson(data, statusCode: statusCode);
       } else if (data is String) {
-        // Try to parse as JSON if it's a string
         try {
           final jsonData = jsonDecode(data) as Map<String, dynamic>;
           return ApiErrorModel.fromJson(jsonData, statusCode: statusCode);
         } catch (_) {
-          return ApiErrorModel(message: data, statusCode: statusCode);
+          return ApiErrorModel(
+              message: data, statusCode: statusCode, rawData: data);
         }
       }
-    } catch (e) {
+    } catch (_) {
       return ApiErrorModel(
         message: "Failed to parse error response",
         statusCode: statusCode,
+        rawData: data,
       );
     }
 
     return ApiErrorModel(
       message: "Unexpected error format",
       statusCode: statusCode,
+      rawData: data,
     );
   }
 }

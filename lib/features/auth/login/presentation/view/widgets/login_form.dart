@@ -46,7 +46,7 @@ class _LoginFormState extends State<LoginForm> {
             hintText: 'user@gmail.com',
             validator: (value) {
               if (cubit.emailController.text.isNullOrEmpty() ||
-                  AppRegex.isEmailValid(value!)) {
+                  !AppRegex.isEmailValid(value!)) {
                 return 'يجب عليك ادخال بريد الكتروني صحيح';
               }
             },

@@ -21,10 +21,12 @@ class SignupPageView extends StatefulWidget {
     super.key,
     required this.currentStep,
     required this.onStepChanged,
+    required this.gender,
   });
 
   final int currentStep;
   final ValueChanged<int> onStepChanged;
+  final String gender;
   @override
   State<SignupPageView> createState() => _SignupPageViewState();
 }
@@ -97,6 +99,7 @@ class _SignupPageViewState extends State<SignupPageView>
     switch (index) {
       case 0:
         return SignupPersonalInfo(
+          gender: widget.gender,
           key: const ValueKey(0),
           onNextPressed: () => widget.onStepChanged(1),
         );
@@ -177,6 +180,7 @@ class _SignupPageViewState extends State<SignupPageView>
         );
       default:
         return SignupPersonalInfo(
+          gender: widget.gender,
           key: const ValueKey(0),
           onNextPressed: () => widget.onStepChanged(1),
         );

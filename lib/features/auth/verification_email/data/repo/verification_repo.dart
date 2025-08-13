@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
 import '../../../../../core/networking/api_error_handler.dart';
 import '../../../../../core/networking/api_error_model.dart';
@@ -24,7 +26,7 @@ class VerificationRepoImplementation implements VerificationRepoInterface {
           await _verificationDataSource.verifyOtp(verificationRequestBodyModel);
       return Right(response);
     } catch (error) {
-      // Error is already parsed by ApiServices, so we just need to cast it
+      log("error in verification email $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

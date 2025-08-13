@@ -1,8 +1,11 @@
 import 'dart:developer';
 
+import 'package:elsadeken/core/networking/dio_factory.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
+import 'package:elsadeken/features/auth/signup/data/models/signup_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/models/signup_models.dart';
 import '../../data/repo/signup_repo.dart';
 
 part 'signup_state.dart';
@@ -72,6 +75,7 @@ class SignupCubit extends Cubit<SignupState> {
         emit(SignupFailure(error.displayMessage));
       },
       (signupResponseModel) async {
+        await saveUserToken(signupResponseModel.data!.token);
         emit(SignupSuccess(signupResponseModel: signupResponseModel));
       },
     );
@@ -81,15 +85,15 @@ class SignupCubit extends Cubit<SignupState> {
     emit(RegisterInformationLoading());
     var response = await signupRepo.registerInformation(
       RegisterInformationRequestModel(
-        nationalId: nationalIdController.text,
-        countryId: countryIdController.text,
-        cityId: cityIdController.text,
+        nationalId: int.parse(nationalIdController.text),
+        countryId: int.parse(countryIdController.text),
+        cityId: int.parse(cityIdController.text),
         maritalStatus: maritalStatusController.text,
         typeOfMarriage: typeOfMarriageController.text,
-        age: ageController.text,
+        age: int.parse(ageController.text),
         childrenNumber: childrenNumberController.text,
-        weight: weightController.text,
-        height: heightController.text,
+        weight: int.parse(weightController.text),
+        height: int.parse(heightController.text),
         skinColor: skinColorController.text,
         physique: physiqueController.text,
         religiousCommitment: religiousCommitmentController.text,
@@ -152,5 +156,19 @@ class SignupCubit extends Cubit<SignupState> {
     aboutMeController.dispose();
     lifePartnerController.dispose();
     return super.close();
+  }
+
+  Future<void> saveUserToken(String token) async {
+    // Clear previous data
+    await Future.wait([
+      SharedPreferencesHelper.deleteSecuredString(
+        SharedPreferencesKey.apiTokenKey,
+      ),
+    ]);
+    await SharedPreferencesHelper.setSecuredString(
+      SharedPreferencesKey.apiTokenKey,
+      token,
+    );
+    await DioFactory.setTokenIntoHeaderAfterLogin(token);
   }
 }

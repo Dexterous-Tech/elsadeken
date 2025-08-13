@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
 import '../../../../../core/networking/api_error_handler.dart';
 import '../../../../../core/networking/api_error_model.dart';
@@ -6,7 +8,7 @@ import '../models/reset_password_models.dart';
 
 abstract class ResetPasswordRepoInterface {
   Future<Either<ApiErrorModel, ResetPasswordResponseModel>> resetPassword(
-      ResetPasswordRequestBodyModel resetPasswordRequestBodyModel,
+    ResetPasswordRequestBodyModel resetPasswordRequestBodyModel,
   );
 }
 
@@ -20,11 +22,11 @@ class ResetPasswordRepoImplementation implements ResetPasswordRepoInterface {
     ResetPasswordRequestBodyModel resetPasswordRequestBodyModel,
   ) async {
     try {
-      var response =
-          await _resetPasswordDataSource.resetPassword(resetPasswordRequestBodyModel);
+      var response = await _resetPasswordDataSource
+          .resetPassword(resetPasswordRequestBodyModel);
       return Right(response);
     } catch (error) {
-      // Error is already parsed by ApiServices, so we just need to cast it
+      log("error in reset password $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

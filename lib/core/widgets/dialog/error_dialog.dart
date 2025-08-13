@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/dialog/custom_dialog.dart';
+import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
@@ -27,27 +28,14 @@ void errorDialog(
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: SizedBox(
-            width: double.infinity,
-            child: TextButton(
-              style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16).r,
-                ),
-                backgroundColor: AppColors.primaryOrange,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 25.w,
-                ),
-              ),
-              onPressed: onPressed ??
-                  () {
-                    Navigator.pop(context);
-                  },
-              child: Text(
-                'Retry',
-                style: AppTextStyles.font14WhiteRegularLamaSans,
-              ),
-            ),
-          ),
+              width: double.infinity,
+              child: CustomElevatedButton(
+                onPressed: onPressed ??
+                    () {
+                      Navigator.pop(context);
+                    },
+                textButton: 'اعادة محاولة مرة اخري',
+              )),
         ),
       ],
     ),

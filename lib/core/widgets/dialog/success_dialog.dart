@@ -25,6 +25,7 @@ void successDialog(
           child: Text(
             message,
             textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
             style: AppTextStyles.font16BlackSemiBoldLamaSans,
           ),
         ),
@@ -45,6 +46,7 @@ void successDialog(
               ),
               onPressed: onPressed,
               child: Text('Continue',
+                  textDirection: TextDirection.rtl,
                   style: AppTextStyles.font14WhiteRegularLamaSans),
             ),
           ),

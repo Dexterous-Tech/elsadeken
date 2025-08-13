@@ -47,7 +47,8 @@ class SignupDataSource {
       SignupRequestBodyModel signupRequestBody) async {
     var response = await _apiServices.post(
         endpoint: ApiConstants.signup,
-        requestBody: signupRequestBody.toFormData());
+        requestBody: signupRequestBody.toFormData(),
+        requiresAuth: false);
 
     return SignupResponseModel.fromJson(response.data);
   }

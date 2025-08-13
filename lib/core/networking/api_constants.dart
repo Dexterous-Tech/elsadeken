@@ -1,7 +1,7 @@
 class ApiConstants {
   // may use dotenv package and make file .env to save base url
 
-  static String baseUrl = '';
+  static String baseUrl = 'admin.alharazy.com/api';
 
   // auth
   static String login = '/user/login';

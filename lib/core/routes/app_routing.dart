@@ -42,7 +42,10 @@ class AppRouting {
       case AppRoutes.onBoardingScreen:
         return MaterialPageRoute(builder: (_) => OnBoardingScreen());
       case AppRoutes.signupScreen:
-        return MaterialPageRoute(builder: (_) => SignupScreen());
+        return MaterialPageRoute(
+            builder: (_) => SignupScreen(
+                  gender: arguments as String,
+                ));
       case AppRoutes.loginScreen:
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case AppRoutes.forgetPasswordScreen:
