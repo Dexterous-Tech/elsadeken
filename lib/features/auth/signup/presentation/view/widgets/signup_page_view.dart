@@ -131,6 +131,7 @@ class _SignupPageViewState extends State<SignupPageView>
       case 5:
         return SignupSocialStatus(
           key: const ValueKey(5),
+          gender: widget.gender,
           onNextPressed: () => widget.onStepChanged(6),
           onPreviousPressed: () => widget.onStepChanged(4),
         );

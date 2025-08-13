@@ -157,6 +157,10 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                                   keyboardType: TextInputType.phone,
                                   hintText: 'رقم الجوال',
                                   onChanged: _validatePhone,
+                                  borderColor: phoneErrorMessage != null
+                                      ? AppColors.red
+                                      : AppColors
+                                          .brown, // Change border color based on error
                                   validator: (value) =>
                                       null, // Empty validator to prevent height changes
                                 ),
