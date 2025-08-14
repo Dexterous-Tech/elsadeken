@@ -47,6 +47,8 @@ dependencies:
   equatable: ^2.0.5
   dots_indicator: ^4.0.1
   vs_scrollbar: ^1.0.0
+  http: ^1.5.0
+  dio: ^5.9.0
 
 
 

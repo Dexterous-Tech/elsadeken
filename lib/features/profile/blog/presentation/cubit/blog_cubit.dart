@@ -11,8 +11,8 @@ class BlogCubit extends Cubit<BlogState> {
   void loadBlogs() async {
     emit(BlogLoading());
     try {
-      final blogs = await getBlogPosts();
-      emit(BlogLoaded(blogs));
+      final result = await getBlogPosts();
+      emit(BlogLoaded(result));
     } catch (e) {
       emit(BlogError('فشل تحميل البيانات'));
     }

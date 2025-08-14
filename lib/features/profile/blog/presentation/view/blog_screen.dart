@@ -26,49 +26,62 @@ class BlogScreen extends StatelessWidget {
                     ProfileHeader(title: 'مدونة الصادقون و الصادقات'),
                     SizedBox(height: 20.h),
                     Expanded(
-                      child: ListView.builder(
+                      child: ListView.separated(
                         itemCount: state.blogs.length,
+                        separatorBuilder: (_, __) => SizedBox(height: 24.h),
                         itemBuilder: (context, index) {
                           final blog = state.blogs[index];
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: 24.h),
-                            child: Column(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  child: Image.asset(
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12.r),
+                                child: AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: Image.network(
                                     blog.imageUrl,
-                                    width: double.infinity,
-                                    height: 180.h,
                                     fit: BoxFit.cover,
-                                  ),
-                                ),
-                                SizedBox(height: 12.h),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    blog.title,
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.deepOrange,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      color: Colors.grey.shade200,
+                                      alignment: Alignment.center,
+                                      child: Icon(Icons.broken_image, size: 24.sp),
                                     ),
-                                    textDirection: TextDirection.rtl,
+                                    loadingBuilder: (_, child, progress) => progress == null
+                                        ? child
+                                        : Center(child: SizedBox(height: 24.h, width: 24.h, child: CircularProgressIndicator(strokeWidth: 2)) ),
                                   ),
                                 ),
-                                SizedBox(height: 8.h),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    blog.content,
-                                    style: TextStyle(fontSize: 14.sp),
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                    textDirection: TextDirection.rtl,
+                              ),
+                              SizedBox(height: 12.h),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  blog.title,
+                                  style: TextStyle(
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFFFFBC85),
+                          
                                   ),
+                                  textDirection: TextDirection.rtl,
                                 ),
-                              ],
-                            ),
+                              ),
+                              SizedBox(height: 8.h),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  blog.content,
+                                  style: TextStyle(
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF363636)
+                                    ),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  textDirection: TextDirection.rtl,
+                                ),
+                              ),
+                            ],
                           );
                         },
                       ),
