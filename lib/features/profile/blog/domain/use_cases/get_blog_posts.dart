@@ -1,4 +1,4 @@
-import '../entities/blog.dart';
+import '../entities/blog_fetch_result.dart';
 import '../repository/blog_repo.dart';
 
 class GetBlogPosts {
@@ -6,7 +6,7 @@ class GetBlogPosts {
 
   GetBlogPosts(this.repo);
 
-  Future<List<Blog>> call() => repo.getBlogs();
+  Future<BlogFetchResult> call() => repo.getBlogs();
 }
 /*
 class GetBlogPostUseCase {

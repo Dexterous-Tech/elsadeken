@@ -1,5 +1,5 @@
 // lib/features/blog/data/repositories/success_story_repo_impl.dart
-import '../../domain/entities/blog.dart';
+import '../../domain/entities/blog_fetch_result.dart';
 import '../../domain/repository/blog_repo.dart';
 import '../datasources/blog_api.dart';
 
@@ -9,8 +9,7 @@ class BlogRepoImpl implements BlogRepo {
   BlogRepoImpl(this.api);
 
   @override
-  Future<List<Blog>> getBlogs() async {
-    final blogs = await api.getBlogs();
-    return blogs; // Models already extend Blog entity
+  Future<BlogFetchResult> getBlogs() async {
+    return api.getBlogs();
   }
 }

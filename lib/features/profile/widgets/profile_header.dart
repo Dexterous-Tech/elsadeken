@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/theme/app_color.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -21,7 +22,8 @@ class ProfileHeader extends StatelessWidget {
         Text(
           title,
           style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
-            fontWeight: FontWeightHelper.bold,
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w500,
             color: AppColors.darkBlue,
           ),
         ),

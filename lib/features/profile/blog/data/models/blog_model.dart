@@ -9,9 +9,9 @@ class BlogModel extends Blog {
 
   factory BlogModel.fromJson(Map<String, dynamic> json) {
     return BlogModel(
-      imageUrl: json['imageUrl'],
-      title: json['title'],
-      content: json['content'],
+      imageUrl: json['image'] ?? '',
+      title: json['title'] ?? '',
+      content: json['content'] ?? '',
     );
   }
 }

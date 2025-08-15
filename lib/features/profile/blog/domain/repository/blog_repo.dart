@@ -1,6 +1,6 @@
-import '../entities/blog.dart';
+import '../entities/blog_fetch_result.dart';
 
 abstract class BlogRepo {
-  Future<List<Blog>> getBlogs();
+  Future<BlogFetchResult> getBlogs();
 }
 //Future<Either<Failure, BlogPost>> getBlogPost(String id);
