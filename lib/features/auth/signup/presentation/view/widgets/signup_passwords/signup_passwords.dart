@@ -60,6 +60,7 @@ class _SignupPasswordsState extends State<SignupPasswords> {
               message:
                   '${state.signupResponseModel.message}\n استمر في تسجيل البيانات',
               onPressed: () {
+                context.pop();
                 widget.onNextPressed();
               });
         } else if (state is SignupFailure) {
@@ -101,7 +102,7 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                           }
                           return null;
                         },
-                        prefixIcon: IconButton(
+                        suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
                               obscurePassword = !obscurePassword;
@@ -178,7 +179,7 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                           }
                           return null;
                         },
-                        prefixIcon: IconButton(
+                        suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
                               obscureConfirmPassword = !obscureConfirmPassword;

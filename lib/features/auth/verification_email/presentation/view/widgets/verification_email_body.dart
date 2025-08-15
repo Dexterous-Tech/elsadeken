@@ -34,29 +34,12 @@ class VerificationEmailBody extends StatelessWidget {
               context: context,
               message: state.verificationResponseModel.message,
               onPressed: () {
-                context.pushReplacementNamed(AppRoutes.newPasswordScreen , arguments: email);
+                context.pushReplacementNamed(AppRoutes.newPasswordScreen,
+                    arguments: email);
               });
         }
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'رمز التحقق',
-            textDirection: TextDirection.rtl,
-            style: AppTextStyles.font27ChineseBlackBoldLamaSans(context),
-          ),
-          Text(
-            'ادخل رقم رمز التحقق الذي تم ارساله الي البريد الالكتروني',
-            textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14BeerMediumLamaSans(
-              context,
-            ).copyWith(color: AppColors.outerSpace),
-          ),
-          verticalSpace(24),
-          VerificationEmailForm(email: email),
-        ],
-      ),
+      child: VerificationEmailForm(email: email),
     ));
   }
 }

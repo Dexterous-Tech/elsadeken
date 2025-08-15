@@ -152,7 +152,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
             CustomTextFormField(
               controller: _searchController,
               keyboardType: TextInputType.text,
-              hintText: '..بحث',
+              hintText: 'بحث..',
               validator: (value) {},
               suffixIcon: Icon(
                 Icons.search,

@@ -1,3 +1,5 @@
+import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/core/widgets/forms/custom_pin_code_field.dart';
@@ -18,17 +20,32 @@ class VerificationEmailForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          Text(
+            'رمز التحقق',
+            textDirection: TextDirection.rtl,
+            style: AppTextStyles.font27ChineseBlackBoldLamaSans(context),
+          ),
+          Text(
+            'ادخل رقم رمز التحقق الذي تم ارساله الي البريد الالكتروني',
+            textDirection: TextDirection.rtl,
+            style: AppTextStyles.font14BeerMediumLamaSans(
+              context,
+            ).copyWith(color: AppColors.outerSpace),
+          ),
+          verticalSpace(24),
           CustomPinCodeField(
             controller: cubit.otpController,
             validator: (value) {
-              if (value == null || value.length < 6) {
+              if (value == null || value.length < 4) {
                 return 'يجب ادخال رمز التحقق علي بريدك الالكتروني';
               }
             },
           ),
           verticalSpace(58),
           Center(child: ResendVerificationCode()),
-          Spacer(),
+          Expanded(
+            child: Container(), // This will take up remaining space
+          ),
           CustomElevatedButton(
             onPressed: () {
               if (cubit.formKey.currentState!.validate()) {

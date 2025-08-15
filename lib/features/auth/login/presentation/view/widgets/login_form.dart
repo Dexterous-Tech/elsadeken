@@ -68,7 +68,7 @@ class _LoginFormState extends State<LoginForm> {
               }
             },
             obscureText: obscurePassword,
-            prefixIcon: IconButton(
+            suffixIcon: IconButton(
               onPressed: () {
                 setState(() {
                   obscurePassword = !obscurePassword;
