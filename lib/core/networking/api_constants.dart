@@ -13,4 +13,7 @@ class ApiConstants {
   static String listCities(String id) => '/user/list/cities/$id';
   static String signup = '/user/register';
   static String registerInformation = '/user/attributes';
+
+  // profile
+  static String aboutUs = '/user/aboutUs';
 }

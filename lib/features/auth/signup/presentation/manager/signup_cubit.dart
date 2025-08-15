@@ -18,7 +18,8 @@ class SignupCubit extends Cubit<SignupState> {
   final SignupRepoInterface signupRepo;
 
   // Form keys
-  GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> personalInfoFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> passwordsFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> registerInformationFormKey = GlobalKey<FormState>();
 
   // Signup form controllers

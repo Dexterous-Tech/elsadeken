@@ -66,7 +66,7 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
     }
 
     // Validate other fields using form key
-    if (!cubit.signupFormKey.currentState!.validate()) {
+    if (!cubit.personalInfoFormKey.currentState!.validate()) {
       isValid = false;
     }
 
@@ -83,7 +83,7 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: IntrinsicHeight(
               child: Form(
-                key: cubit.signupFormKey,
+                key: cubit.personalInfoFormKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [

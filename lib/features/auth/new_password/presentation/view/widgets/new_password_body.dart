@@ -33,30 +33,12 @@ class NewPasswordBody extends StatelessWidget {
               context: context,
               message: state.resetPasswordResponseModel.message,
               onPressed: () {
-                context.pushReplacementNamed(AppRoutes.loginScreen);
+                context.pushNamedAndRemoveUntil(AppRoutes.loginScreen);
               });
         }
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            'كلمه المرور الجديده',
-            textDirection: TextDirection.rtl,
-            style: AppTextStyles.font27ChineseBlackBoldLamaSans(context),
-          ),
-          Text(
-            'قم بادخال كمله مرور جديده وقويه',
-            textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14BeerMediumLamaSans(
-              context,
-            ).copyWith(color: AppColors.outerSpace),
-          ),
-          verticalSpace(24),
-          NewPasswordForm(
-            email: email,
-          ),
-        ],
+      child: NewPasswordForm(
+        email: email,
       ),
     ));
   }

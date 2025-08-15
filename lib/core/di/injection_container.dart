@@ -14,6 +14,9 @@ import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit
 import 'package:elsadeken/features/auth/verification_email/data/data_source/verification_data_source.dart';
 import 'package:elsadeken/features/auth/verification_email/data/repo/verification_repo.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/manager/verification_cubit.dart';
+import 'package:elsadeken/features/profile/about_us/data/data_source/about_us_data_source.dart';
+import 'package:elsadeken/features/profile/about_us/data/repo/abouts_us_repo.dart';
+import 'package:elsadeken/features/profile/about_us/presentation/manager/about_us_cubit.dart';
 import 'package:elsadeken/features/profile/blog/data/datasources/blog_api.dart';
 import 'package:elsadeken/features/profile/blog/data/repository/blog_repo_impl.dart';
 import 'package:elsadeken/features/profile/blog/domain/repository/blog_repo.dart';
@@ -109,4 +112,9 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<SignupCubit>(() => SignupCubit(sl()));
   sl.registerFactory<NationalitiesCountriesCubit>(
       () => NationalitiesCountriesCubit(sl()));
+
+  // about us
+  sl.registerLazySingleton<AboutUsDataSource>(() => AboutUsDataSource(sl()));
+  sl.registerLazySingleton<AboutsUsRepoInterface>(() => AboutsUsRepoImpl(sl()));
+  sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
 }
