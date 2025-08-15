@@ -58,61 +58,70 @@ class CustomTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return Directionality(
       textDirection: TextDirection.rtl,
-      textAlign: TextAlign.right,
-      obscureText: obscureText ?? false,
-      controller: controller,
-      validator: (value) {
-        return validator(value);
-      },
-      onTap: onTap,
-      onChanged: onChanged,
-      onEditingComplete: () {
-        FocusScope.of(context).unfocus();
-      },
-      keyboardType: keyboardType,
-      maxLines: maxLines ?? 1,
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: hintStyle ??
-            AppTextStyles.font16ChineseBlackMediumLamaSans(context),
-        labelText: labelText,
-        labelStyle: labelStyle ??
-            AppTextStyles.font16ChineseBlackMediumLamaSans(context),
-        suffixIcon: suffixIcon,
-        prefixIcon: prefixIcon,
-        isDense: true,
-        contentPadding: contentPadding ??
-            EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
-        filled: true,
-        fillColor: fillBackgroundColor ?? AppColors.snow,
-        errorMaxLines: 3,
-        border: border ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16).r,
-              borderSide: BorderSide(color: borderColor ?? AppColors.brown),
-            ),
-        focusedBorder: focusedBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(radius ?? 16).r,
-              borderSide: BorderSide(color: borderColor ?? AppColors.brown),
-            ),
-        enabledBorder: enabledBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(radius ?? 16).r,
-              borderSide: BorderSide(color: borderColor ?? AppColors.brown),
-            ),
-        errorBorder: errorBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(radius ?? 16).r,
-              borderSide: const BorderSide(color: Colors.red),
-            ),
-        focusedErrorBorder: focusedErrorBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(radius ?? 16).r,
-              borderSide: BorderSide(color: borderColor ?? AppColors.brown),
-            ),
+      child: TextFormField(
+        textDirection: TextDirection.rtl,
+        textAlign: TextAlign.right,
+        obscureText: obscureText ?? false,
+        controller: controller,
+        validator: (value) {
+          return validator(value);
+        },
+        onTap: onTap,
+        onChanged: onChanged,
+        onEditingComplete: () {
+          FocusScope.of(context).unfocus();
+        },
+        keyboardType: keyboardType,
+        maxLines: maxLines ?? 1,
+        decoration: InputDecoration(
+          hintTextDirection: TextDirection.rtl,
+          hintText: hintText,
+          hintStyle: hintStyle ??
+              AppTextStyles.font16ChineseBlackMediumLamaSans(context),
+          labelText: labelText,
+          labelStyle: labelStyle ??
+              AppTextStyles.font16ChineseBlackMediumLamaSans(context),
+          suffixIcon: suffixIcon,
+          prefixIcon: prefixIcon,
+          isDense: true,
+          contentPadding: contentPadding ??
+              EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+          filled: true,
+          fillColor: fillBackgroundColor ?? AppColors.snow,
+          errorMaxLines: 3,
+          // RTL error text styling
+          errorStyle: TextStyle(
+            fontSize: 12.sp,
+            color: Colors.red,
+          ),
+          border: border ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16).r,
+                borderSide: BorderSide(color: borderColor ?? AppColors.brown),
+              ),
+          focusedBorder: focusedBorder ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(radius ?? 16).r,
+                borderSide: BorderSide(color: borderColor ?? AppColors.brown),
+              ),
+          enabledBorder: enabledBorder ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(radius ?? 16).r,
+                borderSide: BorderSide(color: borderColor ?? AppColors.brown),
+              ),
+          errorBorder: errorBorder ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(radius ?? 16).r,
+                borderSide: const BorderSide(color: Colors.red),
+              ),
+          focusedErrorBorder: focusedErrorBorder ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(radius ?? 16).r,
+                borderSide: BorderSide(color: borderColor ?? AppColors.brown),
+              ),
+        ),
       ),
     );
   }

@@ -263,4 +263,18 @@ class AppTextStyles {
     color: AppColors.jet,
     fontFamily: FontFamilyHelper.lamaSansArabic,
   );
+
+  static TextStyle font14BlackRegularLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.regular,
+    fontSize: 14.sp,
+    color: AppColors.black,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
+
+  static TextStyle font14WhiteRegularLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.regular,
+    fontSize: 14.sp,
+    color: AppColors.white,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
 }

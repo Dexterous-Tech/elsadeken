@@ -22,28 +22,33 @@ class ProfileContentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: Row(
-        textDirection: TextDirection.rtl,
-        children: [
-          Image.asset(image, width: 44.w, height: 44.h),
-          horizontalSpace(16),
-          Expanded(
-            child: Text(
-              title,
-              style: AppTextStyles.font14CharlestonGreenMediumLamaSans(context),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          leading ??
-              IconButton(
-                onPressed: onPressed,
-                icon: Icon(
-                  Icons.arrow_back_ios_new,
-                  size: 18,
-                  color: AppColors.gray,
-                ),
+      child: GestureDetector(
+        onTap: onPressed,
+        child: Row(
+          textDirection: TextDirection.rtl,
+          children: [
+            Image.asset(image, width: 44.w, height: 44.h),
+            horizontalSpace(16),
+            Expanded(
+              child: Text(
+                title,
+                textAlign: TextAlign.right,
+                style:
+                    AppTextStyles.font14CharlestonGreenMediumLamaSans(context),
+                overflow: TextOverflow.ellipsis,
               ),
-        ],
+            ),
+            leading ??
+                IconButton(
+                  onPressed: onPressed,
+                  icon: Icon(
+                    Icons.arrow_back_ios_new,
+                    size: 18,
+                    color: AppColors.gray,
+                  ),
+                ),
+          ],
+        ),
       ),
     );
   }

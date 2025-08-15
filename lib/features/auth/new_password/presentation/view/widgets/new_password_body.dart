@@ -1,19 +1,43 @@
+import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
+import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
+import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
+import 'package:elsadeken/features/auth/new_password/presentation/manager/reset_password_cubit.dart';
 import 'package:elsadeken/features/auth/new_password/presentation/view/widgets/new_password_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/theme/app_color.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/spacing.dart';
-import '../../../../../../core/widgets/forms/custom_elevated_button.dart';
 import '../../../../widgets/custom_auth_body.dart';
 
 class NewPasswordBody extends StatelessWidget {
-  const NewPasswordBody({super.key});
+  const NewPasswordBody({super.key, required this.email});
 
+  final String email;
   @override
   Widget build(BuildContext context) {
     return CustomAuthBody(
-      cardContent: Column(
+        cardContent: BlocListener<ResetPasswordCubit, ResetPasswordState>(
+      listener: (context, state) {
+        if (state is ResetPasswordLoading) {
+          loadingDialog(context);
+        } else if (state is ResetPasswordFailure) {
+          context.pop();
+          errorDialog(context: context, error: state.error);
+        } else if (state is ResetPasswordSuccess) {
+          context.pop();
+          successDialog(
+              context: context,
+              message: state.resetPasswordResponseModel.message,
+              onPressed: () {
+                context.pushReplacementNamed(AppRoutes.loginScreen);
+              });
+        }
+      },
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
@@ -29,15 +53,11 @@ class NewPasswordBody extends StatelessWidget {
             ).copyWith(color: AppColors.outerSpace),
           ),
           verticalSpace(24),
-          NewPasswordForm(),
-          Spacer(),
-
-          CustomElevatedButton(
-            onPressed: () {},
-            textButton: 'اعادة تسجيل الدخول',
+          NewPasswordForm(
+            email: email,
           ),
         ],
       ),
-    );
+    ));
   }
 }

@@ -34,7 +34,7 @@ import '../../features/profile/my_ignoring_list/presentation/view/my_ignoring_li
 
 class AppRouting {
   Route onGenerateRouting(RouteSettings setting) {
-    // final arguments = setting.arguments;
+    final arguments = setting.arguments;
 
     switch (setting.name) {
       case AppRoutes.splashScreen:
@@ -42,15 +42,24 @@ class AppRouting {
       case AppRoutes.onBoardingScreen:
         return MaterialPageRoute(builder: (_) => OnBoardingScreen());
       case AppRoutes.signupScreen:
-        return MaterialPageRoute(builder: (_) => SignupScreen());
+        return MaterialPageRoute(
+            builder: (_) => SignupScreen(
+                  gender: arguments as String,
+                ));
       case AppRoutes.loginScreen:
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case AppRoutes.forgetPasswordScreen:
         return MaterialPageRoute(builder: (_) => ForgetPasswordScreen());
       case AppRoutes.verificationEmailScreen:
-        return MaterialPageRoute(builder: (_) => VerificationEmailScreen());
+        return MaterialPageRoute(
+            builder: (_) => VerificationEmailScreen(
+                  email: arguments as String,
+                ));
       case AppRoutes.newPasswordScreen:
-        return MaterialPageRoute(builder: (_) => NewPasswordScreen());
+        return MaterialPageRoute(
+            builder: (_) => NewPasswordScreen(
+                  email: arguments as String,
+                ));
       case AppRoutes.profileScreen:
         return MaterialPageRoute(builder: (_) => ProfileScreen());
       case AppRoutes.manageProfileScreen:

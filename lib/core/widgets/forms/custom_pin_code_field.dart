@@ -21,7 +21,7 @@ class CustomPinCodeField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PinCodeTextField(
-      length: 5,
+      length: 4,
       appContext: context,
       controller: controller,
       obscureText: false,

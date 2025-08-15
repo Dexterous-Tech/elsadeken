@@ -1,12 +1,13 @@
-import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../../core/theme/spacing.dart';
-import '../../../../../../../core/widgets/forms/custom_text_form_field.dart';
 import '../custom_next_and_previous_button.dart';
+import '../../../manager/signup_cubit.dart';
+import '../../../../data/models/national_country_models.dart';
+import '../../../../../widgets/custom_searchable_list.dart';
 
-class SignupNational extends StatelessWidget {
+class SignupNational extends StatefulWidget {
   const SignupNational({
     super.key,
     required this.onNextPressed,
@@ -15,6 +16,23 @@ class SignupNational extends StatelessWidget {
 
   final void Function() onNextPressed;
   final void Function() onPreviousPressed;
+
+  @override
+  State<SignupNational> createState() => _SignupNationalState();
+}
+
+class _SignupNationalState extends State<SignupNational> {
+  NationalCountryResponseModel? _selectedNationality;
+
+  void _onNationalitySelected(ListItemModel nationality) {
+    final nationalityModel = nationality as NationalCountryResponseModel;
+    setState(() {
+      _selectedNationality = nationalityModel;
+      // Save the nationality ID to the existing nationalIdController
+      context.read<SignupCubit>().nationalIdController.text =
+          nationalityModel.id?.toString() ?? '';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,35 +45,19 @@ class SignupNational extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  // name
-                  Text(
-                    'ما هي جنسيتك ؟',
-                    textDirection: TextDirection.rtl,
-                    style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                      context,
+                  // Custom Searchable List
+                  Expanded(
+                    child: CustomSearchableList(
+                      listType: ListType.nationality,
+                      selectedItem: _selectedNationality,
+                      onItemSelected: _onNationalitySelected,
                     ),
                   ),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    keyboardType: TextInputType.text,
-                    hintText: '..بحث',
-                    validator: (value) {},
-                    suffixIcon: Icon(
-                      Icons.search,
-                      size: 25,
-                      color: AppColors.paleBrown,
-                    ),
-                    hintStyle: AppTextStyles.font16PaleBrownRegularLamaSans(
-                      context,
-                    ),
-                  ),
-
                   verticalSpace(50),
-
-                  Spacer(),
                   CustomNextAndPreviousButton(
-                    onNextPressed: onNextPressed,
-                    onPreviousPressed: onPreviousPressed,
+                    onNextPressed: widget.onNextPressed,
+                    onPreviousPressed: widget.onPreviousPressed,
+                    isNextEnabled: _selectedNationality != null,
                   ),
                 ],
               ),

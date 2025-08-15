@@ -49,6 +49,10 @@ dependencies:
   vs_scrollbar: ^1.0.0
   http: ^1.5.0
   dio: ^5.9.0
+  pretty_dio_logger: ^1.4.0
+  dartz: ^0.10.1
+  flutter_secure_storage: ^9.2.4
+  lottie: ^3.3.1
 
 
 
@@ -88,6 +92,7 @@ flutter:
     - assets/images/special_members/
     - assets/images/members/
     - assets/images/members/menu_items/
+    - assets/lottie/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

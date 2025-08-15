@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SignupBody extends StatefulWidget {
-  const SignupBody({super.key});
+  const SignupBody({super.key, required this.gender});
 
+  final String gender;
   @override
   State<SignupBody> createState() => _SignupBodyState();
 }
@@ -78,6 +79,7 @@ class _SignupBodyState extends State<SignupBody> {
             verticalSpace(31),
             Expanded(
               child: SignupPageView(
+                gender: widget.gender,
                 currentStep: _currentStep,
                 onStepChanged: _handleStepChanged,
               ),
