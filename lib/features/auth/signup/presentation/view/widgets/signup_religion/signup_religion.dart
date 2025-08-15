@@ -1,4 +1,6 @@
+import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../../core/theme/spacing.dart';
 import '../custom_next_and_previous_button.dart';
@@ -19,22 +21,26 @@ class SignupReligion extends StatefulWidget {
 }
 
 class _SignupReligionState extends State<SignupReligion> {
-  String? _selectedReligion;
+  Map<String, String> get religionOptions {
+    return {
+      'religious': 'غير متدين',
+      'little_religious': 'متدين قليلا',
+      'irreligious': 'متدين',
+    };
+  }
 
-  final List<String> religionOptions = [
-    'غير متدين',
-    'متدين قليلا',
-    'متدين',
-  ];
+  Map<String, String> get prayerOptions {
+    return {
+      'always ': 'اصلي دائما',
+      'interittent ': 'اصلي اغلب الاوقات',
+      'no_pray': 'لا اصلي',
+    };
+  }
 
-  String? _selectedPrayer;
-  final List<String> prayerOptions = [
-    'اصلي دائما',
-    'اصلي اغلب الاوقات',
-    'لا اصلي',
-  ];
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<SignupCubit>();
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -47,13 +53,20 @@ class _SignupReligionState extends State<SignupReligion> {
                   // status
                   SignupMultiChoice(
                     title: 'ما هي التزامك الديني ؟',
-                    options: religionOptions,
-                    selected: _selectedReligion,
+                    options: religionOptions.values.toList(),
+                    selected: religionOptions[
+                        cubit.religiousCommitmentController.text],
                     onChanged: (newStatus) {
-                      // Handle the new selection
-                      setState(() {
-                        _selectedReligion = newStatus;
-                      });
+                      // Find the key for the selected Arabic text
+                      String? selectedKey = religionOptions.entries
+                          .firstWhere((entry) => entry.value == newStatus,
+                              orElse: () => const MapEntry('', ''))
+                          .key;
+
+                      if (selectedKey.isNotEmpty) {
+                        cubit.religiousCommitmentController.text = selectedKey;
+                        setState(() {});
+                      }
                     },
                   ),
 
@@ -62,13 +75,19 @@ class _SignupReligionState extends State<SignupReligion> {
                   // multi wives
                   SignupMultiChoice(
                     title: 'الصلاه ؟',
-                    options: prayerOptions,
-                    selected: _selectedPrayer,
+                    options: prayerOptions.values.toList(),
+                    selected: prayerOptions[cubit.prayerController.text],
                     onChanged: (newStatus) {
-                      // Handle the new selection
-                      setState(() {
-                        _selectedPrayer = newStatus;
-                      });
+                      // Find the key for the selected Arabic text
+                      String? selectedKey = prayerOptions.entries
+                          .firstWhere((entry) => entry.value == newStatus,
+                              orElse: () => const MapEntry('', ''))
+                          .key;
+
+                      if (selectedKey.isNotEmpty) {
+                        cubit.prayerController.text = selectedKey;
+                        setState(() {});
+                      }
                     },
                   ),
 
@@ -79,6 +98,7 @@ class _SignupReligionState extends State<SignupReligion> {
                   CustomNextAndPreviousButton(
                     onNextPressed: widget.onNextPressed,
                     onPreviousPressed: widget.onPreviousPressed,
+                    isNextEnabled: _canProceedToNext(cubit),
                   ),
                 ],
               ),
@@ -87,5 +107,17 @@ class _SignupReligionState extends State<SignupReligion> {
         );
       },
     );
+  }
+
+  bool _canProceedToNext(SignupCubit cubit) {
+    // Must select marital status
+    bool hasReligion = cubit.religiousCommitmentController.text.isNotEmpty &&
+        religionOptions.containsKey(cubit.religiousCommitmentController.text);
+
+    // Must also select type of marriage (required for both genders)
+    bool hasPrayer = cubit.prayerController.text.isNotEmpty &&
+        prayerOptions.containsKey(cubit.prayerController.text);
+
+    return hasReligion && hasPrayer;
   }
 }

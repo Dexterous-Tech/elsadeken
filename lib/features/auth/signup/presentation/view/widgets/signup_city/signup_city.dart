@@ -5,7 +5,7 @@ import '../../../../../../../core/theme/spacing.dart';
 import '../custom_next_and_previous_button.dart';
 import '../../../manager/signup_cubit.dart';
 import '../../../../data/models/cities_models.dart';
-import '../../../../../widgets/custom_searchable_list.dart';
+import '../custom_searchable_list.dart';
 
 class SignupCity extends StatefulWidget {
   const SignupCity({
@@ -39,51 +39,40 @@ class _SignupCityState extends State<SignupCity> {
     // Get the selected country ID from the signup cubit
     final countryId = context.read<SignupCubit>().countryIdController.text;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  // Check if country is selected
-                  if (countryId.isEmpty)
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          'يرجى اختيار الدولة أولاً',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey[600],
-                          ),
-                          textDirection: TextDirection.rtl,
-                        ),
-                      ),
-                    )
-                  else
-                    // Custom Searchable List for cities
-                    Expanded(
-                      child: CustomSearchableList(
-                        listType: ListType.city,
-                        selectedItem: _selectedCity,
-                        onItemSelected: _onCitySelected,
-                        countryId: countryId, // Pass the country ID
-                      ),
-                    ),
-                  verticalSpace(50),
-                  CustomNextAndPreviousButton(
-                    onNextPressed: widget.onNextPressed,
-                    onPreviousPressed: widget.onPreviousPressed,
-                    isNextEnabled: _selectedCity != null,
-                  ),
-                ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // Check if country is selected
+        if (countryId.isEmpty)
+          Expanded(
+            child: Center(
+              child: Text(
+                'يرجى اختيار الدولة أولاً',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.grey[600],
+                ),
+                textDirection: TextDirection.rtl,
               ),
             ),
+          )
+        else
+          // Custom Searchable List for cities
+          Expanded(
+            child: CustomSearchableList(
+              listType: ListType.city,
+              selectedItem: _selectedCity,
+              onItemSelected: _onCitySelected,
+              countryId: countryId, // Pass the country ID
+            ),
           ),
-        );
-      },
+        verticalSpace(50),
+        CustomNextAndPreviousButton(
+          onNextPressed: widget.onNextPressed,
+          onPreviousPressed: widget.onPreviousPressed,
+          isNextEnabled: _selectedCity != null,
+        ),
+      ],
     );
   }
 }

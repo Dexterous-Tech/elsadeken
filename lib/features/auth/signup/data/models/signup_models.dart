@@ -38,20 +38,20 @@ class RegisterInformationRequestModel {
   final String maritalStatus; //single,married,divorced,widwed
   final String typeOfMarriage; //only_one  ,
   final int age;
-  final String childrenNumber;
+  final int childrenNumber;
   final int weight;
   final int height;
-  final String skinColor; // white  ,
-  final String physique; //
+  final int skinColor; // white  ,
+  final int physique; //
   final String religiousCommitment;
   final String prayer; //always , interittent ,no_pray
-  final String smoking; //0=> no , 1 =>yes
+  final int smoking; //0=> no , 1 =>yes
   final String hijab; //0=> no , 1=>yes
-  final String educationalQualification; //
-  final String financialSituation; //bad , good, very_good
+  final int educationalQualification; //
+  final int financialSituation; //bad , good, very_good
   final String job;
-  final String income;
-  final String healthCondition; //bad , good, very_good
+  final int income;
+  final int healthCondition; //bad , good, very_good
   final String aboutMe;
   final String lifePartner;
 
@@ -82,7 +82,7 @@ class RegisterInformationRequestModel {
 
   FormData toFormData() {
     return FormData.fromMap({
-      'national_id': nationalId,
+      'nationality_id': nationalId,
       'country_id': countryId,
       'city_id': cityId,
       'marital_status': maritalStatus,
@@ -91,17 +91,17 @@ class RegisterInformationRequestModel {
       'children_number': childrenNumber,
       'weight': weight,
       'height': height,
-      'skin_color': skinColor,
-      'physique': physique,
+      'skin_color_id': skinColor,
+      'physique_id': physique,
       'religious_commitment': religiousCommitment,
       'prayer': prayer,
       'smoking': smoking,
       'hijab': hijab,
-      'educational_qualification': educationalQualification,
-      'financial_situation': financialSituation,
+      'qualification_id': educationalQualification,
+      'financial_situation_id': financialSituation,
       'job': job,
       'income': income,
-      'health_condition': healthCondition,
+      'health_condition_id': healthCondition,
       'about_me': aboutMe,
       'life_partner': lifePartner,
     });

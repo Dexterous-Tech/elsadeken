@@ -50,6 +50,10 @@ class _SignupPasswordsState extends State<SignupPasswords> {
         ? calculateProgress(result)
         : 0; // ✅ only show after typing
     return BlocListener<SignupCubit, SignupState>(
+      listenWhen: (context, state) =>
+          state is SignupLoading ||
+          state is SignupFailure ||
+          state is SignupSuccess,
       listener: (context, state) {
         if (state is SignupLoading) {
           loadingDialog(context);

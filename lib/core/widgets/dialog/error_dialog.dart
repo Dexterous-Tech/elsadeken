@@ -23,6 +23,7 @@ void errorDialog(
         verticalSpace(15),
         Text(error,
             textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
             style: AppTextStyles.font14BlackRegularLamaSans),
         verticalSpace(15),
         Padding(

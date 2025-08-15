@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../theme/app_color.dart';
@@ -29,6 +30,7 @@ class CustomTextFormField extends StatelessWidget {
     this.maxLines,
     this.onChanged,
     this.borderColor,
+    this.inputFormatters,
   });
 
   final String? hintText;
@@ -55,6 +57,7 @@ class CustomTextFormField extends StatelessWidget {
   final int? maxLines;
   final void Function(String)? onChanged;
   final Color? borderColor;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +78,7 @@ class CustomTextFormField extends StatelessWidget {
         },
         keyboardType: keyboardType,
         maxLines: maxLines ?? 1,
+        inputFormatters: inputFormatters,
         decoration: InputDecoration(
           hintTextDirection: TextDirection.rtl,
           hintText: hintText,

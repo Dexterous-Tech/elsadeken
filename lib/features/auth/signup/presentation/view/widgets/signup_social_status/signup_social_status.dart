@@ -30,14 +30,14 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
         'single': 'أعزب',
         'married': 'متزوج',
         'divorced': 'مطلق',
-        'widowed': 'أرمل',
+        'widwed': 'أرمل',
       };
     } else {
       return {
         'single': 'عزباء',
         'married': 'متزوجة',
         'divorced': 'مطلقة',
-        'widowed': 'أرملة',
+        'widwed': 'أرملة',
       };
     }
   }

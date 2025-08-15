@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import '../signup/presentation/manager/nationalities_countries_cubit.dart';
+import '../../manager/sign_up_lists_cubit.dart';
 
 enum ListType { nationality, country, city }
 
@@ -46,13 +46,13 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
     super.initState();
     // Trigger loading based on list type
     if (widget.listType == ListType.nationality) {
-      context.read<NationalitiesCountriesCubit>().getNationalities();
+      context.read<SignUpListsCubit>().getNationalities();
     } else if (widget.listType == ListType.country) {
-      context.read<NationalitiesCountriesCubit>().getCountries();
+      context.read<SignUpListsCubit>().getCountries();
     } else if (widget.listType == ListType.city) {
       // Cities require a country ID
       if (widget.countryId != null && widget.countryId!.isNotEmpty) {
-        context.read<NationalitiesCountriesCubit>().getCites(widget.countryId!);
+        context.read<SignUpListsCubit>().getCites(widget.countryId!);
       }
     }
     _searchController.addListener(_onSearchChanged);
@@ -81,9 +81,12 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
   }
 
   void _onItemSelected(ListItemModel item) {
+    // Clear the search field when an item is selected
     setState(() {
-      _searchController.text = item.name ?? '';
+      _searchController.clear();
+      _filteredItems = _allItems;
     });
+    // Call the callback to notify parent widget
     widget.onItemSelected(item);
   }
 
@@ -117,8 +120,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<NationalitiesCountriesCubit,
-        NationalitiesCountriesState>(
+    return BlocConsumer<SignUpListsCubit, SignUpListsState>(
       listener: (context, state) {
         if ((widget.listType == ListType.nationality &&
                 state is NationalitiesSuccess) ||
@@ -172,7 +174,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
     );
   }
 
-  Widget _buildItemsList(NationalitiesCountriesState state) {
+  Widget _buildItemsList(SignUpListsState state) {
     // Check loading state based on list type
     bool isLoading = (widget.listType == ListType.nationality &&
             state is NationalitiesLoading) ||
@@ -228,16 +230,14 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
             TextButton(
               onPressed: () {
                 if (widget.listType == ListType.nationality) {
-                  context
-                      .read<NationalitiesCountriesCubit>()
-                      .getNationalities();
+                  context.read<SignUpListsCubit>().getNationalities();
                 } else if (widget.listType == ListType.country) {
-                  context.read<NationalitiesCountriesCubit>().getCountries();
+                  context.read<SignUpListsCubit>().getCountries();
                 } else if (widget.listType == ListType.city) {
                   if (widget.countryId != null &&
                       widget.countryId!.isNotEmpty) {
                     context
-                        .read<NationalitiesCountriesCubit>()
+                        .read<SignUpListsCubit>()
                         .getCites(widget.countryId!);
                   }
                 }
@@ -266,23 +266,26 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
                   ? AppColors.sunsetOrange.withValues(alpha: 0.08)
                   : Colors.transparent,
             ),
-            child: ListTile(
-              title: Text(
-                item.name ?? '',
-                textDirection: TextDirection.rtl,
-                style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
-                  color: AppColors.chineseBlack,
-                  fontWeight: FontWeightHelper.bold,
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: ListTile(
+                title: Text(
+                  item.name ?? '',
+                  textDirection: TextDirection.rtl,
+                  style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+                    color: AppColors.chineseBlack,
+                    fontWeight: FontWeightHelper.bold,
+                  ),
                 ),
+                trailing: isSelected
+                    ? SvgPicture.asset(
+                        AppSvg.checkCircle,
+                        width: 16.w,
+                        height: 16.h,
+                      )
+                    : null,
+                onTap: () => _onItemSelected(item),
               ),
-              trailing: isSelected
-                  ? SvgPicture.asset(
-                      AppSvg.checkCircle,
-                      width: 16.w,
-                      height: 16.h,
-                    )
-                  : null,
-              onTap: () => _onItemSelected(item),
             ),
           );
         },

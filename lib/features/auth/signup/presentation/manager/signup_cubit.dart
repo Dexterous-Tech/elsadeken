@@ -84,6 +84,34 @@ class SignupCubit extends Cubit<SignupState> {
 
   void registerInformation() async {
     emit(RegisterInformationLoading());
+
+    // Add safety checks for required fields
+    if (nationalIdController.text.isEmpty ||
+        countryIdController.text.isEmpty ||
+        cityIdController.text.isEmpty ||
+        maritalStatusController.text.isEmpty ||
+        typeOfMarriageController.text.isEmpty ||
+        ageController.text.isEmpty ||
+        childrenNumberController.text.isEmpty ||
+        weightController.text.isEmpty ||
+        heightController.text.isEmpty ||
+        skinColorController.text.isEmpty ||
+        physiqueController.text.isEmpty ||
+        religiousCommitmentController.text.isEmpty ||
+        prayerController.text.isEmpty ||
+        smokingController.text.isEmpty ||
+        hijabController.text.isEmpty ||
+        educationalQualificationController.text.isEmpty ||
+        financialSituationController.text.isEmpty ||
+        jobController.text.isEmpty ||
+        incomeController.text.isEmpty ||
+        healthConditionController.text.isEmpty ||
+        aboutMeController.text.isEmpty ||
+        lifePartnerController.text.isEmpty) {
+      emit(RegisterInformationFailure("جميع الحقول مطلوبة"));
+      return;
+    }
+
     var response = await signupRepo.registerInformation(
       RegisterInformationRequestModel(
         nationalId: int.parse(nationalIdController.text),
@@ -92,20 +120,21 @@ class SignupCubit extends Cubit<SignupState> {
         maritalStatus: maritalStatusController.text,
         typeOfMarriage: typeOfMarriageController.text,
         age: int.parse(ageController.text),
-        childrenNumber: childrenNumberController.text,
+        childrenNumber: int.parse(childrenNumberController.text),
         weight: int.parse(weightController.text),
         height: int.parse(heightController.text),
-        skinColor: skinColorController.text,
-        physique: physiqueController.text,
+        skinColor: int.parse(skinColorController.text),
+        physique: int.parse(physiqueController.text),
         religiousCommitment: religiousCommitmentController.text,
         prayer: prayerController.text,
-        smoking: smokingController.text,
+        smoking: int.parse(smokingController.text),
         hijab: hijabController.text,
-        educationalQualification: educationalQualificationController.text,
-        financialSituation: financialSituationController.text,
+        educationalQualification:
+            int.parse(educationalQualificationController.text),
+        financialSituation: int.parse(financialSituationController.text),
         job: jobController.text,
-        income: incomeController.text,
-        healthCondition: healthConditionController.text,
+        income: int.parse(incomeController.text),
+        healthCondition: int.parse(healthConditionController.text),
         aboutMe: aboutMeController.text,
         lifePartner: lifePartnerController.text,
       ),
