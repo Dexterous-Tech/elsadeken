@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../../core/theme/app_text_styles.dart';
@@ -46,12 +47,19 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                     controller: cubit.ageController,
                     keyboardType: TextInputType.number,
                     hintText: '25',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
+                    ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'العمر مطلوب';
                       }
-                      if (int.tryParse(value) == null) {
+                      final age = int.tryParse(value);
+                      if (age == null) {
                         return 'يرجى إدخال رقم صحيح';
+                      }
+                      if (age > 100) {
+                        return 'العمر لا يمكن أن يتجاوز 100';
                       }
                       return null;
                     },
@@ -72,12 +80,20 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                     controller: cubit.childrenNumberController,
                     keyboardType: TextInputType.number,
                     hintText: '0',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
+                    ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'عدد الأطفال مطلوب';
                       }
-                      if (int.tryParse(value) == null) {
+                      final children = int.tryParse(value);
+
+                      if (children == null) {
                         return 'يرجى إدخال رقم صحيح';
+                      }
+                      if (children > 100) {
+                        return 'عدد الاطفال لا يمكن أن يتجاوز 100';
                       }
                       return null;
                     },
@@ -98,12 +114,19 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                     controller: cubit.weightController,
                     keyboardType: TextInputType.number,
                     hintText: '70',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
+                    ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'الوزن مطلوب';
                       }
-                      if (int.tryParse(value) == null) {
+                      final weight = int.tryParse(value);
+                      if (weight == null) {
                         return 'يرجى إدخال رقم صحيح';
+                      }
+                      if (weight > 200) {
+                        return 'الوزن لا يمكن أن يتجاوز 200';
                       }
                       return null;
                     },
@@ -124,12 +147,19 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                     controller: cubit.heightController,
                     keyboardType: TextInputType.number,
                     hintText: '180',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
+                    ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'الطول مطلوب';
                       }
-                      if (int.tryParse(value) == null) {
+                      final height = int.tryParse(value);
+                      if (height == null) {
                         return 'يرجى إدخال رقم صحيح';
+                      }
+                      if (height > 500) {
+                        return 'لا يمكن ان يصل الطول الي هذا الحد';
                       }
                       return null;
                     },

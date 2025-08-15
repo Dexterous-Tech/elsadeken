@@ -1,11 +1,12 @@
+import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../../core/theme/spacing.dart';
-import '../custom_next_and_previous_button.dart';
 import '../../../manager/signup_cubit.dart';
 import '../../../../data/models/national_country_models.dart';
-import '../../../../../widgets/custom_searchable_list.dart';
+import '../custom_searchable_list.dart';
 
 class SignupNational extends StatefulWidget {
   const SignupNational({
@@ -36,35 +37,29 @@ class _SignupNationalState extends State<SignupNational> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  // Custom Searchable List
-                  Expanded(
-                    child: CustomSearchableList(
-                      listType: ListType.nationality,
-                      selectedItem: _selectedNationality,
-                      onItemSelected: _onNationalitySelected,
-                    ),
-                  ),
-                  verticalSpace(50),
-                  CustomNextAndPreviousButton(
-                    onNextPressed: widget.onNextPressed,
-                    onPreviousPressed: widget.onPreviousPressed,
-                    isNextEnabled: _selectedNationality != null,
-                  ),
-                ],
-              ),
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // Custom Searchable List
+        Expanded(
+          child: CustomSearchableList(
+            listType: ListType.nationality,
+            selectedItem: _selectedNationality,
+            onItemSelected: _onNationalitySelected,
           ),
-        );
-      },
+        ),
+        verticalSpace(50),
+        SizedBox(
+          width: double.infinity,
+          child: CustomElevatedButton(
+            onPressed: widget.onNextPressed,
+            textButton: 'التالي',
+            backgroundColor: _selectedNationality != null
+                ? null // Use default gradient
+                : AppColors.paleBrown.withValues(alpha: 0.5), // Disabled color
+          ),
+        ),
+      ],
     );
   }
 }

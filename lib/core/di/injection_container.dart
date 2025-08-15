@@ -9,11 +9,14 @@ import 'package:elsadeken/features/auth/new_password/data/repo/reset_password_re
 import 'package:elsadeken/features/auth/new_password/presentation/manager/reset_password_cubit.dart';
 import 'package:elsadeken/features/auth/signup/data/data_source/signup_data_source.dart';
 import 'package:elsadeken/features/auth/signup/data/repo/signup_repo.dart';
-import 'package:elsadeken/features/auth/signup/presentation/manager/nationalities_countries_cubit.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:elsadeken/features/auth/verification_email/data/data_source/verification_data_source.dart';
 import 'package:elsadeken/features/auth/verification_email/data/repo/verification_repo.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/manager/verification_cubit.dart';
+import 'package:elsadeken/features/profile/about_us/data/data_source/about_us_data_source.dart';
+import 'package:elsadeken/features/profile/about_us/data/repo/abouts_us_repo.dart';
+import 'package:elsadeken/features/profile/about_us/presentation/manager/about_us_cubit.dart';
 import 'package:elsadeken/features/profile/blog/data/datasources/blog_api.dart';
 import 'package:elsadeken/features/profile/blog/data/repository/blog_repo_impl.dart';
 import 'package:elsadeken/features/profile/blog/domain/repository/blog_repo.dart';
@@ -107,6 +110,10 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<SignupRepoInterface>(
       () => SignupRepoImplementation(sl()));
   sl.registerFactory<SignupCubit>(() => SignupCubit(sl()));
-  sl.registerFactory<NationalitiesCountriesCubit>(
-      () => NationalitiesCountriesCubit(sl()));
+  sl.registerFactory<SignUpListsCubit>(() => SignUpListsCubit(sl()));
+
+  // about us
+  sl.registerLazySingleton<AboutUsDataSource>(() => AboutUsDataSource(sl()));
+  sl.registerLazySingleton<AboutsUsRepoInterface>(() => AboutsUsRepoImpl(sl()));
+  sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
 }

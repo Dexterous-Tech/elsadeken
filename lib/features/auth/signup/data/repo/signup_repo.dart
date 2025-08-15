@@ -6,6 +6,7 @@ import 'package:elsadeken/core/networking/api_error_model.dart';
 import 'package:elsadeken/features/auth/signup/data/data_source/signup_data_source.dart';
 import 'package:elsadeken/features/auth/signup/data/models/cities_models.dart';
 import 'package:elsadeken/features/auth/signup/data/models/national_country_models.dart';
+import 'package:elsadeken/features/auth/signup/data/models/general_info_models.dart';
 import 'package:elsadeken/features/auth/signup/data/models/signup_models.dart';
 
 abstract class SignupRepoInterface {
@@ -14,6 +15,8 @@ abstract class SignupRepoInterface {
   Future<Either<ApiErrorModel, List<NationalCountryResponseModel>>>
       getCountries();
   Future<Either<ApiErrorModel, List<CityResponseModels>>> getCites(String id);
+  Future<Either<ApiErrorModel, List<GeneralInfoResponseModels>>> getGeneralInfo(
+      String endpoint);
   Future<Either<ApiErrorModel, SignupResponseModel>> signup(
       SignupRequestBodyModel signupRequestBody);
   Future<Either<ApiErrorModel, RegisterInformationResponseModel>>
@@ -101,6 +104,21 @@ class SignupRepoImplementation implements SignupRepoInterface {
         return Left(error);
       }
       // Fallback (shouldn't normally happen)
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, List<GeneralInfoResponseModels>>> getGeneralInfo(
+      String endpoint) async {
+    try {
+      var response = await _signupDataSource.getGeneralInfo(endpoint);
+      return Right(response);
+    } catch (error) {
+      log("error in general info $endpoint $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
       return Left(ApiErrorHandler.handle(error));
     }
   }

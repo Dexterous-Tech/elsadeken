@@ -31,6 +31,19 @@ class _NewPasswordFormState extends State<NewPasswordForm> {
           Text(
             'كلمه المرور الجديده',
             textDirection: TextDirection.rtl,
+            style: AppTextStyles.font27ChineseBlackBoldLamaSans(context),
+          ),
+          Text(
+            'قم بادخال كمله مرور جديده وقويه',
+            textDirection: TextDirection.rtl,
+            style: AppTextStyles.font14BeerMediumLamaSans(
+              context,
+            ).copyWith(color: AppColors.outerSpace),
+          ),
+          verticalSpace(24),
+          Text(
+            'كلمه المرور الجديده',
+            textDirection: TextDirection.rtl,
             style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans(context),
           ),
           verticalSpace(8),
@@ -45,7 +58,7 @@ class _NewPasswordFormState extends State<NewPasswordForm> {
               }
               return null;
             },
-            prefixIcon: IconButton(
+            suffixIcon: IconButton(
               onPressed: () {
                 setState(() {
                   obscurePassword = !obscurePassword;
@@ -81,7 +94,7 @@ class _NewPasswordFormState extends State<NewPasswordForm> {
               }
               return null;
             },
-            prefixIcon: IconButton(
+            suffixIcon: IconButton(
               onPressed: () {
                 setState(() {
                   obscureConfirmPassword = !obscureConfirmPassword;
@@ -96,7 +109,9 @@ class _NewPasswordFormState extends State<NewPasswordForm> {
               ),
             ),
           ),
-          verticalSpace(58),
+          Expanded(
+            child: Container(), // This will take up remaining space
+          ),
           CustomElevatedButton(
             onPressed: () {
               if (cubit.formKey.currentState!.validate()) {

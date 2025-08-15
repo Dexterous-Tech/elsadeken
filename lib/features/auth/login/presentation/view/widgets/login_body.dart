@@ -16,18 +16,22 @@ class LoginBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomAuthBody(cardContent: BlocListener<LoginCubit, LoginState>(
+    return CustomAuthBody(
+        cardContent: BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
-        if(state is LoginLoading){
+        if (state is LoginLoading) {
           loadingDialog(context);
-        }else if(state is LoginFailure){
+        } else if (state is LoginFailure) {
           context.pop();
           errorDialog(context: context, error: state.errorMessage);
-        }else if(state is LoginSuccess){
+        } else if (state is LoginSuccess) {
           context.pop();
-          successDialog(context: context, message: state.loginResponseModel.message, onPressed: (){
-            context.pushNamed(AppRoutes.homeScreen);
-          });
+          successDialog(
+              context: context,
+              message: state.loginResponseModel.message,
+              onPressed: () {
+                context.pushNamedAndRemoveUntil(AppRoutes.homeScreen);
+              });
         }
       },
       child: LoginForm(),

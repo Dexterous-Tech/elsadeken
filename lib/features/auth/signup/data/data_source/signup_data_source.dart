@@ -1,6 +1,7 @@
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
 import 'package:elsadeken/features/auth/signup/data/models/national_country_models.dart';
+import 'package:elsadeken/features/auth/signup/data/models/general_info_models.dart';
 import 'package:elsadeken/features/auth/signup/data/models/cities_models.dart';
 import 'package:elsadeken/features/auth/signup/data/models/signup_models.dart';
 
@@ -41,6 +42,18 @@ class SignupDataSource {
     List<CityResponseModels> cities =
         jsonList.map((json) => CityResponseModels.fromJson(json)).toList();
     return cities;
+  }
+
+  Future<List<GeneralInfoResponseModels>> getGeneralInfo(
+      String endpoint) async {
+    var response = await _apiServices.get(endpoint: endpoint);
+
+    List<dynamic> jsonList = response.data;
+
+    List<GeneralInfoResponseModels> skinColors = jsonList
+        .map((json) => GeneralInfoResponseModels.fromJson(json))
+        .toList();
+    return skinColors;
   }
 
   Future<SignupResponseModel> signup(

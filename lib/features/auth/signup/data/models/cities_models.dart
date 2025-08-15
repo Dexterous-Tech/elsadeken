@@ -1,4 +1,4 @@
-import '../../../widgets/custom_searchable_list.dart';
+import '../../presentation/view/widgets/custom_searchable_list.dart';
 
 class CityResponseModels with ListItemModel {
   CityResponseModels({

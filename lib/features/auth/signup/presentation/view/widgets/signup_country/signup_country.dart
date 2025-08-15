@@ -5,7 +5,7 @@ import '../../../../../../../core/theme/spacing.dart';
 import '../custom_next_and_previous_button.dart';
 import '../../../manager/signup_cubit.dart';
 import '../../../../data/models/national_country_models.dart';
-import '../../../../../widgets/custom_searchable_list.dart';
+import '../custom_searchable_list.dart';
 
 class SignupCountry extends StatefulWidget {
   const SignupCountry({
@@ -36,35 +36,24 @@ class _SignupCountryState extends State<SignupCountry> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  // Custom Searchable List
-                  Expanded(
-                    child: CustomSearchableList(
-                      listType: ListType.country,
-                      selectedItem: _selectedCountry,
-                      onItemSelected: _onCountrySelected,
-                    ),
-                  ),
-                  verticalSpace(50),
-                  CustomNextAndPreviousButton(
-                    onNextPressed: widget.onNextPressed,
-                    onPreviousPressed: widget.onPreviousPressed,
-                    isNextEnabled: _selectedCountry != null,
-                  ),
-                ],
-              ),
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // Custom Searchable List
+        Expanded(
+          child: CustomSearchableList(
+            listType: ListType.country,
+            selectedItem: _selectedCountry,
+            onItemSelected: _onCountrySelected,
           ),
-        );
-      },
+        ),
+        verticalSpace(50),
+        CustomNextAndPreviousButton(
+          onNextPressed: widget.onNextPressed,
+          onPreviousPressed: widget.onPreviousPressed,
+          isNextEnabled: _selectedCountry != null,
+        ),
+      ],
     );
   }
 }
