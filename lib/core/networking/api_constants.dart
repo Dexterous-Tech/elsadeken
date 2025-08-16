@@ -12,6 +12,8 @@ class ApiConstants {
   static String listCountries = '/user/list/countries';
   static String listCities(String id) => '/user/list/cities/$id';
   static String likeUser(String id) => '/user/like/user/$id';
+  static String favUserList = '/user/like/list';
+  static String interestingList = '/user/liked/people-list';
   static String skinColors = '/user/list/skin-colors';
   static String physiques = '/user/list/physiques';
   static String qualifications = '/user/list/qualifications';

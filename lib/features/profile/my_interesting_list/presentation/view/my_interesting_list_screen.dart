@@ -1,13 +1,19 @@
+import 'package:elsadeken/core/di/injection_container.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/intersting_list_cubit.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/widgets/my_interesting_list_body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyInterestingListScreen extends StatelessWidget {
   const MyInterestingListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: MyInterestingListBody(),
+    return BlocProvider(
+      create: (context) => sl<InterestingListCubit>(),
+      child: Scaffold(
+        body: MyInterestingListBody(),
+      ),
     );
   }
 }

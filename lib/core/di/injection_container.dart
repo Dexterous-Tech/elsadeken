@@ -22,6 +22,12 @@ import 'package:elsadeken/features/profile/blog/data/repository/blog_repo_impl.d
 import 'package:elsadeken/features/profile/blog/domain/repository/blog_repo.dart';
 import 'package:elsadeken/features/profile/blog/domain/use_cases/get_blog_posts.dart';
 import 'package:elsadeken/features/profile/blog/presentation/cubit/blog_cubit.dart';
+import 'package:elsadeken/features/profile/interests_list/data/data_source/fav_user_data_source.dart';
+import 'package:elsadeken/features/profile/interests_list/data/repo/fav_user_repo.dart';
+import 'package:elsadeken/features/profile/interests_list/presentation/manager/fav_user_cubit.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/data/data_source/interesting_list_data_source.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/data/repo/interresting_list_repo.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/intersting_list_cubit.dart';
 import 'package:elsadeken/features/profile/profile_details/data/data_source/like_user_data_source.dart';
 import 'package:elsadeken/features/profile/profile_details/data/repo/like_user_repo.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/like_user_cubit.dart';
@@ -124,4 +130,14 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<LikeUserDataSource>(() => LikeUserDataSource(sl()));
   sl.registerLazySingleton<LikeUserRepoInterface>(() => LikeUserRepoImpl(sl()));
   sl.registerFactory<LikeUserCubit>(() => LikeUserCubit(sl()));
+
+    // My Intersets Users
+  sl.registerLazySingleton<FavUserDataSource>(() => FavUserDataSource(sl()));
+  sl.registerLazySingleton<FavUserRepoInterface>(() => FavUserRepoImpl(sl()));
+  sl.registerFactory<FavUserCubit>(() => FavUserCubit(sl()));
+
+      // My Interseting Users
+  sl.registerLazySingleton<InterestingListDataSource>(() => InterestingListDataSource(sl()));
+  sl.registerLazySingleton<InterrestingListRepo>(() => InterestingRepoImpl(sl()));
+  sl.registerFactory<InterestingListCubit>(() => InterestingListCubit(sl()));
 }
