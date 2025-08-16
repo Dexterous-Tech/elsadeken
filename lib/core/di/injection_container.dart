@@ -22,6 +22,9 @@ import 'package:elsadeken/features/profile/blog/data/repository/blog_repo_impl.d
 import 'package:elsadeken/features/profile/blog/domain/repository/blog_repo.dart';
 import 'package:elsadeken/features/profile/blog/domain/use_cases/get_blog_posts.dart';
 import 'package:elsadeken/features/profile/blog/presentation/cubit/blog_cubit.dart';
+import 'package:elsadeken/features/profile/profile/data/data_source/profile_data_source.dart';
+import 'package:elsadeken/features/profile/profile/data/repo/profile_repo.dart';
+import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
 import 'package:elsadeken/features/profile/success_stories/data/datasources/success_story_api.dart';
 import 'package:elsadeken/features/profile/success_stories/data/repository/success_story_repo_impl.dart';
 import 'package:elsadeken/features/profile/success_stories/domain/repository/success_storie_repo.dart';
@@ -116,4 +119,9 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<AboutUsDataSource>(() => AboutUsDataSource(sl()));
   sl.registerLazySingleton<AboutsUsRepoInterface>(() => AboutsUsRepoImpl(sl()));
   sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
+
+  // profile
+  sl.registerLazySingleton<ProfileDataSource>(() => ProfileDataSource(sl()));
+  sl.registerLazySingleton<ProfileRepoInterface>(() => ProfileRepoImp(sl()));
+  sl.registerFactory<ProfileCubit>(() => ProfileCubit(sl()));
 }

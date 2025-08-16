@@ -18,6 +18,7 @@ class ApiConstants {
   static String healthConditions = '/user/list/health-conditions';
   static String signup = '/user/register';
   static String registerInformation = '/user/attributes';
+  static String logout = '/user/logout';
 
   // profile
   static String aboutUs = '/user/aboutUs';

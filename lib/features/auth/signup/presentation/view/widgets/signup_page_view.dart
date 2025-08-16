@@ -1,8 +1,4 @@
-import 'package:elsadeken/core/di/injection_container.dart';
-import 'package:elsadeken/core/helper/extensions.dart';
-import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/widgets/custom_page_view.dart';
-import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_additions/signup_additions.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_body/signup_body_shape.dart';
@@ -18,7 +14,6 @@ import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_religion/signup_religion.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_social_status/signup_social_status.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignupPageView extends StatefulWidget {
   const SignupPageView({

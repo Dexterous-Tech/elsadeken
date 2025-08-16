@@ -35,7 +35,6 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
     } else {
       return {
         'single': 'عزباء',
-        'married': 'متزوجة',
         'divorced': 'مطلقة',
         'widwed': 'أرملة',
       };
