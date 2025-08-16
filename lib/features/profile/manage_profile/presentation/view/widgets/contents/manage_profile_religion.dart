@@ -4,10 +4,19 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
+import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 
 class ManageProfileReligion extends StatelessWidget {
-  const ManageProfileReligion({super.key});
+  const ManageProfileReligion({
+    super.key,
+    this.profileData,
+    this.isLoading = false,
+  });
+
+  final MyProfileDataModel? profileData;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -16,35 +25,40 @@ class ManageProfileReligion extends StatelessWidget {
       children: [
         ManageProfileContentItem(
           title: 'الإلتزام الديني',
-          itemContent: _itemContent('متدينة كثرا'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.religiousCommitment ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'الصلاة',
-          itemContent: _itemContent('اصلي دائما'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.prayer ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'التدخين',
-          itemContent: _itemContent('لأ'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.smoking ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'الحجاب',
-          itemContent: _itemContent('افضل ان اقول لا'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.hijab ?? '',
+            isLoading: isLoading,
+          ),
         ),
         verticalSpace(20),
         ManageProfileEditButton(
-          onPressed: () => _showReligionEditDialog(context),
+          onPressed: isLoading ? null : () => _showReligionEditDialog(context),
         )
       ],
-    );
-  }
-
-  Widget _itemContent(String title) {
-    return Text(
-      title,
-      style: AppTextStyles.font18PhilippineBronzeRegularPlexSans,
     );
   }
 
@@ -55,7 +69,7 @@ class ManageProfileReligion extends StatelessWidget {
         ManageProfileField(
           label: 'الإلتزام الديني',
           hint: 'اختر مستوى الالتزام الديني',
-          currentValue: 'متدينة كثرا',
+          currentValue: profileData?.attribute?.religiousCommitment ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'غير متدينة',
@@ -68,7 +82,7 @@ class ManageProfileReligion extends StatelessWidget {
         ManageProfileField(
           label: 'الصلاة',
           hint: 'اختر حالة الصلاة',
-          currentValue: 'اصلي دائما',
+          currentValue: profileData?.attribute?.prayer ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'اصلي دائما',
@@ -79,7 +93,7 @@ class ManageProfileReligion extends StatelessWidget {
         ManageProfileField(
           label: 'التدخين',
           hint: 'اختر حالة التدخين',
-          currentValue: 'لأ',
+          currentValue: profileData?.attribute?.smoking ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'نعم',
@@ -89,7 +103,7 @@ class ManageProfileReligion extends StatelessWidget {
         ManageProfileField(
           label: 'الحجاب',
           hint: 'اختر حالة الحجاب',
-          currentValue: 'افضل ان اقول لا',
+          currentValue: profileData?.attribute?.hijab ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'محجبة',

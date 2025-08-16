@@ -4,10 +4,19 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
+import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 
 class ManageProfileMaritalStatus extends StatelessWidget {
-  const ManageProfileMaritalStatus({super.key});
+  const ManageProfileMaritalStatus({
+    super.key,
+    this.profileData,
+    this.isLoading = false,
+  });
+
+  final MyProfileDataModel? profileData;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -16,35 +25,41 @@ class ManageProfileMaritalStatus extends StatelessWidget {
       children: [
         ManageProfileContentItem(
           title: 'حالة الحساب',
-          itemContent: _itemContent('مطلقة'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.maritalStatus ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'نوع الزواج',
-          itemContent: _itemContent('الزوجة الوحيدة'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.typeOfMarriage ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'العمر',
-          itemContent: _itemContent('23'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.age?.toString() ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'الاطفال',
-          itemContent: _itemContent('0'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.children?.toString() ?? '',
+            isLoading: isLoading,
+          ),
         ),
         verticalSpace(20),
         ManageProfileEditButton(
-          onPressed: () => _showMaritalStatusEditDialog(context),
+          onPressed:
+              isLoading ? null : () => _showMaritalStatusEditDialog(context),
         )
       ],
-    );
-  }
-
-  Widget _itemContent(String title) {
-    return Text(
-      title,
-      style: AppTextStyles.font18PhilippineBronzeRegularPlexSans,
     );
   }
 
@@ -55,7 +70,7 @@ class ManageProfileMaritalStatus extends StatelessWidget {
         ManageProfileField(
           label: 'حالة الحساب',
           hint: 'اختر الحالة الاجتماعية',
-          currentValue: 'مطلقة',
+          currentValue: profileData?.attribute?.maritalStatus ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'عزباء',
@@ -67,7 +82,7 @@ class ManageProfileMaritalStatus extends StatelessWidget {
         ManageProfileField(
           label: 'نوع الزواج',
           hint: 'اختر نوع الزواج',
-          currentValue: 'الزوجة الوحيدة',
+          currentValue: profileData?.attribute?.typeOfMarriage ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'الزوجة الوحيدة',
@@ -77,14 +92,14 @@ class ManageProfileMaritalStatus extends StatelessWidget {
         ManageProfileField(
           label: 'العمر',
           hint: 'أدخل العمر',
-          currentValue: '23',
+          currentValue: profileData?.attribute?.age?.toString() ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.number,
         ),
         ManageProfileField(
           label: 'الاطفال',
           hint: 'أدخل عدد الأطفال',
-          currentValue: '0',
+          currentValue: profileData?.attribute?.children?.toString() ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.number,
         ),

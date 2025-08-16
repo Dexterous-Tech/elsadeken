@@ -22,4 +22,5 @@ class ApiConstants {
 
   // profile
   static String aboutUs = '/user/aboutUs';
+  static String getProfile = '/user/profile';
 }

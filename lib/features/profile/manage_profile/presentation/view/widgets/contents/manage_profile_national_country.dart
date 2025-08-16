@@ -1,13 +1,21 @@
-import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
+import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 import 'package:flutter/material.dart';
 import '../manage_profile_content_item.dart';
 import '../manage_profile_custom_separator.dart';
 
 class ManageProfileNationalCountry extends StatelessWidget {
-  const ManageProfileNationalCountry({super.key});
+  const ManageProfileNationalCountry({
+    super.key,
+    this.profileData,
+    this.isLoading = false,
+  });
+
+  final MyProfileDataModel? profileData;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -16,30 +24,33 @@ class ManageProfileNationalCountry extends StatelessWidget {
       children: [
         ManageProfileContentItem(
           title: 'الجنسية',
-          itemContent: _itemContent('السعودية'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.nationality ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'الدولة',
-          itemContent: _itemContent('السعودية'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.country ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'المدينة',
-          itemContent: _itemContent('الرياض'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.city ?? '',
+            isLoading: isLoading,
+          ),
         ),
         verticalSpace(20),
         ManageProfileEditButton(
-          onPressed: () => _showNationalCountryEditDialog(context),
+          onPressed:
+              isLoading ? null : () => _showNationalCountryEditDialog(context),
         )
       ],
-    );
-  }
-
-  Widget _itemContent(String title) {
-    return Text(
-      title,
-      style: AppTextStyles.font18PhilippineBronzeRegularPlexSans,
     );
   }
 
@@ -50,7 +61,7 @@ class ManageProfileNationalCountry extends StatelessWidget {
         ManageProfileField(
           label: 'الجنسية',
           hint: 'اختر الجنسية',
-          currentValue: 'السعودية',
+          currentValue: profileData?.attribute?.nationality ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'السعودية',
@@ -80,7 +91,7 @@ class ManageProfileNationalCountry extends StatelessWidget {
         ManageProfileField(
           label: 'الدولة',
           hint: 'اختر الدولة',
-          currentValue: 'السعودية',
+          currentValue: profileData?.attribute?.country ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'السعودية',
@@ -110,7 +121,7 @@ class ManageProfileNationalCountry extends StatelessWidget {
         ManageProfileField(
           label: 'المدينة',
           hint: 'اختر المدينة',
-          currentValue: 'الرياض',
+          currentValue: profileData?.attribute?.city ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'الرياض',

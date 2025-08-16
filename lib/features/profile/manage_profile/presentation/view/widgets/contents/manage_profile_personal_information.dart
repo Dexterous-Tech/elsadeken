@@ -4,10 +4,19 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
+import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 
 class ManageProfilePersonalInformation extends StatelessWidget {
-  const ManageProfilePersonalInformation({super.key});
+  const ManageProfilePersonalInformation({
+    super.key,
+    this.profileData,
+    this.isLoading = false,
+  });
+
+  final MyProfileDataModel? profileData;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -16,25 +25,25 @@ class ManageProfilePersonalInformation extends StatelessWidget {
       children: [
         ManageProfileContentItem(
           title: 'الإسم الكامل',
-          itemContent: _itemContent('ملك محمد'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.name ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'رقم الهاتف',
-          itemContent: _itemContent('0122356666'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.phone ?? '',
+            isLoading: isLoading,
+          ),
         ),
         verticalSpace(20),
         ManageProfileEditButton(
-          onPressed: () => _showPersonalInfoEditDialog(context),
+          onPressed:
+              isLoading ? null : () => _showPersonalInfoEditDialog(context),
         )
       ],
-    );
-  }
-
-  Widget _itemContent(String title) {
-    return Text(
-      title,
-      style: AppTextStyles.font18PhilippineBronzeRegularPlexSans,
     );
   }
 
@@ -45,14 +54,14 @@ class ManageProfilePersonalInformation extends StatelessWidget {
         ManageProfileField(
           label: 'الإسم الكامل',
           hint: 'أدخل الإسم الكامل',
-          currentValue: 'ملك محمد',
+          currentValue: profileData?.name ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.text,
         ),
         ManageProfileField(
           label: 'رقم الهاتف',
           hint: 'أدخل رقم الهاتف',
-          currentValue: '0122356666',
+          currentValue: profileData?.phone ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.phone,
         ),

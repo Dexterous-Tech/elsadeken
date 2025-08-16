@@ -4,10 +4,19 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
+import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 
 class ManageProfileAppearance extends StatelessWidget {
-  const ManageProfileAppearance({super.key});
+  const ManageProfileAppearance({
+    super.key,
+    this.profileData,
+    this.isLoading = false,
+  });
+
+  final MyProfileDataModel? profileData;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -16,35 +25,41 @@ class ManageProfileAppearance extends StatelessWidget {
       children: [
         ManageProfileContentItem(
           title: 'الزون(كغ)',
-          itemContent: _itemContent('60'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.weight?.toString() ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'الطول(سم)',
-          itemContent: _itemContent('166'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.height?.toString() ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'لون البشرة',
-          itemContent: _itemContent('حنطي مائل للبياض'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.skinColor ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'بنية الجسم',
-          itemContent: _itemContent('سمينة'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.physique ?? '',
+            isLoading: isLoading,
+          ),
         ),
         verticalSpace(20),
         ManageProfileEditButton(
-          onPressed: () => _showAppearanceEditDialog(context),
+          onPressed:
+              isLoading ? null : () => _showAppearanceEditDialog(context),
         )
       ],
-    );
-  }
-
-  Widget _itemContent(String title) {
-    return Text(
-      title,
-      style: AppTextStyles.font18PhilippineBronzeRegularPlexSans,
     );
   }
 
@@ -55,21 +70,21 @@ class ManageProfileAppearance extends StatelessWidget {
         ManageProfileField(
           label: 'الزون(كغ)',
           hint: 'أدخل الوزن بالكيلوغرام',
-          currentValue: '60',
+          currentValue: profileData?.attribute?.weight?.toString() ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.number,
         ),
         ManageProfileField(
           label: 'الطول(سم)',
           hint: 'أدخل الطول بالسنتيمتر',
-          currentValue: '166',
+          currentValue: profileData?.attribute?.height?.toString() ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.number,
         ),
         ManageProfileField(
           label: 'لون البشرة',
           hint: 'اختر لون البشرة',
-          currentValue: 'حنطي مائل للبياض',
+          currentValue: profileData?.attribute?.skinColor ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'أبيض',
@@ -83,7 +98,7 @@ class ManageProfileAppearance extends StatelessWidget {
         ManageProfileField(
           label: 'بنية الجسم',
           hint: 'اختر بنية الجسم',
-          currentValue: 'سمينة',
+          currentValue: profileData?.attribute?.physique ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'نحيفة',

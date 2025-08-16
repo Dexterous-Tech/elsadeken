@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 class ManageProfileEditButton extends StatelessWidget {
   const ManageProfileEditButton({
     super.key,
-    required this.onPressed,
+    this.onPressed,
   });
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
         width: double.infinity,
         child: CustomElevatedButton(
-          onPressed: onPressed,
+          onPressed: onPressed ?? () {},
           textButton: 'تعديل',
         ));
   }

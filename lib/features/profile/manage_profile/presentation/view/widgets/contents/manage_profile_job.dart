@@ -4,10 +4,19 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
+import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 
 class ManageProfileJob extends StatelessWidget {
-  const ManageProfileJob({super.key});
+  const ManageProfileJob({
+    super.key,
+    this.profileData,
+    this.isLoading = false,
+  });
+
+  final MyProfileDataModel? profileData;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -16,48 +25,57 @@ class ManageProfileJob extends StatelessWidget {
       children: [
         ManageProfileContentItem(
           title: 'المؤهل التعليمي ',
-          itemContent: _itemContent('دراسة جامعية'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.qualification ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'الوضع المادي',
-          itemContent: _itemContent('متوسط'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.financialSituation ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'مجال العمل',
-          itemContent: _itemContent('مجال النقل'),
+          itemContent: ManageProfileContentText(
+            text:
+                'مجال النقل', // This field is not in the model, keeping default
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'الوظيفة',
-          itemContent: Text(
-            'مبرمجة',
-            style: AppTextStyles.font18PhilippineBronzeRegularPlexSans,
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.job ?? '',
+            isLoading: isLoading,
           ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'الدخل الشهري',
-          itemContent: _itemContent('أقل من 2000 ريال'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.income?.toString() ?? '',
+            isLoading: isLoading,
+          ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'الحالة الصحية',
-          itemContent: _itemContent('بهاق'),
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.healthCondition ?? '',
+            isLoading: isLoading,
+          ),
         ),
         verticalSpace(20),
         ManageProfileEditButton(
-          onPressed: () => _showJobEditDialog(context),
+          onPressed: isLoading ? null : () => _showJobEditDialog(context),
         )
       ],
-    );
-  }
-
-  Widget _itemContent(String title) {
-    return Text(
-      title,
-      style: AppTextStyles.font18PhilippineBronzeRegularPlexSans,
     );
   }
 
@@ -68,7 +86,7 @@ class ManageProfileJob extends StatelessWidget {
         ManageProfileField(
           label: 'المؤهل التعليمي',
           hint: 'اختر المؤهل التعليمي',
-          currentValue: 'دراسة جامعية',
+          currentValue: profileData?.attribute?.qualification ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'ابتدائي',
@@ -82,7 +100,7 @@ class ManageProfileJob extends StatelessWidget {
         ManageProfileField(
           label: 'الوضع المادي',
           hint: 'اختر الوضع المادي',
-          currentValue: 'متوسط',
+          currentValue: profileData?.attribute?.financialSituation ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'ضعيف',
@@ -110,14 +128,14 @@ class ManageProfileJob extends StatelessWidget {
         ManageProfileField(
           label: 'الوظيفة',
           hint: 'أدخل الوظيفة',
-          currentValue: 'مبرمجة',
+          currentValue: profileData?.attribute?.job ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.text,
         ),
         ManageProfileField(
           label: 'الدخل الشهري',
           hint: 'اختر الدخل الشهري',
-          currentValue: 'أقل من 2000 ريال',
+          currentValue: profileData?.attribute?.income?.toString() ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'أقل من 2000 ريال',
@@ -130,7 +148,7 @@ class ManageProfileJob extends StatelessWidget {
         ManageProfileField(
           label: 'الحالة الصحية',
           hint: 'اختر الحالة الصحية',
-          currentValue: 'بهاق',
+          currentValue: profileData?.attribute?.healthCondition ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
             'ممتازة',
