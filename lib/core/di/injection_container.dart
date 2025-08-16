@@ -22,6 +22,9 @@ import 'package:elsadeken/features/profile/blog/data/repository/blog_repo_impl.d
 import 'package:elsadeken/features/profile/blog/domain/repository/blog_repo.dart';
 import 'package:elsadeken/features/profile/blog/domain/use_cases/get_blog_posts.dart';
 import 'package:elsadeken/features/profile/blog/presentation/cubit/blog_cubit.dart';
+import 'package:elsadeken/features/profile/profile_details/data/data_source/like_user_data_source.dart';
+import 'package:elsadeken/features/profile/profile_details/data/repo/like_user_repo.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/like_user_cubit.dart';
 import 'package:elsadeken/features/profile/success_stories/data/datasources/success_story_api.dart';
 import 'package:elsadeken/features/profile/success_stories/data/repository/success_story_repo_impl.dart';
 import 'package:elsadeken/features/profile/success_stories/domain/repository/success_storie_repo.dart';
@@ -116,4 +119,9 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<AboutUsDataSource>(() => AboutUsDataSource(sl()));
   sl.registerLazySingleton<AboutsUsRepoInterface>(() => AboutsUsRepoImpl(sl()));
   sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
+
+  // Like User
+  sl.registerLazySingleton<LikeUserDataSource>(() => LikeUserDataSource(sl()));
+  sl.registerLazySingleton<LikeUserRepoInterface>(() => LikeUserRepoImpl(sl()));
+  sl.registerFactory<LikeUserCubit>(() => LikeUserCubit(sl()));
 }

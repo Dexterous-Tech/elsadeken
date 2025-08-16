@@ -1,17 +1,20 @@
-import 'package:elsadeken/core/helper/extensions.dart';
-import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
-import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/like_user_cubit.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/like_user_state.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/custom_container.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_card.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_card_item.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_logo.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 
 class ProfileDetailsBody extends StatelessWidget {
   ProfileDetailsBody({super.key});
@@ -101,28 +104,56 @@ class ProfileDetailsBody extends StatelessWidget {
             ProfileDetailsLogo(),
             verticalSpace(20),
             Row(
+              spacing: 37.75,
               textDirection: TextDirection.rtl,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Flexible(
-                  child: CustomElevatedButton(
-                    onPressed: () {
-                      context.pushNamed(AppRoutes.manageProfileScreen);
-                    },
-                    textButton: 'ادارة حساب',
-                    radius: 100,
-                    verticalPadding: 12,
-                  ),
+                CustomContainer(
+                  img: AppImages.share,
+                  color: AppColors.lightBlue.withOpacity(0.07),
+                  text: 'مشاركة',
                 ),
-                horizontalSpace(16),
-                Flexible(
-                  child: CustomElevatedButton(
-                    onPressed: () {},
-                    textButton: 'باقة التميز',
-                    radius: 100,
-                    backgroundColor: AppColors.sunray,
-                    verticalPadding: 12,
-                  ),
+                BlocBuilder<LikeUserCubit, LikeUserState>(
+                  buildWhen: (previous, current) =>
+                      current is LikeUserLoading ||
+                      current is LikeUserFailure ||
+                      current is LikeUserSuccess,
+                  builder: (context, state) {
+                    if (state is LikeUserFailure) {
+                      return Expanded(
+                          child: Center(
+                        child: Text(
+                          state.error,
+                          style: AppTextStyles.font20LightOrangeMediumPlexSans
+                              .copyWith(color: AppColors.red),
+                        ),
+                      ));
+                    } else {
+                      return CustomContainer(
+                        img: AppImages.like,
+                        color: AppColors.lightPink.withOpacity(0.07),
+                        text: 'اهتمام',
+                        onTap: () {
+                          context.read<LikeUserCubit>().likeUser("3");
+                        },
+                      );
+                    }
+                  },
+                ),
+                CustomContainer(
+                  img: AppImages.thumbDown,
+                  color: AppColors.lightPink.withOpacity(0.07),
+                  text: 'تجاهل',
+                ),
+                CustomContainer(
+                  img: AppImages.message,
+                  color: AppColors.orangeLight.withOpacity(0.07),
+                  text: 'رسائل',
+                ),
+                CustomContainer(
+                  img: AppImages.block,
+                  color: AppColors.lightRed.withOpacity(0.07),
+                  text: 'ابلاغ',
                 ),
               ],
             ),

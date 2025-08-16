@@ -13,6 +13,14 @@ class AppTextStyles {
         fontFamily: FontFamilyHelper.plexSansArabic,
       );
 
+  static TextStyle font11GreyRegularlamaSansArabic(BuildContext context) =>
+      TextStyle(
+        fontWeight: FontWeightHelper.regular,
+        fontSize: 11.sp,
+        color: AppColors.grey,
+        fontFamily: FontFamilyHelper.lamaSansArabic,
+      );
+
   static TextStyle font26BlackRegularPlexSans(BuildContext context) =>
       TextStyle(
         fontWeight: FontWeightHelper.regular,

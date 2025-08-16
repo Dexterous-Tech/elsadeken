@@ -100,4 +100,16 @@ class AppImages {
       '${AppConstants.blogPath}success2.png';
   static  String userBlog =
       '${AppConstants.blogPath}user.png';
+
+  //Profile Details
+  static  String block =
+      '${AppConstants.profileAssetsPath}block.png';
+  static  String like =
+      '${AppConstants.profileAssetsPath}like.png';
+  static  String share =
+      '${AppConstants.profileAssetsPath}share.png';
+  static  String message =
+      '${AppConstants.profileAssetsPath}message.png';
+  static  String thumbDown =
+      '${AppConstants.profileAssetsPath}thumb-down.png';
 }
