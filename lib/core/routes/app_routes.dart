@@ -6,11 +6,14 @@ class AppRoutes {
   static const String forgetPasswordScreen = '/forgetPasswordScreen';
   static const String verificationEmailScreen = '/verificationEmailScreen';
   static const String newPasswordScreen = '/newPasswordScreen';
-  static const String profileScreen = '/profileScreen';
-  static const String manageProfileScreen = '/manageProfileScreen';
   static const String searchScreen = '/searchScreen';
   static const String homeScreen = '/homeScreen';
+  static const String notificationScreen = '/notificationScreen';
+
   static const String searchResultScreen = '/searchResultScreen';
+
+  static const String profileScreen = '/profileScreen';
+  static const String manageProfileScreen = '/manageProfileScreen';
   static const String profileDetailsScreen = '/profileDetailsScreen';
   static const String profileAboutUsScreen = '/profileAboutUsScreen';
   static const String profileExcellencePackageScreen =
@@ -28,4 +31,6 @@ class AppRoutes {
   static const String profileTechnicalSupportScreen =
       '/profileTechnicalSupportScreen';
   static const String profileMyImageScreen = '/profileMyImageScreen';
+  static const String blogScreen = '/blogScreen';
+  static const String successStoriesScreen = '/successStoriesScreen';
 }

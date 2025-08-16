@@ -57,7 +57,7 @@ class OnBoardingBody extends StatelessWidget {
                   onPressed: () {
                     oathDialog(context: context);
                   },
-                  verticalPadding: 17.h,
+                  // verticalPadding: 17.h,
                   buttonWidget: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
