@@ -82,11 +82,11 @@ class CustomTextFormField extends StatelessWidget {
         decoration: InputDecoration(
           hintTextDirection: TextDirection.rtl,
           hintText: hintText,
-          hintStyle: hintStyle ??
-              AppTextStyles.font16ChineseBlackMediumLamaSans(context),
+          hintStyle:
+              hintStyle ?? AppTextStyles.font16ChineseBlackMediumLamaSans,
           labelText: labelText,
-          labelStyle: labelStyle ??
-              AppTextStyles.font16ChineseBlackMediumLamaSans(context),
+          labelStyle:
+              labelStyle ?? AppTextStyles.font16ChineseBlackMediumLamaSans,
           suffixIcon: suffixIcon,
           prefixIcon: prefixIcon,
           isDense: true,

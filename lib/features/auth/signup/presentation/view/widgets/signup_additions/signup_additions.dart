@@ -90,8 +90,8 @@ class _SignupAdditionsState extends State<SignupAdditions> {
                         }
                       }),
 
-            verticalSpace(50),
-            Spacer(),
+                  verticalSpace(50),
+                  Spacer(),
 
                   CustomNextAndPreviousButton(
                     onNextPressed: widget.onNextPressed,

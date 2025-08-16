@@ -61,13 +61,12 @@ class AppTextStyles {
         fontFamily: FontFamilyHelper.lamaSansArabic,
       );
 
-  static TextStyle font16ChineseBlackMediumLamaSans(BuildContext context) =>
-      TextStyle(
-        fontWeight: FontWeightHelper.medium,
-        fontSize: 16.sp,
-        color: AppColors.chineseBlack,
-        fontFamily: FontFamilyHelper.lamaSansArabic,
-      );
+  static TextStyle font16ChineseBlackMediumLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.medium,
+    fontSize: 16.sp,
+    color: AppColors.chineseBlack,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
 
   static TextStyle font12SilverPinkMediumLamaSans(BuildContext context) =>
       TextStyle(
@@ -145,15 +144,12 @@ class AppTextStyles {
         fontFamily: FontFamilyHelper.plexSansArabic,
       );
 
-  static TextStyle font18PhilippineBronzeRegularPlexSans(
-    BuildContext context,
-  ) =>
-      TextStyle(
-        fontWeight: FontWeightHelper.regular,
-        fontSize: 18.sp,
-        color: AppColors.philippineBronze,
-        fontFamily: FontFamilyHelper.plexSansArabic,
-      );
+  static TextStyle font18PhilippineBronzeRegularPlexSans = TextStyle(
+    fontWeight: FontWeightHelper.regular,
+    fontSize: 18.sp,
+    color: AppColors.philippineBronze,
+    fontFamily: FontFamilyHelper.plexSansArabic,
+  );
   static TextStyle font14JetRegularPlexSans(BuildContext context) => TextStyle(
         fontWeight: FontWeightHelper.regular,
         fontSize: 14.sp,
@@ -276,5 +272,12 @@ class AppTextStyles {
     fontSize: 14.sp,
     color: AppColors.white,
     fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
+
+  static TextStyle font14DesiredMediumPlexSans = TextStyle(
+    fontWeight: FontWeightHelper.medium,
+    fontSize: 14.sp,
+    color: AppColors.desire,
+    fontFamily: FontFamilyHelper.plexSansArabic,
   );
 }
