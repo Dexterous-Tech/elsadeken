@@ -21,6 +21,8 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
       name: "Ammar muahmmed",
       age: 56,
       location: "السعودية، الرياض",
+      country: "",
+      city: "",
       profileImageUrl:
           "https://placeholder.svg?height=60&width=60&query=profile+photo+man",
       isOnline: true,
@@ -29,6 +31,8 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
       name: "Ammar muahmmed",
       age: 56,
       location: "السعودية، الرياض",
+      country: "",
+      city: "",
       profileImageUrl:
           "https://placeholder.svg?height=60&width=60&query=profile+photo+man",
       isOnline: true,
@@ -37,6 +41,8 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
       name: "Ammar muahmmed",
       age: 56,
       location: "السعودية، الرياض",
+      country: "",
+      city: "",
       profileImageUrl:
           "https://placeholder.svg?height=60&width=60&query=profile+photo+man",
       isOnline: true,
