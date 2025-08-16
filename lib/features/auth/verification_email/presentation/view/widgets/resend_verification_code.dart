@@ -17,17 +17,15 @@ class ResendVerificationCode extends StatelessWidget {
         children: [
           TextSpan(
             text: 'لم تستلم الرمز؟ ',
-            style: AppTextStyles.font16ChineseBlackMediumLamaSans(
-              context,
-            ).copyWith(color: AppColors.black),
+            style: AppTextStyles.font16ChineseBlackMediumLamaSans
+                .copyWith(color: AppColors.black),
           ),
           TextSpan(
             text: 'إعادة الإرسال',
-            style: AppTextStyles.font16ChineseBlackMediumLamaSans(context)
-                .copyWith(
-                  color: AppColors.red,
-                  fontWeight: FontWeightHelper.semiBold,
-                ),
+            style: AppTextStyles.font16ChineseBlackMediumLamaSans.copyWith(
+              color: AppColors.red,
+              fontWeight: FontWeightHelper.semiBold,
+            ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);

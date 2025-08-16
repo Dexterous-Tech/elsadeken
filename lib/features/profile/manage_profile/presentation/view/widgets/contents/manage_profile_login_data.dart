@@ -3,6 +3,8 @@ import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:flutter/material.dart';
 
 class ManageProfileLoginData extends StatelessWidget {
@@ -15,66 +17,83 @@ class ManageProfileLoginData extends StatelessWidget {
       children: [
         ManageProfileContentItem(
           title: 'رقم العضوية',
-          itemContent: Text(
-            '12345678',
-            style: AppTextStyles.font18PhilippineBronzeRegularPlexSans(context),
-          ),
+          itemContent: _itemContent('12345678'),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'اسم المستخدم',
-          itemContent: Row(
-            textDirection: TextDirection.rtl,
-            children: [
-              Text(
-                'Esraa Mohamed',
-                style: AppTextStyles.font18PhilippineBronzeRegularPlexSans(
-                  context,
-                ),
-              ),
-              horizontalSpace(3),
-              Text(
-                'تعديل',
-                style: AppTextStyles.font14JetRegularPlexSans(context),
-              ),
-            ],
-          ),
+          itemContent: _itemContent('Esraa Mohamed'),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'تاريخ التسجيل',
-          itemContent: Text(
-            'منذ 2 ايام',
-            style: AppTextStyles.font18PhilippineBronzeRegularPlexSans(context),
-          ),
+          itemContent: _itemContent('منذ 2 ايام'),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'كلمة المرور',
-          itemContent: Text(
-            'تعديل',
-            style: AppTextStyles.font18PhilippineBronzeRegularPlexSans(context),
-          ),
+          itemContent: _itemContent('**********'),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'البريد الإلكتروني',
-          itemContent: Text(
-            'تعديل',
-            style: AppTextStyles.font18PhilippineBronzeRegularPlexSans(context),
-          ),
+          itemContent: _itemContent('mohames@gmail.com'),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
           title: 'حذف حسابي',
           itemContent: Text(
             'حذف',
-            style: AppTextStyles.font18PhilippineBronzeRegularPlexSans(
-              context,
-            ).copyWith(color: AppColors.vividRed),
+            style: AppTextStyles.font18PhilippineBronzeRegularPlexSans
+                .copyWith(color: AppColors.vividRed),
           ),
         ),
+        verticalSpace(20),
+        ManageProfileEditButton(
+          onPressed: () => _showLoginDataEditDialog(context),
+        )
       ],
     );
+  }
+
+  Widget _itemContent(String title) {
+    return Text(
+      title,
+      style: AppTextStyles.font18PhilippineBronzeRegularPlexSans,
+    );
+  }
+
+  void _showLoginDataEditDialog(BuildContext context) {
+    final dialogData = ManageProfileDialogData(
+      title: 'تعديل بيانات تسجيل الدخول',
+      fields: [
+        ManageProfileField(
+          label: 'اسم المستخدم',
+          hint: 'أدخل اسم المستخدم',
+          currentValue: 'Esraa Mohamed',
+          type: ManageProfileFieldType.text,
+          keyboardType: TextInputType.text,
+        ),
+        ManageProfileField(
+          label: 'البريد الإلكتروني',
+          hint: 'أدخل البريد الإلكتروني',
+          currentValue: 'mohames@gmail.com',
+          type: ManageProfileFieldType.text,
+          keyboardType: TextInputType.emailAddress,
+        ),
+        ManageProfileField(
+          label: 'كلمة المرور',
+          hint: 'أدخل كلمة المرور الجديدة',
+          currentValue: '',
+          type: ManageProfileFieldType.password,
+        ),
+      ],
+      onSave: () {
+        // Handle save logic here
+        print('Saving login data...');
+      },
+    );
+
+    manageProfileDialog(context, dialogData);
   }
 }

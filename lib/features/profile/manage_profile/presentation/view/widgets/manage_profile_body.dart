@@ -59,20 +59,24 @@ class ManageProfileBody extends StatelessWidget {
               verticalSpace(10),
               ManageProfileCard(
                 title: 'موصفات شريكة حياتك التي ترغب الإرتباط بها',
-                cardContent: ManageProfileWritingContent(),
+                cardContent: ManageProfileWritingContent(
+                  label: 'موصفات شريكة حياتك التي ترغب الإرتباط بها',
+                ),
               ),
               verticalSpace(10),
               ManageProfileCard(
                 title: 'تحدث عن نفسك',
-                cardContent: ManageProfileWritingContent(),
+                cardContent: ManageProfileWritingContent(
+                  label: 'تحدث عن نفسك',
+                ),
               ),
               verticalSpace(10),
               ManageProfileCard(
                 title: 'المعلومات الشخصية',
                 cardContent: ManageProfilePersonalInformation(),
               ),
-              verticalSpace(63),
-              CustomElevatedButton(onPressed: () {}, textButton: 'تعديل'),
+              // verticalSpace(63),
+              // CustomElevatedButton(onPressed: () {}, textButton: 'تعديل'),
             ],
           ),
         ),
