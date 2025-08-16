@@ -2,7 +2,6 @@ import 'package:elsadeken/features/profile/profile_details/data/repo/like_user_r
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/like_user_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class LikeUserCubit extends Cubit<LikeUserState> {
   LikeUserCubit(this.likeUserRepoInterface) : super(LikeUserInitial());
 

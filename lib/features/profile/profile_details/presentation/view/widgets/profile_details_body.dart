@@ -4,6 +4,8 @@ import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/ignore_cubit.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/ignore_state.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/like_user_cubit.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/like_user_state.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/custom_container.dart';
@@ -139,10 +141,32 @@ class ProfileDetailsBody extends StatelessWidget {
                     }
                   },
                 ),
-                CustomContainer(
-                  img: AppImages.thumbDown,
-                  color: AppColors.lightPink.withOpacity(0.07),
-                  text: 'تجاهل',
+                BlocBuilder<IgnoreUserCubit, IgnoreUserState>(
+                  buildWhen: (previous, current) =>
+                      current is IgnoreUserLoading ||
+                      current is IgnoreUserFailure ||
+                      current is IgnoreUserSuccess,
+                  builder: (context, state) {
+                    if (state is IgnoreUserFailure) {
+                      return Expanded(
+                          child: Center(
+                        child: Text(
+                          state.error,
+                          style: AppTextStyles.font20LightOrangeMediumPlexSans
+                              .copyWith(color: AppColors.red),
+                        ),
+                      ));
+                    } else {
+                      return CustomContainer(
+                        img: AppImages.thumbDown,
+                        color: AppColors.lightPink.withOpacity(0.07),
+                        text: 'تجاهل',
+                        onTap: () {
+                          context.read<IgnoreUserCubit>().ignoreUser("3");
+                        },
+                      );
+                    }
+                  },
                 ),
                 CustomContainer(
                   img: AppImages.message,

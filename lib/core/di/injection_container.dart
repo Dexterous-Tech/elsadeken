@@ -28,8 +28,11 @@ import 'package:elsadeken/features/profile/interests_list/presentation/manager/f
 import 'package:elsadeken/features/profile/my_interesting_list/data/data_source/interesting_list_data_source.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/data/repo/interresting_list_repo.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/intersting_list_cubit.dart';
+import 'package:elsadeken/features/profile/profile_details/data/data_source/ignore_user_data_source.dart';
 import 'package:elsadeken/features/profile/profile_details/data/data_source/like_user_data_source.dart';
+import 'package:elsadeken/features/profile/profile_details/data/repo/ignore_user_repo.dart';
 import 'package:elsadeken/features/profile/profile_details/data/repo/like_user_repo.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/ignore_cubit.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/like_user_cubit.dart';
 import 'package:elsadeken/features/profile/success_stories/data/datasources/success_story_api.dart';
 import 'package:elsadeken/features/profile/success_stories/data/repository/success_story_repo_impl.dart';
@@ -130,14 +133,21 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<LikeUserDataSource>(() => LikeUserDataSource(sl()));
   sl.registerLazySingleton<LikeUserRepoInterface>(() => LikeUserRepoImpl(sl()));
   sl.registerFactory<LikeUserCubit>(() => LikeUserCubit(sl()));
+  // Ignore User
+  sl.registerLazySingleton<IgnoreUserDataSource>(
+      () => IgnoreUserDataSource(sl()));
+  sl.registerLazySingleton<IgnoreUserRepo>(() => IgnoreUserRepoImpl(sl()));
+  sl.registerFactory<IgnoreUserCubit>(() => IgnoreUserCubit(sl()));
 
-    // My Intersets Users
+  // My Intersets Users
   sl.registerLazySingleton<FavUserDataSource>(() => FavUserDataSource(sl()));
   sl.registerLazySingleton<FavUserRepoInterface>(() => FavUserRepoImpl(sl()));
   sl.registerFactory<FavUserCubit>(() => FavUserCubit(sl()));
 
-      // My Interseting Users
-  sl.registerLazySingleton<InterestingListDataSource>(() => InterestingListDataSource(sl()));
-  sl.registerLazySingleton<InterrestingListRepo>(() => InterestingRepoImpl(sl()));
+  // My Interseting Users
+  sl.registerLazySingleton<InterestingListDataSource>(
+      () => InterestingListDataSource(sl()));
+  sl.registerLazySingleton<InterrestingListRepo>(
+      () => InterestingRepoImpl(sl()));
   sl.registerFactory<InterestingListCubit>(() => InterestingListCubit(sl()));
 }
