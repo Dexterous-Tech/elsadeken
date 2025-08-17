@@ -4,15 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StoryCard extends StatelessWidget {
-  StoryCard(
-      {super.key,
-      required this.name,
-      required this.age,
-      required this.message});
+  StoryCard({
+    super.key,
+    required this.title,
+    required this.content,
+    required this.image,
+  });
 
-  String name;
-  int age;
-  String message;
+  String title;
+  String content;
+  String image;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class StoryCard extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               Text(
-                "$name , $age  سنة ",
+                title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: FontFamilyHelper.plexSansArabic,
@@ -53,7 +54,7 @@ class StoryCard extends StatelessWidget {
               ),
               SizedBox(height: 8.h),
               Text(
-                message,
+                content,
                 textAlign: TextAlign.center,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,

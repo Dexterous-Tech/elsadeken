@@ -1,23 +1,26 @@
 import '../../domain/entities/success_storie.dart';
 import '../../domain/repository/success_storie_repo.dart';
 import '../models/success_story_model.dart';
+import '../datasources/success_story_api.dart';
+import '../../../../../core/networking/api_services.dart';
 
 class SuccessStoryRepositoryImpl implements SuccessStoryRepository {
+  final SuccessStoryApi api;
+
+  SuccessStoryRepositoryImpl(this.api);
+
   @override
   Future<List<SuccessStoryEntity>> getStories() async {
-    // Simulate API response
-    await Future.delayed(Duration(seconds: 1));
-    return [
-      SuccessStoryModel(
-        name: 'بدرى محمد',
-        age: 46,
-        message: 'شكرًا للموقع الذي كان له الفضل ...شكرًا للموقع الذي كان له الفضل ...شكرًا للموقع الذي كان له الفضل ...شكرًا للموقع الذي كان له الفضل ...شكرًا للموقع الذي كان له الفضل ...',
-      ),
-      SuccessStoryModel(
-        name: 'بدرى محمد',
-        age: 46,
-        message: 'شكرًا للموقع الذي كان له الفضل ...',
-      ),
-    ];
+    return api.getStories();
   }
+
+  @override
+  Future<int> getStoriesCount() async {
+    return api.getStoriesCount();
+  }
+
+  factory SuccessStoryRepositoryImpl.create(ApiServices apiServices) {
+    final api = SuccessStoryApi(apiServices);
+    return SuccessStoryRepositoryImpl(api);
+  } 
 }

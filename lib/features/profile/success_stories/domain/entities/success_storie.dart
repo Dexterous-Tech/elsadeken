@@ -1,11 +1,17 @@
 class SuccessStoryEntity {
-  final String name;
-  final int age;
-  final String message;
+  final int id;
+  final String title;
+  final String content;
+  final String image;
+  final DateTime createdAt;
+  final int numberOfStories;
 
   SuccessStoryEntity({
-    required this.name,
-    required this.age,
-    required this.message,
+    required this.id,
+    required this.title,
+    required this.content,
+    required this.image,
+    required this.createdAt,
+    required this.numberOfStories,
   });
 }
