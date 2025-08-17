@@ -2,7 +2,7 @@ import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class CustomContainer extends StatelessWidget {
-  CustomContainer({
+  const CustomContainer({
     super.key,
     required this.img,
     required this.color,
@@ -13,7 +13,7 @@ class CustomContainer extends StatelessWidget {
   final String text;
   final String img;
   final Color color;
-  void Function()? onTap;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-import 'package:elsadeken/features/profile/interests_list/data/models/fav_user_list.dart';
+import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:flutter/material.dart';
 
 @immutable
@@ -14,6 +14,6 @@ final class FavUserFailure extends FavUserState {
 }
 
 final class FavUserSuccess extends FavUserState {
-  final FavUserListModel favUserListModel;
+  final UsersResponseModel favUserListModel;
   FavUserSuccess(this.favUserListModel);
 }

@@ -29,17 +29,17 @@ import 'package:elsadeken/features/profile/manage_profile/data/data_source/manag
 import 'package:elsadeken/features/profile/manage_profile/data/repo/manage_profile_repo.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/data/data_source/interesting_list_data_source.dart';
-import 'package:elsadeken/features/profile/my_interesting_list/data/repo/interresting_list_repo.dart';
-import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/intersting_list_cubit.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/data/repo/interesting_list_repo.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/interesting_list_cubit.dart';
+import 'package:elsadeken/features/profile/my_ignoring_list/data/data_source/ignore_user_data_source.dart';
+import 'package:elsadeken/features/profile/my_ignoring_list/data/repo/ignore_user_repo.dart';
+import 'package:elsadeken/features/profile/my_ignoring_list/presentation/manager/ignore_user_cubit.dart';
 import 'package:elsadeken/features/profile/profile/data/data_source/profile_data_source.dart';
 import 'package:elsadeken/features/profile/profile/data/repo/profile_repo.dart';
 import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
-import 'package:elsadeken/features/profile/profile_details/data/data_source/ignore_user_data_source.dart';
-import 'package:elsadeken/features/profile/profile_details/data/data_source/like_user_data_source.dart';
-import 'package:elsadeken/features/profile/profile_details/data/repo/ignore_user_repo.dart';
-import 'package:elsadeken/features/profile/profile_details/data/repo/like_user_repo.dart';
-import 'package:elsadeken/features/profile/profile_details/presentation/manager/ignore_cubit.dart';
-import 'package:elsadeken/features/profile/profile_details/presentation/manager/like_user_cubit.dart';
+import 'package:elsadeken/features/profile/profile_details/data/data_source/profile_details_data_source.dart';
+import 'package:elsadeken/features/profile/profile_details/data/repo/profile_details_repo.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/profile/success_stories/data/datasources/success_story_api.dart';
 import 'package:elsadeken/features/profile/success_stories/data/repository/success_story_repo_impl.dart';
 import 'package:elsadeken/features/profile/success_stories/domain/repository/success_storie_repo.dart';
@@ -147,25 +147,29 @@ Future<void> initializeDependencies() async {
       () => ManageProfileRepoImp(sl()));
   sl.registerFactory<ManageProfileCubit>(() => ManageProfileCubit(sl()));
 
-  // Like User
-  sl.registerLazySingleton<LikeUserDataSource>(() => LikeUserDataSource(sl()));
-  sl.registerLazySingleton<LikeUserRepoInterface>(() => LikeUserRepoImpl(sl()));
-  sl.registerFactory<LikeUserCubit>(() => LikeUserCubit(sl()));
-  // Ignore User
-  sl.registerLazySingleton<IgnoreUserDataSource>(
-      () => IgnoreUserDataSource(sl()));
-  sl.registerLazySingleton<IgnoreUserRepo>(() => IgnoreUserRepoImpl(sl()));
-  sl.registerFactory<IgnoreUserCubit>(() => IgnoreUserCubit(sl()));
+  // Profile Details
+  sl.registerLazySingleton<ProfileDetailsDataSource>(
+      () => ProfileDetailsDataSource(sl()));
+  sl.registerLazySingleton<ProfileDetailsRepoInterface>(
+      () => ProfileDetailsRepoImp(sl()));
+  sl.registerFactory<ProfileDetailsCubit>(() => ProfileDetailsCubit(sl()));
 
   // My Intersets Users
   sl.registerLazySingleton<FavUserDataSource>(() => FavUserDataSource(sl()));
   sl.registerLazySingleton<FavUserRepoInterface>(() => FavUserRepoImpl(sl()));
   sl.registerFactory<FavUserCubit>(() => FavUserCubit(sl()));
 
-  // My Interseting Users
+  // My Interesting Users
   sl.registerLazySingleton<InterestingListDataSource>(
       () => InterestingListDataSource(sl()));
-  sl.registerLazySingleton<InterrestingListRepo>(
+  sl.registerLazySingleton<InterestingListRepo>(
       () => InterestingRepoImpl(sl()));
   sl.registerFactory<InterestingListCubit>(() => InterestingListCubit(sl()));
+
+  // My Ignore Users
+  sl.registerLazySingleton<IgnoreUserDataSource>(
+      () => IgnoreUserDataSource(sl()));
+  sl.registerLazySingleton<IgnoreUserRepoInterface>(
+      () => IgnoreUserRepoImpl(sl()));
+  sl.registerFactory<IgnoreUserCubit>(() => IgnoreUserCubit(sl()));
 }

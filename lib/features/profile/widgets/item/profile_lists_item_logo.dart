@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/core/widgets/custom_image_network.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,11 +13,13 @@ class ProfileListsItemLogo extends StatelessWidget {
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
-        Image.network(
-          image!,
-          width: 58.w,
-          height: 58.h,
-          fit: BoxFit.cover,
+        ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: CustomImageNetwork(
+            image: image ?? '',
+            width: 58.w,
+            height: 58.h,
+          ),
         ),
         Positioned(
           bottom: 0,

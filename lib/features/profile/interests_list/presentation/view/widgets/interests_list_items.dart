@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../core/theme/app_color.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/spacing.dart';
-import '../../../../widgets/container_item/container_item.dart';
+import '../../../../../../features/profile/widgets/container_item/container_item.dart';
 import 'package:flutter/material.dart';
 
 class InterestsListItems extends StatelessWidget {
@@ -15,15 +15,20 @@ class InterestsListItems extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<FavUserCubit, FavUserState>(
       builder: (context, state) {
-        if (state is FavUserLoading) {
+        if (state is FavUserFailure) {
           log('Loading');
-          return Center(child: CircularProgressIndicator());
+          return Center(
+            child: Text(
+              state.error,
+              style: AppTextStyles.font14DesiredMediumPlexSans,
+            ),
+          );
         }
         if (state is FavUserSuccess) {
           log('Success');
-          final interstingList = state.favUserListModel.data ?? [];
+          final interestingList = state.favUserListModel.data ?? [];
 
-          if (interstingList.isEmpty) {
+          if (interestingList.isEmpty) {
             return Center(
               child: Text(
                 '0 عضو',
@@ -35,18 +40,20 @@ class InterestsListItems extends StatelessWidget {
           return ListView.separated(
             itemBuilder: (context, index) {
               return ContainerItem(
-                favUser: interstingList[index],
+                favUser: interestingList[index],
               );
             },
             separatorBuilder: (context, index) {
               return verticalSpace(3);
             },
-            itemCount: interstingList.length,
+            itemCount: interestingList.length,
           );
         } else {
           return Center(
-            child: CircularProgressIndicator(),
-          );
+              child: CircularProgressIndicator(
+            color: AppColors.primaryOrange,
+            strokeWidth: 2,
+          ));
         }
       },
     );

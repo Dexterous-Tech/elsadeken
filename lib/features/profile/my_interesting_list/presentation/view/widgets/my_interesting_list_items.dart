@@ -3,7 +3,7 @@ import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/interesting_list_state.dart';
-import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/intersting_list_cubit.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/interesting_list_cubit.dart';
 import 'package:elsadeken/features/profile/widgets/container_item/container_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,13 +15,18 @@ class MyInterestingListItems extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<InterestingListCubit, InterestingListState>(
       builder: (context, state) {
-        if (state is InterestingListStateLoading) {
-          log('Loading');
-          return Center(child: CircularProgressIndicator());
+        if (state is InterestingListStateFailure) {
+          log('failure');
+          return Center(
+            child: Text(
+              state.error,
+              style: AppTextStyles.font14DesiredMediumPlexSans,
+            ),
+          );
         } else if (state is InterestingListStateSuccess) {
           log('Success');
-          final interstingList = state.favUserListModel.data ?? [];
-          if (interstingList.isEmpty) {
+          final interestingList = state.favUserListModel.data ?? [];
+          if (interestingList.isEmpty) {
             return Center(
               child: Text(
                 '0 عضو',
@@ -32,10 +37,10 @@ class MyInterestingListItems extends StatelessWidget {
           }
 
           return ListView.separated(
-            itemCount: interstingList.length,
+            itemCount: interestingList.length,
             itemBuilder: (context, index) {
               return ContainerItem(
-                favUser: interstingList[index],
+                favUser: interestingList[index],
               );
             },
             separatorBuilder: (context, index) => Column(
@@ -52,8 +57,10 @@ class MyInterestingListItems extends StatelessWidget {
           );
         } else {
           return Center(
-            child: CircularProgressIndicator(),
-          );
+              child: CircularProgressIndicator(
+            color: AppColors.primaryOrange,
+            strokeWidth: 2,
+          ));
         }
       },
     );

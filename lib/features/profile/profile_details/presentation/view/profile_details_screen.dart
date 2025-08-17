@@ -1,6 +1,5 @@
 import 'package:elsadeken/core/di/injection_container.dart';
-import 'package:elsadeken/features/profile/profile_details/presentation/manager/ignore_cubit.dart';
-import 'package:elsadeken/features/profile/profile_details/presentation/manager/like_user_cubit.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_body.dart';
 
 import 'package:flutter/material.dart';
@@ -11,15 +10,8 @@ class ProfileDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => sl<LikeUserCubit>(),
-        ),
-        BlocProvider(
-          create: (context) => sl<IgnoreUserCubit>(),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => sl<ProfileDetailsCubit>(),
       child: Scaffold(
         body: ProfileDetailsBody(),
       ),
