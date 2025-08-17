@@ -1,20 +1,22 @@
-import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileListsItemLogo extends StatelessWidget {
-  const ProfileListsItemLogo({super.key});
+  const ProfileListsItemLogo({super.key, this.image});
+
+  final String? image;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
-        Image.asset(
-          AppImages.profileImageLogo,
+        Image.network(
+          image!,
           width: 58.w,
           height: 58.h,
+          fit: BoxFit.cover,
         ),
         Positioned(
           bottom: 0,

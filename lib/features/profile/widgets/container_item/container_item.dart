@@ -2,15 +2,22 @@ import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/features/profile/interests_list/data/models/fav_user_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../item/profile_lists_item_logo.dart';
 
 class ContainerItem extends StatelessWidget {
-  const ContainerItem({super.key, this.isTime = false});
+  const ContainerItem({
+    super.key,
+    this.isTime = false,
+    this.favUser,
+  });
 
   final bool isTime;
+  final Data? favUser;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,7 +35,9 @@ class ContainerItem extends StatelessWidget {
       child: Row(
         textDirection: TextDirection.rtl,
         children: [
-          ProfileListsItemLogo(),
+          ProfileListsItemLogo(
+            image: favUser?.image,
+          ),
           horizontalSpace(16),
           Expanded(
             flex: 2,
@@ -36,7 +45,7 @@ class ContainerItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Ammar muahmmed',
+                  favUser?.name ?? '',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.font14BeerMediumLamaSans(context)
