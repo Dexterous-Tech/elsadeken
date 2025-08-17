@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class AboutUsBody extends StatefulWidget {
   const AboutUsBody({super.key});
@@ -77,12 +78,28 @@ class _AboutUsBodyState extends State<AboutUsBody> {
                         controller: _scrollController,
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return Text(
-                            state.aboutUsResponseModel.data?.description ?? '',
-                            style: AppTextStyles.font14LightGrayRegularLamaSans
-                                .copyWith(color: AppColors.lightMixGrayAndBlue),
-                            textDirection: TextDirection.rtl,
-                            textAlign: TextAlign.right,
+                          // return Text(
+                          //   state.aboutUsResponseModel.data?.description ?? '',
+                          //   style: AppTextStyles.font14LightGrayRegularLamaSans
+                          //       .copyWith(color: AppColors.lightMixGrayAndBlue),
+                          //   textDirection: TextDirection.rtl,
+                          //   textAlign: TextAlign.right,
+                          // );
+                          return Html(
+                            data:
+                                state.aboutUsResponseModel.data?.description ??
+                                    '',
+                            style: {
+                              "body": Style(
+                                fontSize: FontSize(14.sp),
+                                color: AppColors.lightMixGrayAndBlue,
+                                textAlign: TextAlign.right,
+                                direction: TextDirection.rtl,
+                              ),
+                              "p": Style(
+                                margin: Margins.symmetric(vertical: 8.h),
+                              ),
+                            },
                           );
                         },
                         separatorBuilder: (_, index) {

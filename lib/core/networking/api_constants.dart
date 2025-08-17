@@ -18,7 +18,14 @@ class ApiConstants {
   static String healthConditions = '/user/list/health-conditions';
   static String signup = '/user/register';
   static String registerInformation = '/user/attributes';
+  static String logout = '/user/logout';
 
   // profile
   static String aboutUs = '/user/aboutUs';
+  static String getProfile = '/user/profile';
+  static String likeUser(String id) => '/user/like/user/$id';
+  static String ignoreUser(String id) => '/user/ignore/user/$id';
+  static String favUserList = '/user/like/list';
+  static String interestingList = '/user/liked/people-list';
+  static String ignoreUserList = '/user/ignore/list';
 }
