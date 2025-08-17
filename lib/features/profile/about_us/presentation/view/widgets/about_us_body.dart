@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 class AboutUsBody extends StatefulWidget {
   const AboutUsBody({super.key});

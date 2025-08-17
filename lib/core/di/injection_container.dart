@@ -9,16 +9,37 @@ import 'package:elsadeken/features/auth/new_password/data/repo/reset_password_re
 import 'package:elsadeken/features/auth/new_password/presentation/manager/reset_password_cubit.dart';
 import 'package:elsadeken/features/auth/signup/data/data_source/signup_data_source.dart';
 import 'package:elsadeken/features/auth/signup/data/repo/signup_repo.dart';
-import 'package:elsadeken/features/auth/signup/presentation/manager/nationalities_countries_cubit.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:elsadeken/features/auth/verification_email/data/data_source/verification_data_source.dart';
 import 'package:elsadeken/features/auth/verification_email/data/repo/verification_repo.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/manager/verification_cubit.dart';
+import 'package:elsadeken/features/profile/about_us/data/data_source/about_us_data_source.dart';
+import 'package:elsadeken/features/profile/about_us/data/repo/abouts_us_repo.dart';
+import 'package:elsadeken/features/profile/about_us/presentation/manager/about_us_cubit.dart';
 import 'package:elsadeken/features/profile/blog/data/datasources/blog_api.dart';
 import 'package:elsadeken/features/profile/blog/data/repository/blog_repo_impl.dart';
 import 'package:elsadeken/features/profile/blog/domain/repository/blog_repo.dart';
 import 'package:elsadeken/features/profile/blog/domain/use_cases/get_blog_posts.dart';
 import 'package:elsadeken/features/profile/blog/presentation/cubit/blog_cubit.dart';
+import 'package:elsadeken/features/profile/interests_list/data/data_source/fav_user_data_source.dart';
+import 'package:elsadeken/features/profile/interests_list/data/repo/fav_user_repo.dart';
+import 'package:elsadeken/features/profile/interests_list/presentation/manager/fav_user_cubit.dart';
+import 'package:elsadeken/features/profile/manage_profile/data/data_source/manage_profile_data_source.dart';
+import 'package:elsadeken/features/profile/manage_profile/data/repo/manage_profile_repo.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/data/data_source/interesting_list_data_source.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/data/repo/interesting_list_repo.dart';
+import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/interesting_list_cubit.dart';
+import 'package:elsadeken/features/profile/my_ignoring_list/data/data_source/ignore_user_data_source.dart';
+import 'package:elsadeken/features/profile/my_ignoring_list/data/repo/ignore_user_repo.dart';
+import 'package:elsadeken/features/profile/my_ignoring_list/presentation/manager/ignore_user_cubit.dart';
+import 'package:elsadeken/features/profile/profile/data/data_source/profile_data_source.dart';
+import 'package:elsadeken/features/profile/profile/data/repo/profile_repo.dart';
+import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
+import 'package:elsadeken/features/profile/profile_details/data/data_source/profile_details_data_source.dart';
+import 'package:elsadeken/features/profile/profile_details/data/repo/profile_details_repo.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/profile/success_stories/data/datasources/success_story_api.dart';
 import 'package:elsadeken/features/profile/success_stories/data/repository/success_story_repo_impl.dart';
 import 'package:elsadeken/features/profile/success_stories/domain/repository/success_storie_repo.dart';
@@ -44,17 +65,17 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<ApiServices>(ApiServices.internal(dio));
   // HTTP Client
   sl.registerLazySingleton<Dio>(() => Dio(BaseOptions(
-        baseUrl: 'https://elsadkeen.sharetrip-ksa.com/api',
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
-        sendTimeout: const Duration(seconds: 15),
-        headers: {
-          'Accept': 'application/json',
-        },
-      )));
+    baseUrl: 'https://elsadkeen.sharetrip-ksa.com/api',
+    connectTimeout: const Duration(seconds: 15),
+    receiveTimeout: const Duration(seconds: 15),
+    sendTimeout: const Duration(seconds: 15),
+    headers: {
+      'Accept': 'application/json',
+    },
+  )));
   // Repository
   sl.registerLazySingleton<SearchRepository>(
-    () => SearchRepositoryImpl(),
+        () => SearchRepositoryImpl(sl<Dio>()),
   );
 
   // Use cases
@@ -64,49 +85,91 @@ Future<void> initializeDependencies() async {
   sl.registerFactory(() => SearchCubit(sl()));
 
   // blog
-  sl.registerLazySingleton<BlogApi>(() => BlogApi(sl<Dio>()));
+  sl.registerLazySingleton<BlogApi>(() => BlogApi(sl<ApiServices>()));
   sl.registerLazySingleton<BlogRepo>(() => BlogRepoImpl(sl()));
   sl.registerLazySingleton<GetBlogPosts>(() => GetBlogPosts(sl()));
   sl.registerFactory<BlogCubit>(() => BlogCubit(sl()));
 
   // success stories
-  sl.registerLazySingleton<SuccessStoryApi>(() => SuccessStoryApi());
+  sl.registerLazySingleton<SuccessStoryApi>(() => SuccessStoryApi(sl<ApiServices>()));
   sl.registerLazySingleton<GetSuccessStories>(() => GetSuccessStories(sl()));
   sl.registerLazySingleton<SuccessStoryRepository>(
-      () => SuccessStoryRepositoryImpl());
+          () => SuccessStoryRepositoryImpl.create(sl<ApiServices>()));
   sl.registerFactory<SuccessStoryCubit>(() => SuccessStoryCubit(sl()));
 
   // login
   sl.registerLazySingleton<LoginDataSource>(() => LoginDataSource(sl()));
   sl.registerLazySingleton<LoginRepoInterface>(
-      () => LoginRepoImplementation(sl()));
+          () => LoginRepoImplementation(sl()));
   sl.registerFactory<LoginCubit>(() => LoginCubit(sl()));
 
   //forget
   sl.registerLazySingleton<ForgetDataSource>(() => ForgetDataSource(sl()));
   sl.registerLazySingleton<ForgetRepoInterface>(
-      () => ForgetRepoImplementation(sl()));
+          () => ForgetRepoImplementation(sl()));
   sl.registerFactory<ForgetCubit>(() => ForgetCubit(sl()));
 
   //verification
   sl.registerLazySingleton<VerificationDataSource>(
-      () => VerificationDataSource(sl()));
+          () => VerificationDataSource(sl()));
   sl.registerLazySingleton<VerificationRepoInterface>(
-      () => VerificationRepoImplementation(sl()));
+          () => VerificationRepoImplementation(sl()));
   sl.registerFactory<VerificationCubit>(() => VerificationCubit(sl()));
 
   //reset password
   sl.registerLazySingleton<ResetPasswordDataSource>(
-      () => ResetPasswordDataSource(sl()));
+          () => ResetPasswordDataSource(sl()));
   sl.registerLazySingleton<ResetPasswordRepoInterface>(
-      () => ResetPasswordRepoImplementation(sl()));
+          () => ResetPasswordRepoImplementation(sl()));
   sl.registerFactory<ResetPasswordCubit>(() => ResetPasswordCubit(sl()));
 
   // signup
   sl.registerLazySingleton<SignupDataSource>(() => SignupDataSource(sl()));
   sl.registerLazySingleton<SignupRepoInterface>(
-      () => SignupRepoImplementation(sl()));
+          () => SignupRepoImplementation(sl()));
   sl.registerFactory<SignupCubit>(() => SignupCubit(sl()));
-  sl.registerFactory<NationalitiesCountriesCubit>(
-      () => NationalitiesCountriesCubit(sl()));
+  sl.registerFactory<SignUpListsCubit>(() => SignUpListsCubit(sl()));
+
+  // about us
+  sl.registerLazySingleton<AboutUsDataSource>(() => AboutUsDataSource(sl()));
+  sl.registerLazySingleton<AboutsUsRepoInterface>(() => AboutsUsRepoImpl(sl()));
+  sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
+
+  // profile
+  sl.registerLazySingleton<ProfileDataSource>(() => ProfileDataSource(sl()));
+  sl.registerLazySingleton<ProfileRepoInterface>(() => ProfileRepoImp(sl()));
+  sl.registerFactory<ProfileCubit>(() => ProfileCubit(sl()));
+
+  // manage profile
+  sl.registerLazySingleton<ManageProfileDataSource>(
+          () => ManageProfileDataSource(sl()));
+  sl.registerLazySingleton<ManageProfileRepoInterface>(
+          () => ManageProfileRepoImp(sl()));
+  sl.registerFactory<ManageProfileCubit>(() => ManageProfileCubit(sl()));
+
+  // Profile Details
+  sl.registerLazySingleton<ProfileDetailsDataSource>(
+          () => ProfileDetailsDataSource(sl()));
+  sl.registerLazySingleton<ProfileDetailsRepoInterface>(
+          () => ProfileDetailsRepoImp(sl()));
+  sl.registerFactory<ProfileDetailsCubit>(() => ProfileDetailsCubit(sl()));
+
+  // My Intersets Users
+  sl.registerLazySingleton<FavUserDataSource>(() => FavUserDataSource(sl()));
+  sl.registerLazySingleton<FavUserRepoInterface>(() => FavUserRepoImpl(sl()));
+  sl.registerFactory<FavUserCubit>(() => FavUserCubit(sl()));
+
+  // My Interesting Users
+  sl.registerLazySingleton<InterestingListDataSource>(
+          () => InterestingListDataSource(sl()));
+  sl.registerLazySingleton<InterestingListRepo>(
+          () => InterestingRepoImpl(sl()));
+  sl.registerFactory<InterestingListCubit>(() => InterestingListCubit(sl()));
+
+  // My Ignore Users
+  sl.registerLazySingleton<IgnoreUserDataSource>(
+          () => IgnoreUserDataSource(sl()));
+  sl.registerLazySingleton<IgnoreUserRepoInterface>(
+          () => IgnoreUserRepoImpl(sl()));
+  sl.registerFactory<IgnoreUserCubit>(() => IgnoreUserCubit(sl()));
 }
