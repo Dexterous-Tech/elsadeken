@@ -85,16 +85,16 @@ Future<void> initializeDependencies() async {
   sl.registerFactory(() => SearchCubit(sl()));
 
   // blog
-  sl.registerLazySingleton<BlogApi>(() => BlogApi(sl<Dio>()));
+  sl.registerLazySingleton<BlogApi>(() => BlogApi(sl<ApiServices>()));
   sl.registerLazySingleton<BlogRepo>(() => BlogRepoImpl(sl()));
   sl.registerLazySingleton<GetBlogPosts>(() => GetBlogPosts(sl()));
   sl.registerFactory<BlogCubit>(() => BlogCubit(sl()));
 
   // success stories
-  sl.registerLazySingleton<SuccessStoryApi>(() => SuccessStoryApi());
-  sl.registerLazySingleton<GetSuccessStories>(() => GetSuccessStories(sl()));
+  sl.registerLazySingleton<SuccessStoryApi>(() => SuccessStoryApi(sl<ApiServices>()));
   sl.registerLazySingleton<SuccessStoryRepository>(
-      () => SuccessStoryRepositoryImpl());
+          () => SuccessStoryRepositoryImpl.create(sl<ApiServices>()));
+  sl.registerLazySingleton<GetSuccessStories>(() => GetSuccessStories(sl()));
   sl.registerFactory<SuccessStoryCubit>(() => SuccessStoryCubit(sl()));
 
   // login

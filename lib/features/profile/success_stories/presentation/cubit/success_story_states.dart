@@ -7,7 +7,8 @@ class SuccessStoryInitial extends SuccessStoryState {}
 class SuccessStoryLoading extends SuccessStoryState {}
 class SuccessStoryLoaded extends SuccessStoryState {
   final List<SuccessStoryEntity> stories;
-  SuccessStoryLoaded(this.stories);
+  final int totalCount;
+  SuccessStoryLoaded(this.stories, this.totalCount);
 }
 class SuccessStoryError extends SuccessStoryState {
   final String message;

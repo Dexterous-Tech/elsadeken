@@ -15,25 +15,27 @@ import '../cubit/success_story_states.dart';
 class SuccessStoriesScreen extends StatelessWidget {
   const SuccessStoriesScreen({super.key});
 
+  String _formatNumber(int number) {
+    final numberString = number.toString();
+    final buffer = StringBuffer();
+    
+    for (int i = 0; i < numberString.length; i++) {
+      if (i > 0 && (numberString.length - i) % 3 == 0) {
+        buffer.write(',');
+      }
+      buffer.write(numberString[i]);
+    }
+    
+    return buffer.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   leading: IconButton(onPressed: ()=> Navigator.pop(context), icon: Icon(Icons.arrow_back_ios, size: 20.spMax),),
-      //   centerTitle: true,
-      //   title: Text(
-      //     "القصص الناجحة",
-      //     style: TextStyle(
-      //         fontSize: 23.spMax,
-      //         fontWeight: FontWeight.w400,
-      //         fontFamily: FontFamilyHelper.lamaSansArabic),
-      //   ),
-      // ),
       body: BlocBuilder<SuccessStoryCubit, SuccessStoryState>(
         builder: (context, state) {
           if (state is SuccessStoryLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (state is SuccessStoryLoaded) {
             return SafeArea(
@@ -71,7 +73,7 @@ class SuccessStoriesScreen extends StatelessWidget {
                           ),
                           children: [
                             TextSpan(
-                              text: '470,455',
+                              text: _formatNumber(state.totalCount),
                               style: TextStyle(
                                 color: AppColors.red,
                                 fontSize: 20.sp,
@@ -118,9 +120,9 @@ class SuccessStoriesScreen extends StatelessWidget {
                     SizedBox(height: 20.h),
                     // Stories List
                     ...state.stories.map((story) => StoryCard(
-                        name: story.name,
-                        age: story.age,
-                        message: story.message)),
+                        title: story.title,
+                        content: story.content,
+                        image: story.image)),
                     SizedBox(height: 20.h),
                     CustomElevatedButton(
                       onPressed: () {},
@@ -135,7 +137,7 @@ class SuccessStoriesScreen extends StatelessWidget {
           if (state is SuccessStoryError) {
             return Center(child: Text(state.message));
           }
-          return SizedBox();
+          return const SizedBox();
         },
       ),
     );

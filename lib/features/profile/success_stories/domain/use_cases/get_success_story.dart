@@ -11,6 +11,10 @@ class GetSuccessStories {
   Future<List<SuccessStoryEntity>> call() {
     return repository.getStories();
   }
+
+  Future<int> callCount() {
+    return repository.getStoriesCount();
+  }
 }
 
 /*
