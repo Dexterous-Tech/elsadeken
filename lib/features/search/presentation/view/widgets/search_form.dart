@@ -1,5 +1,6 @@
 // File: lib/presentation/widgets/search_form.dart
 import 'package:elsadeken/core/networking/api_services.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/features/auth/signup/data/data_source/signup_data_source.dart';
 import 'package:elsadeken/features/auth/signup/data/models/cities_models.dart';
 import 'package:elsadeken/features/auth/signup/data/models/national_country_models.dart';
@@ -313,11 +314,11 @@ class _SearchFormState extends State<SearchForm> {
                 isLoading: state is SearchLoading,
                 onPressed: () {
                   context.read<SearchCubit>().performSearch();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SearchResultsView()),
-                  );
+                  Navigator.pushNamed(
+                  context,
+                  AppRoutes.searchResultScreen,
+                  arguments: context.read<SearchCubit>(),
+                );
                 });
           },
         ),

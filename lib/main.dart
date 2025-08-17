@@ -1,9 +1,6 @@
 import 'package:elsadeken/core/routes/app_routing.dart';
-import 'package:elsadeken/features/search/logic/use_cases/search_use_cases.dart';
-import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/di/injection_container.dart';
@@ -25,31 +22,16 @@ class Elsadeken extends StatelessWidget {
       designSize: const Size(430, 937),
       minTextAdapt: true,
       splitScreenMode: true,
-      // child: MaterialApp(
-      //   debugShowCheckedModeBanner: false,
-      //   // localizationsDelegates: [DefaultMaterialLocalizations.delegate],
-      //   // supportedLocales: [
-      //   //   Locale('ar', 'SA'), // Arabic
-      //   //   Locale('en', 'US'), // English
-      //   // ],
-      //   theme: ThemeData(scaffoldBackgroundColor: Colors.white),
-      //   onGenerateRoute: appRouting.onGenerateRouting,
-      //   initialRoute: AppRoutes.splashScreen,
-      // ),
-
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => SearchCubit(sl<SearchUseCase>()),
-          ),
-          // أي Cubits تانية لو محتاج
-        ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(scaffoldBackgroundColor: Colors.white),
-          onGenerateRoute: appRouting.onGenerateRouting,
-          initialRoute: AppRoutes.splashScreen,
-        ),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        // localizationsDelegates: [DefaultMaterialLocalizations.delegate],
+        // supportedLocales: [
+        //   Locale('ar', 'SA'), // Arabic
+        //   Locale('en', 'US'), // English
+        // ],
+        theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+        onGenerateRoute: appRouting.onGenerateRouting,
+        initialRoute: AppRoutes.splashScreen,
       ),
     );
   }
