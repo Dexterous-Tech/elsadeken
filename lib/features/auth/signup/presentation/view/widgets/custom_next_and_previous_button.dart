@@ -15,6 +15,7 @@ class CustomNextAndPreviousButton extends StatelessWidget {
   final void Function() onNextPressed;
   final void Function() onPreviousPressed;
   final bool isNextEnabled;
+
   @override
   Widget build(BuildContext context) {
     return Row(

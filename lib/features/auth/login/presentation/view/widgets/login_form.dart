@@ -40,8 +40,20 @@ class _LoginFormState extends State<LoginForm> {
             style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans(context),
           ),
           verticalSpace(8),
+          // CustomTextFormField(
+          //   controller: cubit.emailController,
+          //   keyboardType: TextInputType.emailAddress,
+          //   hintText: 'user@gmail.com',
+          //   initialValue: 'mohamed@gmail.com',
+          //   validator: (value) {
+          //     if (cubit.emailController.text.isNullOrEmpty() ||
+          //         !AppRegex.isEmailValid(value!)) {
+          //       return 'يجب عليك ادخال بريد الكتروني صحيح';
+          //     }
+          //   },
+          // ),
           CustomTextFormField(
-            controller: cubit.emailController,
+            controller: cubit.emailController..text = 'mohamed@gmail.com',
             keyboardType: TextInputType.emailAddress,
             hintText: 'user@gmail.com',
             validator: (value) {
@@ -51,6 +63,7 @@ class _LoginFormState extends State<LoginForm> {
               }
             },
           ),
+
           verticalSpace(24),
           Text(
             'كلمه المرور',

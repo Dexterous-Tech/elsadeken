@@ -1,8 +1,5 @@
-import 'package:elsadeken/core/di/injection_container.dart';
-import 'package:elsadeken/core/helper/extensions.dart';
-import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/widgets/custom_page_view.dart';
-import 'package:elsadeken/features/auth/signup/presentation/manager/nationalities_countries_cubit.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_additions/signup_additions.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_body/signup_body_shape.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_city/signup_city.dart';
@@ -17,7 +14,6 @@ import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_religion/signup_religion.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_social_status/signup_social_status.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignupPageView extends StatefulWidget {
   const SignupPageView({
@@ -100,6 +96,7 @@ class _SignupPageViewState extends State<SignupPageView>
   }
 
   Widget buildPages(index) {
+    var cubit = SignupCubit.get(context);
     switch (index) {
       case 0:
         return SignupPersonalInfo(
@@ -115,31 +112,22 @@ class _SignupPageViewState extends State<SignupPageView>
           onPreviousPressed: () => widget.onStepChanged(0),
         );
       case 2:
-        return BlocProvider.value(
-          value: sl<NationalitiesCountriesCubit>(),
-          child: SignupNational(
-            key: const ValueKey(2),
-            onNextPressed: () => widget.onStepChanged(3),
-            onPreviousPressed: () => widget.onStepChanged(1),
-          ),
+        return SignupNational(
+          key: const ValueKey(2),
+          onNextPressed: () => widget.onStepChanged(3),
+          onPreviousPressed: () => widget.onStepChanged(1),
         );
       case 3:
-        return BlocProvider.value(
-          value: sl<NationalitiesCountriesCubit>(),
-          child: SignupCountry(
-            key: const ValueKey(3),
-            onNextPressed: () => widget.onStepChanged(4),
-            onPreviousPressed: () => widget.onStepChanged(2),
-          ),
+        return SignupCountry(
+          key: const ValueKey(3),
+          onNextPressed: () => widget.onStepChanged(4),
+          onPreviousPressed: () => widget.onStepChanged(2),
         );
       case 4:
-        return BlocProvider.value(
-          value: sl<NationalitiesCountriesCubit>(),
-          child: SignupCity(
-            key: const ValueKey(4),
-            onNextPressed: () => widget.onStepChanged(5),
-            onPreviousPressed: () => widget.onStepChanged(3),
-          ),
+        return SignupCity(
+          key: const ValueKey(4),
+          onNextPressed: () => widget.onStepChanged(5),
+          onPreviousPressed: () => widget.onStepChanged(3),
         );
       case 5:
         return SignupSocialStatus(
@@ -171,6 +159,7 @@ class _SignupPageViewState extends State<SignupPageView>
           key: const ValueKey(9),
           onNextPressed: () => widget.onStepChanged(10),
           onPreviousPressed: () => widget.onStepChanged(8),
+          gender: widget.gender,
         );
       case 10:
         return SignupEducation(
@@ -189,7 +178,7 @@ class _SignupPageViewState extends State<SignupPageView>
           key: const ValueKey(12),
           onPreviousPressed: () => widget.onStepChanged(11),
           onNextPressed: () {
-            context.pushNamed(AppRoutes.homeScreen);
+            cubit.registerInformation();
           },
         );
       default:

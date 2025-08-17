@@ -1,3 +1,9 @@
+import 'package:elsadeken/core/di/injection_container.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
+import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_data_logo.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../../../core/helper/app_images.dart';
 import '../../../../../../core/theme/app_color.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
@@ -29,26 +35,9 @@ class ProfileBody extends StatelessWidget {
                       style: AppTextStyles.font20WhiteBoldLamaSans(context),
                     ),
                     verticalSpace(19),
-                    Image.asset(AppImages.profileLogo, width: 84, height: 83),
-                    Text(
-                      'Esraa Mohamed',
-                      style:
-                          AppTextStyles.font23ChineseBlackBoldLamaSans(
-                            context,
-                          ).copyWith(
-                            color: AppColors.white,
-                            fontWeight: FontWeightHelper.semiBold,
-                          ),
-                    ),
-                    Text(
-                      'esraa@gmail.com',
-                      style:
-                          AppTextStyles.font14ChineseBlackSemiBoldLamaSans(
-                            context,
-                          ).copyWith(
-                            color: AppColors.white,
-                            fontWeight: FontWeightHelper.regular,
-                          ),
+                    BlocProvider(
+                      create: (context) => sl<ManageProfileCubit>(),
+                      child: ProfileDataLogo(),
                     ),
                   ],
                 ),

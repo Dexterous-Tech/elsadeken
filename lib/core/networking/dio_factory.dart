@@ -31,6 +31,7 @@ class DioFactory {
     final headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
+      'lang': 'ar',
     };
     if (includeAuth) {
       final String token = await SharedPreferencesHelper.getSecuredString(

@@ -18,9 +18,9 @@ class ProfileContent extends StatelessWidget {
     final List<ProfileContentItemModel> personalInformation = [
       ProfileContentItemModel(
         image: AppImages.myProfileIcon,
-        title: 'حسابي',
+        title: 'ادارة حسابي',
         onPressed: () {
-          context.pushNamed(AppRoutes.profileDetailsScreen);
+          context.pushNamed(AppRoutes.manageProfileScreen);
         },
       ),
       ProfileContentItemModel(

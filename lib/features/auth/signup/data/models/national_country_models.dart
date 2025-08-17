@@ -1,4 +1,4 @@
-import '../../../widgets/custom_searchable_list.dart';
+import '../../presentation/view/widgets/custom_searchable_list.dart';
 
 class NationalCountryResponseModel with ListItemModel {
   NationalCountryResponseModel({
@@ -10,7 +10,9 @@ class NationalCountryResponseModel with ListItemModel {
     id = json['id'];
     name = json['name'];
   }
+  @override
   int? id;
+  @override
   String? name;
 
   Map<String, dynamic> toJson() {

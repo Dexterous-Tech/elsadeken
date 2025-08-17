@@ -8,6 +8,7 @@ import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SignupPersonalInfo extends StatefulWidget {
@@ -66,7 +67,7 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
     }
 
     // Validate other fields using form key
-    if (!cubit.signupFormKey.currentState!.validate()) {
+    if (!cubit.personalInfoFormKey.currentState!.validate()) {
       isValid = false;
     }
 
@@ -83,7 +84,7 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: IntrinsicHeight(
               child: Form(
-                key: cubit.signupFormKey,
+                key: cubit.personalInfoFormKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -100,10 +101,15 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                       controller: cubit.nameController,
                       keyboardType: TextInputType.text,
                       hintText: 'اسمك',
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[a-zA-Z\u0600-\u06FF\s]')),
+                      ],
                       validator: (value) {
-                        if (value.isNullOrEmpty()) {
+                        if (value == null || value.trim().isEmpty) {
                           return 'يجب عليك ادخال اسمك';
                         }
+                        return null;
                       },
                     ),
                     verticalSpace(40),
@@ -121,6 +127,12 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                       controller: cubit.emailController,
                       keyboardType: TextInputType.emailAddress,
                       hintText: 'بريدك الالكتروني',
+                      inputFormatters: [
+                        // Allow only characters valid in an email address
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'[a-zA-Z0-9@._\-+]'),
+                        ),
+                      ],
                       validator: (value) {
                         if (value.isNullOrEmpty()) {
                           return 'يجب عليك ادخال بريدك الالكتروني';
@@ -157,6 +169,10 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                                   keyboardType: TextInputType.phone,
                                   hintText: 'رقم الجوال',
                                   onChanged: _validatePhone,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter
+                                        .digitsOnly, // ✅ Only numbers
+                                  ],
                                   borderColor: phoneErrorMessage != null
                                       ? AppColors.red
                                       : AppColors

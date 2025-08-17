@@ -11,7 +11,7 @@ class VerificationDataSource {
     VerificationRequestBodyModel verificationRequestBodyModel,
   ) async {
     var response = await _apiServices.post(
-      endpoint: ApiConstants.forgetPassword,
+      endpoint: ApiConstants.verifyOtp,
       requestBody: verificationRequestBodyModel.toJson(),
       requiresAuth: false,
     );

@@ -25,6 +25,8 @@ import 'package:elsadeken/features/profile/success_stories/presentation/cubit/su
 import 'package:elsadeken/features/profile/success_stories/presentation/view/success_story_screen.dart';
 import 'package:elsadeken/features/profile/technical_support/presentation/view/technical_support_screen.dart';
 import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
+import 'package:elsadeken/features/search/logic/use_cases/search_use_cases.dart';
+import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
 import 'package:elsadeken/features/search/presentation/view/search_page.dart';
 import 'package:elsadeken/features/splash/presentation/view/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +67,12 @@ class AppRouting {
       case AppRoutes.manageProfileScreen:
         return MaterialPageRoute(builder: (_) => ManageProfileScreen());
       case AppRoutes.searchScreen:
-        return MaterialPageRoute(builder: (_) => SearchPage());
+      return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+              create: (context) => SearchCubit(sl<SearchUseCase>()),
+              child: SearchPage(),
+          ),
+      );
       case AppRoutes.searchResultScreen:
         return MaterialPageRoute(builder: (_) => SearchResultsView());
       case AppRoutes.homeScreen:

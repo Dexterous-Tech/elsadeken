@@ -50,7 +50,7 @@ class VerificationDataModel {
 
   factory VerificationDataModel.fromJson(dynamic json) {
     return VerificationDataModel(
-      token: json['name'],
+      token: json['token'],
       email: json['email'],
       createdAt: json['created_at'],
     );
@@ -58,7 +58,7 @@ class VerificationDataModel {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['name'] = token;
+    map['token'] = token;
     map['email'] = email;
     map['created_at'] = createdAt;
     return map;

@@ -11,6 +11,21 @@ class ApiConstants {
   static String listNationalities = '/user/list/nationalities';
   static String listCountries = '/user/list/countries';
   static String listCities(String id) => '/user/list/cities/$id';
+  static String skinColors = '/user/list/skin-colors';
+  static String physiques = '/user/list/physiques';
+  static String qualifications = '/user/list/qualifications';
+  static String financialSituations = '/user/list/financial-situations';
+  static String healthConditions = '/user/list/health-conditions';
   static String signup = '/user/register';
   static String registerInformation = '/user/attributes';
+  static String logout = '/user/logout';
+
+  // profile
+  static String aboutUs = '/user/aboutUs';
+  static String getProfile = '/user/profile';
+  static String likeUser(String id) => '/user/like/user/$id';
+  static String ignoreUser(String id) => '/user/ignore/user/$id';
+  static String favUserList = '/user/like/list';
+  static String interestingList = '/user/liked/people-list';
+  static String ignoreUserList = '/user/ignore/list';
 }

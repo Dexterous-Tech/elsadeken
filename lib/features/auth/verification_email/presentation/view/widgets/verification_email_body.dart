@@ -1,8 +1,5 @@
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
-import 'package:elsadeken/core/theme/app_color.dart';
-import 'package:elsadeken/core/theme/app_text_styles.dart';
-import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';

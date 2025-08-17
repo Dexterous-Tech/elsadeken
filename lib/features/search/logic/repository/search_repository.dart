@@ -1,12 +1,15 @@
-// File: lib/domain/repositories/search_repository.dart
+import 'package:elsadeken/features/search/domain/entities/search_filter.dart';
+import 'package:elsadeken/features/search/domain/entities/user_profile.dart';
 
-import '../../domain/entities/search_filter.dart';
 
 abstract class SearchRepository {
-  Future<List<String>> performSearch(SearchFilter filter);
+  Future<List<UserProfile>> searchUsers(SearchFilter filter, {int page = 1});
+
   Future<List<String>> getNationalities();
   Future<List<String>> getCountries();
   Future<List<String>> getCities();
+
+  // Future<Future<List<String>>> performSearch(SearchFilter filter) async {}
 }
 
 // Explain to how would u use this to perform search:
