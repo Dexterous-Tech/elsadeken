@@ -5,7 +5,7 @@ abstract class SearchState extends Equatable {
   const SearchState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class SearchInitial extends SearchState {}
@@ -16,18 +16,18 @@ class SearchFilterUpdated extends SearchState {
   const SearchFilterUpdated(this.filter);
 
   @override
-  List<Object> get props => [filter];
+  List<Object?> get props => [filter];
 }
 
 class SearchLoading extends SearchState {}
 
 class SearchSuccess extends SearchState {
-  final List<String> results;
+  final List<UserProfile> results;
 
   const SearchSuccess(this.results);
 
   @override
-  List<Object> get props => [results];
+  List<Object?> get props => [results];
 }
 
 class SearchError extends SearchState {
@@ -36,5 +36,5 @@ class SearchError extends SearchState {
   const SearchError(this.message);
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }

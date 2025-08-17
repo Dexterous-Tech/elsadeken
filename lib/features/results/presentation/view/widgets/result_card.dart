@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 class PersonCardWidget extends StatelessWidget {
   final PersonData personData;
-
   const PersonCardWidget({
     Key? key,
     required this.personData,
   }) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +45,8 @@ class PersonCardWidget extends StatelessWidget {
                     height: 50,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
+                      print("age: ${personData.age}");
+
                       return Container(
                         width: 50,
                         height: 50,
@@ -73,39 +75,40 @@ class PersonCardWidget extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  personData.name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                personData.name,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
                 ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Image.asset(
-                      'assets/images/result/locationIcon.png',
-                      width: 14,
-                      height: 14,
-                    ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        personData.location,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Colors.black,
-                        ),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/images/result/locationIcon.png',
+                    width: 14,
+                    height: 14,
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      "${personData.country}, ${personData.city}",
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.black,
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
+        ),
+
           const SizedBox(width: 16),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),

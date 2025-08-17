@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 enum NotificationType { message, follow, like, comment }
 
 class NotificationModel {
@@ -7,6 +9,9 @@ class NotificationModel {
   final DateTime timestamp;
   final bool isRead;
   final NotificationType type;
+  final String? senderId;
+  final String? relatedPostId;
+  final Map<String, dynamic>? additionalData;
 
   NotificationModel({
     required this.id,
@@ -15,6 +20,9 @@ class NotificationModel {
     required this.timestamp,
     required this.isRead,
     required this.type,
+    this.senderId,
+    this.relatedPostId,
+    this.additionalData,
   });
 
   NotificationModel copyWith({
@@ -50,12 +58,17 @@ class NotificationModel {
   // Create from JSON for future API integration
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     return NotificationModel(
-      id: json['id'],
-      title: json['title'],
-      body: json['body'],
-      timestamp: DateTime.parse(json['timestamp']),
-      isRead: json['isRead'],
+      id: json['id'] ?? '',
+      title: json['title'] ?? '',
+      body: json['body'] ?? '',
+      timestamp: (json['timestamp'] as Timestamp).toDate(),
+      isRead: json['isRead'] ?? false,
       type: _parseNotificationType(json['type']),
+      senderId: json['senderId'],
+      relatedPostId: json['relatedPostId'],
+      additionalData: json['additionalData'] != null 
+          ? Map<String, dynamic>.from(json['additionalData'])
+          : null,
     );
   }
 

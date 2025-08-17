@@ -75,7 +75,7 @@ Future<void> initializeDependencies() async {
       )));
   // Repository
   sl.registerLazySingleton<SearchRepository>(
-    () => SearchRepositoryImpl(),
+    () => SearchRepositoryImpl(sl<Dio>()), 
   );
 
   // Use cases

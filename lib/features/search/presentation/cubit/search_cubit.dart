@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/search_filter.dart';
+import '../../domain/entities/user_profile.dart';
 import '../../logic/use_cases/search_use_cases.dart';
 
 part 'search_state.dart';
@@ -13,6 +14,8 @@ class SearchCubit extends Cubit<SearchState> {
   SearchCubit(this.searchUseCase) : super(SearchInitial());
 
   SearchFilter _currentFilter = SearchFilter();
+
+  SearchFilter get currentFilter => _currentFilter;
 
   void updateFilter(SearchFilter filter) {
     _currentFilter = filter;
@@ -35,6 +38,7 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   void updateCountry(String country) {
+    print("updater $country");
     _currentFilter = _currentFilter.copyWith(country: country);
     emit(SearchFilterUpdated(_currentFilter));
   }
@@ -59,13 +63,24 @@ class SearchCubit extends Cubit<SearchState> {
     emit(SearchFilterUpdated(_currentFilter));
   }
 
-  Future<void> performSearch() async {
+  void updateQualification(String qualificationId) {
+    _currentFilter = _currentFilter.copyWith(qualificationId: qualificationId);
+    emit(SearchFilterUpdated(_currentFilter));
+  }
+
+  void updateSortByLatest(bool isLatest) {
+    _currentFilter = _currentFilter.copyWith(latest: isLatest ? 1 : 0);
+    emit(SearchFilterUpdated(_currentFilter));
+  }
+
+  Future<void> performSearch({int page = 1}) async {
     emit(SearchLoading());
     try {
-      final results = await searchUseCase(_currentFilter);
+      final results = await searchUseCase.searchUsers(_currentFilter, page: page);
       emit(SearchSuccess(results));
     } catch (e) {
       emit(SearchError(e.toString()));
     }
   }
+
 }
