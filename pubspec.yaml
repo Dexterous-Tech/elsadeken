@@ -54,6 +54,9 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   lottie: ^3.3.1
   flutter_html: ^3.0.0
+  firebase_auth: ^6.0.1
+  cloud_firestore: ^6.0.0
+  firebase_messaging: ^16.0.0
 
 
 

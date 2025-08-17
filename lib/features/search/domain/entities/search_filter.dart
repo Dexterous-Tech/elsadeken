@@ -15,8 +15,8 @@ class SearchFilter {
   final int? weightFrom;
   final int? weightTo;
   final String? skinColor;
-  final String? educationLevel;
-  final String? sortBy;
+  final String? qualificationId; 
+  final int? latest; 
 
   SearchFilter({
     this.username,
@@ -34,8 +34,8 @@ class SearchFilter {
     this.weightFrom,
     this.weightTo,
     this.skinColor,
-    this.educationLevel,
-    this.sortBy,
+    this.qualificationId,
+    this.latest,
   });
 
   SearchFilter copyWith({
@@ -54,8 +54,8 @@ class SearchFilter {
     int? weightFrom,
     int? weightTo,
     String? skinColor,
-    String? educationLevel,
-    String? sortBy,
+    String? qualificationId,
+    int? latest,
   }) {
     return SearchFilter(
       username: username ?? this.username,
@@ -73,8 +73,28 @@ class SearchFilter {
       weightFrom: weightFrom ?? this.weightFrom,
       weightTo: weightTo ?? this.weightTo,
       skinColor: skinColor ?? this.skinColor,
-      educationLevel: educationLevel ?? this.educationLevel,
-      sortBy: sortBy ?? this.sortBy,
+      qualificationId: qualificationId ?? this.qualificationId,
+      latest: latest ?? this.latest,
     );
+  }
+
+  Map<String, dynamic> toJson({int page = 1}) {
+    return {
+      "user_name": username,
+      "nationality_id": nationality?.toString(),
+      "city_id": city?.toString(),
+      "country_id": country?.toString(),
+      "type_of_marrige": maritalStatus,
+      "martital_status": socialStatus,
+      "from_age": ageFrom?.toString(),
+      "to_age": ageTo?.toString(),
+      "from_weight": weightFrom?.toString(),
+      "to_weight": weightTo?.toString(),
+      "from_height": heightFrom?.toString(),
+      "to_height": heightTo?.toString(),
+      "qualification_id": qualificationId,
+      "latest": latest,
+      "page": page,
+    };
   }
 }
