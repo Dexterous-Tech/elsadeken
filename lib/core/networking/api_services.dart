@@ -8,6 +8,7 @@ class ApiServices {
   final Dio _dio;
 
   ApiServices.internal(this._dio);
+  // static ApiServices get to get the instance of the ApiServices
   static Future<ApiServices> init() async {
     final dio = await DioFactory.getDio();
     return ApiServices.internal(dio);

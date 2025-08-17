@@ -18,14 +18,14 @@ class SuccessStoriesScreen extends StatelessWidget {
   String _formatNumber(int number) {
     final numberString = number.toString();
     final buffer = StringBuffer();
-    
+
     for (int i = 0; i < numberString.length; i++) {
       if (i > 0 && (numberString.length - i) % 3 == 0) {
         buffer.write(',');
       }
       buffer.write(numberString[i]);
     }
-    
+
     return buffer.toString();
   }
 
