@@ -101,7 +101,8 @@ class ContainerItem extends StatelessWidget {
             ),
             Spacer(),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+              height: 34.h,
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100).r,
                 color: AppColors.darkSunray,
@@ -109,6 +110,8 @@ class ContainerItem extends StatelessWidget {
               child: Center(
                 child: Text(
                   '56 سنه',
+                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.right,
                   style: AppTextStyles.font14BlackSemiBoldLamaSans
                       .copyWith(color: AppColors.white),
                 ),

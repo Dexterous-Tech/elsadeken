@@ -21,7 +21,7 @@ class CustomImageNetwork extends StatelessWidget {
         width: width,
         height: height,
         decoration:
-            BoxDecoration(shape: BoxShape.circle, color: AppColors.lightGray),
+            BoxDecoration(shape: BoxShape.circle, color: Colors.grey[200]),
         child: Center(
           child: Icon(
             Icons.image,

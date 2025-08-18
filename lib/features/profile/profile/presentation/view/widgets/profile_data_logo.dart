@@ -53,7 +53,7 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
                 ),
               ),
               Text(
-                '${state.myProfileResponseModel.data?.email?.split('@')[0]}@',
+                '${state.myProfileResponseModel.data?.email}',
                 style:
                     AppTextStyles.font14ChineseBlackSemiBoldLamaSans.copyWith(
                   color: AppColors.white,

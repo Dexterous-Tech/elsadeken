@@ -301,7 +301,7 @@ class ProfileDetailsData extends StatelessWidget {
     if (state is GetProfileDetailsSuccess) {
       final height = state.profileDetailsResponseModel.data?.attribute?.height;
       if (height == null) return 'لا يوجد';
-      return 'سنتي $height';
+      return '$height سنتي';
     }
     return 'لا يوجد';
   }
@@ -311,7 +311,7 @@ class ProfileDetailsData extends StatelessWidget {
     if (state is GetProfileDetailsSuccess) {
       final weight = state.profileDetailsResponseModel.data?.attribute?.weight;
       if (weight == null) return 'لا يوجد';
-      return 'كيلو $weight';
+      return '$weight كيلو';
     }
     return 'لا يوجد';
   }
@@ -341,7 +341,7 @@ class ProfileDetailsData extends StatelessWidget {
     if (state is GetProfileDetailsSuccess) {
       final income = state.profileDetailsResponseModel.data?.attribute?.income;
       if (income == null) return 'لا يوجد';
-      return 'جنية $income';
+      return '$income جنية';
     }
     return 'لا يوجد';
   }

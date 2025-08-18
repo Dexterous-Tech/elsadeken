@@ -16,7 +16,7 @@ class ProfileHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const CustomArrowBack(
-          background: Color(0xffF9F9F9),
+          background: Color(0xffE2E2E2),
         ),
         Text(
           title,

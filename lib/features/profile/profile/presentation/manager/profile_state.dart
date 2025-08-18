@@ -14,7 +14,7 @@ final class LogoutFailure extends ProfileState {
 }
 
 final class LogoutSuccess extends ProfileState {
-  final LogoutResponseModel logoutResponseModel;
+  final ProfileActionResponseModel logoutResponseModel;
 
   LogoutSuccess(this.logoutResponseModel);
 }
