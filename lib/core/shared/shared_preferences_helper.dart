@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -23,5 +24,10 @@ class SharedPreferencesHelper {
   static Future<void> deleteSecuredString(String key) async {
     debugPrint("FlutterSecureStorage : deleteSecuredString with key : $key");
     await flutterSecureStorage.delete(key: key);
+  }
+
+  static Future<void> deleteSharedPreferKeys() async{
+     await flutterSecureStorage.delete(key: SharedPreferencesKey.apiTokenKey);
+     await flutterSecureStorage.delete(key: SharedPreferencesKey.verificationTokenKey);
   }
 }

@@ -19,6 +19,7 @@ class ApiConstants {
   static String signup = '/user/register';
   static String registerInformation = '/user/attributes';
   static String logout = '/user/logout';
+  static String deleteUser = '/user/delete-account';
 
   // profile
   static String aboutUs = '/user/aboutUs';

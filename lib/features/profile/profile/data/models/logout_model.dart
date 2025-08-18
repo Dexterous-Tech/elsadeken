@@ -1,12 +1,12 @@
-class LogoutResponseModel {
-  LogoutResponseModel({
+class ProfileActionResponseModel {
+  ProfileActionResponseModel({
     this.message,
     this.type,
     this.status,
     this.showToast,
   });
 
-  LogoutResponseModel.fromJson(dynamic json) {
+  ProfileActionResponseModel.fromJson(dynamic json) {
     message = json['message'];
     type = json['type'];
     status = json['status'];

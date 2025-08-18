@@ -7,10 +7,10 @@ class ProfileDataSource {
 
   ProfileDataSource(this._apiServices);
 
-  Future<LogoutResponseModel> logout() async {
+  Future<ProfileActionResponseModel> logout() async {
     var response = await _apiServices.post(
         endpoint: ApiConstants.logout, requestBody: null);
 
-    return LogoutResponseModel.fromJson(response.data);
+    return ProfileActionResponseModel.fromJson(response.data);
   }
 }

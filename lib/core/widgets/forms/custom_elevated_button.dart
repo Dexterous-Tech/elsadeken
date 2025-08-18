@@ -17,6 +17,7 @@ class CustomElevatedButton extends StatelessWidget {
     this.verticalPadding,
     this.border,
     this.radius,
+    this.height,
   });
 
   final EdgeInsetsGeometry? paddingButton;
@@ -30,12 +31,13 @@ class CustomElevatedButton extends StatelessWidget {
   final Widget? buttonWidget;
   final BoxBorder? border;
   final double? radius;
+  final double? height;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        height: 50.h,
+        height: height ?? 61.h,
         width: double.infinity,
         padding: paddingButton ??
             EdgeInsets.symmetric(

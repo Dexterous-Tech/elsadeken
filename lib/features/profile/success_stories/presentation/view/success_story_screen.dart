@@ -6,6 +6,7 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/success_stories/presentation/cubit/success_story_cubit.dart';
 import 'package:elsadeken/features/profile/success_stories/presentation/view/widget/story_card.dart';
+import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,12 +36,30 @@ class SuccessStoriesScreen extends StatelessWidget {
       body: BlocBuilder<SuccessStoryCubit, SuccessStoryState>(
         builder: (context, state) {
           if (state is SuccessStoryLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return CustomProfileBody(
+              withStar: false,
+              contentBody: Column(
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                    child: ProfileHeader(title: 'القصص الناجحة'),
+                  ),
+                  verticalSpace(32),
+                  Expanded(
+                      child: const Center(
+                          child: CircularProgressIndicator(
+                    color: AppColors.primaryOrange,
+                  ))),
+                ],
+              ),
+            );
           }
           if (state is SuccessStoryLoaded) {
-            return SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(AppConstants.defaultPadding),
+            return CustomProfileBody(
+              withStar: false,
+              padding: EdgeInsets.all(AppConstants.defaultPadding),
+              contentBody: SingleChildScrollView(
                 child: Column(
                   children: [
                     Padding(
@@ -106,6 +125,7 @@ class SuccessStoriesScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: CustomElevatedButton(
+                        height: 47.h,
                         onPressed: () {},
                         textButton: "قصص ناجحة حسب البلدان",
                         styleTextButton: TextStyle(
@@ -125,6 +145,7 @@ class SuccessStoriesScreen extends StatelessWidget {
                         image: story.image)),
                     SizedBox(height: 20.h),
                     CustomElevatedButton(
+                      height: 47.h,
                       onPressed: () {},
                       textButton: "اغلاق",
                       horizontalPadding: 10,
@@ -135,7 +156,19 @@ class SuccessStoriesScreen extends StatelessWidget {
             );
           }
           if (state is SuccessStoryError) {
-            return Center(child: Text(state.message));
+            return CustomProfileBody(
+                withStar: false,
+                contentBody: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.w, vertical: 16.h),
+                      child: ProfileHeader(title: 'القصص الناجحة'),
+                    ),
+                    verticalSpace(32),
+                    Expanded(child: Center(child: Text(state.message))),
+                  ],
+                ));
           }
           return const SizedBox();
         },

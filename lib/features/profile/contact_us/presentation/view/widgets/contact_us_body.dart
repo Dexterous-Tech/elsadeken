@@ -26,7 +26,8 @@ class ContactUsBody extends StatelessWidget {
           ProfileHeader(title: 'إتصل بنا'),
           verticalSpace(50),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 30.w),
+            padding: EdgeInsets.only(
+                left: 13.w, right: 13.w, top: 13.h, bottom: 16.w),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10).r,
                 color: AppColors.lightCarminePink.withValues(alpha: 0.05)),
@@ -43,50 +44,61 @@ class ContactUsBody extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 verticalSpace(32),
-                CustomTextFormField(
-                  hintText: 'البريد الإلكتروني الخاص بك',
-                  validator: (value) {},
-                  borderColor: Color(0xffFFB74D),
-                ),
-                verticalSpace(8),
-                CustomTextFormField(
-                  hintText: 'موضوع الرسالة',
-                  validator: (value) {},
-                  borderColor: Color(0xffFFB74D),
-                ),
-                verticalSpace(8),
-                CustomTextFormField(
-                  hintText: 'اكتب رسالتك',
-                  validator: (value) {},
-                  maxLines: 5,
-                  borderColor: Color(0xffFFB74D),
-                ),
-                verticalSpace(16),
-                CustomElevatedButton(
-                  onPressed: () {},
-                  textButton: 'ارســــــــل',
-                ),
-                verticalSpace(13),
-                GestureDetector(
-                  onTap: () {
-                    context.pushNamed(AppRoutes.profileTechnicalSupportScreen);
-                  },
-                  child: Row(
-                    textDirection: TextDirection.rtl,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 34.w),
+                  child: Column(
                     children: [
-                      Image.asset(
-                        AppImages.contactHeadphoneProfile,
-                        width: 17.w,
-                        height: 17.h,
+                      CustomTextFormField(
+                        hintText: 'البريد الإلكتروني الخاص بك',
+                        validator: (value) {},
+                        borderColor: Color(0xffFFB74D),
                       ),
-                      horizontalSpace(13),
-                      Text(
-                        'تحدث معنا',
-                        style: AppTextStyles.font13BlackMediumLamaSans.copyWith(
-                            fontFamily: FontFamilyHelper.lamaSansArabic,
-                            color: AppColors.sinopia),
-                      )
+                      verticalSpace(8),
+                      CustomTextFormField(
+                        hintText: 'موضوع الرسالة',
+                        validator: (value) {},
+                        borderColor: Color(0xffFFB74D),
+                      ),
+                      verticalSpace(8),
+                      CustomTextFormField(
+                        hintText: 'اكتب رسالتك',
+                        validator: (value) {},
+                        maxLines: 5,
+                        borderColor: Color(0xffFFB74D),
+                      ),
+                      verticalSpace(16),
+                      CustomElevatedButton(
+                        height: 39.h,
+                        onPressed: () {},
+                        textButton: 'ارســــــــل',
+                      ),
+                      verticalSpace(13),
+                      GestureDetector(
+                        onTap: () {
+                          context.pushNamed(
+                              AppRoutes.profileTechnicalSupportScreen);
+                        },
+                        child: Row(
+                          textDirection: TextDirection.rtl,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              AppImages.contactHeadphoneProfile,
+                              width: 17.w,
+                              height: 17.h,
+                            ),
+                            horizontalSpace(13),
+                            Text(
+                              'تحدث معنا',
+                              style: AppTextStyles.font13BlackMediumLamaSans
+                                  .copyWith(
+                                      fontFamily:
+                                          FontFamilyHelper.lamaSansArabic,
+                                      color: AppColors.sinopia),
+                            )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),

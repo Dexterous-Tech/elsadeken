@@ -80,6 +80,7 @@ Future<void> oathDialog({
             ),
             verticalSpace(48),
             CustomElevatedButton(
+              height: 45.63711166381836.h,
               onPressed: value
                   ? () {
                       context.pushNamed(AppRoutes.signupScreen,
@@ -92,6 +93,7 @@ Future<void> oathDialog({
             ),
             verticalSpace(14),
             CustomElevatedButton(
+              height: 45.63711166381836.h,
               onPressed: value
                   ? () {
                       context.pushNamed(AppRoutes.signupScreen,

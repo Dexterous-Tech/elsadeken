@@ -2,6 +2,7 @@ import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/my_excellence/presentation/view/widgets/my_excellence_item.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/spacing.dart';
@@ -102,6 +103,7 @@ class MyExcellenceBody extends StatelessWidget {
             ),
             verticalSpace(32),
             CustomElevatedButton(
+              height: 66.h,
               onPressed: () {
                 showPaymentMethodsBottomSheet(context);
               },

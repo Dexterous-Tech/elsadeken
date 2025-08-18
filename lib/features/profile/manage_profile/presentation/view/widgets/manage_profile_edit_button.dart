@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ManageProfileEditButton extends StatelessWidget {
   const ManageProfileEditButton({
@@ -14,6 +15,7 @@ class ManageProfileEditButton extends StatelessWidget {
     return SizedBox(
         width: double.infinity,
         child: CustomElevatedButton(
+          height: 66.h,
           onPressed: onPressed ?? () {},
           textButton: 'تعديل',
         ));

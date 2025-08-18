@@ -7,7 +7,7 @@ import 'package:elsadeken/features/profile/profile/data/data_source/profile_data
 import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
 
 abstract class ProfileRepoInterface {
-  Future<Either<ApiErrorModel, LogoutResponseModel>> logout();
+  Future<Either<ApiErrorModel, ProfileActionResponseModel>> logout();
 }
 
 class ProfileRepoImp implements ProfileRepoInterface {
@@ -15,7 +15,7 @@ class ProfileRepoImp implements ProfileRepoInterface {
 
   ProfileRepoImp(this._profileDataSource);
   @override
-  Future<Either<ApiErrorModel, LogoutResponseModel>> logout() async {
+  Future<Either<ApiErrorModel, ProfileActionResponseModel>> logout() async {
     try {
       var response = await _profileDataSource.logout();
 

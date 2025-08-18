@@ -113,6 +113,7 @@ Future<void> manageProfileDialog(
             children: [
               Expanded(
                 child: CustomElevatedButton(
+                  height: 41.h,
                   onPressed: () => Navigator.pop(context),
                   textButton: 'إغلاق',
                   styleTextButton: AppTextStyles.font14DesiredMediumLamaSans,
@@ -122,6 +123,7 @@ Future<void> manageProfileDialog(
               horizontalSpace(1),
               Expanded(
                 child: CustomElevatedButton(
+                  height: 41.h,
                   onPressed: () {
                     // Handle save logic here
                     if (data.onSave != null) {

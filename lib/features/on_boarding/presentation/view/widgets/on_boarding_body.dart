@@ -50,8 +50,9 @@ class OnBoardingBody extends StatelessWidget {
               ),
               verticalSpace(30),
               SizedBox(
-                width: 210.w,
+                width: 219.w,
                 child: CustomElevatedButton(
+                  height: 50.25.h,
                   onPressed: () {
                     oathDialog(context: context);
                   },

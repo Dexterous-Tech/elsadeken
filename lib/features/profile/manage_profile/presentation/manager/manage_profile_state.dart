@@ -18,3 +18,16 @@ final class ManageProfileFailure extends ManageProfileState {
 
   ManageProfileFailure(this.error);
 }
+
+
+final class DeleteProfileLoading extends ManageProfileState {}
+final class DeleteProfileFailure extends ManageProfileState {
+  final String error ;
+
+  DeleteProfileFailure(this.error);
+}
+final class DeleteProfileSuccess extends ManageProfileState {
+  final ProfileActionResponseModel profileActionResponseModel;
+
+  DeleteProfileSuccess(this.profileActionResponseModel);
+}

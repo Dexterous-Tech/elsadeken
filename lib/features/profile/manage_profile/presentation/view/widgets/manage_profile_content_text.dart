@@ -47,6 +47,8 @@ class ManageProfileContentText extends StatelessWidget {
           AppTextStyles.font18PhilippineBronzeRegularLamaSans.copyWith(
             color: textColor,
           ),
+      textDirection: TextDirection.rtl,
+      textAlign: TextAlign.right,
     );
   }
 }

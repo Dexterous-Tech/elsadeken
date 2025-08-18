@@ -20,7 +20,7 @@ class ProfileDetailsCardItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 16.h),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        // crossAxisAlignment: CrossAxisAlignment.end,
         textDirection: TextDirection.rtl,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

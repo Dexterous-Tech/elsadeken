@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/delete_profile/delete_profile.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
@@ -63,14 +64,7 @@ class ManageProfileLoginData extends StatelessWidget {
           ),
         ),
         ManageProfileCustomSeparator(),
-        ManageProfileContentItem(
-          title: 'حذف حسابي',
-          itemContent: ManageProfileContentText(
-            text: 'حذف',
-            isLoading: isLoading,
-            textColor: AppColors.vividRed,
-          ),
-        ),
+        DeleteProfile(isLoading: isLoading),
         verticalSpace(20),
         ManageProfileEditButton(
           onPressed: isLoading ? null : () => _showLoginDataEditDialog(context),

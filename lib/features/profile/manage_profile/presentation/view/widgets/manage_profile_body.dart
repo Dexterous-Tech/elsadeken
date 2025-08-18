@@ -4,6 +4,7 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/view/widg
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/contents/manage_profile_religion.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
+import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import '../../../../widgets/profile_header.dart';
 import 'contents/manage_profile_appearance.dart';
 import 'contents/manage_profile_marital_status.dart';
@@ -44,92 +45,91 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
             : null;
         final isLoading = state is ManageProfileLoading;
 
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 19.h),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  ProfileHeader(title: 'تعديل بياناتي'),
-                  verticalSpace(28),
-                  ManageProfileCard(
-                    title: 'بيانات تسجيل الدخول',
-                    cardContent: ManageProfileLoginData(
-                      profileData: profileData,
-                      isLoading: isLoading,
-                    ),
+        return CustomProfileBody(
+          withStar: false,
+          contentBody: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: TextDirection.rtl,
+              children: [
+                ProfileHeader(title: 'تعديل بياناتي'),
+                verticalSpace(28),
+                ManageProfileCard(
+                  title: 'بيانات تسجيل الدخول',
+                  cardContent: ManageProfileLoginData(
+                    profileData: profileData,
+                    isLoading: isLoading,
                   ),
-                  verticalSpace(10),
-                  ManageProfileCard(
-                    title: 'الجنسية و الإقامة',
-                    cardContent: ManageProfileNationalCountry(
-                      profileData: profileData,
-                      isLoading: isLoading,
-                    ),
+                ),
+                verticalSpace(10),
+                ManageProfileCard(
+                  title: 'الجنسية و الإقامة',
+                  cardContent: ManageProfileNationalCountry(
+                    profileData: profileData,
+                    isLoading: isLoading,
                   ),
-                  verticalSpace(10),
-                  ManageProfileCard(
-                    title: 'الحالة الإجتماعية',
-                    cardContent: ManageProfileMaritalStatus(
-                      profileData: profileData,
-                      isLoading: isLoading,
-                    ),
+                ),
+                verticalSpace(10),
+                ManageProfileCard(
+                  title: 'الحالة الإجتماعية',
+                  cardContent: ManageProfileMaritalStatus(
+                    profileData: profileData,
+                    isLoading: isLoading,
                   ),
-                  verticalSpace(10),
-                  ManageProfileCard(
-                    title: 'مظهرك',
-                    cardContent: ManageProfileAppearance(
-                      profileData: profileData,
-                      isLoading: isLoading,
-                    ),
+                ),
+                verticalSpace(10),
+                ManageProfileCard(
+                  title: 'مظهرك',
+                  cardContent: ManageProfileAppearance(
+                    profileData: profileData,
+                    isLoading: isLoading,
                   ),
-                  verticalSpace(10),
-                  ManageProfileCard(
-                    title: 'الدين',
-                    cardContent: ManageProfileReligion(
-                      profileData: profileData,
-                      isLoading: isLoading,
-                    ),
+                ),
+                verticalSpace(10),
+                ManageProfileCard(
+                  title: 'الدين',
+                  cardContent: ManageProfileReligion(
+                    profileData: profileData,
+                    isLoading: isLoading,
                   ),
-                  verticalSpace(10),
-                  ManageProfileCard(
-                    title: 'الدراسة و العمل',
-                    cardContent: ManageProfileJob(
-                      profileData: profileData,
-                      isLoading: isLoading,
-                    ),
+                ),
+                verticalSpace(10),
+                ManageProfileCard(
+                  title: 'الدراسة و العمل',
+                  cardContent: ManageProfileJob(
+                    profileData: profileData,
+                    isLoading: isLoading,
                   ),
-                  verticalSpace(10),
-                  ManageProfileCard(
-                    title: 'موصفات شريكة حياتك التي ترغب الإرتباط بها',
-                    cardContent: ManageProfileWritingContent(
-                      label: 'موصفات شريكة حياتك التي ترغب الإرتباط بها',
-                      profileData: profileData,
-                      isLoading: isLoading,
-                    ),
+                ),
+                verticalSpace(10),
+                ManageProfileCard(
+                  title: 'موصفات شريكة حياتك التي ترغب الإرتباط بها',
+                  cardContent: ManageProfileWritingContent(
+                    label: 'موصفات شريكة حياتك التي ترغب الإرتباط بها',
+                    profileData: profileData,
+                    isLoading: isLoading,
                   ),
-                  verticalSpace(10),
-                  ManageProfileCard(
-                    title: 'تحدث عن نفسك',
-                    cardContent: ManageProfileWritingContent(
-                      label: 'تحدث عن نفسك',
-                      profileData: profileData,
-                      isLoading: isLoading,
-                    ),
+                ),
+                verticalSpace(10),
+                ManageProfileCard(
+                  title: 'تحدث عن نفسك',
+                  cardContent: ManageProfileWritingContent(
+                    label: 'تحدث عن نفسك',
+                    profileData: profileData,
+                    isLoading: isLoading,
                   ),
-                  verticalSpace(10),
-                  ManageProfileCard(
-                    title: 'المعلومات الشخصية',
-                    cardContent: ManageProfilePersonalInformation(
-                      profileData: profileData,
-                      isLoading: isLoading,
-                    ),
+                ),
+                verticalSpace(10),
+                ManageProfileCard(
+                  title: 'المعلومات الشخصية',
+                  cardContent: ManageProfilePersonalInformation(
+                    profileData: profileData,
+                    isLoading: isLoading,
                   ),
-                  // verticalSpace(63),
-                  // CustomElevatedButton(onPressed: () {}, textButton: 'تعديل'),
-                ],
-              ),
+                ),
+                // verticalSpace(63),
+                // CustomElevatedButton(onPressed: () {}, textButton: 'تعديل'),
+              ],
             ),
           ),
         );

@@ -87,6 +87,7 @@ class ExcellencePackageBody extends StatelessWidget {
                   SizedBox(
                     width: 186.w,
                     child: CustomElevatedButton(
+                      height: 41.h,
                       onPressed: () {},
                       textButton: 'اتصل الآن',
                       radius: 100,
@@ -200,6 +201,7 @@ class ExcellencePackageBody extends StatelessWidget {
                   ),
                   verticalSpace(15),
                   CustomElevatedButton(
+                    height: 60,
                     onPressed: () {
                       showPaymentMethodsBottomSheet(context);
                     },

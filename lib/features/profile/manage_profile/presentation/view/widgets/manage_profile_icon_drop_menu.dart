@@ -13,7 +13,7 @@ class ManageProfileIconDropMenu extends StatelessWidget {
     return Row(
       textDirection: TextDirection.rtl,
       children: [
-        Text(title, style: AppTextStyles.font18PhilippineBronzeRegularPlexSans),
+        Text(title, style: AppTextStyles.font18PhilippineBronzeRegularLamaSans,) ,
         horizontalSpace(9),
         Transform.rotate(
           angle: -1.5708, // 90 degrees in radians (π/2)
