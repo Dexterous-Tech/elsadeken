@@ -46,7 +46,7 @@ class ApiUserModel {
 
   UserModel toUserModel() {
     return UserModel(
-      id: id.toString(),
+      id: id,
       name: name,
       age: age,
       profession: job,

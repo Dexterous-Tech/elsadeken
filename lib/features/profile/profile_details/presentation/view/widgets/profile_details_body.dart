@@ -152,7 +152,7 @@ class ProfileDetailsBody extends StatelessWidget {
                       },
                     );
                   },
-                ),
+                ), 
                 BlocConsumer<ProfileDetailsCubit, ProfileDetailsState>(
                   buildWhen: (context, current) =>
                       current is IgnoreUserLoading ||

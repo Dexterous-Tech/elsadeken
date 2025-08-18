@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
@@ -36,6 +37,7 @@ class LoginCubit extends Cubit<LoginState> {
       },
       (loginResponseModel) async {
         await saveUserToken(loginResponseModel.data!.token);
+        await saveUserData(loginResponseModel.data!);
         log("save token ");
         emit(LoginSuccess(loginResponseModel: loginResponseModel));
       },
@@ -54,5 +56,51 @@ class LoginCubit extends Cubit<LoginState> {
       token,
     );
     await DioFactory.setTokenIntoHeaderAfterLogin(token);
+  }
+
+  //
+  //
+  //
+  Future<void> saveUserData(LoginDataModel user) async {
+    print("Saving user data...");
+
+    // Convert user model to JSON string
+    final userJson = user.toJson();
+    final userString = jsonEncode(userJson);
+    print("User JSON string: $userString");
+
+    // Clear previous data
+    await Future.wait([
+      SharedPreferencesHelper.deleteSecuredString(
+        SharedPreferencesKey.userDataKey,
+      ),
+    ]);
+
+    // Save to SharedPreferences
+    await SharedPreferencesHelper.setSecuredString(
+      SharedPreferencesKey.userDataKey, // make sure this key exists
+      userString,
+    );
+
+    print(
+        "User data saved successfully under key: ${SharedPreferencesKey.userDataKey}");
+  }
+
+  static Future<LoginDataModel?> getUserData() async {
+    print("Fetching user data...");
+
+    final userString = await SharedPreferencesHelper.getSecuredString(
+      SharedPreferencesKey.userDataKey,
+    );
+    print("Fetched string: $userString");
+
+    if (userString != null) {
+      final Map<String, dynamic> userJson = jsonDecode(userString);
+      print("Decoded JSON: $userJson");
+      return LoginDataModel.fromJson(userJson);
+    }
+
+    print("No user data found");
+    return null;
   }
 }
