@@ -20,7 +20,7 @@ class CustomArrowBack extends StatelessWidget {
             shape: BoxShape.circle, color: background ?? Colors.transparent),
         child: Center(
           child: Image.asset(
-            AppImages.arrowBack,
+            AppImages.authArrowBack,
             width: 14.w,
             height: 14.h,
           ),

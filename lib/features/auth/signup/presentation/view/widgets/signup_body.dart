@@ -83,17 +83,25 @@ class _SignupBodyState extends State<SignupBody> {
                         totalSteps: pages.length,
                       ),
                     ),
-                    horizontalSpace(8),
-                    GestureDetector(
-                      onTap: () {
-                        context.pop();
-                      },
-                      child: Image.asset(
-                        AppImages.arrowBack,
-                        width: 14.w,
-                        height: 14.h,
+                    if (_currentStep != 2) ...[
+                      horizontalSpace(8),
+                      GestureDetector(
+                        onTap: () {
+                          if (_currentStep > 0) {
+                            // Navigate to previous step
+                            _handleStepChanged(_currentStep - 1);
+                          } else {
+                            // Pop context when on first step
+                            context.pop();
+                          }
+                        },
+                        child: Image.asset(
+                          AppImages.authArrowBack,
+                          width: 14.w,
+                          height: 14.h,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
                 verticalSpace(33),

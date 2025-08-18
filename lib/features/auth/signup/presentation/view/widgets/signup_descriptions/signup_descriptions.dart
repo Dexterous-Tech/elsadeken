@@ -41,11 +41,11 @@ class SignupDescriptions extends StatelessWidget {
                     keyboardType: TextInputType.text,
                     hintText: 'اكتب',
                     maxLines: 5,
-                    inputFormatters: [
-                      // Allow only Arabic & English letters and spaces
-                      FilteringTextInputFormatter.allow(
-                          RegExp(r'[a-zA-Z\u0600-\u06FF\s]')),
-                    ],
+                    // inputFormatters: [
+                    //   // Allow only Arabic & English letters and spaces
+                    //   FilteringTextInputFormatter.allow(
+                    //       RegExp(r'[a-zA-Z\u0600-\u06FF\s]')),
+                    // ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'هذا الحقل مطلوب';
@@ -86,11 +86,11 @@ class SignupDescriptions extends StatelessWidget {
                     keyboardType: TextInputType.emailAddress,
                     hintText: 'اكتب',
                     maxLines: 5,
-                    inputFormatters: [
-                      // Allow only Arabic & English letters and spaces
-                      FilteringTextInputFormatter.allow(
-                          RegExp(r'[a-zA-Z\u0600-\u06FF\s]')),
-                    ],
+                    // inputFormatters: [
+                    //   // Allow only Arabic & English letters and spaces
+                    //   FilteringTextInputFormatter.allow(
+                    //       RegExp(r'[a-zA-Z\u0600-\u06FF\s]')),
+                    // ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'هذا الحقل مطلوب';

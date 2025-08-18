@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/features/on_boarding/presentation/view/widgets/oath_dialog/oath_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
