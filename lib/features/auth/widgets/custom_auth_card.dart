@@ -13,9 +13,8 @@ class CustomAuthCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(
-        30.r,
-      ), // Clip blur inside rounded card
+      borderRadius:
+          BorderRadius.circular(30).r, // Clip blur inside rounded card
       child: SizedBox(
         width: double.infinity,
         height: 628.h,
@@ -23,7 +22,7 @@ class CustomAuthCard extends StatelessWidget {
           children: [
             // Apply blur to whatever is behind this card
             BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+              filter: ImageFilter.blur(sigmaX: 0.8, sigmaY: 0.8),
               child: Container(
                 color: Colors.transparent, // Must be non-null to apply blur
               ),
@@ -32,16 +31,16 @@ class CustomAuthCard extends StatelessWidget {
             // Add the gradient and content
             Container(
               padding: EdgeInsets.only(
-                right: 18.5.w,
-                top: 37.h,
-                left: 18.5.w,
-                bottom: 47.h,
+                right: 14.w,
+                top: 47.5.h,
+                left: 23.w,
+                bottom: 59.5.h,
               ),
               decoration: ShapeDecoration(
                 gradient: RadialGradient(
                   center: Alignment.topLeft,
                   colors: [
-                    AppColors.sinopia.withValues(alpha: 0.2),
+                    AppColors.sinopia.withValues(alpha: 0.15),
                     AppColors.lightCarminePink.withValues(alpha: 0.07),
                   ],
                   stops: [1.0, 0.77],

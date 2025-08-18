@@ -15,7 +15,7 @@ class CustomAuthBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsetsGeometry.symmetric(horizontal: 31.w, vertical: 31.h),
+        padding: EdgeInsetsGeometry.only(left: 34.w, right: 31.w, top: 32.13.h),
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
@@ -29,13 +29,13 @@ class CustomAuthBody extends StatelessWidget {
                         onTap: () {
                           context.pop();
                         },
-                        child: Icon(
-                          Icons.arrow_forward,
-                          size: 24.sp,
-                          color: AppColors.black,
+                        child: Image.asset(
+                          AppImages.authArrowBack,
+                          width: 14.w,
+                          height: 14.h,
                         ),
                       ),
-                      verticalSpace(33),
+                      verticalSpace(33.74.h),
                       Image.asset(
                         AppImages.authElsadekenMarriageImage,
                         width: 170.w,
