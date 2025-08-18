@@ -22,6 +22,13 @@ class ContainerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final country = favUser?.attribute?.country?.trim();
+    final city = favUser?.attribute?.city?.trim();
+
+    final location = [
+      country?.isNotEmpty == true ? country : 'لا يوجد',
+      city?.isNotEmpty == true ? city : 'لا يوجد',
+    ].join(' , ');
     return GestureDetector(
       onTap: () {
         context.pushNamed(AppRoutes.profileDetailsScreen,
@@ -77,7 +84,7 @@ class ContainerItem extends StatelessWidget {
                             ),
                             horizontalSpace(3),
                             Text(
-                              '${favUser?.attribute?.country ?? 'لا دولة'} , ${favUser?.attribute?.city ?? 'لا مدينة'}',
+                              location,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTextStyles.font13BlackMediumLamaSans

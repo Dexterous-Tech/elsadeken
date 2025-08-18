@@ -16,16 +16,21 @@ class ProfileDetailsLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileDetailsCubit, ProfileDetailsState>(
+      buildWhen: (context, state) =>
+          state is GetProfileDetailsLoading ||
+          state is GetProfileDetailsSuccess ||
+          state is GetProfileDetailsFailure,
       builder: (context, state) {
-        String image = AppImages.profileImageLogo; // Default image
-        String name = 'جاري التحميل...';
-        String status = 'جاري التحميل...';
+        String image = ''; // Default image
+        String name = 'لا يوجد';
+        String status = 'لا يوجد';
+        bool isLoading = state is GetProfileDetailsLoading;
 
         if (state is GetProfileDetailsSuccess) {
           final userData = state.profileDetailsResponseModel.data;
           if (userData != null) {
             // Get image
-            image = userData.image ?? AppImages.profileImageLogo;
+            image = userData.image ?? '';
 
             // Get name from email (everything before @)
             if (userData.email != null && userData.email!.contains('@')) {
@@ -35,15 +40,8 @@ class ProfileDetailsLogo extends StatelessWidget {
             }
 
             // Get status (you might need to add this field to your model)
-            status =
-                'متواجد حاليا'; // Default status, you can modify based on your needs
+            status = userData.attribute?.maritalStatus ?? 'غير معروف';
           }
-        } else if (state is GetProfileDetailsLoading) {
-          name = 'جاري التحميل...';
-          status = 'جاري التحميل...';
-        } else {
-          name = 'لا يوجد';
-          status = 'لا يوجد';
         }
 
         return Center(
@@ -51,38 +49,69 @@ class ProfileDetailsLogo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  CustomImageNetwork(
-                    image: image,
-                    width: 145.w,
-                    height: 145.h,
-                  ),
-                  Positioned(
-                    bottom: 5,
-                    right: 5,
-                    child: Container(
-                      width: 32.w,
-                      height: 32.h,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.green,
-                          border: Border.all(color: AppColors.white)),
+              state is GetProfileDetailsLoading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.philippineBronze,
+                      ),
+                    )
+                  : Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: CustomImageNetwork(
+                            image: image,
+                            width: 145.w,
+                            height: 145.h,
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 5,
+                          right: 5,
+                          child: Container(
+                            width: 32.w,
+                            height: 32.h,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.green,
+                                border: Border.all(color: AppColors.white)),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
               verticalSpace(16),
-              Text(
-                name,
-                style: AppTextStyles.font16BlackSemiBoldLamaSans,
-              ),
+              isLoading
+                  ? SizedBox(
+                      width: 20.w,
+                      height: 20.h,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.philippineBronze,
+                        ),
+                      ),
+                    )
+                  : Text(
+                      name,
+                      style: AppTextStyles.font16BlackSemiBoldLamaSans,
+                    ),
               verticalSpace(8),
-              Text(
-                status,
-                style: AppTextStyles.font13BlackMediumLamaSans,
-              )
+              isLoading
+                  ? SizedBox(
+                      width: 16.w,
+                      height: 16.h,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.philippineBronze,
+                        ),
+                      ),
+                    )
+                  : Text(
+                      status,
+                      style: AppTextStyles.font13BlackMediumLamaSans,
+                    )
             ],
           ),
         );

@@ -20,6 +20,7 @@ class InterestsListItems extends StatelessWidget {
           return Center(
             child: Text(
               state.error,
+              textAlign: TextAlign.center,
               style: AppTextStyles.font14DesiredMediumLamaSans,
             ),
           );

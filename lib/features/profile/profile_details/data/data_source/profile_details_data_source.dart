@@ -8,7 +8,7 @@ class ProfileDetailsDataSource {
 
   ProfileDetailsDataSource(this._apiServices);
 
-  Future<ProfileDetailsActionResponseModel> ignoreUser(String userId) async {
+  Future<ProfileDetailsActionResponseModel> ignoreUser(int userId) async {
     var response = await _apiServices.get(
       endpoint: ApiConstants.ignoreUser(userId),
       requiresAuth: true,
@@ -17,7 +17,7 @@ class ProfileDetailsDataSource {
     return ProfileDetailsActionResponseModel.fromJson(response.data);
   }
 
-  Future<ProfileDetailsActionResponseModel> likeUser(String userId) async {
+  Future<ProfileDetailsActionResponseModel> likeUser(int userId) async {
     var response = await _apiServices.get(
       endpoint: ApiConstants.likeUser(userId),
       requiresAuth: true,
@@ -26,7 +26,7 @@ class ProfileDetailsDataSource {
     return ProfileDetailsActionResponseModel.fromJson(response.data);
   }
 
-  Future<ProfileDetailsResponseModel> getProfileDetails(String userId) async {
+  Future<ProfileDetailsResponseModel> getProfileDetails(int userId) async {
     var response = await _apiServices.get(
       endpoint: ApiConstants.userDetails(userId),
       requiresAuth: true,

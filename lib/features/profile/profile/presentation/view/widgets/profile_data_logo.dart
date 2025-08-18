@@ -63,9 +63,13 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
             ],
           );
         } else {
-          return Center(
-            child: CircularProgressIndicator(
-              color: AppColors.primaryOrange,
+          return SizedBox(
+            width: 120.w,
+            height: 120.h,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: AppColors.white,
+              ),
             ),
           );
         }

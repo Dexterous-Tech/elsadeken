@@ -12,7 +12,7 @@ class ProfileDetailsCubit extends Cubit<ProfileDetailsState> {
 
   final ProfileDetailsRepoInterface profileDetailsRepoInterface;
 
-  void likeUser(String userId) async {
+  void likeUser(int userId) async {
     emit(LikeUserLoading());
 
     var response = await profileDetailsRepoInterface.likeUser(userId);
@@ -24,7 +24,7 @@ class ProfileDetailsCubit extends Cubit<ProfileDetailsState> {
     });
   }
 
-  void ignoreUser(String userId) async {
+  void ignoreUser(int userId) async {
     emit(IgnoreUserLoading());
 
     var response = await profileDetailsRepoInterface.ignoreUser(userId);
@@ -36,11 +36,11 @@ class ProfileDetailsCubit extends Cubit<ProfileDetailsState> {
     });
   }
 
-  void getProfileDetails(String userId) async {
+  void getProfileDetails(int userId) async {
     emit(GetProfileDetailsLoading());
 
     var response = await profileDetailsRepoInterface.getProfileDetails(userId);
-    
+
     response.fold((error) {
       emit(GetProfileDetailsFailure(error.displayMessage));
     }, (profileDetailsResponseModel) {

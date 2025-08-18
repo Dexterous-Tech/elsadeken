@@ -81,7 +81,7 @@ class AppRouting {
         return MaterialPageRoute(builder: (_) => NotificationScreen());
       case AppRoutes.profileDetailsScreen:
         return MaterialPageRoute(
-            builder: (_) => ProfileDetailsScreen(userId: arguments as String));
+            builder: (_) => ProfileDetailsScreen(userId: arguments as int));
       case AppRoutes.profileAboutUsScreen:
         return MaterialPageRoute(builder: (_) => AboutUsScreen());
       case AppRoutes.profileExcellencePackageScreen:

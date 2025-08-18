@@ -9,11 +9,11 @@ import 'package:elsadeken/features/profile/profile_details/data/models/profile_d
 
 abstract class ProfileDetailsRepoInterface {
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> ignoreUser(
-      String userId);
+      int userId);
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> likeUser(
-      String userId);
+      int userId);
   Future<Either<ApiErrorModel, ProfileDetailsResponseModel>> getProfileDetails(
-      String userId);
+      int userId);
 }
 
 class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
@@ -22,7 +22,7 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
   ProfileDetailsRepoImp(this.profileDetailsDataSource);
   @override
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> ignoreUser(
-      String userId) async {
+      int userId) async {
     try {
       var response = await profileDetailsDataSource.ignoreUser(userId);
       return Right(response);
@@ -37,7 +37,7 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
 
   @override
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> likeUser(
-      String userId) async {
+      int userId) async {
     try {
       var response = await profileDetailsDataSource.likeUser(userId);
       return Right(response);
@@ -52,7 +52,7 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
 
   @override
   Future<Either<ApiErrorModel, ProfileDetailsResponseModel>> getProfileDetails(
-      String userId) async {
+      int userId) async {
     try {
       var response = await profileDetailsDataSource.getProfileDetails(userId);
       return Right(response);

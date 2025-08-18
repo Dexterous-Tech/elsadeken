@@ -27,7 +27,7 @@ class ProfileContent extends StatelessWidget {
         image: AppImages.interestsListIcon,
         title: 'قائمه الاهتمام',
         onPressed: () {
-          context.pushNamed(AppRoutes.profileMyInterestingListScreen);
+          context.pushNamed(AppRoutes.profileInterestsListScreen);
         },
       ),
       ProfileContentItemModel(
@@ -41,7 +41,7 @@ class ProfileContent extends StatelessWidget {
         image: AppImages.interestingMeIcon,
         title: 'من يهتم بي',
         onPressed: () {
-          context.pushNamed(AppRoutes.profileInterestsListScreen);
+          context.pushNamed(AppRoutes.profileMyInterestingListScreen);
         },
       ),
       ProfileContentItemModel(

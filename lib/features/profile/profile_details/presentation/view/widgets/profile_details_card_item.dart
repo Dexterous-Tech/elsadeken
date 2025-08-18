@@ -27,6 +27,7 @@ class ProfileDetailsCardItem extends StatelessWidget {
           Text(
             itemTitle,
             textDirection: TextDirection.rtl,
+            textAlign: TextAlign.right,
             style: AppTextStyles.font18GreyRegularLamaSans,
           ),
           Container(
@@ -53,6 +54,7 @@ class ProfileDetailsCardItem extends StatelessWidget {
                     child: Text(
                       itemSubTitle,
                       textDirection: TextDirection.rtl,
+                      textAlign: TextAlign.right,
                       style: AppTextStyles.font12PhilippineBronzeMediumLamaSans,
                     ),
                   ),

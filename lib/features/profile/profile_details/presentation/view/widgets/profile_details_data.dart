@@ -9,16 +9,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileDetailsData extends StatelessWidget {
-  ProfileDetailsData({super.key});
+  const ProfileDetailsData({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileDetailsCubit, ProfileDetailsState>(
+      buildWhen: (context, state) =>
+          state is GetProfileDetailsLoading ||
+          state is GetProfileDetailsSuccess ||
+          state is GetProfileDetailsFailure,
       builder: (context, state) {
         final bool isLoading = state is GetProfileDetailsLoading;
 
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           textDirection: TextDirection.rtl,
           children: [
             ProfileDetailsCard(
@@ -112,6 +116,11 @@ class ProfileDetailsData extends StatelessWidget {
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
+                    itemTitle: 'التدخين',
+                    itemSubTitle: _getSmoking(state),
+                    loading: isLoading,
+                  ),
+                  ProfileDetailsCardItem(
                     itemTitle: 'الإتزام الديني',
                     itemSubTitle: _getReligiousCommitment(state),
                     loading: isLoading,
@@ -133,6 +142,7 @@ class ProfileDetailsData extends StatelessWidget {
                 child: Text(
                   _getLifePartner(state),
                   textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.right,
                   style: AppTextStyles.font18GreyRegularLamaSans
                       .copyWith(fontFamily: FontFamilyHelper.plexSansArabic),
                 ),
@@ -146,6 +156,7 @@ class ProfileDetailsData extends StatelessWidget {
                 child: Text(
                   _getAboutMe(state),
                   textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.right,
                   style: AppTextStyles.font18GreyRegularLamaSans
                       .copyWith(fontFamily: FontFamilyHelper.plexSansArabic),
                 ),
@@ -162,7 +173,46 @@ class ProfileDetailsData extends StatelessWidget {
     if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
     if (state is GetProfileDetailsSuccess) {
       final createdAt = state.profileDetailsResponseModel.data?.createdAt;
-      return createdAt ?? 'لا يوجد';
+      if (createdAt == null) return 'لا يوجد';
+
+      try {
+        // Parse the createdAt date
+        final createdDate = DateTime.parse(createdAt);
+        final now = DateTime.now();
+        final difference = now.difference(createdDate);
+        final days = difference.inDays;
+
+        if (days == 0) {
+          return 'منذ اليوم';
+        } else if (days == 1) {
+          return 'منذ يوم واحد';
+        } else if (days < 7) {
+          return 'منذ $days أيام';
+        } else if (days < 30) {
+          final weeks = (days / 7).floor();
+          if (weeks == 1) {
+            return 'منذ أسبوع واحد';
+          } else {
+            return 'منذ $weeks أسابيع';
+          }
+        } else if (days < 365) {
+          final months = (days / 30).floor();
+          if (months == 1) {
+            return 'منذ شهر واحد';
+          } else {
+            return 'منذ $months أشهر';
+          }
+        } else {
+          final years = (days / 365).floor();
+          if (years == 1) {
+            return 'منذ سنة واحدة';
+          } else {
+            return 'منذ $years سنوات';
+          }
+        }
+      } catch (e) {
+        return 'لا يوجد';
+      }
     }
     return 'لا يوجد';
   }
@@ -239,8 +289,9 @@ class ProfileDetailsData extends StatelessWidget {
   String _getSkinColor(ProfileDetailsState state) {
     if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
     if (state is GetProfileDetailsSuccess) {
-      // You might need to add skin color field to your model
-      return 'حنطي مايل للبياض';
+      final skinColor =
+          state.profileDetailsResponseModel.data?.attribute?.skinColor;
+      return skinColor ?? 'لا يوجد';
     }
     return 'لا يوجد';
   }
@@ -268,8 +319,9 @@ class ProfileDetailsData extends StatelessWidget {
   String _getEducation(ProfileDetailsState state) {
     if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
     if (state is GetProfileDetailsSuccess) {
-      // You might need to add education field to your model
-      return 'دكتوراه';
+      final qualification =
+          state.profileDetailsResponseModel.data?.attribute?.qualification;
+      return qualification ?? 'لا يوجد';
     }
     return 'لا يوجد';
   }
@@ -277,8 +329,9 @@ class ProfileDetailsData extends StatelessWidget {
   String _getFinancialStatus(ProfileDetailsState state) {
     if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
     if (state is GetProfileDetailsSuccess) {
-      // You might need to add financial status field to your model
-      return 'جيدة';
+      final financialSituation =
+          state.profileDetailsResponseModel.data?.attribute?.financialSituation;
+      return financialSituation ?? 'لا يوجد';
     }
     return 'لا يوجد';
   }
@@ -296,10 +349,19 @@ class ProfileDetailsData extends StatelessWidget {
   String _getHealthStatus(ProfileDetailsState state) {
     if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
     if (state is GetProfileDetailsSuccess) {
+      final healthCondition =
+          state.profileDetailsResponseModel.data?.attribute?.healthCondition;
+      return healthCondition ?? 'لا يوجد';
+    }
+    return 'لا يوجد';
+  }
+
+  String _getSmoking(ProfileDetailsState state) {
+    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+    if (state is GetProfileDetailsSuccess) {
       final smoking =
           state.profileDetailsResponseModel.data?.attribute?.smoking;
-      if (smoking == null) return 'لا يوجد';
-      return 'سليمة-$smoking';
+      return smoking ?? 'لا يوجد';
     }
     return 'لا يوجد';
   }
