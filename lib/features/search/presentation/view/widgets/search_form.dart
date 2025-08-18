@@ -23,12 +23,38 @@ class SearchForm extends StatefulWidget {
 
 class _SearchFormState extends State<SearchForm> {
   // final List<String> x = const ['مصري', 'سعودي', 'إماراتي', 'كويتي'];
-
+  
   int? cityId; // ده بيساوي let city_id;
 
   late Future<List<NationalCountryResponseModel>> _nationalities;
   late Future<List<NationalCountryResponseModel>> _countries;
   late Future<List<CityResponseModels>> _cities;
+  
+  final Map<String, String> maritalStatusMap = {
+    'أعزب': 'single',
+    'متزوج': 'married',
+    'مطلق': 'divorced',
+    'أرمل': 'widwed',
+  };
+
+  final Map<String, String> typeOfMarriageMap = {
+    'الزوجة الوحيدة': 'only_one',
+    'لا مانع من تعدد الزوجات': 'multi',
+  };
+
+  final qualificationMap = {
+  'دراسة اعدادية': '1',
+  'دراسة ثانوية': '2',
+  'دراسة جامعية': '3',
+  'دراسات عليا': '4',
+};
+
+final skinMap = {
+  'ابيض': '1',
+  'حنطى مائل للبياض': '2',
+  'حنطى مائل للسمار': '3',
+  'اسمر فاتح': '4',
+};
 
   
 
@@ -88,26 +114,30 @@ class _SearchFormState extends State<SearchForm> {
                   return const Text("لا توجد جنسيات متاحة");
                 }
 
-                // ✅ تحويل الجنسيات من موديل إلى List<String>
-                final nationalities = snapshot.data!
+                final nationalityObjects = snapshot.data!;
+
+                final nationalities = nationalityObjects
                     .map((e) => e.name ?? "")
                     .where((name) => name.isNotEmpty)
                     .toList();
 
                 return DropdownField(
-                  label: 'الجنسية',
-                  hint: 'مختار',
-                  items: nationalities,
-                  onChanged: (value) =>
-                      context.read<SearchCubit>().updateNationality(value!),
-                );
+                label: 'الجنسية',
+                hint: 'اختار',
+                items: nationalities,
+                onChanged: (value) {
+                  final selected = snapshot.data!
+                      .firstWhere((element) => element.name == value);
+                  context.read<SearchCubit>().updateNationality(selected.id.toString());
+                },
+              );
               },
             ),
             //
             SizedBox(height: 12),
             // DropdownField(
             //   label: 'الدولة',
-            //   hint: 'مختار',
+            //   hint: 'اختار',
             //   items: ['مصر', 'السعودية', 'الإمارات', 'الكويت'],
             //   onChanged: (value) =>
             //       context.read<SearchCubit>().updateCountry(value!),
@@ -124,7 +154,6 @@ class _SearchFormState extends State<SearchForm> {
                   return const Text("لا توجد جنسيات متاحة");
                 }
 
-                // ✅ تحويل الجنسيات من موديل إلى List<String>
                 final countryObjects = snapshot.data!;
 
                 final countries = countryObjects
@@ -134,16 +163,14 @@ class _SearchFormState extends State<SearchForm> {
 
                 return DropdownField(
                   label: 'الدولة',
-                  hint: 'مختار',
+                  hint: 'اختار',
                   items: countries,
                   onChanged: (value) async {
                     if (value != null) {
-                      // العثور على العنصر المختار
                       final selectedCountry = countryObjects.firstWhere(
                         (element) => element.name == value,
                       );
 
-                      // تحديث المدن حسب الدولة المختارة
                       final apiServices = await ApiServices.init();
                       final signupDataSource = SignupDataSource(apiServices);
                       final newCities = signupDataSource
@@ -191,11 +218,15 @@ class _SearchFormState extends State<SearchForm> {
                     .toList();
 
                 return DropdownField(
-                  label: 'الدولة',
+                  label: 'المدينة',
                   hint: 'اختار',
                   items: cities,
-                  onChanged: (value) =>
-                      context.read<SearchCubit>().updateNationality(value!),
+                  onChanged: (value) {
+                    final selectedCity = snapshot.data!
+                        .firstWhere((element) => element.name == value);
+
+                    context.read<SearchCubit>().updateCity(selectedCity.id.toString());
+                  },
                 );
               },
             ),
@@ -207,20 +238,27 @@ class _SearchFormState extends State<SearchForm> {
         ExpandableSection(
           title: 'تفضيلات المظهر والطول والوزن',
           children: [
-            DropdownField(
-              label: 'نوع الزواج',
-              hint: 'الكل',
-              // items: ['تقليدي', 'مسيار', 'متعة'],
-              items: ['اولي','ثانية','ارملة','مطلقة'],
-              onChanged: (value) {},
-            ),
-            SizedBox(height: 12),
-            DropdownField(
-              label: 'الحالة الإجتماعية',
-              hint: 'الكل',
-              items: ['أعزب', 'مطلق', 'أرمل'],
-              onChanged: (value) {},
-            ),
+          DropdownField(
+            label: 'نوع الزواج',
+            hint: 'الكل',
+            items: typeOfMarriageMap.keys.toList(), 
+            onChanged: (value) {
+              final key = typeOfMarriageMap[value]; 
+              context.read<SearchCubit>().updateTypeOfMarriage(key!);
+            },
+          ),
+
+          SizedBox(height: 12),
+
+          DropdownField(
+            label: 'الحالة الإجتماعية',
+            hint: 'الكل',
+            items: maritalStatusMap.keys.toList(),
+            onChanged: (value) {
+              final key = maritalStatusMap[value];
+              context.read<SearchCubit>().updateMaritalStatus(key!);
+            },
+          ),
             SizedBox(height: 12),
             RangeTextField(
                 label: 'العمر',
@@ -238,7 +276,7 @@ class _SearchFormState extends State<SearchForm> {
               label: 'الطول (سم)',
               fromHint: 'من',
               toHint: 'إلى',
-              maxLength: 3, // Height: max 3 digits (250 cm)
+              maxLength: 3, 
               onRangeChanged: (from, to) {
                 if (from != null || to != null) {
                   context
@@ -252,7 +290,7 @@ class _SearchFormState extends State<SearchForm> {
               label: 'الوزن (كم)',
               fromHint: 'من',
               toHint: 'إلى',
-              maxLength: 3, // Weight: max 3 digits (200 kg)
+              maxLength: 3, 
               onRangeChanged: (from, to) {
                 if (from != null || to != null) {
                   context
@@ -265,17 +303,25 @@ class _SearchFormState extends State<SearchForm> {
             DropdownField(
               label: 'لون البشرة',
               hint: 'الكل',
-              items: ['فاتح', 'متوسط', 'داكن'],
-              onChanged: (value) {},
+              items: skinMap.keys.toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  context.read<SearchCubit>().updateSkinColor(skinMap[value]!);
+                }
+              },
             ),
             SizedBox(height: 12),
-            DropdownField(
-              label: 'المؤهل التعليمي',
-              hint: 'الكل',
-              items: ['ثانوي', 'جامعي', 'دراسات عليا'],
-              onChanged: (value) =>
-                  context.read<SearchCubit>().updateQualification(value!),
-            ),
+          DropdownField(
+            label: 'المؤهل التعليمي',
+            hint: 'الكل',
+            items: qualificationMap.keys.toList(),
+            onChanged: (value) {
+              if (value != null) {
+                context.read<SearchCubit>().updateQualification(qualificationMap[value]!);
+              }
+            },
+          ),
+
           ],
         ),
         SizedBox(height: 16),

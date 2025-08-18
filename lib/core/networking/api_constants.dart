@@ -28,4 +28,9 @@ class ApiConstants {
   static String favUserList = '/user/like/list';
   static String interestingList = '/user/liked/people-list';
   static String ignoreUserList = '/user/ignore/list';
+
+  //search-home
+  static String matchesUsers = '/user/home/matches-users';
+
+  static const String defaultProfileImage = 'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';
 }

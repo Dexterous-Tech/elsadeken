@@ -1,24 +1,22 @@
-// user_model.dart
-class UserModel {
-  final String id; // Added ID field
+// match_user_entity.dart
+class MatchUserEntity {
+  final String id;
   final String name;
+  final String imageUrl;
   final int age;
   final String profession;
   final String location;
-  final String imageUrl;
   final int matchPercentage;
-  final bool isOnline;
-  final bool isFavorite; // Added favorite status
+  final bool isFavorite;
 
-  UserModel({
+  MatchUserEntity({
     required this.id,
     required this.name,
+    required this.imageUrl,
     required this.age,
     required this.profession,
     required this.location,
-    required this.imageUrl,
     required this.matchPercentage,
-    this.isOnline = false,
-    this.isFavorite = false,
+    required this.isFavorite,
   });
 }

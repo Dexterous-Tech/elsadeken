@@ -17,8 +17,8 @@ class SearchRepositoryImpl implements SearchRepository {
       print(filter.toJson().toString());
 
       final response = await dio.post(
-        "${ApiConstants.baseUrl}/user/search",
-        data: filter,
+      "${ApiConstants.baseUrl}/user/search",
+      data: filter.toJson(page: page),
         // data: {
         //   "user_name":"ahmed" //to be removed
         // },

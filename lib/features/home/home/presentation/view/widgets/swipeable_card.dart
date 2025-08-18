@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/features/home/person_details/view/person_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../data/models/user_model.dart';
 
@@ -35,9 +37,17 @@ class _SwipeableCardState extends State<SwipeableCard>
   Offset _dragOffset = Offset.zero;
   bool _isDragging = false;
 
+  Future<void> debugImage(String url) async {
+  final response = await http.get(Uri.parse(url));
+  print("Status: ${response.statusCode}");
+  print("Content-Type: ${response.headers['content-type']}");
+  print("Length: ${response.bodyBytes.length}");
+}
+
   @override
   void initState() {
     super.initState();
+      debugImage(widget.user.imageUrl);
     _animationController = AnimationController(
       duration: Duration(milliseconds: 300),
       vsync: this,
@@ -131,7 +141,6 @@ class _SwipeableCardState extends State<SwipeableCard>
 
   @override
   Widget build(BuildContext context) {
-    // final screenSize = MediaQuery.of(context).size;
     final cardOffset = widget.isTop
         ? (_isDragging ? _dragOffset : _slideAnimation.value)
         : Offset.zero;
@@ -191,17 +200,22 @@ class _SwipeableCardState extends State<SwipeableCard>
                           height: 420.h,
                           child: Stack(
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12).r,
-                                child: Image.network(
-                                  widget.user.imageUrl,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 420.h,
-                                ),
-                              ),
+                          Positioned.fill(
+                            child: Image.network(
+  widget.user.imageUrl,
+  fit: BoxFit.cover,
+  errorBuilder: (context, error, stackTrace) {
+    print("Image.network error: $error");
+    return Container(
+      color: Colors.grey[200],
+      child: Icon(Icons.error, color: Colors.red),
+    );
+  },
+)
 
-                              // Match percentage
+
+
+                        ),
                               Positioned(
                                 top: 20,
                                 left: 5,
@@ -227,6 +241,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                                           child: Text(
                                             'تطابق بنسبة${widget.user.matchPercentage}%',
                                             textDirection: TextDirection.rtl,
+                                            textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 14.sp,
@@ -238,35 +253,38 @@ class _SwipeableCardState extends State<SwipeableCard>
                                         ),
                                       ),
                                     ),
-                                    SizedBox(height: 280.h),
+                                    SizedBox(height: 250.h),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        // Location tag
                                         Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 26.5.w,
-                                            vertical: 11.h,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xffDBAE48),
-                                            borderRadius:
-                                                BorderRadius.circular(15).r,
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              widget.user.location,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15.sp,
-                                                  fontWeight:
-                                                      FontWeightHelper.medium,
-                                                  fontFamily: FontFamilyHelper
-                                                      .lamaSansArabic),
+                                        width: 250,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 26.5.w,
+                                          vertical: 11.h,
+                                        ),
+                                        constraints: BoxConstraints(
+                                          maxWidth: 250, 
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffDBAE48),
+                                          borderRadius: BorderRadius.circular(15).r,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            widget.user.location,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeightHelper.medium,
+                                              fontFamily: FontFamilyHelper.lamaSansArabic,
                                             ),
+                                            softWrap: true, 
+                                            overflow: TextOverflow.visible, 
                                           ),
                                         ),
+                                      ),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -282,7 +300,6 @@ class _SwipeableCardState extends State<SwipeableCard>
                                                   fontFamily: FontFamilyHelper
                                                       .lamaSansArabic),
                                             ),
-                                            // SizedBox(height: 12),
                                             Text(
                                               widget.user.profession,
                                               style: TextStyle(
@@ -309,7 +326,6 @@ class _SwipeableCardState extends State<SwipeableCard>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            // Dislike
                             GestureDetector(
                               onTap: () => _handleButtonPress(false),
                               child: Container(
@@ -336,8 +352,6 @@ class _SwipeableCardState extends State<SwipeableCard>
                                 ),
                               ),
                             ),
-
-                            // Like
                             GestureDetector(
                               onTap: () => _handleButtonPress(true),
                               child: Container(
@@ -356,8 +370,6 @@ class _SwipeableCardState extends State<SwipeableCard>
                                 ),
                               ),
                             ),
-
-                            // Chat
                             GestureDetector(
                               onTap: () {},
                               child: Container(
