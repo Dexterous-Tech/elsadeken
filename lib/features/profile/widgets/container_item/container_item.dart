@@ -24,7 +24,8 @@ class ContainerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed(AppRoutes.profileDetailsScreen);
+        context.pushNamed(AppRoutes.profileDetailsScreen,
+            arguments: favUser!.id);
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
@@ -55,7 +56,7 @@ class ContainerItem extends StatelessWidget {
                     favUser?.name ?? '',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.font14BeerMediumLamaSans(context)
+                    style: AppTextStyles.font14BeerMediumLamaSans
                         .copyWith(color: Color(0xff7D7D7D)),
                   ),
                   isTime
@@ -79,7 +80,7 @@ class ContainerItem extends StatelessWidget {
                               '${favUser?.attribute?.country ?? 'لا دولة'} , ${favUser?.attribute?.city ?? 'لا مدينة'}',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.font13BlackMediumPlexSans
+                              style: AppTextStyles.font13BlackMediumLamaSans
                                   .copyWith(
                                 color: AppColors.black.withValues(
                                   alpha: 0.87,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:elsadeken/core/theme/app_text_styles.dart';
+
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';

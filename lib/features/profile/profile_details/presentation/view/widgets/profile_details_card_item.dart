@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileDetailsCardItem extends StatelessWidget {
-  const ProfileDetailsCardItem(
-      {super.key, required this.itemTitle, required this.itemSubTitle});
+  const ProfileDetailsCardItem({
+    super.key,
+    required this.itemTitle,
+    required this.itemSubTitle,
+    this.loading = false,
+  });
 
   final String itemTitle;
   final String itemSubTitle;
+  final bool loading;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -30,13 +36,26 @@ class ProfileDetailsCardItem extends StatelessWidget {
               color: AppColors.lightRose,
               borderRadius: BorderRadius.circular(8).r,
             ),
-            child: Center(
-              child: Text(
-                itemSubTitle,
-                textDirection: TextDirection.rtl,
-                style: AppTextStyles.font12PhilippineBronzeMediumPlexSans,
-              ),
-            ),
+            child: loading
+                ? Center(
+                    child: SizedBox(
+                      width: 20.w,
+                      height: 20.h,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.philippineBronze,
+                        ),
+                      ),
+                    ),
+                  )
+                : Center(
+                    child: Text(
+                      itemSubTitle,
+                      textDirection: TextDirection.rtl,
+                      style: AppTextStyles.font12PhilippineBronzeMediumLamaSans,
+                    ),
+                  ),
           ),
         ],
       ),

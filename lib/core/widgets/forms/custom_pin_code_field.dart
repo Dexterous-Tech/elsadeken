@@ -29,7 +29,7 @@ class CustomPinCodeField extends StatelessWidget {
       validator: (value) {
         return validator(value);
       },
-      textStyle: AppTextStyles.font22BistreSemiBoldLamaSans(context).copyWith(
+      textStyle: AppTextStyles.font22BistreSemiBoldLamaSans.copyWith(
         color: AppColors.chineseBlack,
         fontWeight: FontWeightHelper.regular,
       ),

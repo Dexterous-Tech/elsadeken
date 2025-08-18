@@ -16,15 +16,13 @@ class LoginCreateNewAccount extends StatelessWidget {
         children: [
           TextSpan(
             text: 'ليس لديك حساب ؟ ',
-            style: AppTextStyles.font14BeerMediumLamaSans(
-              context,
-            ).copyWith(color: AppColors.auroMetalSaurus),
+            style: AppTextStyles.font14BeerMediumLamaSans
+                .copyWith(color: AppColors.auroMetalSaurus),
           ),
           TextSpan(
             text: 'انشاء حساب',
-            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans(
-              context,
-            ).copyWith(color: AppColors.red),
+            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans
+                .copyWith(color: AppColors.red),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);

@@ -84,13 +84,9 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       // password
-                      Text(
-                        'انشا كلمه المرور',
-                        textDirection: TextDirection.rtl,
-                        style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                          context,
-                        ),
-                      ),
+                      Text('انشا كلمه المرور',
+                          textDirection: TextDirection.rtl,
+                          style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                       verticalSpace(16),
                       CustomTextFormField(
                         controller: cubit.passwordController,
@@ -161,13 +157,9 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                       verticalSpace(40),
 
                       // confirm password
-                      Text(
-                        'تاكيد كلمه المرور',
-                        textDirection: TextDirection.rtl,
-                        style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                          context,
-                        ),
-                      ),
+                      Text('تاكيد كلمه المرور',
+                          textDirection: TextDirection.rtl,
+                          style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                       verticalSpace(16),
                       CustomTextFormField(
                         controller: cubit.passwordConfirmationController,
@@ -235,7 +227,7 @@ class _SignupPasswordsState extends State<SignupPasswords> {
         Text(
           text,
           textDirection: TextDirection.rtl,
-          style: AppTextStyles.font12SilverPinkMediumLamaSans(context).copyWith(
+          style: AppTextStyles.font12SilverPinkMediumLamaSans.copyWith(
             color: isValid ? AppColors.yellowGreen : AppColors.silverPink,
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:elsadeken/features/profile/profile_details/data/models/profile_details_action_response_model.dart';
+import 'package:elsadeken/features/profile/profile_details/data/models/profile_details_response_model.dart';
 import 'package:elsadeken/features/profile/profile_details/data/repo/profile_details_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +33,18 @@ class ProfileDetailsCubit extends Cubit<ProfileDetailsState> {
       emit(IgnoreUserFailure(error.displayMessage));
     }, (ignoreUserResponseModel) {
       emit(IgnoreUserSuccess(ignoreUserResponseModel));
+    });
+  }
+
+  void getProfileDetails(String userId) async {
+    emit(GetProfileDetailsLoading());
+
+    var response = await profileDetailsRepoInterface.getProfileDetails(userId);
+    
+    response.fold((error) {
+      emit(GetProfileDetailsFailure(error.displayMessage));
+    }, (profileDetailsResponseModel) {
+      emit(GetProfileDetailsSuccess(profileDetailsResponseModel));
     });
   }
 }

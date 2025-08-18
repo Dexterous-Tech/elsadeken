@@ -19,7 +19,7 @@ class MembersProfileCountry extends StatelessWidget {
         children: [
           Text(
             'الدولة',
-            style: AppTextStyles.font20LightOrangeMediumPlexSans.copyWith(
+            style: AppTextStyles.font20LightOrangeMediumLamaSans.copyWith(
               color: Color(0xff2D2D2D),
             ),
           ),

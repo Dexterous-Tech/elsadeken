@@ -67,12 +67,12 @@ class AppRouting {
       case AppRoutes.manageProfileScreen:
         return MaterialPageRoute(builder: (_) => ManageProfileScreen());
       case AppRoutes.searchScreen:
-      return MaterialPageRoute(
+        return MaterialPageRoute(
           builder: (_) => BlocProvider(
-              create: (context) => SearchCubit(sl<SearchUseCase>()),
-              child: SearchPage(),
+            create: (context) => SearchCubit(sl<SearchUseCase>()),
+            child: SearchPage(),
           ),
-      );
+        );
       case AppRoutes.searchResultScreen:
         return MaterialPageRoute(builder: (_) => SearchResultsView());
       case AppRoutes.homeScreen:
@@ -80,7 +80,8 @@ class AppRouting {
       case AppRoutes.notificationScreen:
         return MaterialPageRoute(builder: (_) => NotificationScreen());
       case AppRoutes.profileDetailsScreen:
-        return MaterialPageRoute(builder: (_) => ProfileDetailsScreen());
+        return MaterialPageRoute(
+            builder: (_) => ProfileDetailsScreen(userId: arguments as String));
       case AppRoutes.profileAboutUsScreen:
         return MaterialPageRoute(builder: (_) => AboutUsScreen());
       case AppRoutes.profileExcellencePackageScreen:

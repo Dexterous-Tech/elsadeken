@@ -15,7 +15,7 @@ class SignupChoiceLoading extends StatelessWidget {
         Text(
           title,
           textDirection: TextDirection.rtl,
-          style: AppTextStyles.font23ChineseBlackBoldLamaSans(context),
+          style: AppTextStyles.font23ChineseBlackBoldLamaSans,
         ),
         verticalSpace(16),
         Center(

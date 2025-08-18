@@ -34,7 +34,7 @@ class ManageProfileCard extends StatelessWidget {
           Center(
             child: Text(
               title,
-              style: AppTextStyles.font18JetBoldPlexSans(context),
+              style: AppTextStyles.font18JetBoldLamaSans,
               textAlign: TextAlign.center,
             ),
           ),

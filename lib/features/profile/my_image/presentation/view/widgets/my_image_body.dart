@@ -23,7 +23,7 @@ class MyImageBody extends StatelessWidget {
           Text(
             'معلومات هامة :',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font20LightOrangeMediumPlexSans.copyWith(
+            style: AppTextStyles.font20LightOrangeMediumLamaSans.copyWith(
               color: Color(0xffF9F9F9),
             ),
           ),

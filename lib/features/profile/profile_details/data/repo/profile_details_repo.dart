@@ -5,11 +5,14 @@ import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
 import 'package:elsadeken/features/profile/profile_details/data/data_source/profile_details_data_source.dart';
 import 'package:elsadeken/features/profile/profile_details/data/models/profile_details_action_response_model.dart';
+import 'package:elsadeken/features/profile/profile_details/data/models/profile_details_response_model.dart';
 
 abstract class ProfileDetailsRepoInterface {
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> ignoreUser(
       String userId);
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> likeUser(
+      String userId);
+  Future<Either<ApiErrorModel, ProfileDetailsResponseModel>> getProfileDetails(
       String userId);
 }
 
@@ -40,6 +43,21 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
       return Right(response);
     } catch (error) {
       log("error in like user $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, ProfileDetailsResponseModel>> getProfileDetails(
+      String userId) async {
+    try {
+      var response = await profileDetailsDataSource.getProfileDetails(userId);
+      return Right(response);
+    } catch (error) {
+      log("error in get profile details $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

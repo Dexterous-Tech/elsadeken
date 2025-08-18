@@ -7,6 +7,7 @@ import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
@@ -114,7 +115,7 @@ class _AboutUsBodyState extends State<AboutUsBody> {
                     child: Center(
                   child: Text(
                     state.error,
-                    style: AppTextStyles.font20LightOrangeMediumPlexSans
+                    style: AppTextStyles.font20LightOrangeMediumLamaSans
                         .copyWith(color: AppColors.red),
                   ),
                 ));

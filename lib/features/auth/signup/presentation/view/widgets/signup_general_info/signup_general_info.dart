@@ -35,13 +35,9 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    'كم عمرك ؟',
-                    textDirection: TextDirection.rtl,
-                    style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                      context,
-                    ),
-                  ),
+                  Text('كم عمرك ؟',
+                      textDirection: TextDirection.rtl,
+                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                   verticalSpace(16),
                   CustomTextFormField(
                     controller: cubit.ageController,
@@ -68,13 +64,9 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                     },
                   ),
                   verticalSpace(40),
-                  Text(
-                    'كم عدد الاطفال ؟',
-                    textDirection: TextDirection.rtl,
-                    style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                      context,
-                    ),
-                  ),
+                  Text('كم عدد الاطفال ؟',
+                      textDirection: TextDirection.rtl,
+                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                   verticalSpace(16),
                   CustomTextFormField(
                     controller: cubit.childrenNumberController,
@@ -102,13 +94,9 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                     },
                   ),
                   verticalSpace(40),
-                  Text(
-                    'كم وزنك (كجم) ؟',
-                    textDirection: TextDirection.rtl,
-                    style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                      context,
-                    ),
-                  ),
+                  Text('كم وزنك (كجم) ؟',
+                      textDirection: TextDirection.rtl,
+                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                   verticalSpace(16),
                   CustomTextFormField(
                     controller: cubit.weightController,
@@ -135,13 +123,9 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                     },
                   ),
                   verticalSpace(40),
-                  Text(
-                    'كم طولك (سم) ؟',
-                    textDirection: TextDirection.rtl,
-                    style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                      context,
-                    ),
-                  ),
+                  Text('كم طولك (سم) ؟',
+                      textDirection: TextDirection.rtl,
+                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                   verticalSpace(16),
                   CustomTextFormField(
                     controller: cubit.heightController,

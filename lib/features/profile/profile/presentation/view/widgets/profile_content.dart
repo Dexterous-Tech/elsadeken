@@ -137,14 +137,14 @@ class ProfileContent extends StatelessWidget {
                   children: [
                     Text(
                       'معلومات شخصية',
-                      style: AppTextStyles.font12GrayMediumLamaSans(context),
+                      style: AppTextStyles.font12GrayMediumLamaSans,
                     ),
                     verticalSpace(16),
                     ...listGenerationContentItems(items: personalInformation),
                     verticalSpace(24),
                     Text(
                       'إعدادات التطبيق',
-                      style: AppTextStyles.font12GrayMediumLamaSans(context),
+                      style: AppTextStyles.font12GrayMediumLamaSans,
                     ),
                     verticalSpace(16),
                     ...listGenerationContentItems(items: appSettings),
@@ -165,9 +165,8 @@ class ProfileContent extends StatelessWidget {
                           Text(
                             'تسجيل الخروج',
                             style: AppTextStyles
-                                .font14CharlestonGreenMediumLamaSans(
-                              context,
-                            ).copyWith(color: AppColors.coralRed),
+                                .font14CharlestonGreenMediumLamaSans
+                                .copyWith(color: AppColors.coralRed),
                           ),
                         ],
                       ),

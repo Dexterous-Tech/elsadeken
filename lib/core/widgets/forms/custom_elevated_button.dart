@@ -64,7 +64,7 @@ class CustomElevatedButton extends StatelessWidget {
                 textButton ?? '',
                 textAlign: TextAlign.center,
                 style: styleTextButton ??
-                    AppTextStyles.font16CulturedMediumPlexSans(context),
+                    AppTextStyles.font16CulturedMediumPlexSans,
               ),
             ),
       ),

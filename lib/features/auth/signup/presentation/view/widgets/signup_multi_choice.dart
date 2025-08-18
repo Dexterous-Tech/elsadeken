@@ -52,7 +52,7 @@ class _SignupMultiChoiceState extends State<SignupMultiChoice> {
         Text(
           widget.title,
           textDirection: TextDirection.rtl,
-          style: AppTextStyles.font23ChineseBlackBoldLamaSans(context),
+          style: AppTextStyles.font23ChineseBlackBoldLamaSans,
         ),
         verticalSpace(16),
 
@@ -80,12 +80,8 @@ class _SignupMultiChoiceState extends State<SignupMultiChoice> {
                   textDirection: TextDirection.rtl,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      option,
-                      style: AppTextStyles.font18ChineseBlackBoldLamaSans(
-                        context,
-                      ),
-                    ),
+                    Text(option,
+                        style: AppTextStyles.font18ChineseBlackBoldLamaSans),
                     _selected == option
                         ? SvgPicture.asset(
                             AppSvg.checkCircle,

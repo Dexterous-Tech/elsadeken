@@ -28,4 +28,5 @@ class ApiConstants {
   static String favUserList = '/user/like/list';
   static String interestingList = '/user/liked/people-list';
   static String ignoreUserList = '/user/ignore/list';
+  static String userDetails(String userId) => '/user/show-one-user/$userId';
 }

@@ -14,7 +14,7 @@ class MembersProfileItems extends StatelessWidget {
         ? Center(
             child: Text(
               '0 عضو',
-              style: AppTextStyles.font20LightOrangeMediumPlexSans
+              style: AppTextStyles.font20LightOrangeMediumLamaSans
                   .copyWith(color: AppColors.jet),
             ),
           )

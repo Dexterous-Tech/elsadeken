@@ -44,7 +44,7 @@ class ManageProfileContentText extends StatelessWidget {
     return Text(
       text.isEmpty ? 'غير محدد' : text,
       style: textStyle ??
-          AppTextStyles.font18PhilippineBronzeRegularPlexSans.copyWith(
+          AppTextStyles.font18PhilippineBronzeRegularLamaSans.copyWith(
             color: textColor,
           ),
     );

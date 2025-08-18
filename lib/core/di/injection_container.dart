@@ -65,17 +65,17 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<ApiServices>(ApiServices.internal(dio));
   // HTTP Client
   sl.registerLazySingleton<Dio>(() => Dio(BaseOptions(
-    baseUrl: 'https://elsadkeen.sharetrip-ksa.com/api',
-    connectTimeout: const Duration(seconds: 15),
-    receiveTimeout: const Duration(seconds: 15),
-    sendTimeout: const Duration(seconds: 15),
-    headers: {
-      'Accept': 'application/json',
-    },
-  )));
+        baseUrl: 'https://elsadkeen.sharetrip-ksa.com/api',
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 15),
+        sendTimeout: const Duration(seconds: 15),
+        headers: {
+          'Accept': 'application/json',
+        },
+      )));
   // Repository
   sl.registerLazySingleton<SearchRepository>(
-        () => SearchRepositoryImpl(sl<Dio>()),
+    () => SearchRepositoryImpl(sl<Dio>()),
   );
 
   // Use cases
@@ -85,48 +85,48 @@ Future<void> initializeDependencies() async {
   sl.registerFactory(() => SearchCubit(sl()));
 
   // blog
-  sl.registerLazySingleton<BlogApi>(() => BlogApi(sl<ApiServices>()));
+  sl.registerLazySingleton<BlogApi>(() => BlogApi(sl()));
   sl.registerLazySingleton<BlogRepo>(() => BlogRepoImpl(sl()));
   sl.registerLazySingleton<GetBlogPosts>(() => GetBlogPosts(sl()));
   sl.registerFactory<BlogCubit>(() => BlogCubit(sl()));
 
   // success stories
-  sl.registerLazySingleton<SuccessStoryApi>(() => SuccessStoryApi(sl<ApiServices>()));
+  sl.registerLazySingleton<SuccessStoryApi>(() => SuccessStoryApi(sl()));
   sl.registerLazySingleton<GetSuccessStories>(() => GetSuccessStories(sl()));
   sl.registerLazySingleton<SuccessStoryRepository>(
-          () => SuccessStoryRepositoryImpl.create(sl<ApiServices>()));
+      () => SuccessStoryRepositoryImpl.create(sl()));
   sl.registerFactory<SuccessStoryCubit>(() => SuccessStoryCubit(sl()));
 
   // login
   sl.registerLazySingleton<LoginDataSource>(() => LoginDataSource(sl()));
   sl.registerLazySingleton<LoginRepoInterface>(
-          () => LoginRepoImplementation(sl()));
+      () => LoginRepoImplementation(sl()));
   sl.registerFactory<LoginCubit>(() => LoginCubit(sl()));
 
   //forget
   sl.registerLazySingleton<ForgetDataSource>(() => ForgetDataSource(sl()));
   sl.registerLazySingleton<ForgetRepoInterface>(
-          () => ForgetRepoImplementation(sl()));
+      () => ForgetRepoImplementation(sl()));
   sl.registerFactory<ForgetCubit>(() => ForgetCubit(sl()));
 
   //verification
   sl.registerLazySingleton<VerificationDataSource>(
-          () => VerificationDataSource(sl()));
+      () => VerificationDataSource(sl()));
   sl.registerLazySingleton<VerificationRepoInterface>(
-          () => VerificationRepoImplementation(sl()));
+      () => VerificationRepoImplementation(sl()));
   sl.registerFactory<VerificationCubit>(() => VerificationCubit(sl()));
 
   //reset password
   sl.registerLazySingleton<ResetPasswordDataSource>(
-          () => ResetPasswordDataSource(sl()));
+      () => ResetPasswordDataSource(sl()));
   sl.registerLazySingleton<ResetPasswordRepoInterface>(
-          () => ResetPasswordRepoImplementation(sl()));
+      () => ResetPasswordRepoImplementation(sl()));
   sl.registerFactory<ResetPasswordCubit>(() => ResetPasswordCubit(sl()));
 
   // signup
   sl.registerLazySingleton<SignupDataSource>(() => SignupDataSource(sl()));
   sl.registerLazySingleton<SignupRepoInterface>(
-          () => SignupRepoImplementation(sl()));
+      () => SignupRepoImplementation(sl()));
   sl.registerFactory<SignupCubit>(() => SignupCubit(sl()));
   sl.registerFactory<SignUpListsCubit>(() => SignUpListsCubit(sl()));
 
@@ -142,16 +142,16 @@ Future<void> initializeDependencies() async {
 
   // manage profile
   sl.registerLazySingleton<ManageProfileDataSource>(
-          () => ManageProfileDataSource(sl()));
+      () => ManageProfileDataSource(sl()));
   sl.registerLazySingleton<ManageProfileRepoInterface>(
-          () => ManageProfileRepoImp(sl()));
+      () => ManageProfileRepoImp(sl()));
   sl.registerFactory<ManageProfileCubit>(() => ManageProfileCubit(sl()));
 
   // Profile Details
   sl.registerLazySingleton<ProfileDetailsDataSource>(
-          () => ProfileDetailsDataSource(sl()));
+      () => ProfileDetailsDataSource(sl()));
   sl.registerLazySingleton<ProfileDetailsRepoInterface>(
-          () => ProfileDetailsRepoImp(sl()));
+      () => ProfileDetailsRepoImp(sl()));
   sl.registerFactory<ProfileDetailsCubit>(() => ProfileDetailsCubit(sl()));
 
   // My Intersets Users
@@ -161,15 +161,15 @@ Future<void> initializeDependencies() async {
 
   // My Interesting Users
   sl.registerLazySingleton<InterestingListDataSource>(
-          () => InterestingListDataSource(sl()));
+      () => InterestingListDataSource(sl()));
   sl.registerLazySingleton<InterestingListRepo>(
-          () => InterestingRepoImpl(sl()));
+      () => InterestingRepoImpl(sl()));
   sl.registerFactory<InterestingListCubit>(() => InterestingListCubit(sl()));
 
   // My Ignore Users
   sl.registerLazySingleton<IgnoreUserDataSource>(
-          () => IgnoreUserDataSource(sl()));
+      () => IgnoreUserDataSource(sl()));
   sl.registerLazySingleton<IgnoreUserRepoInterface>(
-          () => IgnoreUserRepoImpl(sl()));
+      () => IgnoreUserRepoImpl(sl()));
   sl.registerFactory<IgnoreUserCubit>(() => IgnoreUserCubit(sl()));
 }

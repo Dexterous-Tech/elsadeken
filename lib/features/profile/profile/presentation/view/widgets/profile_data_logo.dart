@@ -29,7 +29,7 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
           return Center(
             child: Text(
               state.error,
-              style: AppTextStyles.font14DesiredMediumPlexSans,
+              style: AppTextStyles.font14DesiredMediumLamaSans,
             ),
           );
         } else if (state is ManageProfileSuccess) {
@@ -47,18 +47,15 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
                   )),
               Text(
                 state.myProfileResponseModel.data?.name ?? '',
-                style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                  context,
-                ).copyWith(
+                style: AppTextStyles.font23ChineseBlackBoldLamaSans.copyWith(
                   color: AppColors.white,
                   fontWeight: FontWeightHelper.semiBold,
                 ),
               ),
               Text(
                 '${state.myProfileResponseModel.data?.email?.split('@')[0]}@',
-                style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans(
-                  context,
-                ).copyWith(
+                style:
+                    AppTextStyles.font14ChineseBlackSemiBoldLamaSans.copyWith(
                   color: AppColors.white,
                   fontWeight: FontWeightHelper.regular,
                 ),

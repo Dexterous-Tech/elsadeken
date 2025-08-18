@@ -23,20 +23,19 @@ class ForgetPasswordForm extends StatelessWidget {
           Text(
             'نسيت كلمه المرور',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font27ChineseBlackBoldLamaSans(context),
+            style: AppTextStyles.font27ChineseBlackBoldLamaSans,
           ),
           Text(
             'ادخل بريدك الالكتروني',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14BeerMediumLamaSans(
-              context,
-            ).copyWith(color: AppColors.outerSpace),
+            style: AppTextStyles.font14BeerMediumLamaSans
+                .copyWith(color: AppColors.outerSpace),
           ),
           verticalSpace(24),
           Text(
             'بريد إلكتروني',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans(context),
+            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
           ),
           verticalSpace(8),
           CustomTextFormField(

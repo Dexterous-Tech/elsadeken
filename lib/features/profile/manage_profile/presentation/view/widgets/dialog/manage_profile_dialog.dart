@@ -86,7 +86,7 @@ Future<void> manageProfileDialog(
           // Title
           Text(
             data.title,
-            style: AppTextStyles.font20LightOrangeMediumPlexSans,
+            style: AppTextStyles.font20LightOrangeMediumLamaSans,
             textAlign: TextAlign.center,
           ),
           verticalSpace(20),
@@ -115,7 +115,7 @@ Future<void> manageProfileDialog(
                 child: CustomElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   textButton: 'إغلاق',
-                  styleTextButton: AppTextStyles.font14DesiredMediumPlexSans,
+                  styleTextButton: AppTextStyles.font14DesiredMediumLamaSans,
                   backgroundColor: Colors.transparent,
                 ),
               ),
@@ -131,7 +131,7 @@ Future<void> manageProfileDialog(
                   },
                   textButton: 'تعديل',
                   backgroundColor: AppColors.darkSunray,
-                  styleTextButton: AppTextStyles.font14DesiredMediumPlexSans
+                  styleTextButton: AppTextStyles.font14DesiredMediumLamaSans
                       .copyWith(color: AppColors.jet),
                 ),
               ),

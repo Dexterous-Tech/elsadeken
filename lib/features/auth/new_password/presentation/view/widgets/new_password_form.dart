@@ -31,20 +31,19 @@ class _NewPasswordFormState extends State<NewPasswordForm> {
           Text(
             'كلمه المرور الجديده',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font27ChineseBlackBoldLamaSans(context),
+            style: AppTextStyles.font27ChineseBlackBoldLamaSans,
           ),
           Text(
             'قم بادخال كمله مرور جديده وقويه',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14BeerMediumLamaSans(
-              context,
-            ).copyWith(color: AppColors.outerSpace),
+            style: AppTextStyles.font14BeerMediumLamaSans
+                .copyWith(color: AppColors.outerSpace),
           ),
           verticalSpace(24),
           Text(
             'كلمه المرور الجديده',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans(context),
+            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
           ),
           verticalSpace(8),
           CustomTextFormField(
@@ -77,7 +76,7 @@ class _NewPasswordFormState extends State<NewPasswordForm> {
           Text(
             'تاكيد كلمه المرور',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans(context),
+            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
           ),
           verticalSpace(8),
           CustomTextFormField(

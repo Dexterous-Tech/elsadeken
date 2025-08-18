@@ -33,7 +33,7 @@ class CustomContainer extends StatelessWidget {
         ),
         Text(
           text,
-          style: AppTextStyles.font11GreyRegularlamaSansArabic(context),
+          style: AppTextStyles.font11GreyRegularLamaSansArabic,
         ),
       ],
     );

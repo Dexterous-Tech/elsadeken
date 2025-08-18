@@ -28,3 +28,15 @@ final class IgnoreUserSuccess extends ProfileDetailsState {
 
   IgnoreUserSuccess(this.profileDetailsActionResponseModel);
 }
+
+final class GetProfileDetailsLoading extends ProfileDetailsState {}
+final class GetProfileDetailsFailure extends ProfileDetailsState {
+  final String error;
+
+  GetProfileDetailsFailure(this.error);
+}
+final class GetProfileDetailsSuccess extends ProfileDetailsState {
+  final ProfileDetailsResponseModel profileDetailsResponseModel;
+
+  GetProfileDetailsSuccess(this.profileDetailsResponseModel);
+}
