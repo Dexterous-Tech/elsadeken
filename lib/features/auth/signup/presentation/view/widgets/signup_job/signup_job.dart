@@ -62,13 +62,9 @@ class _SignupJobState extends State<SignupJob> {
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      'ما هي وظيفتك ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                        context,
-                      ),
-                    ),
+                    Text('ما هي وظيفتك ؟',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
                       controller: cubit.jobController,
@@ -97,13 +93,9 @@ class _SignupJobState extends State<SignupJob> {
                     ),
                     verticalSpace(40),
 
-                    Text(
-                      'ما هو الدخل الشهري ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                        context,
-                      ),
-                    ),
+                    Text('ما هو الدخل الشهري ؟',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     // Income field
                     CustomTextFormField(

@@ -39,16 +39,14 @@ class OnBoardingBody extends StatelessWidget {
               Text(
                 'تعارف جاد للمسلمين والمسلمات',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.font40BlackSemiBoldPlexSans(
-                  context,
-                ).copyWith(letterSpacing: 0, wordSpacing: 0),
+                style: AppTextStyles.font40BlackSemiBoldPlexSans
+                    .copyWith(letterSpacing: 0, wordSpacing: 0),
               ),
               Text(
                 'لكل من يبحث عن شريك حياة على أساس من القيم والاحترام',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.font26BlackRegularPlexSans(
-                  context,
-                ).copyWith(letterSpacing: 0, wordSpacing: 0),
+                style: AppTextStyles.font26BlackRegularPlexSans
+                    .copyWith(letterSpacing: 0, wordSpacing: 0),
               ),
               verticalSpace(30),
               SizedBox(
@@ -70,9 +68,8 @@ class OnBoardingBody extends StatelessWidget {
                       horizontalSpace(10),
                       Text(
                         'سجل الان',
-                        style: AppTextStyles.font16CulturedMediumPlexSans(
-                          context,
-                        ).copyWith(color: AppColors.white),
+                        style: AppTextStyles.font16CulturedMediumPlexSans
+                            .copyWith(color: AppColors.white),
                       ),
                     ],
                   ),
@@ -85,7 +82,7 @@ class OnBoardingBody extends StatelessWidget {
                 },
                 child: Text(
                   'التسجيل مجانا',
-                  style: AppTextStyles.font16CulturedMediumPlexSans(context)
+                  style: AppTextStyles.font16CulturedMediumPlexSans
                       .copyWith(color: AppColors.white),
                 ),
               )

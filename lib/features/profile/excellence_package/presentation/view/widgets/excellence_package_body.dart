@@ -96,8 +96,7 @@ class ExcellencePackageBody extends StatelessWidget {
                   verticalSpace(10),
                   Text(
                     'أو استفسر عبر رسالة قصيرة',
-                    style: AppTextStyles.font15BistreSemiBoldLamaSans(context)
-                        .copyWith(
+                    style: AppTextStyles.font15BistreSemiBoldLamaSans.copyWith(
                       color: AppColors.jet,
                       fontWeight: FontWeightHelper.medium,
                       decoration: TextDecoration.underline,
@@ -111,8 +110,7 @@ class ExcellencePackageBody extends StatelessWidget {
             Center(
               child: Text(
                 'المزايـــــا',
-                style: AppTextStyles.font22BistreSemiBoldLamaSans(context)
-                    .copyWith(
+                style: AppTextStyles.font22BistreSemiBoldLamaSans.copyWith(
                   color: AppColors.jet,
                   fontWeight: FontWeightHelper.medium,
                 ),
@@ -151,7 +149,7 @@ class ExcellencePackageBody extends StatelessWidget {
                   ),
                   Text(
                     'إمتيازاتـــي الحاليـــة',
-                    style: AppTextStyles.font21PhilippineBronzeMediumPlexSans,
+                    style: AppTextStyles.font21PhilippineBronzeMediumLamaSans,
                   ),
                   Spacer(),
                   GestureDetector(
@@ -231,7 +229,7 @@ class ExcellencePackageBody extends StatelessWidget {
         ),
         Text(
           price,
-          style: AppTextStyles.font19PhilippineBronzeRegularPlexSans,
+          style: AppTextStyles.font19PhilippineBronzeRegularLamaSans,
           textDirection: TextDirection.rtl,
         ),
       ],

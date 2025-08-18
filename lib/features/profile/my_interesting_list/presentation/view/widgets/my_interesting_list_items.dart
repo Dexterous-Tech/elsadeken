@@ -20,7 +20,8 @@ class MyInterestingListItems extends StatelessWidget {
           return Center(
             child: Text(
               state.error,
-              style: AppTextStyles.font14DesiredMediumPlexSans,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.font14DesiredMediumLamaSans,
             ),
           );
         } else if (state is InterestingListStateSuccess) {
@@ -30,7 +31,7 @@ class MyInterestingListItems extends StatelessWidget {
             return Center(
               child: Text(
                 '0 عضو',
-                style: AppTextStyles.font20LightOrangeMediumPlexSans
+                style: AppTextStyles.font20LightOrangeMediumLamaSans
                     .copyWith(color: AppColors.jet),
               ),
             );

@@ -6,14 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileDetailsScreen extends StatelessWidget {
-  const ProfileDetailsScreen({super.key});
+  const ProfileDetailsScreen({super.key, required this.userId});
 
+  final int userId;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<ProfileDetailsCubit>(),
       child: Scaffold(
-        body: ProfileDetailsBody(),
+        body: ProfileDetailsBody(userId: userId),
       ),
     );
   }

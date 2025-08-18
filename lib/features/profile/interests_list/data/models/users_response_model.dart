@@ -73,7 +73,9 @@ class UsersDataModel {
     fcmToken = json['fcm_token'];
     token = json['token'];
     createdAt = json['created_at'];
-    attribute = json['attribute'] != null ? UsersAttributeModel.fromJson(json['attribute']) : null;
+    attribute = json['attribute'] != null
+        ? UsersAttributeModel.fromJson(json['attribute'])
+        : null;
   }
   int? id;
   String? name;
@@ -161,8 +163,14 @@ class UsersMetaModel {
 class UsersAttributeModel {
   UsersAttributeModel({
     this.id,
+    this.nationality,
     this.city,
     this.country,
+    this.skinColor,
+    this.healthCondition,
+    this.physique,
+    this.qualification,
+    this.financialSituation,
     this.maritalStatus,
     this.typeOfMarriage,
     this.age,
@@ -181,8 +189,14 @@ class UsersAttributeModel {
 
   UsersAttributeModel.fromJson(dynamic json) {
     id = json['id'];
+    nationality = json['nationality'];
     city = json['city'];
     country = json['country'];
+    skinColor = json['skin_color'];
+    healthCondition = json['health_condition'];
+    physique = json['physique'];
+    qualification = json['qualification'];
+    financialSituation = json['financial_situation'];
     maritalStatus = json['marital_status'];
     typeOfMarriage = json['type_of_marriage'];
     age = json['age'];
@@ -198,9 +212,16 @@ class UsersAttributeModel {
     lifePartner = json['life_partner'];
     aboutMe = json['about_me'];
   }
+  
   int? id;
+  String? nationality;
   String? city;
   String? country;
+  String? skinColor;
+  String? healthCondition;
+  String? physique;
+  String? qualification;
+  String? financialSituation;
   String? maritalStatus;
   String? typeOfMarriage;
   int? age;
@@ -219,8 +240,14 @@ class UsersAttributeModel {
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = id;
+    map['nationality'] = nationality;
     map['city'] = city;
     map['country'] = country;
+    map['skin_color'] = skinColor;
+    map['health_condition'] = healthCondition;
+    map['physique'] = physique;
+    map['qualification'] = qualification;
+    map['financial_situation'] = financialSituation;
     map['marital_status'] = maritalStatus;
     map['type_of_marriage'] = typeOfMarriage;
     map['age'] = age;

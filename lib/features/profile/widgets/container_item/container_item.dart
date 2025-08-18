@@ -22,9 +22,17 @@ class ContainerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final country = favUser?.attribute?.country?.trim();
+    final city = favUser?.attribute?.city?.trim();
+
+    final location = [
+      country?.isNotEmpty == true ? country : 'لا يوجد',
+      city?.isNotEmpty == true ? city : 'لا يوجد',
+    ].join(' , ');
     return GestureDetector(
       onTap: () {
-        context.pushNamed(AppRoutes.profileDetailsScreen);
+        context.pushNamed(AppRoutes.profileDetailsScreen,
+            arguments: favUser!.id);
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
@@ -55,7 +63,7 @@ class ContainerItem extends StatelessWidget {
                     favUser?.name ?? '',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.font14BeerMediumLamaSans(context)
+                    style: AppTextStyles.font14BeerMediumLamaSans
                         .copyWith(color: Color(0xff7D7D7D)),
                   ),
                   isTime
@@ -76,10 +84,10 @@ class ContainerItem extends StatelessWidget {
                             ),
                             horizontalSpace(3),
                             Text(
-                              '${favUser?.attribute?.country ?? 'لا دولة'} , ${favUser?.attribute?.city ?? 'لا مدينة'}',
+                              location,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.font13BlackMediumPlexSans
+                              style: AppTextStyles.font13BlackMediumLamaSans
                                   .copyWith(
                                 color: AppColors.black.withValues(
                                   alpha: 0.87,

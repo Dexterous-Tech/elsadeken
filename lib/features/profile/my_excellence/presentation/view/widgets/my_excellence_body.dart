@@ -90,7 +90,7 @@ class MyExcellenceBody extends StatelessWidget {
             Center(
               child: Text(
                 'باقـــة التميــــز',
-                style: AppTextStyles.font20LightOrangeMediumPlexSans,
+                style: AppTextStyles.font20LightOrangeMediumLamaSans,
               ),
             ),
             verticalSpace(16),

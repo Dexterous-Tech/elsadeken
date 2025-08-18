@@ -15,7 +15,7 @@ class ContainerSuccessWay extends StatelessWidget {
       child: Center(
         child: Text(
           'دليلـــــك نحــــــو النجــــــــاح',
-          style: AppTextStyles.font20LightOrangeMediumPlexSans
+          style: AppTextStyles.font20LightOrangeMediumLamaSans
               .copyWith(color: AppColors.jasper),
         ),
       ),

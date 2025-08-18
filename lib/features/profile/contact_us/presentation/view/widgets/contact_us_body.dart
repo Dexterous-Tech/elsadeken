@@ -36,7 +36,7 @@ class ContactUsBody extends StatelessWidget {
               children: [
                 Text(
                   'في حالة قمت بشراء بطاقة الصادقون و الصادقات من الوكيل المحلي ، فسيرسل لك رقم لتفعيل باقة التميز ، قم بإدخاله في الخانة اسفله و سيتم ترقية حسابك الى عضوية مميزة مباشرة',
-                  style: AppTextStyles.font13BlackMediumPlexSans.copyWith(
+                  style: AppTextStyles.font13BlackMediumLamaSans.copyWith(
                       fontWeight: FontWeightHelper.regular,
                       color: AppColors.jet),
                   textDirection: TextDirection.rtl,
@@ -83,7 +83,7 @@ class ContactUsBody extends StatelessWidget {
                       horizontalSpace(13),
                       Text(
                         'تحدث معنا',
-                        style: AppTextStyles.font13BlackMediumPlexSans.copyWith(
+                        style: AppTextStyles.font13BlackMediumLamaSans.copyWith(
                             fontFamily: FontFamilyHelper.lamaSansArabic,
                             color: AppColors.sinopia),
                       )

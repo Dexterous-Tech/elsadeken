@@ -16,11 +16,19 @@ class CustomImageNetwork extends StatelessWidget {
       fit: BoxFit.cover,
       width: width,
       height: height,
-      errorBuilder: (_, __, ___) => Container(
-        color: Colors.grey.shade200,
-        alignment: Alignment.center,
-        child: Icon(Icons.broken_image, size: 24.sp),
-      ),
+      errorBuilder: (_, __, ___) => Center(
+          child: Container(
+        width: width,
+        height: height,
+        decoration:
+            BoxDecoration(shape: BoxShape.circle, color: AppColors.lightGray),
+        child: Center(
+          child: Icon(
+            Icons.image,
+            color: AppColors.red,
+          ),
+        ),
+      )),
       loadingBuilder: (_, child, progress) => progress == null
           ? child
           : Center(

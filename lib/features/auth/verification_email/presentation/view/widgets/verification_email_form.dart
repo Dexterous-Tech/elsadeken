@@ -23,14 +23,13 @@ class VerificationEmailForm extends StatelessWidget {
           Text(
             'رمز التحقق',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font27ChineseBlackBoldLamaSans(context),
+            style: AppTextStyles.font27ChineseBlackBoldLamaSans,
           ),
           Text(
             'ادخل رقم رمز التحقق الذي تم ارساله الي البريد الالكتروني',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14BeerMediumLamaSans(
-              context,
-            ).copyWith(color: AppColors.outerSpace),
+            style: AppTextStyles.font14BeerMediumLamaSans
+                .copyWith(color: AppColors.outerSpace),
           ),
           verticalSpace(24),
           CustomPinCodeField(

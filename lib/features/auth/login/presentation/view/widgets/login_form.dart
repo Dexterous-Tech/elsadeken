@@ -31,13 +31,13 @@ class _LoginFormState extends State<LoginForm> {
         children: [
           Text(
             'تسجيل الدخول',
-            style: AppTextStyles.font27ChineseBlackBoldLamaSans(context),
+            style: AppTextStyles.font27ChineseBlackBoldLamaSans,
           ),
           verticalSpace(24),
           Text(
             'بريد إلكتروني',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans(context),
+            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
           ),
           verticalSpace(8),
           // CustomTextFormField(
@@ -68,7 +68,7 @@ class _LoginFormState extends State<LoginForm> {
           Text(
             'كلمه المرور',
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans(context),
+            style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
           ),
           verticalSpace(8),
           CustomTextFormField(
@@ -104,7 +104,7 @@ class _LoginFormState extends State<LoginForm> {
             child: Text(
               'نسيت كلمه المرور؟',
               textDirection: TextDirection.rtl,
-              style: AppTextStyles.font14BeerMediumLamaSans(context),
+              style: AppTextStyles.font14BeerMediumLamaSans,
             ),
           ),
           verticalSpace(31),

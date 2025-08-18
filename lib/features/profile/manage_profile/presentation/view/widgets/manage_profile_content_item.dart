@@ -19,9 +19,8 @@ class ManageProfileContentItem extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTextStyles.font18JetBoldPlexSans(
-            context,
-          ).copyWith(fontWeight: FontWeightHelper.regular),
+          style: AppTextStyles.font18JetBoldLamaSans
+              .copyWith(fontWeight: FontWeightHelper.regular),
         ),
         itemContent,
       ],

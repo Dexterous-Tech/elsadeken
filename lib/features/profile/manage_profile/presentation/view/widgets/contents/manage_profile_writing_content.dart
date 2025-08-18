@@ -45,7 +45,7 @@ class ManageProfileWritingContent extends StatelessWidget {
           child: ManageProfileContentText(
             text: content,
             isLoading: isLoading,
-            textStyle: AppTextStyles.font18PhilippineBronzeRegularPlexSans,
+            textStyle: AppTextStyles.font18PhilippineBronzeRegularLamaSans,
           ),
         ),
         verticalSpace(20),

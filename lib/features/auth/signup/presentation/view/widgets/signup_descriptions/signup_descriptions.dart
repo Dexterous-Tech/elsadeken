@@ -31,13 +31,9 @@ class SignupDescriptions extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   // name
-                  Text(
-                    'ما هي مواصفات شريكه حياتك التي ترغب الارتباط بها ؟',
-                    textDirection: TextDirection.rtl,
-                    style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                      context,
-                    ),
-                  ),
+                  Text('ما هي مواصفات شريكه حياتك التي ترغب الارتباط بها ؟',
+                      textDirection: TextDirection.rtl,
+                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                   verticalSpace(16),
 
                   CustomTextFormField(
@@ -81,13 +77,9 @@ class SignupDescriptions extends StatelessWidget {
                   verticalSpace(40),
 
                   // email
-                  Text(
-                    'تحدث عن نفسك',
-                    textDirection: TextDirection.rtl,
-                    style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                      context,
-                    ),
-                  ),
+                  Text('تحدث عن نفسك',
+                      textDirection: TextDirection.rtl,
+                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                   verticalSpace(16),
                   CustomTextFormField(
                     controller: cubit.lifePartnerController,

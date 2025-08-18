@@ -147,7 +147,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
             Text(
               _title,
               textDirection: TextDirection.rtl,
-              style: AppTextStyles.font23ChineseBlackBoldLamaSans(context),
+              style: AppTextStyles.font23ChineseBlackBoldLamaSans,
             ),
             verticalSpace(16),
             // Search Field
@@ -161,7 +161,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
                 size: 25,
                 color: AppColors.paleBrown,
               ),
-              hintStyle: AppTextStyles.font16PaleBrownRegularLamaSans(context),
+              hintStyle: AppTextStyles.font16PaleBrownRegularLamaSans,
             ),
             verticalSpace(18),
             // Items List
@@ -223,7 +223,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
             verticalSpace(8),
             Text(
               errorMessage ?? 'حدث خطأ',
-              style: AppTextStyles.font16PaleBrownRegularLamaSans(context),
+              style: AppTextStyles.font16PaleBrownRegularLamaSans,
               textAlign: TextAlign.center,
             ),
             verticalSpace(8),
@@ -244,7 +244,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
               },
               child: Text(
                 _retryButtonText,
-                style: AppTextStyles.font16PaleBrownRegularLamaSans(context),
+                style: AppTextStyles.font16PaleBrownRegularLamaSans,
               ),
             ),
           ],
@@ -298,7 +298,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
       return Center(
         child: Text(
           _noResultsMessage,
-          style: AppTextStyles.font16PaleBrownRegularLamaSans(context),
+          style: AppTextStyles.font16PaleBrownRegularLamaSans,
           textDirection: TextDirection.rtl,
         ),
       );
@@ -307,7 +307,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
     return Center(
       child: Text(
         _noItemsMessage,
-        style: AppTextStyles.font16PaleBrownRegularLamaSans(context),
+        style: AppTextStyles.font16PaleBrownRegularLamaSans,
         textDirection: TextDirection.rtl,
       ),
     );

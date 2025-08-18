@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/theme/app_color.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../core/theme/font_weight_helper.dart';
 import '../../../core/widgets/custom_arrow_back.dart';
 
 class ProfileHeader extends StatelessWidget {

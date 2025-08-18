@@ -26,39 +26,35 @@ Future<void> oathDialog({
             Text(
               'السلام عليكم ورحمة الله',
               textDirection: TextDirection.rtl,
-              style: AppTextStyles.font22BistreSemiBoldLamaSans(context),
+              style: AppTextStyles.font22BistreSemiBoldLamaSans,
             ),
             verticalSpace(6),
             Text(
               'لإتاحة الفرصة لجميع الأعضاء، فإن التسجيل مجاني.',
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.center,
-              style: AppTextStyles.font15BistreSemiBoldLamaSans(
-                context,
-              ).copyWith(fontWeight: FontWeightHelper.medium),
+              style: AppTextStyles.font15BistreSemiBoldLamaSans
+                  .copyWith(fontWeight: FontWeightHelper.medium),
             ),
             verticalSpace(48),
             Text(
               'صيغة القسم:',
-              style: AppTextStyles.font15BistreSemiBoldLamaSans(
-                context,
-              ).copyWith(color: AppColors.black),
+              style: AppTextStyles.font15BistreSemiBoldLamaSans
+                  .copyWith(color: AppColors.black),
               textAlign: TextAlign.center,
               textDirection: TextDirection.rtl,
             ),
             Text(
               '\n\n«أقسم بالله العظيم أنني سجلت في هذا التطبيق زواجًا شرعيًا، وأن قصدي جاد وصادق في بناء أسرة قائمة على المودة والرحمة، وفقًا لأحكام الشريعة الإسلامية.',
-              style: AppTextStyles.font15BistreSemiBoldLamaSans(
-                context,
-              ).copyWith(color: AppColors.black),
+              style: AppTextStyles.font15BistreSemiBoldLamaSans
+                  .copyWith(color: AppColors.black),
               textAlign: TextAlign.center,
               textDirection: TextDirection.rtl,
             ),
             Text(
               '\n\nوأتعهد بالالتزام الكامل بشروط وقوانين هذا التطبيق، وعدم استخدامه لأي غرض يسيء للدين أو الأخلاق أو يخالف ما وضع له من أهداف، والله على ما أقول شهيد.».',
-              style: AppTextStyles.font15BistreSemiBoldLamaSans(
-                context,
-              ).copyWith(color: AppColors.black),
+              style: AppTextStyles.font15BistreSemiBoldLamaSans
+                  .copyWith(color: AppColors.black),
               textAlign: TextAlign.center,
               textDirection: TextDirection.rtl,
             ),
@@ -69,7 +65,7 @@ Future<void> oathDialog({
                 Text(
                   'لقد قمت باداء القسم وسالتزم به',
                   textDirection: TextDirection.rtl,
-                  style: AppTextStyles.font14PumpkinOrangeBoldLamaSans(context),
+                  style: AppTextStyles.font14PumpkinOrangeBoldLamaSans,
                 ),
                 horizontalSpace(10),
                 CustomRadio(

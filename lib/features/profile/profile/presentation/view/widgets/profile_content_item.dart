@@ -33,8 +33,7 @@ class ProfileContentItem extends StatelessWidget {
               child: Text(
                 title,
                 textAlign: TextAlign.right,
-                style:
-                    AppTextStyles.font14CharlestonGreenMediumLamaSans(context),
+                style: AppTextStyles.font14CharlestonGreenMediumLamaSans,
                 overflow: TextOverflow.ellipsis,
               ),
             ),

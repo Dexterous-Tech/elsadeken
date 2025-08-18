@@ -89,13 +89,9 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     // name
-                    Text(
-                      'ما هو اسمك ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                        context,
-                      ),
-                    ),
+                    Text('ما هو اسمك ؟',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
                       controller: cubit.nameController,
@@ -115,13 +111,9 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                     verticalSpace(40),
 
                     // email
-                    Text(
-                      'ما هو بريدك الالكتروني ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                        context,
-                      ),
-                    ),
+                    Text('ما هو بريدك الالكتروني ؟',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
                       controller: cubit.emailController,
@@ -146,13 +138,9 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                     verticalSpace(40),
 
                     // email
-                    Text(
-                      'ما هو رقم جوالك ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans(
-                        context,
-                      ),
-                    ),
+                    Text('ما هو رقم جوالك ؟',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
