@@ -10,7 +10,9 @@ import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.d
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
+import 'package:elsadeken/features/home/home/presentation/view/widgets/home_header.dart';
 import 'package:elsadeken/features/home/home/presentation/view/widgets/swipeable_card.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_body.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
