@@ -55,6 +55,7 @@ import 'package:elsadeken/features/search/logic/repository/search_repository.dar
 import 'package:elsadeken/features/search/logic/repository/search_repository_impl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../../features/search/logic/use_cases/search_use_cases.dart';
 import '../../features/search/presentation/cubit/search_cubit.dart';
@@ -64,21 +65,15 @@ import '../networking/dio_factory.dart';
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
-  // Initialize Dio
+  // Initialize Dio using DioFactory
   final dio = await DioFactory.getDio();
+
+  // Register Dio as a singleton first
+  sl.registerSingleton<Dio>(dio);
 
   // Register ApiServices as a singleton
   sl.registerSingleton<ApiServices>(ApiServices.internal(dio));
-  // HTTP Client
-  sl.registerLazySingleton<Dio>(() => Dio(BaseOptions(
-        baseUrl: 'https://elsadkeen.sharetrip-ksa.com/api',
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
-        sendTimeout: const Duration(seconds: 15),
-        headers: {
-          'Accept': 'application/json',
-        },
-      )));
+
   // Repository
   sl.registerLazySingleton<SearchRepository>(
     () => SearchRepositoryImpl(sl<Dio>()),
