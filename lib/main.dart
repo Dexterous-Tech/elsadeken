@@ -29,6 +29,7 @@ void main() async {
 
   // Initialize other dependencies
   await initializeDependencies();
+  await sl.allReady();
 
   // Initialize FCM and update token
   // await NotificationApiServiceImpl.initializeFcmAndUpdateToken();
