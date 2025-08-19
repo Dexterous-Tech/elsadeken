@@ -56,7 +56,7 @@ class Elsadeken extends StatelessWidget {
         // ],
         theme: ThemeData(scaffoldBackgroundColor: Colors.white),
         onGenerateRoute: appRouting.onGenerateRouting,
-        initialRoute: AppRoutes.loginScreen,
+        initialRoute: AppRoutes.splashScreen,
       ),
     );
   }
