@@ -18,7 +18,7 @@ class LikeUserUseCase {
 
   LikeUserUseCase(this.repository);
 
-  Future<void> call(String userId) async {
+  Future<void> call(int userId) async {
     await repository.likeUser(userId);
   }
 }
@@ -29,7 +29,7 @@ class IgnoreUserUseCase {
 
   IgnoreUserUseCase(this.repository);
 
-  Future<void> call(String userId) async {
+  Future<void> call(int userId) async {
     await repository.ignoreUser(userId);
   }
 }

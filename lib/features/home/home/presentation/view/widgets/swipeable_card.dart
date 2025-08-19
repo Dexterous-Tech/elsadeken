@@ -148,9 +148,9 @@ class _SwipeableCardState extends State<SwipeableCard>
         : 0.0;
 
     return Positioned(
-      top: 10,
-      left: 0,
-      right: 0,
+      top: 10.h,
+      left: 0.w,
+      right: 0.w,
       child: Center(
         child: AnimatedSlide(
           duration: Duration(milliseconds: 300),
@@ -180,7 +180,10 @@ class _SwipeableCardState extends State<SwipeableCard>
                 child: Transform.rotate(
                   angle: rotation,
                   child: Container(
-                    width: 388.w,
+                    width: MediaQuery.of(context).size.width - 32.w, // 16w margin on each side
+                    constraints: BoxConstraints(
+                      maxWidth: 388.w,
+                    ),
                     padding:
                         EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
                     decoration: BoxDecoration(
@@ -295,24 +298,27 @@ class _SwipeableCardState extends State<SwipeableCard>
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Container(
-                                          width: 250,
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 26.5.w,
-                                            vertical: 11.h,
-                                          ),
-                                          constraints: BoxConstraints(
-                                            maxWidth: 250, 
-                                          ),
+                                        Flexible(
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 26.5.w,
+                                              vertical: 11.h,
+                                            ),
+                                            constraints: BoxConstraints(
+                                              maxWidth: 250.w, 
+                                              minWidth: 80.w,
+                                            ),
                                           decoration: BoxDecoration(
                                             color: Color(0xffDBAE48),
                                             borderRadius: BorderRadius.circular(15).r,
                                           ),
                                           child: Center(
                                             child: Text(
+                                              maxLines: 1,
                                               widget.user.location,
                                               style: TextStyle(
                                                 color: Colors.white,
+                                                overflow: TextOverflow.visible,
                                                 fontSize: 15.sp,
                                                 fontWeight: FontWeightHelper.medium,
                                                 fontFamily: FontFamilyHelper.lamaSansArabic,
@@ -320,6 +326,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                                               softWrap: true, 
                                               overflow: TextOverflow.visible, 
                                             ),
+                                          ),
                                           ),
                                         ),
                                         Column(

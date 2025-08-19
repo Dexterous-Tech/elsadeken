@@ -6,8 +6,8 @@ import 'package:elsadeken/features/home/home/data/models/matches_response_model.
 // home_remote_data_source.dart
 abstract class HomeRemoteDataSource {
   Future<MatchesResponseModel> getMatchesUsers(int page);
-  Future<void> likeUser(String userId);
-  Future<void> ignoreUser(String userId);
+  Future<void> likeUser(int userId);
+  Future<void> ignoreUser(int userId);
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
@@ -26,7 +26,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   @override
-  Future<void> likeUser(String userId) async {
+  Future<void> likeUser(int userId) async {
     await _apiService.post(
       endpoint: ApiConstants.likeUser(userId),
       requestBody: {},
@@ -35,7 +35,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   @override
-  Future<void> ignoreUser(String userId) async {
+  Future<void> ignoreUser(int userId) async {
     await _apiService.post(
       endpoint: ApiConstants.ignoreUser(userId),
       requestBody: {},

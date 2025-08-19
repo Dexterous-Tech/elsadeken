@@ -30,7 +30,7 @@ class UserDataWidget extends StatelessWidget {
               ),
               Text(
                 state.myProfileResponseModel.data?.name ?? '',
-                style: AppTextStyles.font23ChineseBlackBoldLamaSans(context)
+                style: AppTextStyles.font23ChineseBlackBoldLamaSans
                     .copyWith(
                   color: AppColors.white,
                   fontWeight: FontWeightHelper.semiBold,
@@ -38,7 +38,7 @@ class UserDataWidget extends StatelessWidget {
               ),
               Text(
                 '${state.myProfileResponseModel.data?.email?.split('@')[0]}@',
-                style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans(context)
+                style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans
                     .copyWith(
                   color: AppColors.white,
                   fontWeight: FontWeightHelper.regular,

@@ -3,6 +3,6 @@ import 'package:elsadeken/features/home/home/domain/entities/match_user_entity.d
 
 abstract class HomeRepository {
   Future<List<MatchUserEntity>> getMatchesUsers(int page);
-  Future<void> likeUser(String userId);
-  Future<void> ignoreUser(String userId);
+  Future<void> likeUser(int userId);
+  Future<void> ignoreUser(int userId);
 }

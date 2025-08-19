@@ -20,7 +20,7 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<void> likeUser(String userId) async {
+  Future<void> likeUser(int userId) async {
     try {
       await remoteDataSource.likeUser(userId);
     } catch (e) {
@@ -29,7 +29,7 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<void> ignoreUser(String userId) async {
+  Future<void> ignoreUser(int userId) async {
     try {
       await remoteDataSource.ignoreUser(userId);
     } catch (e) {
