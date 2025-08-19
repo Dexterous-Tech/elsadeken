@@ -23,6 +23,7 @@ class ApiConstants {
 
   // profile
   static String aboutUs = '/user/aboutUs';
+  static String contactUs = '/user/contact-us';
   static String getProfile = '/user/profile';
   static String likeUser(int id) => '/user/like/user/$id';
   static String ignoreUser(int id) => '/user/ignore/user/$id';
@@ -30,7 +31,7 @@ class ApiConstants {
   static String interestingList = '/user/liked/people-list';
   static String ignoreUserList = '/user/ignore/list';
   static String userDetails(int userId) => '/user/show-one-user/$userId';
-  static String updateImage= '/user/update-image';
+  static String updateImage = '/user/update-image';
 
   //search-home
   static String matchesUsers = '/user/home/matches-users';

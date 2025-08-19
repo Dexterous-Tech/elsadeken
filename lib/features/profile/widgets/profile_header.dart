@@ -18,15 +18,21 @@ class ProfileHeader extends StatelessWidget {
         const CustomArrowBack(
           background: Color(0xffE2E2E2),
         ),
-        Text(
-          title,
-          style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w500,
-            color: AppColors.darkBlue,
+        Center(
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w500,
+              color: AppColors.darkBlue,
+            ),
           ),
         ),
-        const SizedBox(),
+        SizedBox(
+          width: 30.w,
+          height: 30.h,
+        ),
       ],
     );
   }

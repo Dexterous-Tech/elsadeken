@@ -6,7 +6,9 @@ import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.d
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
+import 'package:elsadeken/features/home/home/presentation/view/widgets/home_header.dart';
 import 'package:elsadeken/features/home/home/presentation/view/widgets/swipeable_card.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_body.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../members/members_section/view/members_screen.dart';
-import '../../../notification/presentation/view/notification_screen.dart';
 import '../../data/models/user_model.dart';
 
 class HomeScreenWrapper extends StatelessWidget {
@@ -183,79 +184,9 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Column(
                 children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        child: Container(
-                          width: 47.w,
-                          height: 47.h,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color(0xffFCF8F5),
-                          ),
-                          child: Center(
-                            child: Image.asset(
-                              'assets/images/home/home_notification.png',
-                              width: 22.w,
-                              height: 20.h,
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NotificationScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      Spacer(),
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            //  textDirection: TextDirection.rtl,
-                            children: [
-                              Text(
-                                name,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeightHelper.semiBold,
-                                ),
-                              ),
-                              Row(
-                                textDirection: TextDirection.rtl,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/home/home_location.png',
-                                    width: 15.w,
-                                    height: 18.h,
-                                  ),
-                                  SizedBox(width: 13),
-                                  Text(
-                                    '${country} ${city}',
-                                    style: TextStyle(
-                                        color:
-                                            Color(0xff000000).withOpacity(0.87),
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeightHelper.medium),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(width: 12.w),
-                          CircleAvatar(
-                            radius: 20.r,
-                            backgroundImage: NetworkImage(
-                              'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                  BlocProvider(
+                    create: (context) => sl<ManageProfileCubit>(),
+                    child: HomeHeader(),
                   ),
                   SizedBox(height: 21.h),
                   CustomTextFormField(

@@ -1,6 +1,6 @@
 // File: lib/domain/entities/user_profile.dart
 class UserProfile {
-  final String id;
+  final int id;
   final String name;
   final String username;
   final int age;
@@ -26,8 +26,21 @@ class UserProfile {
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     final attribute = json['attribute'];
+
+    // Debug: Print the raw ID value and its type
+    print('Raw ID from JSON: ${json['id']} (type: ${json['id'].runtimeType})');
+
+    int parsedId;
+    if (json['id'] is int) {
+      parsedId = json['id'] as int;
+    } else {
+      parsedId = int.tryParse(json['id']?.toString() ?? '') ?? 0;
+    }
+
+    print('Parsed ID: $parsedId (type: ${parsedId.runtimeType})');
+
     return UserProfile(
-      id: json['id']?.toString() ?? '',
+      id: parsedId,
       name: json['name'] ?? '',
       username: json['username'] ?? '',
       age: attribute != null && attribute['age'] != null
