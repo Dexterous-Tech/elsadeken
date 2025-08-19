@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/models/notification_model.dart';
+import '../../../data/models/notification_model.dart';
 import 'notification_items.dart';
 import 'package:timeago/timeago.dart' as timeago;
 

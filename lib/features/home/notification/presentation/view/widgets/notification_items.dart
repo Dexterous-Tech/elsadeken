@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timego;
 import '../../../data/models/notification_model.dart';
 
 class NotificationItemWidget extends StatelessWidget {
