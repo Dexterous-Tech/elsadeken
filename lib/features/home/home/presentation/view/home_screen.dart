@@ -20,7 +20,7 @@ import '../../data/models/user_model.dart';
 class HomeScreenWrapper extends StatelessWidget {
   const HomeScreenWrapper({super.key});
 
-@override
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<ProfileDetailsCubit>(),
@@ -31,8 +31,6 @@ class HomeScreenWrapper extends StatelessWidget {
   }
 }
 
-
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -41,7 +39,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   String country = 'مصر';
   String city = 'القاهرة';
   String name = 'اسم';
@@ -59,7 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _loadMatchesUsers();
     _loadUserData();
-
   }
 
   Future<void> _loadMatchesUsers({bool loadMore = false}) async {
@@ -71,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
           isLoading = true;
           errorMessage = null;
           currentUsers = [];
-        }); 
+        });
       }
 
       final apiService = await ApiServices.init();
@@ -91,15 +87,16 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       setState(() {
-        currentUsers.addAll(data.map((userJson) => UserModel( // 
+        currentUsers.addAll(data.map((userJson) => UserModel(
+              //
               id: userJson['id'],
               name: userJson['name'],
               age: userJson['age'],
               profession: userJson['job'],
               location: '${userJson['city']}, ${userJson['country']}',
               imageUrl: userJson['image'],
-              matchPercentage: userJson['match_percentage'] is int 
-                  ? userJson['match_percentage'] 
+              matchPercentage: userJson['match_percentage'] is int
+                  ? userJson['match_percentage']
                   : (userJson['match_percentage'] as double).round(),
               isFavorite: userJson['is_favorite'] == 1,
             )));
@@ -117,65 +114,63 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _onSwipe(bool isLike) async {
-  if (currentUsers.isEmpty) return;
+    if (currentUsers.isEmpty) return;
 
-  final swipedUser = currentUsers[0];
-  final tempUsers = List<UserModel>.from(currentUsers);
+    final swipedUser = currentUsers[0];
+    final tempUsers = List<UserModel>.from(currentUsers);
 
-  setState(() {
-    currentUsers.removeAt(0);
-  });
+    setState(() {
+      currentUsers.removeAt(0);
+    });
 
-  try {
-    if (isLike) {
-      final apiService = await ApiServices.init();
-      context.read<ProfileDetailsCubit>().likeUser(swipedUser.id.toString());
+    try {
+      if (isLike) {
+        final apiService = await ApiServices.init();
+        context.read<ProfileDetailsCubit>().likeUser(swipedUser.id);
 
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('تم الإعجاب!', textAlign: TextAlign.center),
+            backgroundColor: Colors.green,
+            duration: Duration(milliseconds: 800),
+          ),
+        );
+      } else {
+        // سوايب ليفت: مفيش أي API Call
+        print("User ${swipedUser.id} removed by swipe left");
+      }
+
+      if (currentUsers.length < 3 && hasMore) {
+        _loadMatchesUsers(loadMore: true);
+      }
+    } catch (e) {
+      print("fashal error: $e");
+      setState(() {
+        currentUsers = tempUsers;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('تم الإعجاب!', textAlign: TextAlign.center),
-          backgroundColor: Colors.green,
+          content: Text('فشل في تسجيل الإجراء', textAlign: TextAlign.center),
+          backgroundColor: Colors.red,
           duration: Duration(milliseconds: 800),
         ),
       );
+    }
+  }
+
+  Future<void> _loadUserData() async {
+    final user = await LoginCubit.getUserData();
+    if (user != null) {
+      setState(() {
+        // city = user.city;
+        // country = user.country;
+        name = user.name;
+      });
+      print("Loaded user: ${user.name}, ${user.email}");
     } else {
-      // سوايب ليفت: مفيش أي API Call
-      print("User ${swipedUser.id} removed by swipe left");
+      print("No user data found");
     }
-
-    if (currentUsers.length < 3 && hasMore) {
-      _loadMatchesUsers(loadMore: true);
-    }
-  } catch (e) {
-    print("fashal error: $e");
-    setState(() {
-      currentUsers = tempUsers;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('فشل في تسجيل الإجراء', textAlign: TextAlign.center),
-        backgroundColor: Colors.red,
-        duration: Duration(milliseconds: 800),
-      ),
-    );
   }
-}
-
-
-Future<void> _loadUserData() async {
-  final user = await LoginCubit.getUserData();
-  if (user != null) {
-    setState(() {
-      // city = user.city;
-      // country = user.country;
-      name = user.name;
-    });
-    print("Loaded user: ${user.name}, ${user.email}");
-  } else {
-    print("No user data found");
-  }
-}
-
 
   Widget buildHomeContent() {
     return SafeArea(
@@ -220,10 +215,10 @@ Future<void> _loadUserData() async {
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
-                          //  textDirection: TextDirection.rtl,
+                            //  textDirection: TextDirection.rtl,
                             children: [
                               Text(
-                                name, 
+                                name,
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,
@@ -242,7 +237,8 @@ Future<void> _loadUserData() async {
                                   Text(
                                     '${country} ${city}',
                                     style: TextStyle(
-                                        color: Color(0xff000000).withOpacity(0.87),
+                                        color:
+                                            Color(0xff000000).withOpacity(0.87),
                                         fontSize: 15,
                                         fontWeight: FontWeightHelper.medium),
                                   ),
@@ -318,8 +314,7 @@ Future<void> _loadUserData() async {
                       SizedBox(height: 16),
                       Text(
                         'لا توجد مطابقات جديدة',
-                        style: TextStyle(
-                            fontSize: 18, color: Colors.grey[600]),
+                        style: TextStyle(fontSize: 18, color: Colors.grey[600]),
                       ),
                     ],
                   ),

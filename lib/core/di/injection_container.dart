@@ -28,6 +28,9 @@ import 'package:elsadeken/features/profile/interests_list/presentation/manager/f
 import 'package:elsadeken/features/profile/manage_profile/data/data_source/manage_profile_data_source.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/repo/manage_profile_repo.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/features/profile/my_image/data/data_source/my_image_data_source.dart';
+import 'package:elsadeken/features/profile/my_image/data/repo/my_image_repo%20.dart';
+import 'package:elsadeken/features/profile/my_image/presentation/manager/my_image_cubit.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/data/data_source/interesting_list_data_source.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/data/repo/interesting_list_repo.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/interesting_list_cubit.dart';
@@ -172,4 +175,9 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<IgnoreUserRepoInterface>(
       () => IgnoreUserRepoImpl(sl()));
   sl.registerFactory<IgnoreUserCubit>(() => IgnoreUserCubit(sl()));
+
+  // My Image
+  sl.registerLazySingleton<MyImageDataSource>(() => MyImageDataSource(sl()));
+  sl.registerLazySingleton<MyImageRepoInterface>(() => MyImageRepoImp(sl()));
+  sl.registerFactory<MyImageCubit>(() => MyImageCubit(sl()));
 }

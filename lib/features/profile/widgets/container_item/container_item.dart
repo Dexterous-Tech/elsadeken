@@ -82,15 +82,18 @@ class ContainerItem extends StatelessWidget {
                               width: 12.5.w,
                               height: 15.h,
                             ),
-                            horizontalSpace(3),
-                            Text(
-                              location,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.font13BlackMediumLamaSans
-                                  .copyWith(
-                                color: AppColors.black.withValues(
-                                  alpha: 0.87,
+                            // horizontalSpace(3),
+                            Expanded(
+                              child: Text(
+                                location,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.right,
+                                style: AppTextStyles.font13BlackMediumLamaSans
+                                    .copyWith(
+                                  color: AppColors.black.withValues(
+                                    alpha: 0.87,
+                                  ),
                                 ),
                               ),
                             ),

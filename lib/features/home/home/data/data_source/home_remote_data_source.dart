@@ -26,7 +26,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   @override
-  Future<void> likeUser(String userId) async {
+  Future<void> likeUser(int userId) async {
     await _apiService.post(
       endpoint: ApiConstants.likeUser(userId),
       requestBody: {},

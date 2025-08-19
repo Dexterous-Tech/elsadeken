@@ -1,3 +1,5 @@
+import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
@@ -38,13 +40,23 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
             mainAxisAlignment: MainAxisAlignment.center,
             textDirection: TextDirection.rtl,
             children: [
-              ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: CustomImageNetwork(
-                    image: state.myProfileResponseModel.data?.image ?? '',
-                    width: 84.w,
-                    height: 83.h,
-                  )),
+              GestureDetector(
+                onTap: () async {
+                  final result =
+                      await context.pushNamed(AppRoutes.profileMyImageScreen);
+                  // If we returned from the image screen, refresh the profile data
+                  if (result == true) {
+                    context.read<ManageProfileCubit>().getProfile();
+                  }
+                },
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: CustomImageNetwork(
+                      image: state.myProfileResponseModel.data?.image ?? '',
+                      width: 84.w,
+                      height: 83.h,
+                    )),
+              ),
               Text(
                 state.myProfileResponseModel.data?.name ?? '',
                 style: AppTextStyles.font23ChineseBlackBoldLamaSans.copyWith(
