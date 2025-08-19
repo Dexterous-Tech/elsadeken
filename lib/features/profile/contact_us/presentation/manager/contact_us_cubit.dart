@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:elsadeken/features/profile/contact_us/data/models/Contact_us_model.dart';
+import 'package:elsadeken/features/profile/contact_us/data/models/contact_us_model.dart';
 import 'package:elsadeken/features/profile/contact_us/data/repo/contact_us_repo.dart';
 import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
 
@@ -28,13 +28,11 @@ class ContactUsCubit extends Cubit<ContactUsState> {
 
     emit(ContactUsLoading());
 
-    final contactUsModel = ContactUsModel(
-      email: emailController.text.trim(),
-      title: titleController.text.trim(),
-      description: descriptionController.text.trim(),
-    );
-
-    var response = await contactUsRepoInterface.contactUs(contactUsModel);
+    var response = await contactUsRepoInterface.contactUs(ContactUsModel(
+      email: emailController.text,
+      title: titleController.text,
+      description: descriptionController.text,
+    ));
 
     response.fold(
       (error) {
