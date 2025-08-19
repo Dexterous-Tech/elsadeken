@@ -17,7 +17,7 @@ class InterestsListBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         textDirection: TextDirection.rtl,
         children: [
-          ProfileHeader(title: 'من يهتم بي'),
+          ProfileHeader(title: 'قائمة الاهتمام'),
           verticalSpace(42),
           ContainerSuccessWay(),
           verticalSpace(32),

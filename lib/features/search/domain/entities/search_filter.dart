@@ -17,6 +17,7 @@ class SearchFilter {
   final String? skinColor;
   final String? qualificationId; 
   final int? latest; 
+  final String? typeOfMarriage;
 
   SearchFilter({
     this.username,
@@ -36,6 +37,7 @@ class SearchFilter {
     this.skinColor,
     this.qualificationId,
     this.latest,
+    this.typeOfMarriage,
   });
 
   SearchFilter copyWith({
@@ -56,6 +58,7 @@ class SearchFilter {
     String? skinColor,
     String? qualificationId,
     int? latest,
+    String? typeOfMarriage,
   }) {
     return SearchFilter(
       username: username ?? this.username,
@@ -75,26 +78,31 @@ class SearchFilter {
       skinColor: skinColor ?? this.skinColor,
       qualificationId: qualificationId ?? this.qualificationId,
       latest: latest ?? this.latest,
+      typeOfMarriage: typeOfMarriage ?? this.typeOfMarriage,
     );
   }
 
   Map<String, dynamic> toJson({int page = 1}) {
-    return {
-      "user_name": username,
-      "nationality_id": nationality?.toString(),
-      "city_id": city?.toString(),
-      "country_id": country?.toString(),
-      "type_of_marrige": maritalStatus,
-      "martital_status": socialStatus,
-      "from_age": ageFrom?.toString(),
-      "to_age": ageTo?.toString(),
-      "from_weight": weightFrom?.toString(),
-      "to_weight": weightTo?.toString(),
-      "from_height": heightFrom?.toString(),
-      "to_height": heightTo?.toString(),
-      "qualification_id": qualificationId,
-      "latest": latest,
+    final Map<String, dynamic> data = {
       "page": page,
     };
+    if (username?.isNotEmpty ?? false) data["user_name"] = username;
+    if (nationality != null) data["nationality_id"] = nationality.toString();
+    if (city != null) data["city_id"] = city.toString();
+    if (country != null) data["country_id"] = country.toString();
+    if (maritalStatus?.isNotEmpty ?? false) data["type_of_marrige"] = maritalStatus;
+    if (socialStatus?.isNotEmpty ?? false) data["martital_status"] = socialStatus;
+    if (ageFrom != null) data["from_age"] = ageFrom.toString();
+    if (ageTo != null) data["to_age"] = ageTo.toString();
+    if (weightFrom != null) data["from_weight"] = weightFrom.toString();
+    if (weightTo != null) data["to_weight"] = weightTo.toString();
+    if (heightFrom != null) data["from_height"] = heightFrom.toString();
+    if (heightTo != null) data["to_height"] = heightTo.toString();
+    if (skinColor?.isNotEmpty ?? false) data["skin_color_id"] = skinColor;
+    if (qualificationId?.isNotEmpty ?? false) data["qualification_id"] = qualificationId;
+    if (latest != null) data["latest"] = latest;
+    if (typeOfMarriage?.isNotEmpty ?? false) data["type_of_marriage"] = typeOfMarriage;
+    return data;
   }
+
 }

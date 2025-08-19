@@ -23,6 +23,7 @@ class ApiConstants {
 
   // profile
   static String aboutUs = '/user/aboutUs';
+  static String contactUs = '/user/contact-us';
   static String getProfile = '/user/profile';
   static String likeUser(int id) => '/user/like/user/$id';
   static String ignoreUser(int id) => '/user/ignore/user/$id';
@@ -30,4 +31,21 @@ class ApiConstants {
   static String interestingList = '/user/liked/people-list';
   static String ignoreUserList = '/user/ignore/list';
   static String userDetails(int userId) => '/user/show-one-user/$userId';
+  static String updateImage = '/user/update-image';
+
+  //search-home
+  static String matchesUsers = '/user/home/matches-users';
+  static String personDetails(int id) => '/user/show-one-user/$id';
+
+  // notifications
+  static String notifications = '/user/notifications';
+  static String markNotificationAsRead(int id) =>
+      '/user/notifications/$id/mark-read';
+  static String markAllNotificationsAsRead =
+      '/user/notifications/mark-all-read';
+  static String clearAllNotifications = '/user/notifications/clear-all';
+  static String updateFcmToken = '/user/update-fcmtoken';
+
+  static const String defaultProfileImage =
+      'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';
 }

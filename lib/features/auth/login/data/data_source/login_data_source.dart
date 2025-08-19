@@ -1,3 +1,5 @@
+import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
+
 import '../../../../../core/networking/api_constants.dart';
 import '../../../../../core/networking/api_services.dart';
 import '../models/login_models.dart';
@@ -17,5 +19,16 @@ class LoginDataSource {
     );
 
     return LoginResponseModel.fromJson(response.data);
+  }
+
+  Future<ProfileActionResponseModel> updateFcm(
+    String token,
+  ) async {
+    var response = await _apiServices.post(
+      endpoint: ApiConstants.updateFcmToken,
+      requestBody: {'fcm_token': token},
+    );
+
+    return ProfileActionResponseModel.fromJson(response.data);
   }
 }

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/features/search/logic/repository/search_repository.dart';
-import '../../domain/entities/search_filter.dart';
-import '../../domain/entities/user_profile.dart';
+import 'package:elsadeken/features/search/domain/entities/search_filter.dart';
+import 'package:elsadeken/features/search/domain/entities/user_profile.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
   final Dio dio;
@@ -17,8 +17,8 @@ class SearchRepositoryImpl implements SearchRepository {
       print(filter.toJson().toString());
 
       final response = await dio.post(
-        "${ApiConstants.baseUrl}/user/search",
-        data: filter,
+      "${ApiConstants.baseUrl}/user/search",
+      data: filter.toJson(page: page),
         // data: {
         //   "user_name":"ahmed" //to be removed
         // },

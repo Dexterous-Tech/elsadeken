@@ -75,6 +75,10 @@ class LoginDataModel {
     );
   }
 
+  // String get country => null;
+
+  // String get city => null;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = id;

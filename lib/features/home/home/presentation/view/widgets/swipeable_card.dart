@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/features/home/person_details/view/person_details.dart';
@@ -34,6 +35,7 @@ class _SwipeableCardState extends State<SwipeableCard>
 
   Offset _dragOffset = Offset.zero;
   bool _isDragging = false;
+  bool _isProcessingAction = false;
 
   @override
   void initState() {
@@ -59,19 +61,19 @@ class _SwipeableCardState extends State<SwipeableCard>
   }
 
   void _onPanStart(DragStartDetails details) {
-    if (!widget.isTop) return;
+    if (!widget.isTop || _isProcessingAction) return;
     _isDragging = true;
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
-    if (!widget.isTop || !_isDragging) return;
+    if (!widget.isTop || !_isDragging || _isProcessingAction) return;
     setState(() {
       _dragOffset += Offset(details.delta.dx, 0);
     });
   }
 
   void _onPanEnd(DragEndDetails details) {
-    if (!widget.isTop || !_isDragging) return;
+    if (!widget.isTop || !_isDragging || _isProcessingAction) return;
     _isDragging = false;
 
     final threshold = MediaQuery.of(context).size.width * 0.3;
@@ -85,6 +87,12 @@ class _SwipeableCardState extends State<SwipeableCard>
   }
 
   void _animateSwipe(bool isLike) {
+    if (_isProcessingAction) return;
+    
+    setState(() {
+      _isProcessingAction = true;
+    });
+
     final screenWidth = MediaQuery.of(context).size.width;
     _slideAnimation = Tween<Offset>(
       begin: _dragOffset,
@@ -101,6 +109,7 @@ class _SwipeableCardState extends State<SwipeableCard>
       _animationController.reset();
       setState(() {
         _dragOffset = Offset.zero;
+        _isProcessingAction = false;
       });
     });
   }
@@ -125,13 +134,12 @@ class _SwipeableCardState extends State<SwipeableCard>
   }
 
   void _handleButtonPress(bool isLike) {
-    if (!widget.isTop) return;
+    if (!widget.isTop || _isProcessingAction) return;
     _animateSwipe(isLike);
   }
 
   @override
   Widget build(BuildContext context) {
-    // final screenSize = MediaQuery.of(context).size;
     final cardOffset = widget.isTop
         ? (_isDragging ? _dragOffset : _slideAnimation.value)
         : Offset.zero;
@@ -140,9 +148,9 @@ class _SwipeableCardState extends State<SwipeableCard>
         : 0.0;
 
     return Positioned(
-      top: 10,
-      left: 0,
-      right: 0,
+      top: 10.h,
+      left: 0.w,
+      right: 0.w,
       child: Center(
         child: AnimatedSlide(
           duration: Duration(milliseconds: 300),
@@ -155,22 +163,27 @@ class _SwipeableCardState extends State<SwipeableCard>
               onPanUpdate: _onPanUpdate,
               onPanEnd: _onPanEnd,
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PersonDetailsView(
-                      personId: widget.user.name,
-                      imageUrl: widget.user.imageUrl,
+                if (!_isProcessingAction) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PersonDetailsView(
+                        personId: widget.user.id,
+                        imageUrl: widget.user.imageUrl,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
               child: Transform.translate(
                 offset: cardOffset,
                 child: Transform.rotate(
                   angle: rotation,
                   child: Container(
-                    width: 388.w,
+                    width: MediaQuery.of(context).size.width - 32.w, // 16w margin on each side
+                    constraints: BoxConstraints(
+                      maxWidth: 388.w,
+                    ),
                     padding:
                         EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
                     decoration: BoxDecoration(
@@ -191,80 +204,129 @@ class _SwipeableCardState extends State<SwipeableCard>
                           height: 420.h,
                           child: Stack(
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12).r,
-                                child: Image.network(
-                                  widget.user.imageUrl,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 420.h,
-                                ),
-                              ),
-
-                              // Match percentage
-                              Positioned(
-                                top: 20,
-                                left: 5,
-                                right: 5,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Center(
-                                      child: Container(
-                                        width: 137.w,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 14.5.w,
-                                          vertical: 11.h,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffDBAE48),
-                                          borderRadius:
-                                              BorderRadius.circular(8).r,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            'تطابق بنسبة${widget.user.matchPercentage}%',
-                                            textDirection: TextDirection.rtl,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14.sp,
-                                                fontWeight:
-                                                    FontWeightHelper.semiBold,
-                                                fontFamily: FontFamilyHelper
-                                                    .lamaSansArabic),
+                              Positioned.fill(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8).r,
+                                  child: widget.user.imageUrl.isNotEmpty
+                                      ? CachedNetworkImage(
+                                          imageUrl: widget.user.imageUrl,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => Container(
+                                            color: Colors.grey[200],
+                                            child: Center(
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor: AlwaysStoppedAnimation<Color>(
+                                                  Color(0xffFFB74D),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) => Container(
+                                            color: Colors.grey[200],
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.person,
+                                                    size: 60,
+                                                    color: Colors.grey[400],
+                                                  ),
+                                                  SizedBox(height: 8),
+                                                  Text(
+                                                    'لا يمكن تحميل الصورة',
+                                                    style: TextStyle(
+                                                      color: Colors.grey[600],
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          color: Colors.grey[200],
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.person,
+                                              size: 60,
+                                              color: Colors.grey[400],
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                ),
+                              ),
+                            Positioned(
+                              top: 14.h,
+                              left: 0,
+                              right: 0, 
+                              child: Center( 
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                    vertical: 6.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffDBAE48),
+                                    borderRadius: BorderRadius.circular(8).r,
+                                  ),
+                                  child: Text(
+                                    'تطابق بنسبة ${widget.user.matchPercentage}%',
+                                    textDirection: TextDirection.rtl,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeightHelper.semiBold,
+                                      fontFamily: FontFamilyHelper.lamaSansArabic,
                                     ),
-                                    SizedBox(height: 280.h),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                              Positioned(
+                                bottom: 14.h,
+                                left: 14.w,
+                                right: 14.w,
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 250.h),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        // Location tag
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 26.5.w,
-                                            vertical: 11.h,
-                                          ),
+                                        Flexible(
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 26.5.w,
+                                              vertical: 11.h,
+                                            ),
+                                            constraints: BoxConstraints(
+                                              maxWidth: 250.w, 
+                                              minWidth: 80.w,
+                                            ),
                                           decoration: BoxDecoration(
                                             color: Color(0xffDBAE48),
-                                            borderRadius:
-                                                BorderRadius.circular(15).r,
+                                            borderRadius: BorderRadius.circular(15).r,
                                           ),
                                           child: Center(
                                             child: Text(
+                                              maxLines: 1,
                                               widget.user.location,
                                               style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15.sp,
-                                                  fontWeight:
-                                                      FontWeightHelper.medium,
-                                                  fontFamily: FontFamilyHelper
-                                                      .lamaSansArabic),
+                                                color: Colors.white,
+                                                overflow: TextOverflow.visible,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeightHelper.medium,
+                                                fontFamily: FontFamilyHelper.lamaSansArabic,
+                                              ),
+                                              softWrap: true, 
+                                              overflow: TextOverflow.visible, 
                                             ),
+                                          ),
                                           ),
                                         ),
                                         Column(
@@ -282,7 +344,6 @@ class _SwipeableCardState extends State<SwipeableCard>
                                                   fontFamily: FontFamilyHelper
                                                       .lamaSansArabic),
                                             ),
-                                            // SizedBox(height: 12),
                                             Text(
                                               widget.user.profession,
                                               style: TextStyle(
@@ -309,7 +370,6 @@ class _SwipeableCardState extends State<SwipeableCard>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            // Dislike
                             GestureDetector(
                               onTap: () => _handleButtonPress(false),
                               child: Container(
@@ -336,8 +396,6 @@ class _SwipeableCardState extends State<SwipeableCard>
                                 ),
                               ),
                             ),
-
-                            // Like
                             GestureDetector(
                               onTap: () => _handleButtonPress(true),
                               child: Container(
@@ -356,10 +414,20 @@ class _SwipeableCardState extends State<SwipeableCard>
                                 ),
                               ),
                             ),
-
-                            // Chat
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                // TODO: Implement messaging functionality
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'سيتم إضافة ميزة الرسائل قريباً',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    backgroundColor: Colors.blue,
+                                    duration: Duration(milliseconds: 800),
+                                  ),
+                                );
+                              },
                               child: Container(
                                 width: 44.w,
                                 height: 44.h,

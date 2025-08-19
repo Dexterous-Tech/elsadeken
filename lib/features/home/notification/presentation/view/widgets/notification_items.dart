@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timego;
+import '../../../data/models/notification_model.dart';
 
 class NotificationItemWidget extends StatelessWidget {
-  final String title;
-  final String body;
-  final String time;
-  final bool isRead;
+  final NotificationModel notification;
+  final VoidCallback? onTap;
 
   const NotificationItemWidget({
     Key? key,
-    required this.title,
-    required this.body,
-    required this.time,
-    required this.isRead,
+    required this.notification,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -24,9 +22,7 @@ class NotificationItemWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: InkWell(
-        onTap: () {
-          print('Notification tapped: $title');
-        },
+        onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Row(
           textDirection: TextDirection.rtl, // Keep RTL for Arabic
@@ -36,11 +32,11 @@ class NotificationItemWidget extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFFE53E3E),
+                color: _getNotificationColor(notification.type),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
-                Icons.notifications,
+              child: Icon(
+                _getNotificationIcon(notification.type),
                 color: Colors.white,
                 size: 20,
               ),
@@ -54,17 +50,17 @@ class NotificationItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end, // align left
                 children: [
                   Text(
-                    title,
+                    notification.title,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight:
-                          isRead ? FontWeight.w500 : FontWeight.w600,
+                          notification.isRead ? FontWeight.w500 : FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    body,
+                    notification.body,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[600],
@@ -73,7 +69,7 @@ class NotificationItemWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    time,
+                    timego.format(notification.timestamp, locale: 'ar'),
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.deepOrange,
@@ -87,5 +83,31 @@ class NotificationItemWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _getNotificationColor(NotificationType type) {
+    switch (type) {
+      case NotificationType.message:
+        return const Color(0xFF4CAF50); // Green
+      case NotificationType.like:
+        return const Color(0xFFE53E3E); // Red
+      case NotificationType.follow:
+        return const Color(0xFF2196F3); // Blue
+      case NotificationType.comment:
+        return const Color(0xFFFF9800); // Orange
+    }
+  }
+
+  IconData _getNotificationIcon(NotificationType type) {
+    switch (type) {
+      case NotificationType.message:
+        return Icons.message;
+      case NotificationType.like:
+        return Icons.favorite;
+      case NotificationType.follow:
+        return Icons.person_add;
+      case NotificationType.comment:
+        return Icons.comment;
+    }
   }
 }

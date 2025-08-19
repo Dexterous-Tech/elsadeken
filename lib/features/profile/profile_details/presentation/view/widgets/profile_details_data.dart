@@ -280,7 +280,7 @@ class ProfileDetailsData extends StatelessWidget {
     if (state is GetProfileDetailsSuccess) {
       final children =
           state.profileDetailsResponseModel.data?.attribute?.children;
-      if (children == null || children == 0) return 'لا يوجد';
+      if (children == null || children == 0) return '0';
       return children.toString();
     }
     return 'لا يوجد';

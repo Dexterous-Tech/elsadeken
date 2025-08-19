@@ -172,6 +172,7 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: PersonCardWidget(
+                        onTap: () {},
                         personData: onlineMembers[index],
                       ),
                     );

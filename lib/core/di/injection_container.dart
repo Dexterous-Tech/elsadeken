@@ -17,6 +17,9 @@ import 'package:elsadeken/features/auth/verification_email/presentation/manager/
 import 'package:elsadeken/features/profile/about_us/data/data_source/about_us_data_source.dart';
 import 'package:elsadeken/features/profile/about_us/data/repo/abouts_us_repo.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/manager/about_us_cubit.dart';
+import 'package:elsadeken/features/profile/contact_us/data/data_source/contact_us_data_source.dart';
+import 'package:elsadeken/features/profile/contact_us/data/repo/contact_us_repo.dart';
+import 'package:elsadeken/features/profile/contact_us/presentation/manager/contact_us_cubit.dart';
 import 'package:elsadeken/features/profile/blog/data/datasources/blog_api.dart';
 import 'package:elsadeken/features/profile/blog/data/repository/blog_repo_impl.dart';
 import 'package:elsadeken/features/profile/blog/domain/repository/blog_repo.dart';
@@ -28,6 +31,9 @@ import 'package:elsadeken/features/profile/interests_list/presentation/manager/f
 import 'package:elsadeken/features/profile/manage_profile/data/data_source/manage_profile_data_source.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/repo/manage_profile_repo.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/features/profile/my_image/data/data_source/my_image_data_source.dart';
+import 'package:elsadeken/features/profile/my_image/data/repo/my_image_repo%20.dart';
+import 'package:elsadeken/features/profile/my_image/presentation/manager/my_image_cubit.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/data/data_source/interesting_list_data_source.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/data/repo/interesting_list_repo.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/interesting_list_cubit.dart';
@@ -49,6 +55,7 @@ import 'package:elsadeken/features/search/logic/repository/search_repository.dar
 import 'package:elsadeken/features/search/logic/repository/search_repository_impl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../../features/search/logic/use_cases/search_use_cases.dart';
 import '../../features/search/presentation/cubit/search_cubit.dart';
@@ -58,21 +65,15 @@ import '../networking/dio_factory.dart';
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
-  // Initialize Dio
+  // Initialize Dio using DioFactory
   final dio = await DioFactory.getDio();
+
+  // Register Dio as a singleton first
+  sl.registerSingleton<Dio>(dio);
 
   // Register ApiServices as a singleton
   sl.registerSingleton<ApiServices>(ApiServices.internal(dio));
-  // HTTP Client
-  sl.registerLazySingleton<Dio>(() => Dio(BaseOptions(
-        baseUrl: 'https://elsadkeen.sharetrip-ksa.com/api',
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
-        sendTimeout: const Duration(seconds: 15),
-        headers: {
-          'Accept': 'application/json',
-        },
-      )));
+
   // Repository
   sl.registerLazySingleton<SearchRepository>(
     () => SearchRepositoryImpl(sl<Dio>()),
@@ -135,6 +136,13 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<AboutsUsRepoInterface>(() => AboutsUsRepoImpl(sl()));
   sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
 
+  // contact us
+  sl.registerLazySingleton<ContactUsDataSource>(
+      () => ContactUsDataSource(sl()));
+  sl.registerLazySingleton<ContactUsRepoInterface>(
+      () => ContactUsRepoImplementation(sl()));
+  sl.registerFactory<ContactUsCubit>(() => ContactUsCubit(sl()));
+
   // profile
   sl.registerLazySingleton<ProfileDataSource>(() => ProfileDataSource(sl()));
   sl.registerLazySingleton<ProfileRepoInterface>(() => ProfileRepoImp(sl()));
@@ -172,4 +180,9 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<IgnoreUserRepoInterface>(
       () => IgnoreUserRepoImpl(sl()));
   sl.registerFactory<IgnoreUserCubit>(() => IgnoreUserCubit(sl()));
+
+  // My Image
+  sl.registerLazySingleton<MyImageDataSource>(() => MyImageDataSource(sl()));
+  sl.registerLazySingleton<MyImageRepoInterface>(() => MyImageRepoImp(sl()));
+  sl.registerFactory<MyImageCubit>(() => MyImageCubit(sl()));
 }

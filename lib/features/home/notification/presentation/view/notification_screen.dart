@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:elsadeken/core/networking/api_services.dart';
+import 'package:elsadeken/features/home/notification/data/datasources/notification_api_service.dart';
 import 'package:elsadeken/features/home/notification/presentation/view/widgets/empty_notification.dart';
 import 'package:elsadeken/features/home/notification/presentation/view/widgets/notification_list.dart';
-import 'package:elsadeken/features/home/notification/services/notification_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:elsadeken/features/home/notification/data/models/notification_model.dart';
 
@@ -15,33 +13,49 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  final FirebaseNotificationService _notificationService = FirebaseNotificationService(
-    firestore: FirebaseFirestore.instance,
-    messaging: FirebaseMessaging.instance,
-    auth: FirebaseAuth.instance,
-  );
-
-  late Stream<List<NotificationModel>> _notificationsStream;
+  late NotificationApiService _notificationService;
+  List<NotificationModel> _notifications = [];
   bool _isLoading = true;
   String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    _initializeNotifications();
+    // _initializeNotifications();
   }
 
   Future<void> _initializeNotifications() async {
     try {
-      _notificationsStream = _notificationService.getNotificationsStream();
-      await _notificationService.initializePushNotifications();
-      setState(() => _isLoading = false);
+      final apiService = await ApiServices.init();
+      _notificationService = NotificationApiServiceImpl(apiService);
+      await _loadNotifications();
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to initialize notifications';
+        _isLoading = false;
+      });
+      debugPrint('Notification initialization error: $e');
+    }
+  }
+
+  Future<void> _loadNotifications() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      final notifications = await _notificationService.getNotifications();
+      setState(() {
+        _notifications = notifications;
+        _isLoading = false;
+      });
     } catch (e) {
       setState(() {
         _errorMessage = 'Failed to load notifications';
         _isLoading = false;
       });
-      debugPrint('Notification initialization error: $e');
+      debugPrint('Load notifications error: $e');
     }
   }
 
@@ -98,29 +112,38 @@ class _NotificationScreenState extends State<NotificationScreen> {
       );
     }
 
-    return StreamBuilder<List<NotificationModel>>(
-      stream: _notificationsStream,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              'Error: ${snapshot.error}',
-              style: const TextStyle(color: Colors.red),
+    return RefreshIndicator(
+      onRefresh: _loadNotifications,
+      child: _notifications.isEmpty
+          ? const EmptyNotificationsWidget()
+          : NotificationListWidget(
+              notifications: _notifications,
+              onNotificationTap: _onNotificationTap,
             ),
-          );
-        }
-
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        final notifications = snapshot.data!;
-        
-        return notifications.isEmpty
-            ? const EmptyNotificationsWidget()
-            : NotificationListWidget();
-      },
     );
+  }
+
+  Future<void> _onNotificationTap(NotificationModel notification) async {
+    if (!notification.isRead) {
+      try {
+        await _notificationService
+            .markNotificationAsRead(int.parse(notification.id));
+
+        // Update local state
+        setState(() {
+          final index =
+              _notifications.indexWhere((n) => n.id == notification.id);
+          if (index != -1) {
+            _notifications[index] = notification.copyWith(isRead: true);
+          }
+        });
+      } catch (e) {
+        debugPrint('Failed to mark notification as read: $e');
+      }
+    }
+
+    // Handle navigation based on notification type
+    _handleNotificationNavigation(notification);
   }
 
   void _showOptionsMenu() {
@@ -178,7 +201,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   Future<void> _markAllAsRead() async {
     try {
-      await _notificationService.markAllAsRead();
+      await _notificationService.markAllNotificationsAsRead();
+
+      // Update local state
+      setState(() {
+        _notifications =
+            _notifications.map((n) => n.copyWith(isRead: true)).toList();
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم تحديد جميع الإشعارات كمقروءة')),
       );
@@ -193,6 +223,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Future<void> _clearAllNotifications() async {
     try {
       await _notificationService.clearAllNotifications();
+
+      // Update local state
+      setState(() {
+        _notifications.clear();
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم حذف جميع الإشعارات')),
       );
@@ -201,6 +237,28 @@ class _NotificationScreenState extends State<NotificationScreen> {
         const SnackBar(content: Text('فشل حذف الإشعارات')),
       );
       debugPrint('Clear all notifications error: $e');
+    }
+  }
+
+  void _handleNotificationNavigation(NotificationModel notification) {
+    // Handle navigation based on notification type
+    switch (notification.type) {
+      case NotificationType.message:
+        // Navigate to messages screen
+        print('Navigate to messages from: ${notification.senderId}');
+        break;
+      case NotificationType.like:
+        // Navigate to profile or likes screen
+        print('Navigate to likes from: ${notification.senderId}');
+        break;
+      case NotificationType.follow:
+        // Navigate to profile screen
+        print('Navigate to profile: ${notification.senderId}');
+        break;
+      case NotificationType.comment:
+        // Navigate to post/comment screen
+        print('Navigate to comment: ${notification.relatedPostId}');
+        break;
     }
   }
 }

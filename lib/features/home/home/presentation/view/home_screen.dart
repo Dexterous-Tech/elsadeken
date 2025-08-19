@@ -1,14 +1,42 @@
+import 'dart:async';
+
+import 'package:elsadeken/core/di/injection_container.dart';
+import 'package:elsadeken/core/networking/api_constants.dart';
+import 'package:elsadeken/core/networking/api_services.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.dart';
+
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
+import 'package:elsadeken/features/home/home/presentation/view/widgets/home_header.dart';
 import 'package:elsadeken/features/home/home/presentation/view/widgets/swipeable_card.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_body.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
+import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../members/members_section/view/members_screen.dart';
 import '../../../notification/presentation/view/notification_screen.dart';
 import '../../data/models/user_model.dart';
+
+class HomeScreenWrapper extends StatelessWidget {
+  const HomeScreenWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => sl<ProfileDetailsCubit>(),
+      child: Scaffold(
+        body: HomeScreen(),
+      ),
+    );
+  }
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,83 +46,172 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String country = 'مصر';
+  String city = 'القاهرة';
+  String name = 'اسم';
+
   int _currentIndex = 0;
-
-  List<UserModel> users = [
-    UserModel(
-      name: 'عمار محمد',
-      age: 23,
-      profession: 'محاسب',
-      location: 'الرياض',
-      imageUrl:
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-      matchPercentage: 94,
-      isOnline: true,
-    ),
-    UserModel(
-      name: 'أحمد علي',
-      age: 28,
-      profession: 'مهندس',
-      location: 'جدة',
-      imageUrl:
-          'https://plus.unsplash.com/premium_photo-1689977968861-9c91dbb16049?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      matchPercentage: 87,
-    ),
-    UserModel(
-      name: 'محمد سالم',
-      age: 26,
-      profession: 'طبيب',
-      location: 'الدمام',
-      imageUrl:
-          'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400',
-      matchPercentage: 92,
-    ),
-  ];
-
   List<UserModel> currentUsers = [];
+  bool isLoading = true;
+  String? errorMessage;
+  final TextEditingController _searchController = TextEditingController();
+  int currentPage = 1;
+  bool hasMore = true;
+
+  Timer? _debounce;
+
+  _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 600), () {
+      Navigator.pushNamed(
+        context,
+        AppRoutes.searchResultScreen,
+        arguments: context.read<SearchCubit>(),
+      );
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    currentUsers = List.from(users);
+    _loadMatchesUsers();
+    // _loadUserData();
+    // _loadUserData();
+
+    _focusNode.addListener(() {
+      setState(() {
+        showHistory = _focusNode.hasFocus && _searchController.text.isEmpty;
+        showSuggestions = _searchController.text.isNotEmpty;
+        if (_searchController.text.isNotEmpty) {}
+      });
+    });
   }
 
-  void _onSwipe(bool isLike) {
+  Future<void> _loadMatchesUsers({bool loadMore = false}) async {
+    if (loadMore && !hasMore) return;
+
+    try {
+      if (!loadMore) {
+        setState(() {
+          isLoading = true;
+          errorMessage = null;
+          currentUsers = [];
+        });
+      }
+
+      final apiService = await ApiServices.init();
+      final response = await apiService.get(
+        endpoint: ApiConstants.matchesUsers,
+        queryParameters: {'page': currentPage},
+        requiresAuth: true,
+      );
+
+      final data = response.data['data'] as List;
+      if (data.isEmpty && !loadMore) {
+        setState(() {
+          isLoading = false;
+          currentUsers = [];
+        });
+        return;
+      }
+
+      setState(() {
+        currentUsers.addAll(data.map((userJson) => UserModel(
+              //
+              id: userJson['id'],
+              name: userJson['name'],
+              age: userJson['age'],
+              profession: userJson['job'],
+              location: '${userJson['city']}, ${userJson['country']}',
+              imageUrl: userJson['image'],
+              matchPercentage: userJson['match_percentage'] is int
+                  ? userJson['match_percentage']
+                  : (userJson['match_percentage'] as double).round(),
+              isFavorite: userJson['is_favorite'] == 1,
+            )));
+
+        hasMore = response.data['links']['next'] != null;
+        if (hasMore) currentPage++;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Failed to load matches';
+        isLoading = false;
+      });
+    }
+  }
+
+  final FocusNode _focusNode = FocusNode();
+
+  List<String> filteredResults = [];
+  bool showHistory = false;
+  bool showSuggestions = false;
+
+  Future<void> _onSwipe(bool isLike) async {
     if (currentUsers.isEmpty) return;
 
-    final likedUser = currentUsers[0];
+    final swipedUser = currentUsers[0];
+    final tempUsers = List<UserModel>.from(currentUsers);
 
     setState(() {
       currentUsers.removeAt(0);
     });
 
-    if (isLike) {
+    try {
+      if (isLike) {
+        final apiService = await ApiServices.init();
+        context.read<ProfileDetailsCubit>().likeUser(swipedUser.id);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('تم الإعجاب!', textAlign: TextAlign.center),
+            backgroundColor: Colors.green,
+            duration: Duration(milliseconds: 800),
+          ),
+        );
+      } else {
+        // سوايب ليفت: مفيش أي API Call
+        print("User ${swipedUser.id} removed by swipe left");
+      }
+
+      if (currentUsers.length < 3 && hasMore) {
+        _loadMatchesUsers(loadMore: true);
+      }
+    } catch (e) {
+      print("fashal error: $e");
+      setState(() {
+        currentUsers = tempUsers;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('تم الإعجاب!', textAlign: TextAlign.center),
-          backgroundColor: Colors.green,
+          content: Text('فشل في تسجيل الإجراء', textAlign: TextAlign.center),
+          backgroundColor: Colors.red,
           duration: Duration(milliseconds: 800),
         ),
       );
-
-      // Future.delayed(Duration(milliseconds: 300), () {
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) => PersonDetailsView(
-      //         personId: likedUser.name,
-      //         imageUrl: likedUser.imageUrl,
-      //       ),
-      //     ),
-      //   );
-      // });
     }
   }
+
+  // Future<void> _loadUserData() async {
+  //   // final user = await LoginCubit.getUserData();
+  //   if (user != null) {
+  //     setState(() {
+  //       // city = user.city;
+  //       // country = user.country;
+  //       name = user.name;
+  //     });
+  //     print("Loaded user: ${user.name}, ${user.email}");
+  //   } else {
+  //     print("No user data found");
+  //   }
+  // }
 
   Widget buildHomeContent() {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 23, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 16.h),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,94 +219,38 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Column(
                 children: [
-                  // ✅ معلومات المستخدم والبحث
-                  Row(
-                    children: [
-                      GestureDetector(
-                        child: Container(
-                          width: 47,
-                          height: 47,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color(0xffFCF8F5),
-                          ),
-                          child: Center(
-                            child: Image.asset(
-                              'assets/images/home/home_notification.png',
-                              width: 22,
-                              height: 20,
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NotificationScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      Spacer(),
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            textDirection: TextDirection.rtl,
-                            children: [
-                              Text(
-                                'Hend Osama',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeightHelper.semiBold,
-                                ),
-                              ),
-                              Row(
-                                textDirection: TextDirection.rtl,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/home/home_location.png',
-                                    width: 15,
-                                    height: 18,
-                                  ),
-                                  SizedBox(width: 13),
-                                  Text(
-                                    'مصر القليوبية',
-                                    style: TextStyle(
-                                        color:
-                                            Color(0xff000000).withOpacity(0.87),
-                                        fontSize: 15,
-                                        fontWeight: FontWeightHelper.medium),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(width: 12),
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundImage: NetworkImage(
-                              'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                  BlocProvider(
+                    create: (context) => sl<ManageProfileCubit>(),
+                    child: HomeHeader(),
                   ),
-                  const SizedBox(height: 21),
+                  SizedBox(height: 21.h),
                   CustomTextFormField(
+                    focusNode: _focusNode,
+                    onChanged: (value) {
+                      context.read<SearchCubit>().updateUsername(value);
+                      _onSearchChanged(value);
+                    },
+                    // context.read<SearchCubit>().updateUsername(value);
+                    // Navigator.pushNamed(
+                    //   context,
+                    //   AppRoutes.searchResultScreen,
+                    //   arguments: context.read<SearchCubit>(),
+                    // );
+
                     hintText: '...بحث',
                     validator: (value) {},
-                    suffixIcon: Icon(
-                      Icons.search,
-                      color: Color(0xff949494),
-                      size: 19,
+                    suffixIcon: GestureDetector(
+                      onTap: () {},
+                      child: Icon(
+                        Icons.search,
+                        color: Color(0xff949494),
+                        size: 19,
+                      ),
                     ),
                     hintStyle: TextStyle(
                       fontWeight: FontWeightHelper.regular,
                       color: Color(0xff949494),
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontFamily: FontFamilyHelper.lamaSansArabic,
                     ),
                     border: OutlineInputBorder(
@@ -202,67 +263,87 @@ class _HomeScreenState extends State<HomeScreen> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Color(0xff949494),
-                        width: 1,
+                        width: 1.w,
                       ),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                 ],
               ),
-              currentUsers.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.favorite_outline,
-                              size: 80, color: Colors.grey[400]),
-                          SizedBox(height: 16),
-                          Text(
-                            'لا توجد مطابقات جديدة',
-                            style: TextStyle(
-                                fontSize: 18, color: Colors.grey[600]),
-                          ),
-                        ],
+              if (isLoading)
+                Center(child: CircularProgressIndicator())
+              else if (errorMessage != null)
+                Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      verticalSpace(150),
+                      Text(errorMessage!),
+                      ElevatedButton(
+                        onPressed: _loadMatchesUsers,
+                        child: Text('حاول مرة أخرى'),
                       ),
-                    )
-                  : SizedBox(
-                      height: 600, // يمكنك تعديلها حسب الحاجة
-                      child: Stack(
-                        children: currentUsers
-                            .asMap()
-                            .entries
-                            .map((entry) {
-                              final index = entry.key;
-                              final user = entry.value;
-
-                              final isTopCard = index == 0;
-                              final isSecondCard = index == 1;
-
-                              double scale = 1.0;
-                              double verticalOffset = 0.0;
-
-                              if (isSecondCard) {
-                                scale = 0.95;
-                                verticalOffset = 20;
-                              } else if (!isTopCard) {
-                                scale = 0.9;
-                                verticalOffset = 40;
-                              }
-
-                              return SwipeableCard(
-                                user: user,
-                                onSwipe: isTopCard ? _onSwipe : null,
-                                isTop: isTopCard,
-                                scale: scale,
-                                verticalOffset: verticalOffset,
-                              );
-                            })
-                            .toList()
-                            .reversed
-                            .toList(),
+                    ],
+                  ),
+                )
+              else if (currentUsers.isEmpty)
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    // crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(Icons.favorite_outline,
+                          size: 80.w, color: Colors.grey[400]),
+                      SizedBox(height: 16.h),
+                      Text(
+                        'لا توجد مطابقات جديدة',
+                        style:
+                            TextStyle(fontSize: 18.sp, color: Colors.grey[600]),
                       ),
-                    )
+                    ],
+                  ),
+                )
+              else
+                Container(
+                  height: 600.h,
+                  margin: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Stack(
+                    children: currentUsers
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                          final index = entry.key;
+                          final user = entry.value;
+
+                          final isTopCard = index == 0;
+                          final isSecondCard = index == 1;
+
+                          double scale = 1.0;
+                          double verticalOffset = 0.0.h;
+
+                          if (isSecondCard) {
+                            scale = 0.95;
+                            verticalOffset = 20.h;
+                          } else if (!isTopCard) {
+                            scale = 0.9;
+                            verticalOffset = 40.h;
+                          }
+
+                          return SwipeableCard(
+                            user: user,
+                            onSwipe: isTopCard ? _onSwipe : null,
+                            isTop: isTopCard,
+                            scale: scale,
+                            verticalOffset: verticalOffset,
+                          );
+                        })
+                        .toList()
+                        .reversed
+                        .toList(),
+                  ),
+                )
             ],
           ),
         ),
@@ -307,12 +388,12 @@ class _HomeScreenState extends State<HomeScreen> {
               _currentIndex == 3 ? Color(0xffD54B16) : Color(0xffFFB74D),
           unselectedLabelStyle: TextStyle(
               color: Color(0xffA0A4B0),
-              fontSize: 12,
+              fontSize: 12.sp,
               fontFamily: FontFamilyHelper.lamaSansArabic,
               fontWeight: FontWeightHelper.medium),
           selectedLabelStyle: TextStyle(
               color: Color(0xffFFB74D),
-              fontSize: 12,
+              fontSize: 12.sp,
               fontFamily: FontFamilyHelper.lamaSansArabic,
               fontWeight: FontWeightHelper.medium),
           items: [
@@ -324,7 +405,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               label: 'الرئيسية',
               activeIcon: Image.asset(
-                'assets/images/home/home_orange.png', // Active icon
+                'assets/images/home/home_orange.png',
                 width: 24.w,
                 height: 24.h,
               ),
@@ -337,7 +418,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               label: 'الرسائل',
               activeIcon: Image.asset(
-                'assets/images/home/message_orange.png', // Active icon
+                'assets/images/home/message_orange.png',
                 width: 24.w,
                 height: 24.h,
               ),
@@ -350,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               label: 'الاعضاء',
               activeIcon: Image.asset(
-                'assets/images/home/group_orange.png', // Active icon
+                'assets/images/home/group_orange.png',
                 width: 24.w,
                 height: 24.h,
               ),
@@ -363,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               label: 'الحساب',
               activeIcon: Image.asset(
-                'assets/images/home/profile_orange.png', // Active icon
+                'assets/images/home/profile_orange.png',
                 width: 24.w,
                 height: 24.h,
               ),
