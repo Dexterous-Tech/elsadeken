@@ -12,7 +12,6 @@ import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
 import 'package:elsadeken/features/home/home/presentation/view/widgets/swipeable_card.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_body.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
-import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
 import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

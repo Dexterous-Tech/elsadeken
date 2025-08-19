@@ -55,7 +55,7 @@ class NotificationModel {
     };
   }
 
-  // Create from JSON for future API integration
+  // Create from JSON for Firebase integration
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     return NotificationModel(
       id: json['id'] ?? '',
@@ -68,6 +68,25 @@ class NotificationModel {
       relatedPostId: json['relatedPostId'],
       additionalData: json['additionalData'] != null 
           ? Map<String, dynamic>.from(json['additionalData'])
+          : null,
+    );
+  }
+
+  // Create from API JSON response
+  factory NotificationModel.fromApiJson(Map<String, dynamic> json) {
+    return NotificationModel(
+      id: json['id']?.toString() ?? '',
+      title: json['title'] ?? '',
+      body: json['message'] ?? json['body'] ?? '',
+      timestamp: json['created_at'] != null 
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
+      isRead: json['is_read'] == true || json['read_at'] != null,
+      type: _parseNotificationType(json['type'] ?? 'message'),
+      senderId: json['sender_id']?.toString(),
+      relatedPostId: json['related_id']?.toString(),
+      additionalData: json['data'] != null 
+          ? Map<String, dynamic>.from(json['data'])
           : null,
     );
   }

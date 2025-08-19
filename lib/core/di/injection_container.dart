@@ -17,6 +17,9 @@ import 'package:elsadeken/features/auth/verification_email/presentation/manager/
 import 'package:elsadeken/features/profile/about_us/data/data_source/about_us_data_source.dart';
 import 'package:elsadeken/features/profile/about_us/data/repo/abouts_us_repo.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/manager/about_us_cubit.dart';
+import 'package:elsadeken/features/profile/contact_us/data/data_source/contact_us_data_source.dart';
+import 'package:elsadeken/features/profile/contact_us/data/repo/contact_us_repo.dart';
+import 'package:elsadeken/features/profile/contact_us/presentation/manager/contact_us_cubit.dart';
 import 'package:elsadeken/features/profile/blog/data/datasources/blog_api.dart';
 import 'package:elsadeken/features/profile/blog/data/repository/blog_repo_impl.dart';
 import 'package:elsadeken/features/profile/blog/domain/repository/blog_repo.dart';
@@ -137,6 +140,13 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<AboutUsDataSource>(() => AboutUsDataSource(sl()));
   sl.registerLazySingleton<AboutsUsRepoInterface>(() => AboutsUsRepoImpl(sl()));
   sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
+
+  // contact us
+  sl.registerLazySingleton<ContactUsDataSource>(
+      () => ContactUsDataSource(sl()));
+  sl.registerLazySingleton<ContactUsRepoInterface>(
+      () => ContactUsRepoImplementation(sl()));
+  sl.registerFactory<ContactUsCubit>(() => ContactUsCubit(sl()));
 
   // profile
   sl.registerLazySingleton<ProfileDataSource>(() => ProfileDataSource(sl()));

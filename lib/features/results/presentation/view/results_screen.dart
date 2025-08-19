@@ -1,3 +1,8 @@
+import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
+import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
@@ -24,34 +29,38 @@ class _SearchResultsViewState extends State<SearchResultsView> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          title: const Text('نتائج البحث', style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600)),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black, size: 20),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
-        body: SafeArea(
-          child: BlocBuilder<SearchCubit, SearchState>(
+        body: CustomProfileBody(
+          contentBody: BlocBuilder<SearchCubit, SearchState>(
             builder: (context, state) {
               if (state is SearchLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return CustomProfileBody(
+                    contentBody: Column(
+                  children: [
+                    ProfileHeader(title: 'نتائج البحث'),
+                    verticalSpace(42),
+                    Expanded(
+                        child:
+                            const Center(child: CircularProgressIndicator())),
+                  ],
+                ));
               } else if (state is SearchSuccess) {
                 final results = state.results;
                 return Column(
                   children: [
+                    ProfileHeader(title: 'نتائج البحث'),
+                    verticalSpace(42),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
                       color: Colors.white,
                       child: Text(
                         'عدد النتائج: ${results.length}',
                         textAlign: TextAlign.center,
-                        style: const TextStyle(color: Color(0xFFD4AF37), fontSize: 14, fontWeight: FontWeight.w500),
+                        style: const TextStyle(
+                            color: Color(0xFFD4AF37),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -61,6 +70,13 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                         itemBuilder: (context, index) {
                           final person = results[index];
                           return PersonCardWidget(
+                            onTap: () {
+                              // Debug: Print the person ID and its type
+                              print(
+                                  'Person ID before navigation: ${person.id} (type: ${person.id.runtimeType})');
+                              context.pushNamed(AppRoutes.profileDetailsScreen,
+                                  arguments: person.id);
+                            },
                             personData: PersonData(
                               name: person.name,
                               age: person.age,
@@ -77,10 +93,29 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                   ],
                 );
               } else if (state is SearchError) {
-                return Center(child: Text(state.message, style: const TextStyle(color: Colors.red)));
+                return CustomProfileBody(
+                    contentBody: Column(
+                  children: [
+                    ProfileHeader(title: 'نتائج البحث'),
+                    verticalSpace(42),
+                    Expanded(
+                        child: Center(
+                            child: Text(state.message,
+                                style: const TextStyle(color: Colors.red)))),
+                  ],
+                ));
               }
 
-              return const Center(child: Text("ابدأ البحث لعرض النتائج"));
+              return CustomProfileBody(
+                  contentBody: Column(
+                children: [
+                  ProfileHeader(title: 'نتائج البحث'),
+                  verticalSpace(42),
+                  Expanded(
+                      child:
+                          const Center(child: Text("ابدأ البحث لعرض النتائج"))),
+                ],
+              ));
             },
           ),
         ),
@@ -89,13 +124,12 @@ class _SearchResultsViewState extends State<SearchResultsView> {
   }
 }
 
-
 class PersonData {
   final String name;
   final int age;
   final String country;
   final String city;
-  final String location; 
+  final String location;
   final String profileImageUrl;
   final bool isOnline;
 

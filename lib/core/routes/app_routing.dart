@@ -90,8 +90,17 @@ class AppRouting {
       case AppRoutes.notificationScreen:
         return MaterialPageRoute(builder: (_) => NotificationScreen());
       case AppRoutes.profileDetailsScreen:
+        // Handle both int and string arguments for userId
+        int userId;
+        if (arguments is int) {
+          userId = arguments;
+        } else if (arguments is String) {
+          userId = int.tryParse(arguments) ?? 0;
+        } else {
+          userId = 0; // fallback
+        }
         return MaterialPageRoute(
-            builder: (_) => ProfileDetailsScreen(userId: arguments as int));
+            builder: (_) => ProfileDetailsScreen(userId: userId));
       case AppRoutes.profileAboutUsScreen:
         return MaterialPageRoute(builder: (_) => AboutUsScreen());
       case AppRoutes.profileExcellencePackageScreen:
