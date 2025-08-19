@@ -175,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget buildHomeContent() {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 23, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 16.h),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,8 +187,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       GestureDetector(
                         child: Container(
-                          width: 47,
-                          height: 47,
+                          width: 47.w,
+                          height: 47.h,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Color(0xffFCF8F5),
@@ -196,8 +196,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Center(
                             child: Image.asset(
                               'assets/images/home/home_notification.png',
-                              width: 22,
-                              height: 20,
+                              width: 22.w,
+                              height: 20.h,
                             ),
                           ),
                         ),
@@ -221,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 name,
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeightHelper.semiBold,
                                 ),
                               ),
@@ -230,8 +230,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   Image.asset(
                                     'assets/images/home/home_location.png',
-                                    width: 15,
-                                    height: 18,
+                                    width: 15.w,
+                                    height: 18.h,
                                   ),
                                   SizedBox(width: 13),
                                   Text(
@@ -239,16 +239,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                     style: TextStyle(
                                         color:
                                             Color(0xff000000).withOpacity(0.87),
-                                        fontSize: 15,
+                                        fontSize: 15.sp,
                                         fontWeight: FontWeightHelper.medium),
                                   ),
                                 ],
                               ),
                             ],
                           ),
-                          SizedBox(width: 12),
+                          SizedBox(width: 12.w),
                           CircleAvatar(
-                            radius: 20,
+                            radius: 20.r,
                             backgroundImage: NetworkImage(
                               'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
                             ),
@@ -257,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 21),
+                  SizedBox(height: 21.h),
                   CustomTextFormField(
                     hintText: '...بحث',
                     validator: (value) {},
@@ -269,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     hintStyle: TextStyle(
                       fontWeight: FontWeightHelper.regular,
                       color: Color(0xff949494),
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontFamily: FontFamilyHelper.lamaSansArabic,
                     ),
                     border: OutlineInputBorder(
@@ -282,12 +282,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Color(0xff949494),
-                        width: 1,
+                        width: 1.w,
                       ),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                 ],
               ),
               if (isLoading)
@@ -310,18 +310,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.favorite_outline,
-                          size: 80, color: Colors.grey[400]),
-                      SizedBox(height: 16),
+                          size: 80.w, color: Colors.grey[400]),
+                      SizedBox(height: 16.h),
                       Text(
                         'لا توجد مطابقات جديدة',
-                        style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        style:
+                            TextStyle(fontSize: 18.sp, color: Colors.grey[600]),
                       ),
                     ],
                   ),
                 )
               else
-                SizedBox(
-                  height: 600,
+                Container(
+                  height: 600.h,
+                  margin: EdgeInsets.symmetric(horizontal: 16.w),
                   child: Stack(
                     children: currentUsers
                         .asMap()
@@ -334,14 +336,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           final isSecondCard = index == 1;
 
                           double scale = 1.0;
-                          double verticalOffset = 0.0;
+                          double verticalOffset = 0.0.h;
 
                           if (isSecondCard) {
                             scale = 0.95;
-                            verticalOffset = 20;
+                            verticalOffset = 20.h;
                           } else if (!isTopCard) {
                             scale = 0.9;
-                            verticalOffset = 40;
+                            verticalOffset = 40.h;
                           }
 
                           return SwipeableCard(
@@ -401,12 +403,12 @@ class _HomeScreenState extends State<HomeScreen> {
               _currentIndex == 3 ? Color(0xffD54B16) : Color(0xffFFB74D),
           unselectedLabelStyle: TextStyle(
               color: Color(0xffA0A4B0),
-              fontSize: 12,
+              fontSize: 12.sp,
               fontFamily: FontFamilyHelper.lamaSansArabic,
               fontWeight: FontWeightHelper.medium),
           selectedLabelStyle: TextStyle(
               color: Color(0xffFFB74D),
-              fontSize: 12,
+              fontSize: 12.sp,
               fontFamily: FontFamilyHelper.lamaSansArabic,
               fontWeight: FontWeightHelper.medium),
           items: [
