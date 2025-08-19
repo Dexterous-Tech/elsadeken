@@ -74,15 +74,19 @@ class AppRouting {
           ),
         );
       case AppRoutes.searchResultScreen:
-      final searchCubit = setting.arguments as SearchCubit;
-      return MaterialPageRoute(
-        builder: (context) => BlocProvider.value(
-          value: searchCubit,
-          child: const SearchResultsView(),
-        ),
-      );
+        final searchCubit = setting.arguments as SearchCubit;
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider.value(
+            value: searchCubit,
+            child: const SearchResultsView(),
+          ),
+        );
       case AppRoutes.homeScreen:
-        return MaterialPageRoute(builder: (_) => HomeScreenWrapper());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => SearchCubit(sl<SearchUseCase>()),
+                  child: HomeScreenWrapper(),
+                ));
       case AppRoutes.notificationScreen:
         return MaterialPageRoute(builder: (_) => NotificationScreen());
       case AppRoutes.profileDetailsScreen:

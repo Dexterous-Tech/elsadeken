@@ -10,6 +10,7 @@ class SearchResultsView extends StatefulWidget {
   State<SearchResultsView> createState() => _SearchResultsViewState();
 }
 
+
 class _SearchResultsViewState extends State<SearchResultsView> {
   @override
   void initState() {

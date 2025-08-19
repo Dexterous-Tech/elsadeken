@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.dart';
 
 import 'package:elsadeken/core/theme/font_family_helper.dart';
@@ -9,6 +12,8 @@ import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
 import 'package:elsadeken/features/home/home/presentation/view/widgets/swipeable_card.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_body.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
+import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
+import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -51,11 +56,33 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPage = 1;
   bool hasMore = true;
 
+  Timer? _debounce;
+
+  _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 600), () {
+      Navigator.pushNamed(
+        context,
+        AppRoutes.searchResultScreen,
+        arguments: context.read<SearchCubit>(),
+      );
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _loadMatchesUsers();
     _loadUserData();
+
+    _focusNode.addListener(() {
+      setState(() {
+        showHistory = _focusNode.hasFocus && _searchController.text.isEmpty;
+        showSuggestions = _searchController.text.isNotEmpty;
+        if (_searchController.text.isNotEmpty) {}
+      });
+    });
   }
 
   Future<void> _loadMatchesUsers({bool loadMore = false}) async {
@@ -112,6 +139,12 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+
+  final FocusNode _focusNode = FocusNode();
+
+  List<String> filteredResults = [];
+  bool showHistory = false;
+  bool showSuggestions = false;
 
   Future<void> _onSwipe(bool isLike) async {
     if (currentUsers.isEmpty) return;
@@ -235,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   SizedBox(width: 13),
                                   Text(
-                                    '${country} ${city}',
+                                    '$country $city',
                                     style: TextStyle(
                                         color:
                                             Color(0xff000000).withOpacity(0.87),
@@ -259,12 +292,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 21.h),
                   CustomTextFormField(
+                    focusNode: _focusNode,
+                    onChanged: (value) {
+                      context.read<SearchCubit>().updateUsername(value);
+                      _onSearchChanged(value);
+                    },
+                    // context.read<SearchCubit>().updateUsername(value);
+                    // Navigator.pushNamed(
+                    //   context,
+                    //   AppRoutes.searchResultScreen,
+                    //   arguments: context.read<SearchCubit>(),
+                    // );
+
                     hintText: '...بحث',
                     validator: (value) {},
-                    suffixIcon: Icon(
-                      Icons.search,
-                      color: Color(0xff949494),
-                      size: 19,
+                    suffixIcon: GestureDetector(
+                      onTap: () {},
+                      child: Icon(
+                        Icons.search,
+                        color: Color(0xff949494),
+                        size: 19,
+                      ),
                     ),
                     hintStyle: TextStyle(
                       fontWeight: FontWeightHelper.regular,
