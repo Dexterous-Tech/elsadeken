@@ -33,72 +33,79 @@ class OnBoardingBody extends StatelessWidget {
           ),
         ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset(AppImages.splashImage, width: 135.w, height: 263.h),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'تعارف جاد للمسلمين والمسلمات',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.font40BlackSemiBoldPlexSans
-                    .copyWith(letterSpacing: 0, wordSpacing: 0),
-              ),
-              Text(
-                'لكل من يبحث عن شريك حياة على أساس من القيم والاحترام',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.font26BlackRegularPlexSans
-                    .copyWith(letterSpacing: 0, wordSpacing: 0),
-              ),
-              verticalSpace(30),
-              SizedBox(
-                width: 219.w,
-                child: CustomElevatedButton(
-                  height: 50.25.h,
-                  onPressed: () {
-                    // oathDialog(context: context);
-                    context.pushNamed(AppRoutes.loginScreen);
-                  },
-                  // verticalPadding: 17.h,
-                  buttonWidget: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 15.586699222654454.w,
-                        height: 15.586699222654454.h,
-                        child: Icon(
-                          Icons.arrow_back_ios_new,
-                          size: 8.646721693936545.sp,
-                          color: AppColors.white,
+      child: CustomScrollView(
+        slivers: [
+          SliverFillRemaining(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(AppImages.splashImage, width: 135.w, height: 263.h),
+                Spacer(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'تعارف جاد للمسلمين والمسلمات',
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.font40BlackSemiBoldPlexSans
+                          .copyWith(letterSpacing: 0, wordSpacing: 0),
+                    ),
+                    Text(
+                      'لكل من يبحث عن شريك حياة على أساس من القيم والاحترام',
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.font26BlackRegularPlexSans
+                          .copyWith(letterSpacing: 0, wordSpacing: 0),
+                    ),
+                    verticalSpace(30),
+                    SizedBox(
+                      width: 219.w,
+                      child: CustomElevatedButton(
+                        height: 50.25.h,
+                        onPressed: () {
+                          // oathDialog(context: context);
+                          context.pushNamed(AppRoutes.loginScreen);
+                        },
+                        // verticalPadding: 17.h,
+                        buttonWidget: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 15.586699222654454.w,
+                              height: 15.586699222654454.h,
+                              child: Icon(
+                                Icons.arrow_back_ios_new,
+                                size: 8.646721693936545.sp,
+                                color: AppColors.white,
+                              ),
+                            ),
+                            horizontalSpace(10),
+                            Text(
+                              'الدخول الان',
+                              style: AppTextStyles.font16CulturedMediumPlexSans
+                                  .copyWith(color: AppColors.white),
+                            ),
+                          ],
                         ),
                       ),
-                      horizontalSpace(10),
-                      Text(
-                        'الدخول الان',
+                    ),
+                    verticalSpace(7),
+                    GestureDetector(
+                      onTap: () {
+                        oathDialog(context: context);
+                      },
+                      child: Text(
+                        'سجل الان',
                         style: AppTextStyles.font16CulturedMediumPlexSans
                             .copyWith(color: AppColors.white),
                       ),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              ),
-              verticalSpace(7),
-              GestureDetector(
-                onTap: () {
-                  oathDialog(context: context);
-                },
-                child: Text(
-                  'سجل الان',
-                  style: AppTextStyles.font16CulturedMediumPlexSans
-                      .copyWith(color: AppColors.white),
-                ),
-              )
-            ],
+              ],
+            ),
           ),
         ],
       ),

@@ -2,7 +2,6 @@ import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
-import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.dart';
 
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
@@ -57,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadMatchesUsers();
-    _loadUserData();
+    // _loadUserData();
   }
 
   Future<void> _loadMatchesUsers({bool loadMore = false}) async {
@@ -160,19 +159,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _loadUserData() async {
-    final user = await LoginCubit.getUserData();
-    if (user != null) {
-      setState(() {
-        // city = user.city;
-        // country = user.country;
-        name = user.name;
-      });
-      print("Loaded user: ${user.name}, ${user.email}");
-    } else {
-      print("No user data found");
-    }
-  }
+  // Future<void> _loadUserData() async {
+  //   // final user = await LoginCubit.getUserData();
+  //   if (user != null) {
+  //     setState(() {
+  //       // city = user.city;
+  //       // country = user.country;
+  //       name = user.name;
+  //     });
+  //     print("Loaded user: ${user.name}, ${user.email}");
+  //   } else {
+  //     print("No user data found");
+  //   }
+  // }
 
   Widget buildHomeContent() {
     return SafeArea(
@@ -243,6 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(Icons.favorite_outline,
                           size: 80.w, color: Colors.grey[400]),

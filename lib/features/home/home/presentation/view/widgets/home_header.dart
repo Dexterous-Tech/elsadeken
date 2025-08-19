@@ -66,7 +66,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                             height: 18.h,
                           ),
                           SizedBox(width: 13.w),
-                          Text('$country $city',
+                          Text('$country, $city',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textDirection: TextDirection.rtl,

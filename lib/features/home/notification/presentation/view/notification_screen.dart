@@ -21,7 +21,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeNotifications();
+    // _initializeNotifications();
   }
 
   Future<void> _initializeNotifications() async {
@@ -121,17 +121,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
               onNotificationTap: _onNotificationTap,
             ),
     );
-
   }
 
   Future<void> _onNotificationTap(NotificationModel notification) async {
     if (!notification.isRead) {
       try {
-        await _notificationService.markNotificationAsRead(int.parse(notification.id));
-        
+        await _notificationService
+            .markNotificationAsRead(int.parse(notification.id));
+
         // Update local state
         setState(() {
-          final index = _notifications.indexWhere((n) => n.id == notification.id);
+          final index =
+              _notifications.indexWhere((n) => n.id == notification.id);
           if (index != -1) {
             _notifications[index] = notification.copyWith(isRead: true);
           }
@@ -140,7 +141,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         debugPrint('Failed to mark notification as read: $e');
       }
     }
-    
+
     // Handle navigation based on notification type
     _handleNotificationNavigation(notification);
   }
@@ -201,12 +202,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Future<void> _markAllAsRead() async {
     try {
       await _notificationService.markAllNotificationsAsRead();
-      
+
       // Update local state
       setState(() {
-        _notifications = _notifications.map((n) => n.copyWith(isRead: true)).toList();
+        _notifications =
+            _notifications.map((n) => n.copyWith(isRead: true)).toList();
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم تحديد جميع الإشعارات كمقروءة')),
       );
@@ -221,12 +223,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Future<void> _clearAllNotifications() async {
     try {
       await _notificationService.clearAllNotifications();
-      
+
       // Update local state
       setState(() {
         _notifications.clear();
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم حذف جميع الإشعارات')),
       );

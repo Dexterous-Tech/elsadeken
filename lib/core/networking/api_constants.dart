@@ -39,10 +39,12 @@ class ApiConstants {
 
   // notifications
   static String notifications = '/user/notifications';
-  static String markNotificationAsRead(int id) => '/user/notifications/$id/mark-read';
-  static String markAllNotificationsAsRead = '/user/notifications/mark-all-read';
+  static String markNotificationAsRead(int id) =>
+      '/user/notifications/$id/mark-read';
+  static String markAllNotificationsAsRead =
+      '/user/notifications/mark-all-read';
   static String clearAllNotifications = '/user/notifications/clear-all';
-  static String updateFcmToken = '/user/fcm-token';
+  static String updateFcmToken = '/user/update-fcmtoken';
 
   static const String defaultProfileImage =
       'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';

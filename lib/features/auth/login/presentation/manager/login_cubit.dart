@@ -1,6 +1,6 @@
-import 'dart:convert';
 import 'dart:developer';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/networking/dio_factory.dart';
@@ -37,12 +37,57 @@ class LoginCubit extends Cubit<LoginState> {
       },
       (loginResponseModel) async {
         await saveUserToken(loginResponseModel.data!.token);
-        await saveUserData(loginResponseModel.data!);
         log("save token ");
+
+        // After successful login, save FCM token silently
+        await saveFcmTokenSilently();
+
         emit(LoginSuccess(loginResponseModel: loginResponseModel));
       },
     );
   }
+
+  Future<void> saveFcmTokenSilently() async {
+    try {
+      await saveTokeFromFirebase();
+      String token = await SharedPreferencesHelper.getSecuredString(
+          SharedPreferencesKey.deviceToken);
+      var response = await loginRepo.updateFcm(token);
+
+      response.fold(
+        (error) {
+          log("FCM token save failed: ${error.displayMessage}");
+          // Don't emit error state to avoid showing error to user
+        },
+        (fcmResponseModel) async {
+          log("FCM token saved successfully");
+          // Don't emit success state to avoid showing success to user
+        },
+      );
+    } catch (e) {
+      log("Error saving FCM token: $e");
+      // Don't emit error state to avoid showing error to user
+    }
+  }
+
+  // void updateFcm() async {
+  //   emit(FcmLoading());
+  //
+  //   await saveTokeFromFirebase();
+  //   String token = await SharedPreferencesHelper.getSecuredString(
+  //       SharedPreferencesKey.deviceToken);
+  //   var response = await loginRepo.updateFcm(token);
+  //
+  //   response.fold(
+  //     (error) {
+  //       emit(FcmFailure(error.displayMessage));
+  //     },
+  //     (fcmResponseModel) async {
+  //       log("save fcm token ");
+  //       emit(FcmSuccess(fcmResponseModel));
+  //     },
+  //   );
+  // }
 
   Future<void> saveUserToken(String token) async {
     // Clear previous data
@@ -58,49 +103,12 @@ class LoginCubit extends Cubit<LoginState> {
     await DioFactory.setTokenIntoHeaderAfterLogin(token);
   }
 
-  //
-  //
-  //
-  Future<void> saveUserData(LoginDataModel user) async {
-    print("Saving user data...");
-
-    // Convert user model to JSON string
-    final userJson = user.toJson();
-    final userString = jsonEncode(userJson);
-    print("User JSON string: $userString");
-
-    // Clear previous data
-    await Future.wait([
-      SharedPreferencesHelper.deleteSecuredString(
-        SharedPreferencesKey.userDataKey,
-      ),
-    ]);
-
-    // Save to SharedPreferences
+  Future<void> saveTokeFromFirebase() async {
+    await SharedPreferencesHelper.deleteSecuredString(
+        SharedPreferencesKey.deviceToken);
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    String? token = await messaging.getToken();
     await SharedPreferencesHelper.setSecuredString(
-      SharedPreferencesKey.userDataKey, // make sure this key exists
-      userString,
-    );
-
-    print(
-        "User data saved successfully under key: ${SharedPreferencesKey.userDataKey}");
-  }
-
-  static Future<LoginDataModel?> getUserData() async {
-    print("Fetching user data...");
-
-    final userString = await SharedPreferencesHelper.getSecuredString(
-      SharedPreferencesKey.userDataKey,
-    );
-    print("Fetched string: $userString");
-
-    if (userString != null) {
-      final Map<String, dynamic> userJson = jsonDecode(userString);
-      print("Decoded JSON: $userJson");
-      return LoginDataModel.fromJson(userJson);
-    }
-
-    print("No user data found");
-    return null;
+        SharedPreferencesKey.deviceToken, token!);
   }
 }

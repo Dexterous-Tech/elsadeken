@@ -26,6 +26,8 @@ class LoginBody extends StatelessWidget {
           errorDialog(context: context, error: state.errorMessage);
         } else if (state is LoginSuccess) {
           context.pop();
+          // Show success dialog and navigate to home
+          // FCM token saving happens automatically in the background
           successDialog(
               context: context,
               message: state.loginResponseModel.message,
@@ -33,6 +35,8 @@ class LoginBody extends StatelessWidget {
                 context.pushNamedAndRemoveUntil(AppRoutes.homeScreen);
               });
         }
+        // Note: FcmLoading, FcmSuccess, and FcmFailure states are not handled here
+        // because we don't want to show FCM-related dialogs to the user
       },
       child: LoginForm(),
     ));
