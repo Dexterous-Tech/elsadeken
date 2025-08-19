@@ -1,3 +1,5 @@
+import 'package:elsadeken/core/networking/api_constants.dart';
+import 'package:elsadeken/core/networking/api_services.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
@@ -19,75 +21,120 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-
-  List<UserModel> users = [
-    UserModel(
-      name: 'عمار محمد',
-      age: 23,
-      profession: 'محاسب',
-      location: 'الرياض',
-      imageUrl:
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-      matchPercentage: 94,
-      isOnline: true,
-    ),
-    UserModel(
-      name: 'أحمد علي',
-      age: 28,
-      profession: 'مهندس',
-      location: 'جدة',
-      imageUrl:
-          'https://plus.unsplash.com/premium_photo-1689977968861-9c91dbb16049?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      matchPercentage: 87,
-    ),
-    UserModel(
-      name: 'محمد سالم',
-      age: 26,
-      profession: 'طبيب',
-      location: 'الدمام',
-      imageUrl:
-          'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400',
-      matchPercentage: 92,
-    ),
-  ];
-
   List<UserModel> currentUsers = [];
+  bool isLoading = true;
+  String? errorMessage;
+  final TextEditingController _searchController = TextEditingController();
+  int currentPage = 1;
+  bool hasMore = true;
 
   @override
   void initState() {
     super.initState();
-    currentUsers = List.from(users);
+    _loadMatchesUsers();
   }
 
-  void _onSwipe(bool isLike) {
+  Future<void> _loadMatchesUsers({bool loadMore = false}) async {
+    if (loadMore && !hasMore) return;
+
+    try {
+      if (!loadMore) {
+        setState(() {
+          isLoading = true;
+          errorMessage = null;
+          currentUsers = [];
+        });
+      }
+
+      final apiService = await ApiServices.init();
+      final response = await apiService.get(
+        endpoint: ApiConstants.matchesUsers,
+        queryParameters: {'page': currentPage},
+        requiresAuth: true,
+      );
+
+      final data = response.data['data'] as List;
+      if (data.isEmpty && !loadMore) {
+        setState(() {
+          isLoading = false;
+          currentUsers = [];
+        });
+        return;
+      }
+
+      setState(() {
+        currentUsers.addAll(data.map((userJson) => UserModel(
+              id: userJson['id'].toString(),
+              name: userJson['name'],
+              age: userJson['age'],
+              profession: userJson['job'],
+              location: '${userJson['city']}, ${userJson['country']}',
+              imageUrl: userJson['image'],
+              matchPercentage: userJson['match_percentage'] is int 
+                  ? userJson['match_percentage'] 
+                  : (userJson['match_percentage'] as double).round(),
+              isFavorite: userJson['is_favorite'] == 1,
+            )));
+
+        hasMore = response.data['links']['next'] != null;
+        if (hasMore) currentPage++;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Failed to load matches';
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _onSwipe(bool isLike) async {
     if (currentUsers.isEmpty) return;
 
-    final likedUser = currentUsers[0];
+    final swipedUser = currentUsers[0];
+    final tempUsers = List<UserModel>.from(currentUsers);
 
     setState(() {
       currentUsers.removeAt(0);
     });
 
-    if (isLike) {
+    try {
+      final apiService = await ApiServices.init();
+      if (isLike) {
+        await apiService.post(
+          endpoint: ApiConstants.likeUser(swipedUser.id),
+          requestBody: {},
+          requiresAuth: true,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('تم الإعجاب!', textAlign: TextAlign.center),
+            backgroundColor: Colors.green,
+            duration: Duration(milliseconds: 800),
+          ),
+        );
+      } else {
+        await apiService.post(
+          endpoint: ApiConstants.ignoreUser(swipedUser.id),
+          requestBody: {},
+          requiresAuth: true,
+        );
+      }
+
+      if (currentUsers.length < 3 && hasMore) {
+        _loadMatchesUsers(loadMore: true);
+      }
+    } catch (e) {
+      setState(() {
+        currentUsers = tempUsers;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('تم الإعجاب!', textAlign: TextAlign.center),
-          backgroundColor: Colors.green,
+          content: Text('فشل في تسجيل الإجراء', textAlign: TextAlign.center),
+          backgroundColor: Colors.red,
           duration: Duration(milliseconds: 800),
         ),
       );
-
-      // Future.delayed(Duration(milliseconds: 300), () {
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) => PersonDetailsView(
-      //         personId: likedUser.name,
-      //         imageUrl: likedUser.imageUrl,
-      //       ),
-      //     ),
-      //   );
-      // });
     }
   }
 
@@ -102,7 +149,6 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Column(
                 children: [
-                  // ✅ معلومات المستخدم والبحث
                   Row(
                     children: [
                       GestureDetector(
@@ -157,8 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Text(
                                     'مصر القليوبية',
                                     style: TextStyle(
-                                        color:
-                                            Color(0xff000000).withOpacity(0.87),
+                                        color: Color(0xff000000).withOpacity(0.87),
                                         fontSize: 15,
                                         fontWeight: FontWeightHelper.medium),
                                   ),
@@ -210,59 +255,74 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 16),
                 ],
               ),
-              currentUsers.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.favorite_outline,
-                              size: 80, color: Colors.grey[400]),
-                          SizedBox(height: 16),
-                          Text(
-                            'لا توجد مطابقات جديدة',
-                            style: TextStyle(
-                                fontSize: 18, color: Colors.grey[600]),
-                          ),
-                        ],
+              if (isLoading)
+                Center(child: CircularProgressIndicator())
+              else if (errorMessage != null)
+                Center(
+                  child: Column(
+                    children: [
+                      Text(errorMessage!),
+                      ElevatedButton(
+                        onPressed: _loadMatchesUsers,
+                        child: Text('حاول مرة أخرى'),
                       ),
-                    )
-                  : SizedBox(
-                      height: 600, // يمكنك تعديلها حسب الحاجة
-                      child: Stack(
-                        children: currentUsers
-                            .asMap()
-                            .entries
-                            .map((entry) {
-                              final index = entry.key;
-                              final user = entry.value;
-
-                              final isTopCard = index == 0;
-                              final isSecondCard = index == 1;
-
-                              double scale = 1.0;
-                              double verticalOffset = 0.0;
-
-                              if (isSecondCard) {
-                                scale = 0.95;
-                                verticalOffset = 20;
-                              } else if (!isTopCard) {
-                                scale = 0.9;
-                                verticalOffset = 40;
-                              }
-
-                              return SwipeableCard(
-                                user: user,
-                                onSwipe: isTopCard ? _onSwipe : null,
-                                isTop: isTopCard,
-                                scale: scale,
-                                verticalOffset: verticalOffset,
-                              );
-                            })
-                            .toList()
-                            .reversed
-                            .toList(),
+                    ],
+                  ),
+                )
+              else if (currentUsers.isEmpty)
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.favorite_outline,
+                          size: 80, color: Colors.grey[400]),
+                      SizedBox(height: 16),
+                      Text(
+                        'لا توجد مطابقات جديدة',
+                        style: TextStyle(
+                            fontSize: 18, color: Colors.grey[600]),
                       ),
-                    )
+                    ],
+                  ),
+                )
+              else
+                SizedBox(
+                  height: 600,
+                  child: Stack(
+                    children: currentUsers
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                          final index = entry.key;
+                          final user = entry.value;
+
+                          final isTopCard = index == 0;
+                          final isSecondCard = index == 1;
+
+                          double scale = 1.0;
+                          double verticalOffset = 0.0;
+
+                          if (isSecondCard) {
+                            scale = 0.95;
+                            verticalOffset = 20;
+                          } else if (!isTopCard) {
+                            scale = 0.9;
+                            verticalOffset = 40;
+                          }
+
+                          return SwipeableCard(
+                            user: user,
+                            onSwipe: isTopCard ? _onSwipe : null,
+                            isTop: isTopCard,
+                            scale: scale,
+                            verticalOffset: verticalOffset,
+                          );
+                        })
+                        .toList()
+                        .reversed
+                        .toList(),
+                  ),
+                )
             ],
           ),
         ),
@@ -324,7 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               label: 'الرئيسية',
               activeIcon: Image.asset(
-                'assets/images/home/home_orange.png', // Active icon
+                'assets/images/home/home_orange.png',
                 width: 24.w,
                 height: 24.h,
               ),
@@ -337,7 +397,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               label: 'الرسائل',
               activeIcon: Image.asset(
-                'assets/images/home/message_orange.png', // Active icon
+                'assets/images/home/message_orange.png',
                 width: 24.w,
                 height: 24.h,
               ),
@@ -350,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               label: 'الاعضاء',
               activeIcon: Image.asset(
-                'assets/images/home/group_orange.png', // Active icon
+                'assets/images/home/group_orange.png',
                 width: 24.w,
                 height: 24.h,
               ),
@@ -363,7 +423,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               label: 'الحساب',
               activeIcon: Image.asset(
-                'assets/images/home/profile_orange.png', // Active icon
+                'assets/images/home/profile_orange.png',
                 width: 24.w,
                 height: 24.h,
               ),

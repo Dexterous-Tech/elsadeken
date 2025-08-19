@@ -73,6 +73,22 @@ class SearchCubit extends Cubit<SearchState> {
     emit(SearchFilterUpdated(_currentFilter));
   }
 
+  void updateMaritalStatus(String maritalStatus) {
+  _currentFilter = _currentFilter.copyWith(maritalStatus: maritalStatus);
+  emit(SearchFilterUpdated(_currentFilter));
+}
+
+  void updateTypeOfMarriage(String typeOfMarriage) {
+  _currentFilter = _currentFilter.copyWith(typeOfMarriage: typeOfMarriage);
+  emit(SearchFilterUpdated(_currentFilter));
+}
+
+  void updateSkinColor(String skinColor) {
+  _currentFilter = _currentFilter.copyWith(skinColor: skinColor);
+  emit(SearchFilterUpdated(_currentFilter));
+}
+
+
   Future<void> performSearch({int page = 1}) async {
     emit(SearchLoading());
     try {

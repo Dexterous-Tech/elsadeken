@@ -14,7 +14,6 @@ class _SearchResultsViewState extends State<SearchResultsView> {
   @override
   void initState() {
     super.initState();
-    // استدعاء البحث مباشرة عند تحميل الصفحة
     context.read<SearchCubit>().performSearch();
   }
 

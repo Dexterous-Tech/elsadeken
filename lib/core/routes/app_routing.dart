@@ -74,7 +74,13 @@ class AppRouting {
           ),
         );
       case AppRoutes.searchResultScreen:
-        return MaterialPageRoute(builder: (_) => SearchResultsView());
+      final searchCubit = setting.arguments as SearchCubit;
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider.value(
+          value: searchCubit,
+          child: const SearchResultsView(),
+        ),
+      );
       case AppRoutes.homeScreen:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case AppRoutes.notificationScreen:

@@ -30,4 +30,10 @@ class ApiConstants {
   static String interestingList = '/user/liked/people-list';
   static String ignoreUserList = '/user/ignore/list';
   static String userDetails(int userId) => '/user/show-one-user/$userId';
+
+  //search-home
+  static String matchesUsers = '/user/home/matches-users';
+
+  static const String defaultProfileImage =
+      'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';
 }
