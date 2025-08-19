@@ -32,8 +32,8 @@ class _HomeHeaderState extends State<HomeHeader> {
             if (state is ManageProfileSuccess) {
               final profileData = state.myProfileResponseModel.data;
               final name = profileData?.name ?? '';
-              final country = profileData?.attribute?.country ?? '';
-              final city = profileData?.attribute?.city ?? '';
+              final country = profileData?.attribute?.country ?? 'لا يوجد';
+              final city = profileData?.attribute?.city ?? 'لا يوجد';
               final image = profileData?.image ?? '';
 
               return Row(
@@ -69,6 +69,8 @@ class _HomeHeaderState extends State<HomeHeader> {
                           Text('$country $city',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
+                              textDirection: TextDirection.rtl,
+                              textAlign: TextAlign.right,
                               style: AppTextStyles.font15BistreSemiBoldLamaSans
                                   .copyWith(
                                       color: AppColors.black.withValues(

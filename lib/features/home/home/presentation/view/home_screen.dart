@@ -1,6 +1,7 @@
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.dart';
 
 import 'package:elsadeken/core/theme/font_family_helper.dart';
@@ -226,7 +227,10 @@ class _HomeScreenState extends State<HomeScreen> {
               else if (errorMessage != null)
                 Center(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      verticalSpace(150),
                       Text(errorMessage!),
                       ElevatedButton(
                         onPressed: _loadMatchesUsers,

@@ -24,14 +24,14 @@ class ManageProfileCubit extends Cubit<ManageProfileState> {
     });
   }
 
-   void deleteProfile() async {
+  void deleteProfile() async {
     emit(DeleteProfileLoading());
     var response = await manageProfileRepoInterface.deleteAccount();
     response.fold((l) {
       emit(DeleteProfileFailure(l.displayMessage));
-    }, (deleteProfile)async {
+    }, (deleteProfile) async {
       await SharedPreferencesHelper.deleteSharedPreferKeys();
-     await DioFactory.resetDio();
+      // await DioFactory.resetDio();
       emit(DeleteProfileSuccess(deleteProfile));
     });
   }
