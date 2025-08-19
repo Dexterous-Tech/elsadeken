@@ -33,6 +33,7 @@ class ApiConstants {
 
   //search-home
   static String matchesUsers = '/user/home/matches-users';
+  static String personDetails(int id) => '/user/show-one-user/$id';
 
   static const String defaultProfileImage =
       'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';

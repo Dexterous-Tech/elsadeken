@@ -1,15 +1,13 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/features/home/person_details/data/models/person_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PersonInfoSheet extends StatefulWidget {
-  final String personId;
+  final PersonModel person;
 
-  const PersonInfoSheet({
-    Key? key,
-    required this.personId,
-  }) : super(key: key);
+  const PersonInfoSheet({Key? key, required this.person}) : super(key: key);
 
   @override
   State<PersonInfoSheet> createState() => _PersonInfoSheetState();
@@ -57,7 +55,6 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                     _buildDataTable(),
                     const SizedBox(height: 30),
                     Center(child: _buildActionButtons()),
-                    // verticalSpace(30),
                   ],
                 ),
               ),
@@ -79,15 +76,6 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
           curve: Curves.easeInOut,
         );
       },
-      onPanUpdate: (details) {
-        _controller.animateTo(
-          (_controller.size -
-                  (details.delta.dy / MediaQuery.of(context).size.height))
-              .clamp(0.4, 0.95),
-          duration: const Duration(milliseconds: 1),
-          curve: Curves.easeOut,
-        );
-      },
       child: Center(
         child: Container(
           width: 60.w,
@@ -103,6 +91,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildPersonHeader() {
+    final p = widget.person;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -126,14 +115,14 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                'Ammar muahmmed',
+                p.name,
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
-                'السعودية,الرياض',
+                '${p.attribute.country}, ${p.attribute.city}',
                 style: TextStyle(
                   fontSize: 14.sp,
                   color: Colors.grey,
@@ -148,10 +137,11 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildAboutSection() {
-    return const Column(
+    final p = widget.person;
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
+        const Text(
           'عن الشخص',
           style: TextStyle(
             fontSize: 16,
@@ -159,10 +149,10 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
           ),
           textDirection: TextDirection.rtl,
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
-          'integer vulputate mi vel molestie rutrum. Duis faucibus lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dignissim suscipit blandit mauris cursus. Vestibulum accumsan rhoncus bibendum. In mauris elit, tempor ut lorem ut, cursus lacinia phasellus sed dolor leo.',
-          style: TextStyle(
+          p.attribute.aboutMe,
+          style: const TextStyle(
             fontSize: 14,
             color: Colors.grey,
             height: 1.5,
@@ -173,6 +163,12 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildLogTable() {
+    final p = widget.person;
+    final data = [
+      {'label': 'مسجل منذ', 'value': p.createdAt},
+      {'label': 'تاريخ آخر زيادة', 'value': 'متواجد حاليا'},
+    ];
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -190,14 +186,13 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: AppColors.yellowrec, // تغيير اللون حسب احتياجاتك
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
+              color: AppColors.yellowrec,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
             ),
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Padding(
               padding: EdgeInsets.only(right: 15),
-              child: Text(
+              child: const Text(
                 'تاريخ السجل',
                 style: TextStyle(
                   color: Colors.white,
@@ -212,10 +207,41 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 8),
-                ..._buildLogData(),
-              ],
+              children: data.map((item) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 150.w,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: AppColors.lighterOrange,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          item['value']!,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 46, 34, 30),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        item['label']!,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
           ),
         ],
@@ -224,6 +250,19 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildDataTable() {
+    final p = widget.person;
+    final data = [
+      {'label': 'الجنسيه', 'value': p.attribute.nationality},
+      {'label': 'الاقامه', 'value': p.attribute.city},
+      {'label': 'المدينه', 'value': p.attribute.city},
+      {'label': 'نوع الزواج', 'value': p.attribute.typeOfMarriage},
+      {'label': 'الحاله الاجتماعيه', 'value': p.attribute.maritalStatus},
+      {'label': 'عدد الاطفال', 'value': p.attribute.children.toString()},
+      {'label': 'لون البشره', 'value': p.attribute.skinColor},
+      {'label': 'الطول', 'value': "${p.attribute.height} سم"},
+      {'label': 'الوزن', 'value': "${p.attribute.weight} كجم"},
+    ];
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -242,9 +281,8 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: AppColors.yellowrec, // تغيير اللون حسب احتياجاتك
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
+              color: AppColors.yellowrec,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
             ),
             alignment: Alignment.centerRight,
             child: const Text(
@@ -261,10 +299,41 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 8),
-                ..._buildDataRows(),
-              ],
+              children: data.map((item) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 150.w,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: AppColors.lighterOrange,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          item['value']!,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 46, 34, 30),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        item['label']!,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
           ),
         ],
@@ -272,103 +341,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
     );
   }
 
-  List<Widget> _buildLogData() {
-    final data = [
-      {'label': 'مسجل منذ', 'value': 'منذ يوم'},
-      {'label': 'تاريخ آخر زيادة', 'value': 'متواجد حاليا'},
-    ];
-
-    return data.map((item) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              width: 150.w,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: AppColors.lighterOrange,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                textAlign: TextAlign.center,
-                item['value']!,
-                style: const TextStyle(
-                  color: Color.fromARGB(255, 46, 34, 30),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            Text(
-              item['label']!,
-              style: const TextStyle(
-                color: Colors.black87,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      );
-    }).toList();
-  }
-
-  List<Widget> _buildDataRows() {
-    final data = [
-      {'label': 'الجنسيه', 'value': 'سعودي'},
-      {'label': 'الاقامه', 'value': 'الرياض'},
-      {'label': 'المدينه', 'value': 'الرياض'},
-      {'label': 'نوع الزواج', 'value': 'زوجه اولي'},
-      {'label': 'الحاله الاجتماعيه', 'value': 'مطلق'},
-      {'label': 'عدد الاطفال', 'value': 'لا يوجد'},
-      {'label': 'لون البشره', 'value': 'حنطي مايل للبياض'},
-      {'label': 'الطول', 'value': '190 سنتي'},
-      {'label': 'الوزن', 'value': '80 كيلو'},
-    ];
-
-    return data.map((item) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              width: 150.w,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: AppColors.lighterOrange,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                textAlign: TextAlign.center,
-                item['value']!,
-                style: const TextStyle(
-                  color: Color.fromARGB(255, 46, 34, 30),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            Text(
-              item['label']!,
-              style: const TextStyle(
-                color: Colors.black87,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      );
-    }).toList();
-  }
-
   Widget _buildActionButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         GestureDetector(
           onTap: () {

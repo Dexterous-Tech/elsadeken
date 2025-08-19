@@ -1,6 +1,6 @@
 // user_model.dart
 class UserModel {
-  final String id; // Added ID field
+  final int id; // Added ID field
   final String name;
   final int age;
   final String profession;

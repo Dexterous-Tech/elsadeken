@@ -4,7 +4,6 @@ import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/features/home/person_details/view/person_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:http/http.dart' as http;
 
 import '../../../data/models/user_model.dart';
 
@@ -36,18 +35,11 @@ class _SwipeableCardState extends State<SwipeableCard>
 
   Offset _dragOffset = Offset.zero;
   bool _isDragging = false;
-
-  Future<void> debugImage(String url) async {
-  final response = await http.get(Uri.parse(url));
-  print("Status: ${response.statusCode}");
-  print("Content-Type: ${response.headers['content-type']}");
-  print("Length: ${response.bodyBytes.length}");
-}
+  bool _isProcessingAction = false;
 
   @override
   void initState() {
     super.initState();
-      debugImage(widget.user.imageUrl);
     _animationController = AnimationController(
       duration: Duration(milliseconds: 300),
       vsync: this,
@@ -69,19 +61,19 @@ class _SwipeableCardState extends State<SwipeableCard>
   }
 
   void _onPanStart(DragStartDetails details) {
-    if (!widget.isTop) return;
+    if (!widget.isTop || _isProcessingAction) return;
     _isDragging = true;
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
-    if (!widget.isTop || !_isDragging) return;
+    if (!widget.isTop || !_isDragging || _isProcessingAction) return;
     setState(() {
       _dragOffset += Offset(details.delta.dx, 0);
     });
   }
 
   void _onPanEnd(DragEndDetails details) {
-    if (!widget.isTop || !_isDragging) return;
+    if (!widget.isTop || !_isDragging || _isProcessingAction) return;
     _isDragging = false;
 
     final threshold = MediaQuery.of(context).size.width * 0.3;
@@ -95,6 +87,12 @@ class _SwipeableCardState extends State<SwipeableCard>
   }
 
   void _animateSwipe(bool isLike) {
+    if (_isProcessingAction) return;
+    
+    setState(() {
+      _isProcessingAction = true;
+    });
+
     final screenWidth = MediaQuery.of(context).size.width;
     _slideAnimation = Tween<Offset>(
       begin: _dragOffset,
@@ -111,6 +109,7 @@ class _SwipeableCardState extends State<SwipeableCard>
       _animationController.reset();
       setState(() {
         _dragOffset = Offset.zero;
+        _isProcessingAction = false;
       });
     });
   }
@@ -135,7 +134,7 @@ class _SwipeableCardState extends State<SwipeableCard>
   }
 
   void _handleButtonPress(bool isLike) {
-    if (!widget.isTop) return;
+    if (!widget.isTop || _isProcessingAction) return;
     _animateSwipe(isLike);
   }
 
@@ -164,15 +163,17 @@ class _SwipeableCardState extends State<SwipeableCard>
               onPanUpdate: _onPanUpdate,
               onPanEnd: _onPanEnd,
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PersonDetailsView(
-                      personId: widget.user.name,
-                      imageUrl: widget.user.imageUrl,
+                if (!_isProcessingAction) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PersonDetailsView(
+                        personId: widget.user.id,
+                        imageUrl: widget.user.imageUrl,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
               child: Transform.translate(
                 offset: cardOffset,
@@ -200,91 +201,127 @@ class _SwipeableCardState extends State<SwipeableCard>
                           height: 420.h,
                           child: Stack(
                             children: [
-                          Positioned.fill(
-                            child: Image.network(
-  widget.user.imageUrl,
-  fit: BoxFit.cover,
-  errorBuilder: (context, error, stackTrace) {
-    print("Image.network error: $error");
-    return Container(
-      color: Colors.grey[200],
-      child: Icon(Icons.error, color: Colors.red),
-    );
-  },
-)
-
-
-
-                        ),
-                              Positioned(
-                                top: 20,
-                                left: 5,
-                                right: 5,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Center(
-                                      child: Container(
-                                        width: 137.w,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 14.5.w,
-                                          vertical: 11.h,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffDBAE48),
-                                          borderRadius:
-                                              BorderRadius.circular(8).r,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            'تطابق بنسبة${widget.user.matchPercentage}%',
-                                            textDirection: TextDirection.rtl,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14.sp,
-                                                fontWeight:
-                                                    FontWeightHelper.semiBold,
-                                                fontFamily: FontFamilyHelper
-                                                    .lamaSansArabic),
+                              Positioned.fill(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8).r,
+                                  child: widget.user.imageUrl.isNotEmpty
+                                      ? CachedNetworkImage(
+                                          imageUrl: widget.user.imageUrl,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => Container(
+                                            color: Colors.grey[200],
+                                            child: Center(
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor: AlwaysStoppedAnimation<Color>(
+                                                  Color(0xffFFB74D),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) => Container(
+                                            color: Colors.grey[200],
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.person,
+                                                    size: 60,
+                                                    color: Colors.grey[400],
+                                                  ),
+                                                  SizedBox(height: 8),
+                                                  Text(
+                                                    'لا يمكن تحميل الصورة',
+                                                    style: TextStyle(
+                                                      color: Colors.grey[600],
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          color: Colors.grey[200],
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.person,
+                                              size: 60,
+                                              color: Colors.grey[400],
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                ),
+                              ),
+                            Positioned(
+                              top: 14.h,
+                              left: 0,
+                              right: 0, 
+                              child: Center( 
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                    vertical: 6.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffDBAE48),
+                                    borderRadius: BorderRadius.circular(8).r,
+                                  ),
+                                  child: Text(
+                                    'تطابق بنسبة ${widget.user.matchPercentage}%',
+                                    textDirection: TextDirection.rtl,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeightHelper.semiBold,
+                                      fontFamily: FontFamilyHelper.lamaSansArabic,
                                     ),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                              Positioned(
+                                bottom: 14.h,
+                                left: 14.w,
+                                right: 14.w,
+                                child: Column(
+                                  children: [
                                     SizedBox(height: 250.h),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Container(
-                                        width: 250,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 26.5.w,
-                                          vertical: 11.h,
-                                        ),
-                                        constraints: BoxConstraints(
-                                          maxWidth: 250, 
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffDBAE48),
-                                          borderRadius: BorderRadius.circular(15).r,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            widget.user.location,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeightHelper.medium,
-                                              fontFamily: FontFamilyHelper.lamaSansArabic,
+                                          width: 250,
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 26.5.w,
+                                            vertical: 11.h,
+                                          ),
+                                          constraints: BoxConstraints(
+                                            maxWidth: 250, 
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xffDBAE48),
+                                            borderRadius: BorderRadius.circular(15).r,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              widget.user.location,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeightHelper.medium,
+                                                fontFamily: FontFamilyHelper.lamaSansArabic,
+                                              ),
+                                              softWrap: true, 
+                                              overflow: TextOverflow.visible, 
                                             ),
-                                            softWrap: true, 
-                                            overflow: TextOverflow.visible, 
                                           ),
                                         ),
-                                      ),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -371,7 +408,19 @@ class _SwipeableCardState extends State<SwipeableCard>
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                // TODO: Implement messaging functionality
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'سيتم إضافة ميزة الرسائل قريباً',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    backgroundColor: Colors.blue,
+                                    duration: Duration(milliseconds: 800),
+                                  ),
+                                );
+                              },
                               child: Container(
                                 width: 44.w,
                                 height: 44.h,

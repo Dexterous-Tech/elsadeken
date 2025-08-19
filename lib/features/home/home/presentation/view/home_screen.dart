@@ -1,16 +1,37 @@
+import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
+import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.dart';
+
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
 import 'package:elsadeken/features/home/home/presentation/view/widgets/swipeable_card.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_body.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../members/members_section/view/members_screen.dart';
 import '../../../notification/presentation/view/notification_screen.dart';
 import '../../data/models/user_model.dart';
+
+class HomeScreenWrapper extends StatelessWidget {
+  const HomeScreenWrapper({super.key});
+
+@override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => sl<ProfileDetailsCubit>(),
+      child: Scaffold(
+        body: HomeScreen(),
+      ),
+    );
+  }
+}
+
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +41,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  String country = 'مصر';
+  String city = 'القاهرة';
+  String name = 'اسم';
+
   int _currentIndex = 0;
   List<UserModel> currentUsers = [];
   bool isLoading = true;
@@ -32,6 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadMatchesUsers();
+    _loadUserData();
+
   }
 
   Future<void> _loadMatchesUsers({bool loadMore = false}) async {
@@ -43,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
           isLoading = true;
           errorMessage = null;
           currentUsers = [];
-        });
+        }); 
       }
 
       final apiService = await ApiServices.init();
@@ -63,8 +91,8 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       setState(() {
-        currentUsers.addAll(data.map((userJson) => UserModel(
-              id: userJson['id'].toString(),
+        currentUsers.addAll(data.map((userJson) => UserModel( // 
+              id: userJson['id'],
               name: userJson['name'],
               age: userJson['age'],
               profession: userJson['job'],
@@ -89,54 +117,65 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _onSwipe(bool isLike) async {
-    if (currentUsers.isEmpty) return;
+  if (currentUsers.isEmpty) return;
 
-    final swipedUser = currentUsers[0];
-    final tempUsers = List<UserModel>.from(currentUsers);
+  final swipedUser = currentUsers[0];
+  final tempUsers = List<UserModel>.from(currentUsers);
 
-    setState(() {
-      currentUsers.removeAt(0);
-    });
+  setState(() {
+    currentUsers.removeAt(0);
+  });
 
-    try {
+  try {
+    if (isLike) {
       final apiService = await ApiServices.init();
-      if (isLike) {
-        await apiService.post(
-          endpoint: ApiConstants.likeUser(swipedUser.id),
-          requestBody: {},
-          requiresAuth: true,
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('تم الإعجاب!', textAlign: TextAlign.center),
-            backgroundColor: Colors.green,
-            duration: Duration(milliseconds: 800),
-          ),
-        );
-      } else {
-        await apiService.post(
-          endpoint: ApiConstants.ignoreUser(swipedUser.id),
-          requestBody: {},
-          requiresAuth: true,
-        );
-      }
+      context.read<ProfileDetailsCubit>().likeUser(swipedUser.id.toString());
 
-      if (currentUsers.length < 3 && hasMore) {
-        _loadMatchesUsers(loadMore: true);
-      }
-    } catch (e) {
-      setState(() {
-        currentUsers = tempUsers;
-      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('فشل في تسجيل الإجراء', textAlign: TextAlign.center),
-          backgroundColor: Colors.red,
+          content: Text('تم الإعجاب!', textAlign: TextAlign.center),
+          backgroundColor: Colors.green,
           duration: Duration(milliseconds: 800),
         ),
       );
+    } else {
+      // سوايب ليفت: مفيش أي API Call
+      print("User ${swipedUser.id} removed by swipe left");
     }
+
+    if (currentUsers.length < 3 && hasMore) {
+      _loadMatchesUsers(loadMore: true);
+    }
+  } catch (e) {
+    print("fashal error: $e");
+    setState(() {
+      currentUsers = tempUsers;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('فشل في تسجيل الإجراء', textAlign: TextAlign.center),
+        backgroundColor: Colors.red,
+        duration: Duration(milliseconds: 800),
+      ),
+    );
   }
+}
+
+
+Future<void> _loadUserData() async {
+  final user = await LoginCubit.getUserData();
+  if (user != null) {
+    setState(() {
+      // city = user.city;
+      // country = user.country;
+      name = user.name;
+    });
+    print("Loaded user: ${user.name}, ${user.email}");
+  } else {
+    print("No user data found");
+  }
+}
+
 
   Widget buildHomeContent() {
     return SafeArea(
@@ -181,10 +220,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
-                            textDirection: TextDirection.rtl,
+                          //  textDirection: TextDirection.rtl,
                             children: [
                               Text(
-                                'Hend Osama',
+                                name, 
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,
@@ -201,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   SizedBox(width: 13),
                                   Text(
-                                    'مصر القليوبية',
+                                    '${country} ${city}',
                                     style: TextStyle(
                                         color: Color(0xff000000).withOpacity(0.87),
                                         fontSize: 15,
