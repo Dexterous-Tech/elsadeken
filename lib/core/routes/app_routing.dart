@@ -82,7 +82,11 @@ class AppRouting {
           ),
         );
       case AppRoutes.homeScreen:
-        return MaterialPageRoute(builder: (_) => HomeScreenWrapper());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => SearchCubit(sl<SearchUseCase>()),
+                  child: HomeScreenWrapper(),
+                ));
       case AppRoutes.notificationScreen:
         return MaterialPageRoute(builder: (_) => NotificationScreen());
       case AppRoutes.profileDetailsScreen:
