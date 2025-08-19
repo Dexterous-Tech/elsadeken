@@ -2,9 +2,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/entities/search_filter.dart';
-import '../../domain/entities/user_profile.dart';
-import '../../logic/use_cases/search_use_cases.dart';
+import 'package:elsadeken/features/search/domain/entities/search_filter.dart';
+import 'package:elsadeken/features/search/domain/entities/user_profile.dart';
+import 'package:elsadeken/features/search/logic/use_cases/search_use_cases.dart';
 
 part 'search_state.dart';
 
@@ -74,29 +74,28 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   void updateMaritalStatus(String maritalStatus) {
-  _currentFilter = _currentFilter.copyWith(maritalStatus: maritalStatus);
-  emit(SearchFilterUpdated(_currentFilter));
-}
+    _currentFilter = _currentFilter.copyWith(maritalStatus: maritalStatus);
+    emit(SearchFilterUpdated(_currentFilter));
+  }
 
   void updateTypeOfMarriage(String typeOfMarriage) {
-  _currentFilter = _currentFilter.copyWith(typeOfMarriage: typeOfMarriage);
-  emit(SearchFilterUpdated(_currentFilter));
-}
+    _currentFilter = _currentFilter.copyWith(typeOfMarriage: typeOfMarriage);
+    emit(SearchFilterUpdated(_currentFilter));
+  }
 
   void updateSkinColor(String skinColor) {
-  _currentFilter = _currentFilter.copyWith(skinColor: skinColor);
-  emit(SearchFilterUpdated(_currentFilter));
-}
-
+    _currentFilter = _currentFilter.copyWith(skinColor: skinColor);
+    emit(SearchFilterUpdated(_currentFilter));
+  }
 
   Future<void> performSearch({int page = 1}) async {
     emit(SearchLoading());
     try {
-      final results = await searchUseCase.searchUsers(_currentFilter, page: page);
+      final results =
+          await searchUseCase.searchUsers(_currentFilter, page: page);
       emit(SearchSuccess(results));
     } catch (e) {
       emit(SearchError(e.toString()));
     }
   }
-
 }

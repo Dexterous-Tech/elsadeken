@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/features/search/logic/repository/search_repository.dart';
-import '../../domain/entities/search_filter.dart';
-import '../../domain/entities/user_profile.dart';
+import 'package:elsadeken/features/search/domain/entities/search_filter.dart';
+import 'package:elsadeken/features/search/domain/entities/user_profile.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
   final Dio dio;
