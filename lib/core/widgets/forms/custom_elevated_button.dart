@@ -53,7 +53,7 @@ class CustomElevatedButton extends StatelessWidget {
                   // stops: [0.65, 0.5],
                   colors: [
                     AppColors.sunray,
-                    AppColors.giantsOrange.withValues(alpha: 1.3),
+                    AppColors.giantsOrange.withValues(alpha: 1.4),
                   ],
                 )
               : null,

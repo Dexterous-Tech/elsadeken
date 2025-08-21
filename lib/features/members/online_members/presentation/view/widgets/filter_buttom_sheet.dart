@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:elsadeken/core/networking/api_services.dart';
+import 'package:elsadeken/core/networking/api_constants.dart';
+import 'package:elsadeken/core/di/injection_container.dart';
 
 class FilterBottomSheet extends StatefulWidget {
   const FilterBottomSheet({
@@ -10,16 +13,10 @@ class FilterBottomSheet extends StatefulWidget {
 }
 
 class _FilterBottomSheetState extends State<FilterBottomSheet> {
-
-  final List<String> _countryOptions = const [
-    'الكل',
-    'الاردن',
-    'الامارات',
-    'الجزائر',
-    'السعوديه',
-  ];
-
+  List<_Country> _countries = const [];
   int _selectedCountryIndex = 0;
+  bool _isLoadingCountries = true;
+  
 
   
   static const Color kMuted = Color(0xFF9E9E9E);
@@ -33,6 +30,52 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       Color(0xFFF0852E),
     ],
   );
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCountries();
+  }
+
+  Future<void> _loadCountries() async {
+    try {
+      final api = sl<ApiServices>();
+      final res = await api.get(endpoint: ApiConstants.listCountries, requiresAuth: false);
+      final raw = res.data;
+      List list;
+      if (raw is List) {
+        list = raw;
+      } else if (raw is Map && raw['data'] is List) {
+        list = raw['data'] as List;
+      } else if (raw is Map && raw['data'] is Map && raw['data']['countries'] is List) {
+        list = raw['data']['countries'] as List;
+      } else {
+        list = const [];
+      }
+      final parsed = list
+          .map((e) {
+            final map = e as Map<String, dynamic>;
+            final id = (map['id'] ?? map['country_id']) as int?;
+            final name = (map['name_ar'] ?? map['name'] ?? map['title'] ?? map['country_name_ar'] ?? '').toString();
+            if (id == null || name.isEmpty) return null;
+            return _Country(id: id, name: name);
+          })
+          .whereType<_Country>()
+          .toList();
+      setState(() {
+        _countries = [const _Country(id: 0, name: 'الكل'), ...parsed];
+        _isLoadingCountries = false;
+      });
+    } catch (_) {
+      // fallback to just All
+      setState(() {
+        _countries = const [
+          _Country(id: 0, name: 'الكل'),
+        ];
+        _isLoadingCountries = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,12 +113,19 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _Section(
-                        title: 'فلتره بواسطه الدوله',
-                        options: _countryOptions,
-                        selectedIndex: _selectedCountryIndex,
-                        onSelect: (i) => setState(() => _selectedCountryIndex = i),
-                      ),
+                      
+                      if (_isLoadingCountries)
+                        const Center(child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24),
+                          child: CircularProgressIndicator(),
+                        ))
+                      else
+                        _Section(
+                          title: 'فلتره بواسطه الدوله',
+                          options: _countries.map((e) => e.name).toList(),
+                          selectedIndex: _selectedCountryIndex,
+                          onSelect: (i) => setState(() => _selectedCountryIndex = i),
+                        ),
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -90,7 +140,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         label: 'فلتره',
                         gradient: _applyGradient,
                         onTap: () {
-                          Navigator.of(context).maybePop();
+                          final selected = (_selectedCountryIndex >= 0 && _selectedCountryIndex < _countries.length)
+                              ? _countries[_selectedCountryIndex]
+                              : const _Country(id: 0, name: 'الكل');
+                          Navigator.of(context).maybePop({
+                            'id': selected.id == 0 ? null : selected.id,
+                            'name': selected.name,
+                          });
                         },
                       ),
                     ),
@@ -294,4 +350,10 @@ class _OutlinedActionButton extends StatelessWidget {
       ),
     );
   }
+}
+
+class _Country {
+  final int id;
+  final String name;
+  const _Country({required this.id, required this.name});
 }

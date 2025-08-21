@@ -20,16 +20,35 @@ class PersonModel {
   });
 
   factory PersonModel.fromJson(Map<String, dynamic> json) {
-    return PersonModel(
-      id: json['id'],
-      name: json['name'] ?? '',
-      email: json['email'] ?? '',
-      phone: json['phone'] ?? '',
-      gender: json['gender'] ?? '',
-      image: json['image'] ?? '',
-      createdAt: json['created_at'] ?? '',
-      attribute: Attribute.fromJson(json['attribute']),
-    );
+    try {
+      print("Parsing PersonModel from JSON: $json");
+
+      // Check if required fields exist
+      if (json['id'] == null) {
+        throw Exception("Person ID is required but not found in JSON");
+      }
+
+      if (json['attribute'] == null) {
+        throw Exception("Person attribute is required but not found in JSON");
+      }
+
+      return PersonModel(
+        id: json['id'] is int
+            ? json['id']
+            : int.tryParse(json['id'].toString()) ?? 0,
+        name: json['name']?.toString() ?? '',
+        email: json['email']?.toString() ?? '',
+        phone: json['phone']?.toString() ?? '',
+        gender: json['gender']?.toString() ?? '',
+        image: json['image']?.toString() ?? '',
+        createdAt: json['created_at']?.toString() ?? '',
+        attribute: Attribute.fromJson(json['attribute']),
+      );
+    } catch (e) {
+      print("Error parsing PersonModel: $e");
+      print("JSON that caused error: $json");
+      rethrow;
+    }
   }
 }
 
@@ -83,29 +102,47 @@ class Attribute {
   });
 
   factory Attribute.fromJson(Map<String, dynamic> json) {
-    return Attribute(
-      nationality: json['nationality'] ?? '',
-      city: json['city'] ?? '',
-      country: json['country'] ?? '',
-      skinColor: json['skin_color'] ?? '',
-      healthCondition: json['health_condition'] ?? '',
-      physique: json['physique'] ?? '',
-      qualification: json['qualification'] ?? '',
-      financialSituation: json['financial_situation'] ?? '',
-      maritalStatus: json['marital_status'] ?? '',
-      typeOfMarriage: json['type_of_marriage'] ?? '',
-      age: json['age'] ?? 0,
-      children: json['children'] ?? 0,
-      weight: json['weight'] ?? 0,
-      height: json['height'] ?? 0,
-      religiousCommitment: json['religious_commitment'] ?? '',
-      prayer: json['prayer'] ?? '',
-      smoking: json['smoking'] ?? '',
-      hijab: json['hijab'] ?? '',
-      job: json['job'] ?? '',
-      income: json['income'] ?? 0,
-      lifePartner: json['life_partner'] ?? '',
-      aboutMe: json['about_me'] ?? '',
-    );
+    try {
+      print("Parsing Attribute from JSON: $json");
+
+      return Attribute(
+        nationality: json['nationality']?.toString() ?? '',
+        city: json['city']?.toString() ?? '',
+        country: json['country']?.toString() ?? '',
+        skinColor: json['skin_color']?.toString() ?? '',
+        healthCondition: json['health_condition']?.toString() ?? '',
+        physique: json['physique']?.toString() ?? '',
+        qualification: json['qualification']?.toString() ?? '',
+        financialSituation: json['financial_situation']?.toString() ?? '',
+        maritalStatus: json['marital_status']?.toString() ?? '',
+        typeOfMarriage: json['type_of_marriage']?.toString() ?? '',
+        age: json['age'] is int
+            ? json['age']
+            : int.tryParse(json['age']?.toString() ?? '0') ?? 0,
+        children: json['children'] is int
+            ? json['children']
+            : int.tryParse(json['children']?.toString() ?? '0') ?? 0,
+        weight: json['weight'] is int
+            ? json['weight']
+            : int.tryParse(json['weight']?.toString() ?? '0') ?? 0,
+        height: json['height'] is int
+            ? json['height']
+            : int.tryParse(json['height']?.toString() ?? '0') ?? 0,
+        religiousCommitment: json['religious_commitment']?.toString() ?? '',
+        prayer: json['prayer']?.toString() ?? '',
+        smoking: json['smoking']?.toString() ?? '',
+        hijab: json['hijab']?.toString() ?? '',
+        job: json['job']?.toString() ?? '',
+        income: json['income'] is int
+            ? json['income']
+            : int.tryParse(json['income']?.toString() ?? '0') ?? 0,
+        lifePartner: json['life_partner']?.toString() ?? '',
+        aboutMe: json['about_me']?.toString() ?? '',
+      );
+    } catch (e) {
+      print("Error parsing Attribute: $e");
+      print("JSON that caused error: $json");
+      rethrow;
+    }
   }
 }

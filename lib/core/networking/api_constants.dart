@@ -38,14 +38,18 @@ class ApiConstants {
   static String personDetails(int id) => '/user/show-one-user/$id';
 
   // notifications
-  static String notifications = '/user/notifications';
-  static String markNotificationAsRead(int id) =>
-      '/user/notifications/$id/mark-read';
-  static String markAllNotificationsAsRead =
-      '/user/notifications/mark-all-read';
-  static String clearAllNotifications = '/user/notifications/clear-all';
+  static String getNotifications = '/user/get-notifications';
+  static String countNotifications = '/user/get-count-unread-notifications';
   static String updateFcmToken = '/user/update-fcmtoken';
 
   static const String defaultProfileImage =
       'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';
+
+  // members
+  static String distinguishedMembers = '/user/members/distinguished';
+  static String healthConditionMembers = '/user/members/health-condition';
+  static String newMembers({int? countryId}) =>
+      '/user/members/latest${countryId != null ? '?country_id=$countryId' : ''}';
+  static String visitorsMembers = '/user/members/visitors';
+  static String onlineMembers = '/user/members/online';
 }

@@ -1,113 +1,76 @@
+import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/widgets/custom_image_network.dart';
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timego;
-import '../../../data/models/notification_model.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import '../../../data/model/notification_model.dart';
 
 class NotificationItemWidget extends StatelessWidget {
   final NotificationModel notification;
-  final VoidCallback? onTap;
 
   const NotificationItemWidget({
     Key? key,
     required this.notification,
-    this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 255, 253, 251).withOpacity(0.2),
-        borderRadius: BorderRadius.circular(12),
+        color: notification.readAt == null
+            ? Color(0xffE0A25E).withValues(alpha: 0.1)
+            : Color(0xffFFFAFC),
       ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Row(
-          textDirection: TextDirection.rtl, // Keep RTL for Arabic
-          children: [
-            /// 👉 ICON on the right
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: _getNotificationColor(notification.type),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                _getNotificationIcon(notification.type),
-                color: Colors.white,
-                size: 20,
-              ),
-            ),
+      child: Row(
+        textDirection: TextDirection.rtl, // Keep RTL for Arabic
+        children: [
+          /// 👉 ICON on the right
+          CustomImageNetwork(
+            image: notification.icon ?? '',
+          ),
 
-            const SizedBox(width: 10),
+          SizedBox(width: 10.w),
 
-            /// 👉 TEXT on the left
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end, // align left
-                children: [
-                  Text(
-                    notification.title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight:
-                          notification.isRead ? FontWeight.w500 : FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    notification.body,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                      height: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    timego.format(notification.timestamp, locale: 'ar'),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.deepOrange,
-                    ),
+          /// 👉 TEXT on the left
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end, // align left
+              children: [
+                Text(
+                  notification.title,
+                  style: AppTextStyles.font14BlackSemiBoldLamaSans,
+                  textAlign: TextAlign.right,
+                  textDirection: TextDirection.rtl,
+                ),
+                verticalSpace(4),
+                RichText(
                     textAlign: TextAlign.right,
-                  ),
-                ],
-              ),
+                    textDirection: TextDirection.rtl,
+                    text: TextSpan(children: [
+                      TextSpan(
+                          text: '${notification.body} ',
+                          style: AppTextStyles.font14JetRegularLamaSans
+                              .copyWith(color: Color(0xff404040))),
+                      TextSpan(
+                          text: '${notification.userName} ',
+                          style: AppTextStyles.font14JetRegularLamaSans
+                              .copyWith(color: Color(0xff74370A))),
+                    ])),
+                verticalSpace(6),
+                Text(
+                  timeago.format(notification.createdAt, locale: 'ar'),
+                  style: AppTextStyles.font12JetRegularLamaSans
+                      .copyWith(color: Color(0xffFF6700)),
+                  textAlign: TextAlign.right,
+                  textDirection: TextDirection.rtl,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
-  }
-
-  Color _getNotificationColor(NotificationType type) {
-    switch (type) {
-      case NotificationType.message:
-        return const Color(0xFF4CAF50); // Green
-      case NotificationType.like:
-        return const Color(0xFFE53E3E); // Red
-      case NotificationType.follow:
-        return const Color(0xFF2196F3); // Blue
-      case NotificationType.comment:
-        return const Color(0xFFFF9800); // Orange
-    }
-  }
-
-  IconData _getNotificationIcon(NotificationType type) {
-    switch (type) {
-      case NotificationType.message:
-        return Icons.message;
-      case NotificationType.like:
-        return Icons.favorite;
-      case NotificationType.follow:
-        return Icons.person_add;
-      case NotificationType.comment:
-        return Icons.comment;
-    }
   }
 }

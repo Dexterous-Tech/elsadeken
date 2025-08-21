@@ -1,4 +1,6 @@
+import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PersonImageHeader extends StatelessWidget {
   final String imageUrl;
@@ -36,25 +38,25 @@ class PersonImageHeader extends StatelessWidget {
             child: Column(
               children: [
                 Row(
+                  textDirection: TextDirection.rtl,
                   children: [
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Container(
+                        width: 40.w,
+                        height: 40.h,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         padding: EdgeInsets.all(8),
-                        child:
-                            Icon(Icons.arrow_back_ios_new, color: Colors.black),
+                        child: Center(
+                          child: Image.asset(
+                            AppImages.authArrowBack,
+                            width: 14.w,
+                            height: 14.h,
+                          ),
+                        ),
                       ),
                     ),
                   ],

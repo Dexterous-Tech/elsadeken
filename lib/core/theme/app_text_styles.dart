@@ -49,8 +49,8 @@ class AppTextStyles {
 
   static TextStyle font14PumpkinOrangeBoldLamaSans = TextStyle(
     fontWeight: FontWeightHelper.bold,
-    fontSize: 14.sp,
-    color: AppColors.pumpkinOrange,
+    fontSize: 16.sp,
+    color: Color(0xFFC86D22),
     fontFamily: FontFamilyHelper.lamaSansArabic,
   );
 
@@ -272,6 +272,13 @@ class AppTextStyles {
     fontWeight: FontWeightHelper.medium,
     fontSize: 14.sp,
     color: AppColors.desire,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
+
+  static TextStyle font26BlackBoldLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.bold,
+    fontSize: 26.sp,
+    color: AppColors.black,
     fontFamily: FontFamilyHelper.lamaSansArabic,
   );
 }

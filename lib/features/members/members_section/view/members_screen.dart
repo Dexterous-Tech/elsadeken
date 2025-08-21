@@ -1,6 +1,8 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/features/members/members_section/view/widgets/menu_items.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/core/helper/app_images.dart';
 
 import '../../Health_statuses/presentation/view/health_statuses_view.dart';
 import '../../new_members/presentation/view/new_members_screen.dart';
@@ -85,49 +87,64 @@ class MembersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: 70,
-                child: Stack(
-                  children: [
-                    Center(
-                      child: Text(
-                        'الاعضاء',
-                        style: TextStyle(
-                            fontSize: 26,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 30),
-              Expanded(
-                child: ListView.separated(
-                  itemCount: _menuItems.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 18),
-                  itemBuilder: (context, index) {
-                    final item = _menuItems[index];
-                    return MenuItemWidget(
-                      title: item['title'],
-                      backgroundColor: item['backgroundColor'],
-                      avatarAsset: item['avatarAsset'],
-                      onTap: () => _navigateToScreen(context, item['screen']),
-                    );
-                  },
-                ),
-              ),
-            ],
+      body: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Positioned(
+            top: 0,
+            left: -20,
+            child: Image.asset(
+              AppImages.starProfile,
+              width: 488.w,
+              height: 325.h,
+            ),
           ),
-        ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    height: 70,
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Text(
+                            'الاعضاء',
+                            style: TextStyle(
+                                fontSize: 26,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: _menuItems.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 18),
+                      itemBuilder: (context, index) {
+                        final item = _menuItems[index];
+                        return MenuItemWidget(
+                          title: item['title'],
+                          backgroundColor: item['backgroundColor'],
+                          avatarAsset: item['avatarAsset'],
+                          onTap: () => _navigateToScreen(context, item['screen']),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
