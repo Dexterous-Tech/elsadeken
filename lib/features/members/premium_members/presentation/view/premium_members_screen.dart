@@ -1,6 +1,13 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/features/members/premium_members/presentation/view/widgets/premium_members_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/core/di/injection_container.dart';
+import 'package:elsadeken/features/members/data/models/members.dart';
+import 'package:elsadeken/features/members/data/repositories/members_repository.dart';
+import 'package:elsadeken/features/members/logic/cubit/members_cubit.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/core/helper/app_images.dart';
 
 import '../../../Health_statuses/presentation/view/widgets/gender_filter.dart';
 import '../../../online_members/presentation/view/widgets/filter_buttom_sheet.dart';
@@ -17,36 +24,17 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
 
   @override
   Widget build(BuildContext context) {
-    final List<PremiumPersonData> premiumMembers = [
-      PremiumPersonData(
-        name: "Ammar muahmmed",
-        age: 56,
-        location: "السعودية، الرياض",
-        profileImageUrl:
-            "https://placeholder.svg?height=60&width=60&query=profile+photo+man",
-      ),
-      PremiumPersonData(
-        name: "Ammar muahmmed",
-        age: 56,
-        location: "السعودية، الرياض",
-        profileImageUrl:
-            "https://placeholder.svg?height=60&width=60&query=profile+photo+man",
-      ),
-      PremiumPersonData(
-        name: "Ammar muahmmed",
-        age: 56,
-        location: "السعودية، الرياض",
-        profileImageUrl:
-            "https://placeholder.svg?height=60&width=60&query=profile+photo+man",
-      ),
-    ];
+    final cubit = MembersListCubit<Member>(
+      () => sl<MembersRepository>().getDistinguishedMembers(),
+    )..fetch();
 
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           elevation: 0,
           automaticallyImplyLeading: false,
           title: const Text(
@@ -69,9 +57,23 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
             },
           ),
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
+        body: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Positioned(
+              top: 0,
+              left: -20,
+              child: Image.asset(
+                AppImages.starProfile,
+                width: 488.w,
+                height: 325.h,
+              ),
+            ),
+            SafeArea(
+              child: BlocProvider<MembersListCubit<Member>>(
+                create: (_) => cubit,
+                child: Column(
+                  children: [
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Row(
@@ -101,7 +103,8 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                           SizedBox(width: 6),
                           Icon(
                             Icons.arrow_forward_ios,
-                            size: 20,
+                            size: 16,
+                            color: Color(0xFFD4AF37)
                           ),
                         ],
                       ),
@@ -139,38 +142,92 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                   ],
                 ),
               ),
-              Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                color: Colors.white,
-                child: const Text(
-                  'عدد الأعضاء المميزين: 66',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFFD4AF37),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: premiumMembers.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: PremiumMemberCard(
-                        personData: premiumMembers[index],
+              BlocBuilder<MembersListCubit<Member>, MembersListState<Member>>(
+                builder: (context, state) {
+                  if (state is MembersListLoading<Member>) {
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 24),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  if (state is MembersListError<Member>) {
+                    return Expanded(
+                      child: Center(
+                        child: Text(
+                          state.message,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.red),
+                        ),
                       ),
                     );
-                  },
-                ),
+                  }
+                  if (state is MembersListEmpty<Member>) {
+                    return const Expanded(
+                      child: Center(
+                        child: Text(
+                          'لا توجد نتائج حالياً',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }
+                  if (state is MembersListLoaded<Member>) {
+                    final items = state.items;
+                    return Expanded(
+                      child: Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 12),
+                            color: Colors.white,
+                            child: Text(
+                              'عدد الأعضاء المميزين: ${items.length}',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Color(0xFFD4AF37),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Expanded(
+                            child: ListView.builder(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16),
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                final m = items[index];
+                                final data = PremiumPersonData(
+                                  name: m.name,
+                                  age: m.attribute?.age ?? 0,
+                                  location:
+                                      '${m.attribute?.country ?? ''}، ${m.attribute?.city ?? ''}',
+                                  profileImageUrl: m.image,
+                                );
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.only(bottom: 12),
+                                  child: PremiumMemberCard(
+                                    personData: data,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
             ],
-          ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

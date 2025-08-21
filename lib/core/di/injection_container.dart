@@ -14,6 +14,7 @@ import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit
 import 'package:elsadeken/features/auth/verification_email/data/data_source/verification_data_source.dart';
 import 'package:elsadeken/features/auth/verification_email/data/repo/verification_repo.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/manager/verification_cubit.dart';
+import 'package:elsadeken/features/members/data/repositories/members_repository.dart';
 import 'package:elsadeken/features/home/notification/data/data_source/notification_data_source.dart';
 import 'package:elsadeken/features/home/notification/data/repo/notification_repo.dart';
 import 'package:elsadeken/features/home/notification/presentation/manager/notification_count_cubit.dart';
@@ -59,7 +60,6 @@ import 'package:elsadeken/features/search/logic/repository/search_repository.dar
 import 'package:elsadeken/features/search/logic/repository/search_repository_impl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../../features/search/logic/use_cases/search_use_cases.dart';
 import '../../features/search/presentation/cubit/search_cubit.dart';
@@ -189,6 +189,9 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<MyImageDataSource>(() => MyImageDataSource(sl()));
   sl.registerLazySingleton<MyImageRepoInterface>(() => MyImageRepoImp(sl()));
   sl.registerFactory<MyImageCubit>(() => MyImageCubit(sl()));
+
+  //Members
+  sl.registerLazySingleton<MembersRepository>(() => MembersRepository());
 
   // notification
   sl.registerLazySingleton<NotificationDataSource>(
