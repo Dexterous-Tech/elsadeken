@@ -39,6 +39,7 @@ class ApiConstants {
 
   // notifications
   static String getNotifications = '/user/get-notifications';
+  static String countNotifications = '/user/get-count-unread-notifications';
   static String updateFcmToken = '/user/update-fcmtoken';
 
   static const String defaultProfileImage =

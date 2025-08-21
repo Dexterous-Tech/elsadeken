@@ -1,5 +1,10 @@
+import 'dart:developer';
+
+import 'package:dartz/dartz.dart';
+import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
 import 'package:elsadeken/features/home/notification/data/data_source/notification_data_source.dart';
+import 'package:elsadeken/features/home/notification/data/model/Notification_count_response_model.dart';
 import 'package:elsadeken/features/home/notification/data/model/notification_response_model.dart';
 import 'package:elsadeken/features/home/notification/data/model/notification_model.dart';
 
@@ -10,6 +15,9 @@ abstract class NotificationRepoInterface {
         bool hasNextPage,
         int currentPage
       })> getNotifications({int? page});
+
+  Future<Either<ApiErrorModel, NotificationCountResponseModel>>
+      countNotification();
 }
 
 class NotificationRepoImp implements NotificationRepoInterface {
@@ -54,6 +62,22 @@ class NotificationRepoImp implements NotificationRepoInterface {
         message: 'Failed to get notifications: $e',
         statusCode: 500,
       );
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, NotificationCountResponseModel>>
+      countNotification() async {
+    try {
+      var response = await notificationDataSource.countNotifications();
+
+      return Right(response);
+    } catch (e) {
+      log("error in count notification $e");
+      if (e is ApiErrorModel) {
+        return Left(e);
+      }
+      return Left(ApiErrorHandler.handle(e));
     }
   }
 }

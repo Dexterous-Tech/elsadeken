@@ -1,9 +1,11 @@
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
+import 'package:elsadeken/features/home/notification/data/model/Notification_count_response_model.dart';
 import 'package:elsadeken/features/home/notification/data/model/notification_response_model.dart';
 
 abstract class NotificationDataSource {
   Future<NotificationResponseModel> getNotifications({int? page});
+  Future<NotificationCountResponseModel> countNotifications();
 }
 
 class NotificationDataSourceImpl implements NotificationDataSource {
@@ -23,5 +25,13 @@ class NotificationDataSourceImpl implements NotificationDataSource {
     } catch (e) {
       throw Exception('Failed to fetch notifications: $e');
     }
+  }
+
+  @override
+  Future<NotificationCountResponseModel> countNotifications() async {
+    var response =
+        await _apiServices.get(endpoint: ApiConstants.countNotifications);
+
+    return NotificationCountResponseModel.fromJson(response.data);
   }
 }

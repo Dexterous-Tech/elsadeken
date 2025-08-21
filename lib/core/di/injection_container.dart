@@ -16,6 +16,7 @@ import 'package:elsadeken/features/auth/verification_email/data/repo/verificatio
 import 'package:elsadeken/features/auth/verification_email/presentation/manager/verification_cubit.dart';
 import 'package:elsadeken/features/home/notification/data/data_source/notification_data_source.dart';
 import 'package:elsadeken/features/home/notification/data/repo/notification_repo.dart';
+import 'package:elsadeken/features/home/notification/presentation/manager/notification_count_cubit.dart';
 import 'package:elsadeken/features/home/notification/presentation/manager/notification_cubit.dart';
 import 'package:elsadeken/features/profile/about_us/data/data_source/about_us_data_source.dart';
 import 'package:elsadeken/features/profile/about_us/data/repo/abouts_us_repo.dart';
@@ -195,4 +196,6 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<NotificationRepoInterface>(
       () => NotificationRepoImp(sl()));
   sl.registerFactory<NotificationCubit>(() => NotificationCubit(sl()));
+  sl.registerFactory<NotificationCountCubit>(
+      () => NotificationCountCubit(sl()));
 }
