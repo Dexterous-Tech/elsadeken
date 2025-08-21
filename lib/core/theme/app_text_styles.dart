@@ -274,4 +274,11 @@ class AppTextStyles {
     color: AppColors.desire,
     fontFamily: FontFamilyHelper.lamaSansArabic,
   );
+
+  static TextStyle font26BlackBoldLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.bold,
+    fontSize: 26.sp,
+    color: AppColors.black,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
 }

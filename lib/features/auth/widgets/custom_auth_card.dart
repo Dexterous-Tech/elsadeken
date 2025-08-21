@@ -37,14 +37,7 @@ class CustomAuthCard extends StatelessWidget {
                 bottom: 59.5.h,
               ),
               decoration: ShapeDecoration(
-                gradient: RadialGradient(
-                  center: Alignment.topLeft,
-                  colors: [
-                    AppColors.sinopia.withValues(alpha: 0.15),
-                    AppColors.lightCarminePink.withValues(alpha: 0.07),
-                  ],
-                  stops: [1.0, 0.77],
-                ),
+                color : Color(0xffFFF4F0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.r),
                 ),

@@ -1,7 +1,5 @@
 import 'package:elsadeken/core/routes/app_routing.dart';
-import 'package:elsadeken/features/home/notification/data/datasources/notification_api_service.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

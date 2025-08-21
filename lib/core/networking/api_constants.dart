@@ -38,12 +38,7 @@ class ApiConstants {
   static String personDetails(int id) => '/user/show-one-user/$id';
 
   // notifications
-  static String notifications = '/user/notifications';
-  static String markNotificationAsRead(int id) =>
-      '/user/notifications/$id/mark-read';
-  static String markAllNotificationsAsRead =
-      '/user/notifications/mark-all-read';
-  static String clearAllNotifications = '/user/notifications/clear-all';
+  static String getNotifications = '/user/get-notifications';
   static String updateFcmToken = '/user/update-fcmtoken';
 
   static const String defaultProfileImage =
