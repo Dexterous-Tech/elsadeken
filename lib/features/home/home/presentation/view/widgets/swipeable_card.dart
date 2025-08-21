@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/features/home/person_details/view/person_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -164,14 +165,18 @@ class _SwipeableCardState extends State<SwipeableCard>
               onPanEnd: _onPanEnd,
               onTap: () {
                 if (!_isProcessingAction) {
-                  Navigator.push(
+                  print("Card tapped for user:");
+                  print("  User ID: ${widget.user.id}");
+                  print("  User Name: ${widget.user.name}");
+                  print("  User Image URL: ${widget.user.imageUrl}");
+
+                  Navigator.pushNamed(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => PersonDetailsView(
-                        personId: widget.user.id,
-                        imageUrl: widget.user.imageUrl,
-                      ),
-                    ),
+                    AppRoutes.personDetailsScreen,
+                    arguments: {
+                      'personId': widget.user.id,
+                      'imageUrl': widget.user.imageUrl,
+                    },
                   );
                 }
               },

@@ -187,7 +187,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
           Container(
             decoration: BoxDecoration(
               color: AppColors.yellowrec,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius: BorderRadius.circular(2),
             ),
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Padding(
@@ -215,7 +215,8 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                     children: [
                       Container(
                         width: 150.w,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
                           color: AppColors.lighterOrange,
                           borderRadius: BorderRadius.circular(8),
@@ -282,7 +283,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
               color: AppColors.yellowrec,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius: BorderRadius.circular(2),
             ),
             alignment: Alignment.centerRight,
             child: const Text(
@@ -307,7 +308,8 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                     children: [
                       Container(
                         width: 150.w,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
                           color: AppColors.lighterOrange,
                           borderRadius: BorderRadius.circular(8),
