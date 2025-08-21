@@ -48,4 +48,12 @@ class ApiConstants {
 
   static const String defaultProfileImage =
       'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';
+
+  // members
+  static String distinguishedMembers = '/user/members/distinguished';
+  static String healthConditionMembers = '/user/members/health-condition';
+  static String newMembers({int? countryId}) =>
+      '/user/members/latest${countryId != null ? '?country_id=$countryId' : ''}';
+  static String visitorsMembers = '/user/members/visitors';
+  static String onlineMembers = '/user/members/online';
 }
