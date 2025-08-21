@@ -122,7 +122,7 @@ class SuccessStoriesScreen extends StatelessWidget {
                         AppImages.success2Blog,
                       ),
                     ),
-                    Padding(
+                    /*Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: CustomElevatedButton(
                         height: 47.h,
@@ -136,7 +136,7 @@ class SuccessStoriesScreen extends StatelessWidget {
                         ),
                         horizontalPadding: 10,
                       ),
-                    ),
+                    ),*/
                     SizedBox(height: 20.h),
                     // Stories List
                     ...state.stories.map((story) => StoryCard(
@@ -144,11 +144,22 @@ class SuccessStoriesScreen extends StatelessWidget {
                         content: story.content,
                         image: story.image)),
                     SizedBox(height: 20.h),
-                    CustomElevatedButton(
-                      height: 47.h,
-                      onPressed: () {},
-                      textButton: "اغلاق",
-                      horizontalPadding: 10,
+                    Padding(
+                      padding:  EdgeInsets.all(35.0),
+                      child: CustomElevatedButton(
+                        height: 47.h,
+                        styleTextButton: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: FontFamilyHelper.plexSansArabic,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        textButton: "اغلاق",
+                        horizontalPadding: 10,
+                      ),
                     ),
                   ],
                 ),

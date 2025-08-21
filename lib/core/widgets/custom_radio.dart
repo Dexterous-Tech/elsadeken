@@ -23,8 +23,8 @@ class CustomRadio extends StatelessWidget {
         height: 20.h,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: AppColors.pumpkinOrange, width: 2),
-          color: value ? AppColors.pumpkinOrange : Colors.transparent,
+          border: Border.all(color: Color(0xFFC86D22), width: 2),
+          color: value ? Color(0xFFC86D22) : Colors.transparent,
         ),
         child: value
             ? Center(

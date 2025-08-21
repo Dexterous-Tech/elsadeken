@@ -35,7 +35,7 @@ Future customDialog({
                 padding ?? EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
             decoration: ShapeDecoration(
               color: backgroundColor ??
-                  AppColors.papayaWhip.withValues(alpha: 0.84),
+                  AppColors.papayaWhip.withValues(alpha: 0.86),
               shape: RoundedRectangleBorder(
                 side: BorderSide(color: Colors.transparent),
                 borderRadius: BorderRadius.circular(radius ?? 20).r,
