@@ -27,6 +27,7 @@ class LoginCreateNewAccount extends StatelessWidget {
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);
+                oathDialog(context: context);
               },
           ),
         ],
