@@ -97,7 +97,7 @@ class OnBoardingBody extends StatelessWidget {
                         oathDialog(context: context);
                       },
                       child: Text(
-                        'سجل الان',
+                        'التسجيل مجاناً',
                         style: AppTextStyles.font16CulturedMediumPlexSans
                             .copyWith(color: AppColors.white),
                       ),

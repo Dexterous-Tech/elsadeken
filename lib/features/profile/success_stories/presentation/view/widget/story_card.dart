@@ -21,7 +21,7 @@ class StoryCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.r),
       ),
-      margin: EdgeInsets.symmetric(horizontal: 30.w, vertical: 8.h),
+      margin: EdgeInsets.symmetric(horizontal: 56.w, vertical: 8.h),
       child: Container(
         alignment: Alignment.center,
         height: 200.h,

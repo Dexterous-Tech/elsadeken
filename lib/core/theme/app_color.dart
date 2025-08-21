@@ -6,7 +6,7 @@ class AppColors {
   static const Color red = Color(0xffE81925);
   static const Color pumpkinOrange = Color(0xffFE7D10);
   static const Color cultured = Color(0xffF8F8F8);
-  static const Color papayaWhip = Color(0xFFFFF9F2);
+  static const Color papayaWhip = Color(0xFFe1dcd6);
   static const Color bistre = Color(0xFF34291C);
   static const Color seashell = Color(0xFFFFF5F2);
   static const Color snow = Color(0xFFFBF9F8);

@@ -29,12 +29,15 @@ Future<void> oathDialog({
               style: AppTextStyles.font22BistreSemiBoldLamaSans,
             ),
             verticalSpace(6),
-            Text(
-              'لإتاحة الفرصة لجميع الأعضاء، فإن التسجيل مجاني.',
-              textDirection: TextDirection.rtl,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.font15BistreSemiBoldLamaSans
-                  .copyWith(fontWeight: FontWeightHelper.medium),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                'لإتاحة الفرصة لجميع الأعضاء، فإن\n التسجيل مجاني.',
+                textDirection: TextDirection.rtl,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.font15BistreSemiBoldLamaSans
+                    .copyWith(fontWeight: FontWeightHelper.medium),
+              ),
             ),
             verticalSpace(48),
             Text(
