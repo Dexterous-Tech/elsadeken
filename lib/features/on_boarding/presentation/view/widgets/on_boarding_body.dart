@@ -92,11 +92,16 @@ class OnBoardingBody extends StatelessWidget {
                       ),
                     ),
                     verticalSpace(7),
-                    Text(
+                    GestureDetector(
+                      onTap: () {
+                        oathDialog(context: context);
+                      },
+                      child: Text(
                         'سجل الان',
                         style: AppTextStyles.font16CulturedMediumPlexSans
                             .copyWith(color: AppColors.white),
                       ),
+                    )
                   ],
                 ),
               ],

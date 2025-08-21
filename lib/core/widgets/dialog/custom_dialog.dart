@@ -12,6 +12,7 @@ Future customDialog({
   Color? backgroundColor,
 }) async {
   final result = await showDialog(
+    barrierColor: Color(0xFF120b03).withOpacity(0.51),
     context: context,
     barrierDismissible: false,
     builder: (context) => PopScope(
