@@ -10,6 +10,7 @@ import 'contents/manage_profile_appearance.dart';
 import 'contents/manage_profile_marital_status.dart';
 import 'contents/manage_profile_personal_information.dart';
 import 'contents/manage_profile_writing_content.dart';
+import 'delete_profile/delete_profile.dart';
 import 'manage_profile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -119,16 +120,17 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
                     isLoading: isLoading,
                   ),
                 ),
-                verticalSpace(10),
-                ManageProfileCard(
-                  title: 'المعلومات الشخصية',
-                  cardContent: ManageProfilePersonalInformation(
-                    profileData: profileData,
-                    isLoading: isLoading,
-                  ),
-                ),
-                // verticalSpace(63),
-                // CustomElevatedButton(onPressed: () {}, textButton: 'تعديل'),
+                // verticalSpace(10),
+                // ManageProfileCard(
+                //   title: 'المعلومات الشخصية',
+                //   cardContent: ManageProfilePersonalInformation(
+                //     profileData: profileData,
+                //     isLoading: isLoading,
+                //   ),
+                // ),
+                verticalSpace(16),
+                DeleteProfile(isLoading: isLoading),
+                verticalSpace(16),
               ],
             ),
           ),

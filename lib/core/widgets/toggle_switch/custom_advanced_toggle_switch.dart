@@ -22,7 +22,6 @@ class CustomAdvancedToggleSwitch extends StatefulWidget {
 class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
     with SingleTickerProviderStateMixin {
   final _notificationService = FirebaseNotificationService.instance;
-  bool _isLoading = false;
   bool _isEnabled = false;
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -42,10 +41,6 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
 
   Future<void> _loadNotificationState() async {
     try {
-      setState(() {
-        _isLoading = true;
-      });
-
       final isEnabled = await _notificationService.isNotificationEnabled();
       _isEnabled = isEnabled;
       if (isEnabled) {
@@ -60,38 +55,38 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
       if (_isEnabled) {
         _animationController.value = 1.0;
       }
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
   Future<void> _handleToggle() async {
-    if (_isLoading) return;
-
     try {
       final newValue = !_isEnabled;
       log('Toggle requested: $newValue, current value: $_isEnabled');
 
-      setState(() {
-        _isLoading = true;
-      });
-
-      await _notificationService.toggleNotifications(newValue);
-
-      // Animate the toggle
+      // Immediately update the UI
       if (newValue) {
         _animationController.forward();
       } else {
         _animationController.reverse();
       }
-
       _isEnabled = newValue;
-      log('Toggle updated to: $_isEnabled');
 
       // Call the onChanged callback if provided
       widget.onChanged?.call(newValue);
+
+      // Handle the notification service based on the new state
+      if (newValue) {
+        // Enable notifications
+        await _notificationService.toggleNotifications(true);
+        log('Notifications enabled via toggle');
+      } else {
+        // Disable notifications
+        await _notificationService.toggleNotifications(false);
+        await _notificationService.forceRefreshNotificationSettings();
+        log('Notifications disabled via toggle');
+      }
+
+      log('Toggle updated to: $_isEnabled');
 
       // Show feedback to user
       if (mounted) {
@@ -108,6 +103,14 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
       }
     } catch (e) {
       log('Error toggling notifications: $e');
+      // Revert the toggle if there was an error
+      if (_isEnabled) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+      _isEnabled = !_isEnabled;
+
       // Show error feedback
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -121,32 +124,11 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
           ),
         );
       }
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return SizedBox(
-        width: 36,
-        height: 21,
-        child: Center(
-          child: SizedBox(
-            width: 16,
-            height: 16,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: AppColors.philippineBronze,
-            ),
-          ),
-        ),
-      );
-    }
-
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {

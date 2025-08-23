@@ -1,6 +1,4 @@
-import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
-import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/delete_profile/delete_profile.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
@@ -41,6 +39,14 @@ class ManageProfileLoginData extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
+          title: 'رقم الهاتف',
+          itemContent: ManageProfileContentText(
+            text: profileData?.phone ?? '',
+            isLoading: isLoading,
+          ),
+        ),
+        ManageProfileCustomSeparator(),
+        ManageProfileContentItem(
           title: 'تاريخ التسجيل',
           itemContent: ManageProfileContentText(
             text: _formatDate(profileData?.createdAt),
@@ -64,7 +70,6 @@ class ManageProfileLoginData extends StatelessWidget {
           ),
         ),
         ManageProfileCustomSeparator(),
-        DeleteProfile(isLoading: isLoading),
         verticalSpace(20),
         ManageProfileEditButton(
           onPressed: isLoading ? null : () => _showLoginDataEditDialog(context),
@@ -131,7 +136,6 @@ class ManageProfileLoginData extends StatelessWidget {
       ],
       onSave: () {
         // Handle save logic here
-        print('Saving login data...');
       },
     );
 

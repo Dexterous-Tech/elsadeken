@@ -1,8 +1,8 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,6 +24,10 @@ class FirebaseNotificationService {
 
   bool _isInitialized = false;
 
+  // Store listeners for proper disposal
+  StreamSubscription<RemoteMessage>? _foregroundSubscription;
+  StreamSubscription<RemoteMessage>? _openedAppSubscription;
+
   // Notification channel for Android
   static const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel',
@@ -44,33 +48,47 @@ class FirebaseNotificationService {
     final prefs = await SharedPreferences.getInstance();
     final notificationsEnabled = prefs.getBool('notifications_enabled') ?? true;
 
-    if (notificationsEnabled) {
-      // Show notification only if enabled
-      final localNotifications = FlutterLocalNotificationsPlugin();
-      await localNotifications.initialize(
-        const InitializationSettings(
-          android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+    log("Background notification check - enabled: $notificationsEnabled");
+
+    // Immediately return if notifications are disabled
+    if (!notificationsEnabled) {
+      log("Background notification IGNORED - notifications disabled in settings");
+      return; // Exit immediately, don't process anything
+    }
+
+    // Double-check the setting before proceeding
+    final doubleCheck = prefs.getBool('notifications_enabled') ?? true;
+    if (!doubleCheck) {
+      log("Background notification IGNORED - double check failed");
+      return;
+    }
+
+    // Show notification only if enabled
+    final localNotifications = FlutterLocalNotificationsPlugin();
+    await localNotifications.initialize(
+      const InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      ),
+    );
+
+    final notification = message.notification;
+    final android = message.notification?.android;
+
+    if (notification != null && android != null) {
+      log("Showing background notification: ${notification.title}");
+      await localNotifications.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            channelDescription: channel.description,
+            icon: android.smallIcon ?? '@mipmap/ic_launcher',
+          ),
         ),
       );
-
-      final notification = message.notification;
-      final android = message.notification?.android;
-
-      if (notification != null && android != null) {
-        await localNotifications.show(
-          notification.hashCode,
-          notification.title,
-          notification.body,
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              channel.id,
-              channel.name,
-              channelDescription: channel.description,
-              icon: android.smallIcon ?? '@mipmap/ic_launcher',
-            ),
-          ),
-        );
-      }
     }
   }
 
@@ -168,8 +186,12 @@ class FirebaseNotificationService {
       return;
     }
 
+    // Dispose existing listeners first
+    await _disposeListeners();
+
     // Handle foreground messages
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    _foregroundSubscription =
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       log("Got message in foreground: ${message.notification?.title}");
 
       // Check if notifications are enabled before showing
@@ -182,7 +204,8 @@ class FirebaseNotificationService {
     });
 
     // Handle when app is opened from notification
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+    _openedAppSubscription = FirebaseMessaging.onMessageOpenedApp
+        .listen((RemoteMessage message) async {
       log("App opened by notification: ${message.notification?.title}");
 
       // Only handle navigation if notifications are enabled
@@ -203,6 +226,19 @@ class FirebaseNotificationService {
         _handleNotificationNavigation(initialMessage);
       }
     }
+  }
+
+  /// Dispose Firebase messaging listeners
+  Future<void> _disposeListeners() async {
+    log("Disposing Firebase messaging listeners");
+
+    await _foregroundSubscription?.cancel();
+    _foregroundSubscription = null;
+
+    await _openedAppSubscription?.cancel();
+    _openedAppSubscription = null;
+
+    log("Firebase messaging listeners disposed");
   }
 
   /// Show local notification
@@ -245,16 +281,90 @@ class FirebaseNotificationService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('notifications_enabled', enabled);
 
+    log('Notification setting saved: $enabled');
+
     if (enabled && _isInitialized) {
-      // Re-request permissions if needed
+      // Re-request permissions and setup listeners if needed
       await _requestNotificationPermissions();
+      await _setupFirebaseMessaging();
+
+      // Get a new FCM token when enabling notifications
+      if (_messaging != null) {
+        try {
+          String? newToken = await _messaging!.getToken();
+          log("New FCM token generated: $newToken");
+        } catch (e) {
+          log("Error getting new FCM token: $e");
+        }
+      }
+
+      log("Notifications enabled - listeners activated");
     } else if (!enabled) {
-      // Clear all notifications when disabled
+      // Clear all notifications and dispose listeners when disabled
       await _localNotifications.cancelAll();
-      log("All notifications cancelled due to disabled setting");
+      await _disposeListeners();
+
+      // Force clear any pending notifications
+      await _clearAllNotifications();
+
+      // Completely disable Firebase messaging when notifications are off
+      if (_messaging != null) {
+        try {
+          // Delete the FCM token to stop receiving messages
+          await _messaging!.deleteToken();
+          log("FCM token deleted to stop receiving notifications");
+        } catch (e) {
+          log("Error deleting FCM token: $e");
+        }
+      }
+
+      log("Notifications disabled - listeners disposed and all notifications cancelled");
     }
 
     log('Notifications ${enabled ? 'enabled' : 'disabled'}');
+  }
+
+  /// Force clear all notifications (more aggressive)
+  Future<void> _clearAllNotifications() async {
+    try {
+      // Cancel all local notifications
+      await _localNotifications.cancelAll();
+
+      // Cancel notifications by channel
+      await _localNotifications
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.cancelAll();
+
+      log("All notifications forcefully cleared");
+    } catch (e) {
+      log("Error clearing notifications: $e");
+    }
+  }
+
+  /// Force refresh notification settings
+  Future<void> forceRefreshNotificationSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isEnabled = prefs.getBool('notifications_enabled') ?? true;
+
+    log("Force refreshing notification settings - enabled: $isEnabled");
+
+    if (!isEnabled) {
+      await _clearAllNotifications();
+      await _disposeListeners();
+
+      // Also delete FCM token if messaging is available
+      if (_messaging != null) {
+        try {
+          await _messaging!.deleteToken();
+          log("FCM token deleted during force refresh");
+        } catch (e) {
+          log("Error deleting FCM token during force refresh: $e");
+        }
+      }
+
+      log("Force refresh: notifications disabled and listeners disposed");
+    }
   }
 
   /// Get FCM token
@@ -275,5 +385,12 @@ class FirebaseNotificationService {
     await _messaging!.deleteToken();
     String? newToken = await _messaging!.getToken();
     log('FCM Token refreshed: $newToken');
+  }
+
+  /// Dispose the service
+  Future<void> dispose() async {
+    await _disposeListeners();
+    _isInitialized = false;
+    log("Firebase notification service disposed");
   }
 }

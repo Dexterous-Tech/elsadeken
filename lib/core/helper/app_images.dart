@@ -67,6 +67,8 @@ class AppImages {
       '${AppConstants.profileAssetsPath}stars.png';
   static const String cameraProfile =
       '${AppConstants.profileAssetsPath}profile_camera.png';
+  static const String deleteProfile =
+      '${AppConstants.profileAssetsPath}delete.png';
 
   static const String checkCorrect =
       '${AppConstants.authAssetsPath}check-correct.png';
