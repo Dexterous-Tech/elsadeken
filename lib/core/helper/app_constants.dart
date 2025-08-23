@@ -10,6 +10,7 @@ class AppConstants {
   static const String profileAssetsPath = 'assets/images/profile/';
   static const String specialMembersPath = 'assets/images/special_members/';
   static const String blogPath = 'assets/images/blog/';
+  static const String chatPath = 'assets/images/chat/';
 
   // svg
   static const String svgAssetsPath = 'assets/svg/';

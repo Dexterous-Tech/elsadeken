@@ -23,6 +23,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../members/members_section/view/members_screen.dart';
 import '../../../notification/presentation/view/notification_screen.dart';
 import '../../data/models/user_model.dart';
+import 'package:elsadeken/features/chat/presentation/view/chat_page.dart';
 
 class HomeScreenWrapper extends StatelessWidget {
   const HomeScreenWrapper({super.key});
@@ -356,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return buildHomeContent();
       case 1:
-        return Center(child: Text('الرسائل'));
+        return ChatPage();
       case 2:
         return MembersScreen();
       case 3:
