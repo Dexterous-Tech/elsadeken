@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:elsadeken/core/services/firebase_notification_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/features/home/notification/presentation/manager/notification_count_cubit.dart';
@@ -16,10 +19,20 @@ class HomeNotification extends StatefulWidget {
 }
 
 class _HomeNotificationState extends State<HomeNotification> {
+  final _notificationService = FirebaseNotificationService.instance;
+
   @override
   void initState() {
-    context.read<NotificationCountCubit>().countNotification();
+    _refreshNotificationCount();
     super.initState();
+  }
+
+  // Method to refresh notification count
+  void _refreshNotificationCount() {
+    if (mounted) {
+      log('Refreshing notification count...');
+      context.read<NotificationCountCubit>().refreshCount();
+    }
   }
 
   @override
@@ -44,13 +57,24 @@ class _HomeNotificationState extends State<HomeNotification> {
               ),
             ),
           ),
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            log('Navigating to notification screen...');
+            // Navigate to notification screen and wait for result
+            final result = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => NotificationScreen(),
               ),
             );
+
+            // Refresh notification count when user returns from notification screen
+            // result will be true when user navigates back from notification screen
+            if (mounted && result == true) {
+              log('User returned from notification screen, refreshing count...');
+              _refreshNotificationCount();
+            } else {
+              log('User returned from notification screen but no refresh needed');
+            }
           },
         ),
         Positioned(

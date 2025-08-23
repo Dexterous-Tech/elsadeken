@@ -61,6 +61,7 @@ import 'package:elsadeken/features/search/logic/repository/search_repository_imp
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 
+import '../../features/profile/profile/presentation/manager/notification_settings_cubit.dart';
 import '../../features/search/logic/use_cases/search_use_cases.dart';
 import '../../features/search/presentation/cubit/search_cubit.dart';
 import '../networking/api_services.dart';
@@ -201,4 +202,6 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<NotificationCubit>(() => NotificationCubit(sl()));
   sl.registerFactory<NotificationCountCubit>(
       () => NotificationCountCubit(sl()));
+  sl.registerFactory<NotificationSettingsCubit>(
+      () => NotificationSettingsCubit());
 }

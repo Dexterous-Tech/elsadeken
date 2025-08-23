@@ -1,3 +1,5 @@
+import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../data/model/notification_model.dart';
@@ -32,21 +34,46 @@ class NotificationListWidget extends StatelessWidget {
       color: Colors.deepOrange,
       child: ListView.builder(
         controller: scrollController,
-        itemCount: notifications.length + (hasNextPage ? 1 : 0),
+        itemCount:
+            notifications.length + (hasNextPage || isLoadingMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (index == notifications.length) {
             // Show loading indicator for pagination
-            return hasNextPage
-                ? Padding(
-                    padding: EdgeInsets.all(16.w),
-                    child: Center(
-                      child: CircularProgressIndicator(
+            if (isLoadingMore) {
+              return Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Center(
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(
                         color: Colors.deepOrange,
                         strokeWidth: 2.w,
                       ),
-                    ),
-                  )
-                : const SizedBox.shrink();
+                      SizedBox(height: 8.h),
+                      Text(
+                        'جاري تحميل المزيد...',
+                        style: AppTextStyles.font12JetRegularLamaSans
+                            .copyWith(color: AppColors.beer),
+                        textDirection: TextDirection.rtl,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            } else if (hasNextPage) {
+              return Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Center(
+                  child: Text(
+                    'اسحب للتحميل',
+                    style: AppTextStyles.font12JetRegularLamaSans
+                        .copyWith(color: Colors.grey),
+                    textDirection: TextDirection.rtl,
+                  ),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
           }
 
           final notification = notifications[index];
