@@ -9,6 +9,7 @@ import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart'
 import 'package:elsadeken/features/home/notification/presentation/view/notification_screen.dart';
 import 'package:elsadeken/features/home/person_details/view/person_details.dart';
 import 'package:elsadeken/features/on_boarding/presentation/view/on_boarding_screen.dart';
+import 'package:elsadeken/features/on_boarding/terms_and_conditions/presentation/view/terms_and_conditions_screen.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_screen.dart';
 import 'package:elsadeken/features/profile/blog/presentation/cubit/blog_cubit.dart';
 import 'package:elsadeken/features/profile/blog/presentation/view/blog_screen.dart';
@@ -157,6 +158,8 @@ class AppRouting {
         return MaterialPageRoute(
           builder: (_) => const ChatSettingsScreen(),
         );
+      case AppRoutes.termsAndConditionsScreen:
+        return MaterialPageRoute(builder: (_) => TermsAndConditionsScreen());
       default:
         return MaterialPageRoute(builder: (_) => Scaffold());
     }

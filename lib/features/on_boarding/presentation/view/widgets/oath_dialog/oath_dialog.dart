@@ -11,6 +11,7 @@ import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_s
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/gestures.dart';
+import 'package:elsadeken/features/on_boarding/terms_and_conditions/presentation/view/terms_and_conditions_screen.dart';
 
 Future<void> oathDialog({
   required BuildContext context,
@@ -74,12 +75,7 @@ Future<void> oathDialog({
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AboutUsScreen(),
-                          ),
-                        );
+                        context.pushNamed(AppRoutes.termsAndConditionsScreen);
                       },
                   ),
                   const TextSpan(

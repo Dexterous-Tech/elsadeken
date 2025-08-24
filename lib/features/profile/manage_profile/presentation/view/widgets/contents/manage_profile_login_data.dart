@@ -140,16 +140,18 @@ class ManageProfileLoginData extends StatelessWidget {
           keyboardType: TextInputType.emailAddress,
         ),
         ManageProfileField(
-          label: 'كلمة المرور',
+          label: 'كلمة المرور (اختياري)',
           hint: 'أدخل كلمة المرور الجديدة',
           currentValue: '',
           type: ManageProfileFieldType.password,
+          isRequired: false,
         ),
         ManageProfileField(
-          label: 'تأكيد كلمة المرور',
+          label: 'تأكيد كلمة المرور (اختياري)',
           hint: 'أدخل تأكيد كلمة المرور',
           currentValue: '',
           type: ManageProfileFieldType.password,
+          isRequired: false,
         ),
       ],
     );

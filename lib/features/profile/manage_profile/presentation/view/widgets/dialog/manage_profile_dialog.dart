@@ -86,132 +86,178 @@ Future<void> manageProfileDialog(
   return customDialog(
     context: context,
     backgroundColor: AppColors.white,
-    dialogContent: BlocListener<UpdateProfileCubit, UpdateProfileState>(
-      listener: (context, state) {
-        if (state is UpdateProfileLoginDataLoading) {
-          Navigator.pop(context); // Close the dialog
-          loadingDialog(context);
-        } else if (state is UpdateProfileLoginDataFailure) {
-          Navigator.pop(context); // Close loading dialog
-          errorDialog(
-            context: context,
-            error: state.error,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          );
-        } else if (state is UpdateProfileLoginDataSuccess) {
-          Navigator.pop(context); // Close loading dialog
-          successDialog(
-            context: context,
-            message: 'تم تحديث البيانات بنجاح',
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context); // Return to manage profile screen
-            },
-          );
-        }
-      },
-      child: Container(
-        padding: EdgeInsets.all(16.w),
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Title
-              Text(
-                data.title,
-                style: AppTextStyles.font20LightOrangeMediumLamaSans,
-                textAlign: TextAlign.center,
-              ),
-              verticalSpace(20),
-
-              // Fields
-              ...data.fields.map((field) {
-                return Padding(
-                  padding: EdgeInsets.only(bottom: 16.h),
-                  child: _buildField(
-                    field: field,
-                    controller: controllers[field.label]!,
-                    selectedValue: selectedValues[field.label],
-                    onChanged: (value) {
-                      selectedValues[field.label] = value;
+    dialogContent: data.cubit != null
+        ? BlocProvider.value(
+            value: data.cubit!,
+            child: BlocListener<UpdateProfileCubit, UpdateProfileState>(
+              listener: (context, state) {
+                if (state is UpdateProfileLoginDataLoading) {
+                  Navigator.pop(context); // Close the dialog
+                  loadingDialog(context);
+                } else if (state is UpdateProfileLoginDataFailure) {
+                  Navigator.pop(context); // Close loading dialog
+                  errorDialog(
+                    context: context,
+                    error: state.error,
+                    onPressed: () {
+                      Navigator.pop(context);
                     },
+                  );
+                } else if (state is UpdateProfileLoginDataSuccess) {
+                  Navigator.pop(context); // Close loading dialog
+                  successDialog(
+                    context: context,
+                    message: 'تم تحديث البيانات بنجاح',
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context); // Return to manage profile screen
+                    },
+                  );
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.all(16.w),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Title
+                      Text(
+                        data.title,
+                        style: AppTextStyles.font20LightOrangeMediumLamaSans,
+                        textAlign: TextAlign.center,
+                      ),
+                      verticalSpace(20),
+
+                      // Fields
+                      ...data.fields.map((field) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 16.h),
+                          child: _buildField(
+                            field: field,
+                            controller: controllers[field.label]!,
+                            selectedValue: selectedValues[field.label],
+                            onChanged: (value) {
+                              selectedValues[field.label] = value;
+                            },
+                          ),
+                        );
+                      }),
+
+                      verticalSpace(20),
+
+                      // Buttons
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomElevatedButton(
+                              height: 41.h,
+                              onPressed: () => Navigator.pop(context),
+                              textButton: 'إغلاق',
+                              styleTextButton:
+                                  AppTextStyles.font14DesiredMediumLamaSans,
+                              backgroundColor: Colors.transparent,
+                            ),
+                          ),
+                          horizontalSpace(1),
+                          Expanded(
+                            child: CustomElevatedButton(
+                              height: 41.h,
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  // Get password and confirm password values
+                                  final password =
+                                      controllers['كلمة المرور']?.text ?? '';
+                                  final passwordConfirmation =
+                                      controllers['تأكيد كلمة المرور']?.text ??
+                                          '';
+
+                                  // If password is entered, confirm password is required
+                                  if (password.isNotEmpty &&
+                                      passwordConfirmation.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('يرجى تأكيد كلمة المرور'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  // If both password fields are filled, validate they match
+                                  if (password.isNotEmpty &&
+                                      passwordConfirmation.isNotEmpty) {
+                                    if (password != passwordConfirmation) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                              'كلمة المرور وتأكيد كلمة المرور غير متطابقين'),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                  }
+
+                                  // Handle save logic here
+                                  if (data.cubit != null) {
+                                    final name =
+                                        controllers['اسم المستخدم']?.text ?? '';
+                                    final email =
+                                        controllers['البريد الإلكتروني']
+                                                ?.text ??
+                                            '';
+                                    final phone =
+                                        controllers['رقم الهاتف']?.text ?? '';
+
+                                    data.cubit!.updateProfileLoginData(
+                                      name: name,
+                                      email: email,
+                                      phone: phone,
+                                      password: password,
+                                      passwordConfirmation:
+                                          passwordConfirmation,
+                                    );
+                                  }
+                                }
+                              },
+                              textButton: 'تعديل',
+                              backgroundColor: AppColors.darkSunray,
+                              styleTextButton: AppTextStyles
+                                  .font14DesiredMediumLamaSans
+                                  .copyWith(color: AppColors.jet),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                );
-              }),
-
-              verticalSpace(20),
-
-              // Buttons
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomElevatedButton(
-                      height: 41.h,
-                      onPressed: () => Navigator.pop(context),
-                      textButton: 'إغلاق',
-                      styleTextButton:
-                          AppTextStyles.font14DesiredMediumLamaSans,
-                      backgroundColor: Colors.transparent,
-                    ),
-                  ),
-                  horizontalSpace(1),
-                  Expanded(
-                    child: CustomElevatedButton(
-                      height: 41.h,
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          // Validate password confirmation
-                          final password =
-                              controllers['كلمة المرور']?.text ?? '';
-                          final passwordConfirmation =
-                              controllers['تأكيد كلمة المرور']?.text ?? '';
-
-                          if (password != passwordConfirmation) {
-                            // Show error for password mismatch
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    'كلمة المرور وتأكيد كلمة المرور غير متطابقين'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                            return;
-                          }
-
-                          // Handle save logic here
-                          if (data.cubit != null) {
-                            final name =
-                                controllers['اسم المستخدم']?.text ?? '';
-                            final email =
-                                controllers['البريد الإلكتروني']?.text ?? '';
-                            final phone = controllers['رقم الهاتف']?.text ?? '';
-
-                            data.cubit!.updateProfileLoginData(
-                              name: name,
-                              email: email,
-                              phone: phone,
-                              password: password,
-                              passwordConfirmation: passwordConfirmation,
-                            );
-                          }
-                        }
-                      },
-                      textButton: 'تعديل',
-                      backgroundColor: AppColors.darkSunray,
-                      styleTextButton: AppTextStyles.font14DesiredMediumLamaSans
-                          .copyWith(color: AppColors.jet),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ],
+            ),
+          )
+        : Container(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'خطأ: لم يتم توفير UpdateProfileCubit',
+                  style: AppTextStyles.font18JetMediumLamaSans,
+                  textAlign: TextAlign.center,
+                ),
+                verticalSpace(20),
+                CustomElevatedButton(
+                  height: 41.h,
+                  onPressed: () => Navigator.pop(context),
+                  textButton: 'إغلاق',
+                  backgroundColor: AppColors.red,
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
-    ),
   );
 }
 
@@ -264,9 +310,8 @@ Widget _buildField({
             controller: controller,
             obscureText: true,
             validator: (value) {
-              if (field.isRequired && (value == null || value.isEmpty)) {
-                return 'هذا الحقل مطلوب';
-              }
+              // Password fields are optional, so no validation needed here
+              // The validation logic is handled in the save button onPressed
               return null;
             },
           ),

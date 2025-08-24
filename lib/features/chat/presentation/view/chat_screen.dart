@@ -20,7 +20,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   int _selectedTabIndex = 0; // 0: All, 1: Favorites
-  
+
   // Static mock data
   late List<ChatRoomModel> _chatRooms;
 
@@ -89,18 +89,15 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Column(
-            children: [
-              _buildTopBar(),
-              Expanded(
-                child: _buildChatContent(),
-              ),
-              const ChatOptionsCard(),
-            ],
-          ),
+      child: SafeArea(
+        child: Column(
+          children: [
+            _buildTopBar(),
+            Expanded(
+              child: _buildChatContent(),
+            ),
+            const ChatOptionsCard(),
+          ],
         ),
       ),
     );
@@ -136,7 +133,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   /// 🔹 Chat Content
   Widget _buildChatContent() {
-    final chatRooms = _selectedTabIndex == 1 
+    final chatRooms = _selectedTabIndex == 1
         ? _chatRooms.where((room) => room.isFavorite).toList()
         : _chatRooms;
 
@@ -158,7 +155,9 @@ class _ChatScreenState extends State<ChatScreen> {
             Navigator.pushNamed(
               context,
               AppRoutes.chatConversationScreen,
-              arguments: {'chatRoom': chatRoom}, // Fix: Pass as Map with 'chatRoom' key
+              arguments: {
+                'chatRoom': chatRoom
+              }, // Fix: Pass as Map with 'chatRoom' key
             );
           },
           onLongPress: () {
@@ -178,7 +177,7 @@ class _ChatScreenState extends State<ChatScreen> {
           const EmptyChatIllustration(),
           SizedBox(height: 24.h),
           Text(
-            _selectedTabIndex == 1 
+            _selectedTabIndex == 1
                 ? 'لا توجد محادثات مفضلة'
                 : 'لا يوجد رسائل حتى الآن',
             style: AppTextStyles.font23ChineseBlackBoldLamaSans.copyWith(

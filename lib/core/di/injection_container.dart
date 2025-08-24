@@ -22,6 +22,9 @@ import 'package:elsadeken/features/home/notification/presentation/manager/notifi
 import 'package:elsadeken/features/profile/about_us/data/data_source/about_us_data_source.dart';
 import 'package:elsadeken/features/profile/about_us/data/repo/abouts_us_repo.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/manager/about_us_cubit.dart';
+import 'package:elsadeken/features/on_boarding/terms_and_conditions/data/data_source/terms_and_conditions_data_source.dart';
+import 'package:elsadeken/features/on_boarding/terms_and_conditions/data/repo/terms_and_conditions_repo.dart';
+import 'package:elsadeken/features/on_boarding/terms_and_conditions/presentation/manager/terms_and_conditions_cubit.dart';
 import 'package:elsadeken/features/profile/contact_us/data/data_source/contact_us_data_source.dart';
 import 'package:elsadeken/features/profile/contact_us/data/repo/contact_us_repo.dart';
 import 'package:elsadeken/features/profile/contact_us/presentation/manager/contact_us_cubit.dart';
@@ -141,6 +144,14 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<AboutUsDataSource>(() => AboutUsDataSource(sl()));
   sl.registerLazySingleton<AboutsUsRepoInterface>(() => AboutsUsRepoImpl(sl()));
   sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
+
+  // terms and conditions (on_boarding)
+  sl.registerLazySingleton<TermsAndConditionsDataSource>(
+      () => TermsAndConditionsDataSource(sl()));
+  sl.registerLazySingleton<TermsAndConditionsRepoInterface>(
+      () => TermsAndConditionsRepoImpl(sl()));
+  sl.registerFactory<TermsAndConditionsCubit>(
+      () => TermsAndConditionsCubit(sl()));
 
   // contact us
   sl.registerLazySingleton<ContactUsDataSource>(

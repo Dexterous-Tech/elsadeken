@@ -24,7 +24,7 @@ class ManageProfileDataSource {
   Future<MyProfileResponseModel> updateProfileLoginData(
       UpdateProfileLoginDataRequestModel updateProfileData) async {
     var response = await _apiServices.patch(
-        endpoint: ApiConstants.getProfile,
+        endpoint: ApiConstants.updateProfileLoginData,
         requestBody: updateProfileData.toJson());
 
     return MyProfileResponseModel.fromJson(response.data);

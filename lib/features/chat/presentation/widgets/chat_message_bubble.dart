@@ -8,19 +8,18 @@ class ChatMessageBubble extends StatelessWidget {
   final bool isCurrentUser;
 
   const ChatMessageBubble({
-    Key? key,
+    super.key,
     required this.message,
     required this.isCurrentUser,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       child: Row(
-        mainAxisAlignment: isCurrentUser 
-            ? MainAxisAlignment.end 
-            : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isCurrentUser) ...[
@@ -61,7 +60,7 @@ class ChatMessageBubble extends StatelessWidget {
               ),
             ),
           ],
-          
+
           // Message bubble
           Flexible(
             child: Container(
@@ -96,13 +95,13 @@ class ChatMessageBubble extends StatelessWidget {
                     message.message,
                     style: TextStyle(
                       fontFamily: 'LamaSans',
-                      fontWeight: FontWeight.w400, 
+                      fontWeight: FontWeight.w400,
                       fontSize: 17.sp,
                       color: Colors.black87,
                     ),
                   ),
                   SizedBox(height: 4.h),
-                  
+
                   // Timestamp and read status
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -116,9 +115,7 @@ class ChatMessageBubble extends StatelessWidget {
                       ),
                       SizedBox(width: 4.w),
                       Icon(
-                        message.isRead 
-                            ? Icons.done_all 
-                            : Icons.done,
+                        message.isRead ? Icons.done_all : Icons.done,
                         size: 14.w,
                         color: Colors.blue[200],
                       ),
@@ -128,7 +125,7 @@ class ChatMessageBubble extends StatelessWidget {
               ),
             ),
           ),
-          
+
           if (isCurrentUser) ...[
             // Profile image for current user's messages
             Container(
