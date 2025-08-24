@@ -23,7 +23,7 @@ class SignupChoiceLoading extends StatelessWidget {
             color: AppColors.primaryOrange,
           ),
         ),
-        verticalSpace(40),
+        verticalSpace(60),
       ],
     );
   }

@@ -67,6 +67,10 @@ class AppImages {
       '${AppConstants.profileAssetsPath}stars.png';
   static const String cameraProfile =
       '${AppConstants.profileAssetsPath}profile_camera.png';
+  static const String deleteProfile =
+      '${AppConstants.profileAssetsPath}delete.png';
+  static const String ribbonProfile =
+      '${AppConstants.profileAssetsPath}ribbon.png';
 
   static const String checkCorrect =
       '${AppConstants.authAssetsPath}check-correct.png';
@@ -99,6 +103,12 @@ class AppImages {
   static String success2Blog = '${AppConstants.blogPath}success2.png';
   static String userBlog = '${AppConstants.blogPath}user.png';
 
+  // chat
+  static const String emptyChatImage = 'assets/images/chat/empty_chat.png';
+  static const String settingsIcon = '${AppConstants.chatPath}chat_settings.png';
+  static const String deleteChatIcon = '${AppConstants.chatPath}chat_delete.png';
+  static const String readChatIcon = '${AppConstants.chatPath}read.png';
+
   //Profile Details
   static String block = '${AppConstants.profileAssetsPath}block.png';
   static String like = '${AppConstants.profileAssetsPath}like.png';
@@ -107,5 +117,6 @@ class AppImages {
   static String thumbDown = '${AppConstants.profileAssetsPath}thumb-down.png';
 
   //notification
-  static String emptyNotification = '${AppConstants.notificationAssetsPath}empty_notification.png';
+  static String emptyNotification =
+      '${AppConstants.notificationAssetsPath}empty_notification.png';
 }

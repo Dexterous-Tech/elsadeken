@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
@@ -44,15 +46,19 @@ class NotificationScreen extends StatelessWidget {
                       textDirection: TextDirection.rtl,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          width: 40.w,
-                          height: 40.h,
-                          decoration: ShapeDecoration(
-                              color: AppColors.white,
-                              shape: RoundedRectangleBorder()),
-                          child: Center(
-                            child: GestureDetector(
-                              onTap: () => Navigator.pop(context),
+                        GestureDetector(
+                          onTap: () {
+                            // Return true to indicate that notification count should be refreshed
+                            Navigator.pop(context, true);
+                          },
+                          child: Container(
+                            width: 40.w,
+                            height: 40.h,
+                            decoration: ShapeDecoration(
+                                color: AppColors.white,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8).r)),
+                            child: Center(
                               child: Image.asset(
                                 AppImages.authArrowBack,
                                 width: 14.w,
@@ -95,7 +101,7 @@ class NotificationScreenContent extends StatefulWidget {
 
 class _NotificationScreenContentState extends State<NotificationScreenContent> {
   final ScrollController _scrollController = ScrollController();
-  int _currentPage = 1;
+  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -118,15 +124,30 @@ class _NotificationScreenContentState extends State<NotificationScreenContent> {
     final cubit = context.read<NotificationCubit>();
     final state = cubit.state;
 
-    if (state is NotificationSuccess && state.hasNextPage) {
-      _currentPage++;
-      cubit.getNotifications(page: _currentPage);
+    if (state is NotificationSuccess && state.hasNextPage && !_isLoadingMore) {
+      // Use the current page from the state and increment it
+      final nextPage = state.currentPage + 1;
+      log('Loading more notifications: current page ${state.currentPage}, next page $nextPage, hasNextPage: ${state.hasNextPage}');
+      setState(() {
+        _isLoadingMore = true;
+      });
+      cubit.getNotifications(page: nextPage).then((_) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = false;
+          });
+          log('Pagination loading completed');
+        }
+      });
+    } else {
+      log('Cannot load more: state is ${state.runtimeType}, hasNextPage: ${state is NotificationSuccess ? state.hasNextPage : false}, isLoadingMore: $_isLoadingMore');
     }
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
+      log('Scroll threshold reached, triggering pagination');
       _loadMoreNotifications();
     }
   }
@@ -139,7 +160,11 @@ class _NotificationScreenContentState extends State<NotificationScreenContent> {
   Widget _buildNotificationBody() {
     return BlocConsumer<NotificationCubit, NotificationState>(
       listener: (context, state) {
+        log('Notification state changed to: ${state.runtimeType}');
         if (state is NotificationError) {
+          setState(() {
+            _isLoadingMore = false;
+          });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -149,9 +174,13 @@ class _NotificationScreenContentState extends State<NotificationScreenContent> {
               backgroundColor: Colors.red,
             ),
           );
+        } else if (state is NotificationSuccess) {
+          log('Notification success: ${state.notifications.length} items, page ${state.currentPage}, hasNextPage: ${state.hasNextPage}');
         }
       },
       builder: (context, state) {
+        log('Building notification body with state: ${state.runtimeType}');
+
         if (state is NotificationLoading) {
           return Center(
             child: CircularProgressIndicator(
@@ -201,11 +230,12 @@ class _NotificationScreenContentState extends State<NotificationScreenContent> {
             return const EmptyNotificationsWidget();
           }
 
+          log('Building notification list with ${state.notifications.length} items, isLoadingMore: $_isLoadingMore');
           return NotificationListWidget(
             notifications: state.notifications,
             scrollController: _scrollController,
             hasNextPage: state.hasNextPage,
-            isLoadingMore: false,
+            isLoadingMore: _isLoadingMore,
             onRefresh: _loadNotifications,
           );
         }

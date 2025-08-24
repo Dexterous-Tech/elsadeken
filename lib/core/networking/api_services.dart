@@ -56,7 +56,7 @@ class ApiServices {
   }
 
   // Reusable PUT method
-  Future<Response<T>> put<T>({
+  Future<Response<T>> patch<T>({
     required String endpoint,
     required dynamic requestBody,
     bool requiresAuth = true,
@@ -66,7 +66,7 @@ class ApiServices {
       await DioFactory.addDioHeaders(includeAuth: requiresAuth);
 
       // Perform the PUT request
-      final response = await _dio.put<T>(
+      final response = await _dio.patch<T>(
         '${ApiConstants.baseUrl}$endpoint', // Combine base URL and endpoint
         data: requestBody,
       );

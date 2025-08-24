@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../core/theme/app_color.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/spacing.dart';
+import '../../manager/notification_settings_cubit.dart';
 import 'profile_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,7 +42,11 @@ class ProfileBody extends StatelessWidget {
               ),
             ),
             verticalSpace(15),
-            Expanded(child: ProfileContent()),
+            Expanded(
+                child: BlocProvider(
+              create: (context) => sl<NotificationSettingsCubit>(),
+              child: ProfileContent(),
+            )),
           ],
         ),
       ),

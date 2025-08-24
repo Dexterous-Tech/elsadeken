@@ -9,12 +9,13 @@ class CustomNextAndPreviousButton extends StatelessWidget {
     super.key,
     required this.onNextPressed,
     required this.onPreviousPressed,
-    this.isNextEnabled = true,
+    this.isNextEnabled = true, this.textButton,
   });
 
   final void Function() onNextPressed;
   final void Function() onPreviousPressed;
   final bool isNextEnabled;
+  final String? textButton;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class CustomNextAndPreviousButton extends StatelessWidget {
         Expanded(
           child: CustomElevatedButton(
             onPressed: isNextEnabled ? onNextPressed : () {},
-            textButton: 'التالي',
+            textButton: textButton ?? 'التالي',
             backgroundColor: isNextEnabled
                 ? null // Use default gradient
                 : AppColors.paleBrown.withValues(alpha: 0.5), // Disabled color

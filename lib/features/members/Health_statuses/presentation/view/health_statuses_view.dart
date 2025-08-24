@@ -199,6 +199,7 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                               itemBuilder: (context, index) {
                                 final m = items[index];
                                 final data = HealthStatusData(
+                                  id: m.id,
                                   name: m.name,
                                   age: m.attribute?.age ?? 0,
                                   location:
@@ -234,14 +235,17 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
 }
 
 class HealthStatusData {
+  final int? id;
   final String name;
   final int age;
   final String location;
   final String profileImageUrl;
 
-  HealthStatusData(
-      {required this.name,
-      required this.age,
-      required this.location,
-      required this.profileImageUrl});
+  HealthStatusData({
+    this.id,
+    required this.name,
+    required this.age,
+    required this.location,
+    required this.profileImageUrl,
+  });
 }

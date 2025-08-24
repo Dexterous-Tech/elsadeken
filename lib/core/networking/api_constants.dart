@@ -32,6 +32,7 @@ class ApiConstants {
   static String ignoreUserList = '/user/ignore/list';
   static String userDetails(int userId) => '/user/show-one-user/$userId';
   static String updateImage = '/user/update-image';
+  static String updateProfileLoginData = '/user/update-profile/personal-info';
 
   //search-home
   static String matchesUsers = '/user/home/matches-users';

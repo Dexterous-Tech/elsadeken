@@ -1,6 +1,7 @@
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
+import 'package:elsadeken/features/profile/manage_profile/data/models/update_profile_models.dart';
 import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
 
 class ManageProfileDataSource {
@@ -13,12 +14,19 @@ class ManageProfileDataSource {
 
     return MyProfileResponseModel.fromJson(response.data);
   }
-  
-  Future<ProfileActionResponseModel> deleteAccount() async{
 
-  var response = await _apiServices.delete(endpoint: ApiConstants.deleteUser);
+  Future<ProfileActionResponseModel> deleteAccount() async {
+    var response = await _apiServices.delete(endpoint: ApiConstants.deleteUser);
 
-  return ProfileActionResponseModel.fromJson(response.data);
-  
+    return ProfileActionResponseModel.fromJson(response.data);
+  }
+
+  Future<MyProfileResponseModel> updateProfileLoginData(
+      UpdateProfileLoginDataRequestModel updateProfileData) async {
+    var response = await _apiServices.patch(
+        endpoint: ApiConstants.updateProfileLoginData,
+        requestBody: updateProfileData.toJson());
+
+    return MyProfileResponseModel.fromJson(response.data);
   }
 }

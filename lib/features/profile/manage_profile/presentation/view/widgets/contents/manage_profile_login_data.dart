@@ -1,13 +1,13 @@
-import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
-import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/delete_profile/delete_profile.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ManageProfileLoginData extends StatelessWidget {
   const ManageProfileLoginData({
@@ -41,6 +41,14 @@ class ManageProfileLoginData extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
+          title: 'رقم الهاتف',
+          itemContent: ManageProfileContentText(
+            text: profileData?.phone ?? '',
+            isLoading: isLoading,
+          ),
+        ),
+        ManageProfileCustomSeparator(),
+        ManageProfileContentItem(
           title: 'تاريخ التسجيل',
           itemContent: ManageProfileContentText(
             text: _formatDate(profileData?.createdAt),
@@ -64,7 +72,6 @@ class ManageProfileLoginData extends StatelessWidget {
           ),
         ),
         ManageProfileCustomSeparator(),
-        DeleteProfile(isLoading: isLoading),
         verticalSpace(20),
         ManageProfileEditButton(
           onPressed: isLoading ? null : () => _showLoginDataEditDialog(context),
@@ -105,8 +112,11 @@ class ManageProfileLoginData extends StatelessWidget {
   }
 
   void _showLoginDataEditDialog(BuildContext context) {
+    final updateProfileCubit = context.read<UpdateProfileCubit>();
+
     final dialogData = ManageProfileDialogData(
       title: 'تعديل بيانات تسجيل الدخول',
+      cubit: updateProfileCubit,
       fields: [
         ManageProfileField(
           label: 'اسم المستخدم',
@@ -116,6 +126,13 @@ class ManageProfileLoginData extends StatelessWidget {
           keyboardType: TextInputType.text,
         ),
         ManageProfileField(
+          label: 'رقم الهاتف',
+          hint: 'أدخل رقم الهاتف',
+          currentValue: profileData?.phone ?? '',
+          type: ManageProfileFieldType.text,
+          keyboardType: TextInputType.phone,
+        ),
+        ManageProfileField(
           label: 'البريد الإلكتروني',
           hint: 'أدخل البريد الإلكتروني',
           currentValue: profileData?.email ?? '',
@@ -123,16 +140,20 @@ class ManageProfileLoginData extends StatelessWidget {
           keyboardType: TextInputType.emailAddress,
         ),
         ManageProfileField(
-          label: 'كلمة المرور',
+          label: 'كلمة المرور (اختياري)',
           hint: 'أدخل كلمة المرور الجديدة',
           currentValue: '',
           type: ManageProfileFieldType.password,
+          isRequired: false,
+        ),
+        ManageProfileField(
+          label: 'تأكيد كلمة المرور (اختياري)',
+          hint: 'أدخل تأكيد كلمة المرور',
+          currentValue: '',
+          type: ManageProfileFieldType.password,
+          isRequired: false,
         ),
       ],
-      onSave: () {
-        // Handle save logic here
-        print('Saving login data...');
-      },
     );
 
     manageProfileDialog(context, dialogData);

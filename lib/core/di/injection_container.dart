@@ -22,6 +22,9 @@ import 'package:elsadeken/features/home/notification/presentation/manager/notifi
 import 'package:elsadeken/features/profile/about_us/data/data_source/about_us_data_source.dart';
 import 'package:elsadeken/features/profile/about_us/data/repo/abouts_us_repo.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/manager/about_us_cubit.dart';
+import 'package:elsadeken/features/on_boarding/terms_and_conditions/data/data_source/terms_and_conditions_data_source.dart';
+import 'package:elsadeken/features/on_boarding/terms_and_conditions/data/repo/terms_and_conditions_repo.dart';
+import 'package:elsadeken/features/on_boarding/terms_and_conditions/presentation/manager/terms_and_conditions_cubit.dart';
 import 'package:elsadeken/features/profile/contact_us/data/data_source/contact_us_data_source.dart';
 import 'package:elsadeken/features/profile/contact_us/data/repo/contact_us_repo.dart';
 import 'package:elsadeken/features/profile/contact_us/presentation/manager/contact_us_cubit.dart';
@@ -36,6 +39,7 @@ import 'package:elsadeken/features/profile/interests_list/presentation/manager/f
 import 'package:elsadeken/features/profile/manage_profile/data/data_source/manage_profile_data_source.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/repo/manage_profile_repo.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:elsadeken/features/profile/my_image/data/data_source/my_image_data_source.dart';
 import 'package:elsadeken/features/profile/my_image/data/repo/my_image_repo%20.dart';
 import 'package:elsadeken/features/profile/my_image/presentation/manager/my_image_cubit.dart';
@@ -61,6 +65,7 @@ import 'package:elsadeken/features/search/logic/repository/search_repository_imp
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 
+import '../../features/profile/profile/presentation/manager/notification_settings_cubit.dart';
 import '../../features/search/logic/use_cases/search_use_cases.dart';
 import '../../features/search/presentation/cubit/search_cubit.dart';
 import '../networking/api_services.dart';
@@ -140,6 +145,14 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<AboutsUsRepoInterface>(() => AboutsUsRepoImpl(sl()));
   sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
 
+  // terms and conditions (on_boarding)
+  sl.registerLazySingleton<TermsAndConditionsDataSource>(
+      () => TermsAndConditionsDataSource(sl()));
+  sl.registerLazySingleton<TermsAndConditionsRepoInterface>(
+      () => TermsAndConditionsRepoImpl(sl()));
+  sl.registerFactory<TermsAndConditionsCubit>(
+      () => TermsAndConditionsCubit(sl()));
+
   // contact us
   sl.registerLazySingleton<ContactUsDataSource>(
       () => ContactUsDataSource(sl()));
@@ -158,6 +171,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ManageProfileRepoInterface>(
       () => ManageProfileRepoImp(sl()));
   sl.registerFactory<ManageProfileCubit>(() => ManageProfileCubit(sl()));
+  sl.registerFactory<UpdateProfileCubit>(() => UpdateProfileCubit(sl()));
 
   // Profile Details
   sl.registerLazySingleton<ProfileDetailsDataSource>(
@@ -201,4 +215,6 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<NotificationCubit>(() => NotificationCubit(sl()));
   sl.registerFactory<NotificationCountCubit>(
       () => NotificationCountCubit(sl()));
+  sl.registerFactory<NotificationSettingsCubit>(
+      () => NotificationSettingsCubit());
 }

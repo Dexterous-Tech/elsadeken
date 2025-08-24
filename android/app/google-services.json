@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "717372017853",
+    "project_id": "elsadeken-1",
+    "storage_bucket": "elsadeken-1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717372017853:android:b2fa090199ca33e722bbd4",
+        "android_client_info": {
+          "package_name": "com.example.elsadeken"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-j_CC1q3w0Jy1RfGM4oOItTbcsPKk5xU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

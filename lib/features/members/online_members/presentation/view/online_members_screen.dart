@@ -8,6 +8,7 @@ import 'package:elsadeken/features/members/data/repositories/members_repository.
 import 'package:elsadeken/features/members/logic/cubit/members_cubit.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 
 import '../../../../results/presentation/view/results_screen.dart';
 import '../../../../results/presentation/view/widgets/result_card.dart';
@@ -200,6 +201,7 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                               itemBuilder: (context, index) {
                                 final m = items[index];
                                 final person = PersonData(
+                                  id: m.id,
                                   name: m.name,
                                   age: m.attribute?.age ?? 0,
                                   country: m.attribute?.country ?? '',
@@ -213,7 +215,9 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                   padding:
                                       const EdgeInsets.only(bottom: 12),
                                   child: PersonCardWidget(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.pushNamed(context, AppRoutes.profileDetailsScreen, arguments: m.id);
+                                    },
                                     personData: person,
                                   ),
                                 );

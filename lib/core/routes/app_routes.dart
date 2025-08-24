@@ -34,4 +34,9 @@ class AppRoutes {
   static const String profileMyImageScreen = '/profileMyImageScreen';
   static const String blogScreen = '/blogScreen';
   static const String successStoriesScreen = '/successStoriesScreen';
+  static const String termsAndConditionsScreen = '/termsAndConditionsScreen';
+
+  // Chat routes
+  static const String chatConversationScreen = '/chat-conversation';
+  static const String chatSettingsScreen = '/chat-settings';
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 
 import '../../../../special_members/presentation/view/special_members_screen.dart';
 import '../premium_members_screen.dart';
@@ -15,12 +16,9 @@ class PremiumMemberCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SpecialMembersScreen(),
-          ),
-        );
+        if (personData.id != null) {
+          Navigator.pushNamed(context, AppRoutes.profileDetailsScreen, arguments: personData.id);
+        }
       },
       child: Container(
         padding: const EdgeInsets.all(16),

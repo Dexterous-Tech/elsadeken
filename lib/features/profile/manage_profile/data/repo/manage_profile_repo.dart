@@ -5,11 +5,14 @@ import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/data_source/manage_profile_data_source.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
+import 'package:elsadeken/features/profile/manage_profile/data/models/update_profile_models.dart';
 import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
 
 abstract class ManageProfileRepoInterface {
   Future<Either<ApiErrorModel, MyProfileResponseModel>> getProfile();
   Future<Either<ApiErrorModel, ProfileActionResponseModel>> deleteAccount();
+  Future<Either<ApiErrorModel, MyProfileResponseModel>> updateProfileLoginData(
+      UpdateProfileLoginDataRequestModel updateProfileData);
 }
 
 class ManageProfileRepoImp implements ManageProfileRepoInterface {
@@ -38,6 +41,22 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
       return Right(response);
     } catch (error) {
       log("error in delete profile $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, MyProfileResponseModel>> updateProfileLoginData(
+      UpdateProfileLoginDataRequestModel updateProfileData) async {
+    try {
+      var response = await manageProfileDataSource
+          .updateProfileLoginData(updateProfileData);
+      return Right(response);
+    } catch (error) {
+      log("error in update profile login data $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'widgets/manage_profile_body.dart';
@@ -10,8 +11,11 @@ class ManageProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<ManageProfileCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => sl<ManageProfileCubit>()),
+        BlocProvider(create: (context) => sl<UpdateProfileCubit>()),
+      ],
       child: Scaffold(body: ManageProfileBody()),
     );
   }

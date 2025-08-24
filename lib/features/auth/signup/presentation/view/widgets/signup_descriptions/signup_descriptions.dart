@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/widgets/custom_radio.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +9,7 @@ import '../../../../../../../core/theme/spacing.dart';
 import '../../../../../../../core/widgets/forms/custom_text_form_field.dart';
 import '../custom_next_and_previous_button.dart';
 
-class SignupDescriptions extends StatelessWidget {
+class SignupDescriptions extends StatefulWidget {
   const SignupDescriptions({
     super.key,
     required this.onNextPressed,
@@ -17,6 +18,13 @@ class SignupDescriptions extends StatelessWidget {
 
   final void Function() onNextPressed;
   final void Function() onPreviousPressed;
+
+  @override
+  State<SignupDescriptions> createState() => _SignupDescriptionsState();
+}
+
+class _SignupDescriptionsState extends State<SignupDescriptions> {
+  bool agreedToTerms = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +49,6 @@ class SignupDescriptions extends StatelessWidget {
                     keyboardType: TextInputType.text,
                     hintText: 'اكتب',
                     maxLines: 5,
-                    // inputFormatters: [
-                    //   // Allow only Arabic & English letters and spaces
-                    //   FilteringTextInputFormatter.allow(
-                    //       RegExp(r'[a-zA-Z\u0600-\u06FF\s]')),
-                    // ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'هذا الحقل مطلوب';
@@ -86,11 +89,6 @@ class SignupDescriptions extends StatelessWidget {
                     keyboardType: TextInputType.emailAddress,
                     hintText: 'اكتب',
                     maxLines: 5,
-                    // inputFormatters: [
-                    //   // Allow only Arabic & English letters and spaces
-                    //   FilteringTextInputFormatter.allow(
-                    //       RegExp(r'[a-zA-Z\u0600-\u06FF\s]')),
-                    // ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'هذا الحقل مطلوب';
@@ -121,10 +119,31 @@ class SignupDescriptions extends StatelessWidget {
 
                   verticalSpace(50),
 
+                  Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      CustomRadio(
+                        value: agreedToTerms,
+                        onChanged: () {
+                          setState(() {
+                            agreedToTerms = !agreedToTerms;
+                          });
+                        },
+                      ),
+                      horizontalSpace(10),
+                      Text(
+                        'أوافق على الشروط والأحكام',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font14PumpkinOrangeBoldLamaSans,
+                      ),
+                    ],
+                  ),
+                  verticalSpace(40),
                   Spacer(),
                   CustomNextAndPreviousButton(
-                    onNextPressed: onNextPressed,
-                    onPreviousPressed: onPreviousPressed,
+                    textButton: 'تسجيل الدخول',
+                    onNextPressed: widget.onNextPressed,
+                    onPreviousPressed: widget.onPreviousPressed,
                     isNextEnabled: _canProceedToNext(cubit),
                   ),
                 ],
@@ -141,6 +160,10 @@ class SignupDescriptions extends StatelessWidget {
     bool hasAboutMe = cubit.aboutMeController.text.trim().isNotEmpty;
     bool hasPartner = cubit.lifePartnerController.text.trim().isNotEmpty;
 
-    return hasAboutMe && hasPartner;
+    // Check if user agreed to terms and conditions
+    bool agreedToTerms = this.agreedToTerms;
+
+    // All conditions must be met to proceed
+    return hasAboutMe && hasPartner && agreedToTerms;
   }
 }
