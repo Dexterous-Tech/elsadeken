@@ -7,6 +7,7 @@ import 'package:elsadeken/features/auth/signup/presentation/view/signup_screen.d
 import 'package:elsadeken/features/auth/verification_email/presentation/view/verification_email_screen.dart';
 import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart';
 import 'package:elsadeken/features/home/notification/presentation/view/notification_screen.dart';
+import 'package:elsadeken/features/home/person_details/view/person_details.dart';
 import 'package:elsadeken/features/on_boarding/presentation/view/on_boarding_screen.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_screen.dart';
 import 'package:elsadeken/features/profile/blog/presentation/cubit/blog_cubit.dart';
@@ -101,6 +102,15 @@ class AppRouting {
         }
         return MaterialPageRoute(
             builder: (_) => ProfileDetailsScreen(userId: userId));
+      case AppRoutes.personDetailsScreen:
+        final args = arguments as Map<String, dynamic>;
+        final personId = args['personId'] as int;
+        final imageUrl = args['imageUrl'] as String;
+        return MaterialPageRoute(
+            builder: (_) => PersonDetailsView(
+                  personId: personId,
+                  imageUrl: imageUrl,
+                ));
       case AppRoutes.profileAboutUsScreen:
         return MaterialPageRoute(builder: (_) => AboutUsScreen());
       case AppRoutes.profileExcellencePackageScreen:

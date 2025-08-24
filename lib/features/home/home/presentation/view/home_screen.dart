@@ -118,19 +118,28 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       setState(() {
-        currentUsers.addAll(data.map((userJson) => UserModel(
-              //
-              id: userJson['id'],
-              name: userJson['name'],
-              age: userJson['age'],
-              profession: userJson['job'],
-              location: '${userJson['city']}, ${userJson['country']}',
-              imageUrl: userJson['image'],
-              matchPercentage: userJson['match_percentage'] is int
-                  ? userJson['match_percentage']
-                  : (userJson['match_percentage'] as double).round(),
-              isFavorite: userJson['is_favorite'] == 1,
-            )));
+        currentUsers.addAll(data.map((userJson) {
+          print("Processing user JSON: $userJson");
+          print("User ID: ${userJson['id']}, Name: ${userJson['name']}");
+
+          return UserModel(
+            //
+            id: userJson['id'],
+            name: userJson['name'],
+            age: userJson['age'],
+            profession: userJson['job'],
+            location: '${userJson['city']}, ${userJson['country']}',
+            imageUrl: userJson['image'],
+            matchPercentage: userJson['match_percentage'] is int
+                ? userJson['match_percentage']
+                : (userJson['match_percentage'] as double).round(),
+            isFavorite: userJson['is_favorite'] == 1,
+          );
+        }));
+
+        print("Total users loaded: ${currentUsers.length}");
+        print(
+            "First user ID: ${currentUsers.isNotEmpty ? currentUsers.first.id : 'No users'}");
 
         hasMore = response.data['links']['next'] != null;
         if (hasMore) currentPage++;

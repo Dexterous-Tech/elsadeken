@@ -12,6 +12,7 @@ class AppConstants {
   static const String blogPath = 'assets/images/blog/';
   static const String chatPath = 'assets/images/chat/';
 
+  static const String notificationAssetsPath = 'assets/images/notification/';
   // svg
   static const String svgAssetsPath = 'assets/svg/';
   // lottie

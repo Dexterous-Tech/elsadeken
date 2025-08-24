@@ -102,7 +102,8 @@ flutter:
     - assets/images/special_members/
     - assets/images/members/
     - assets/images/members/menu_items/
-    - assets/lottie/
+    - assets/images/notification/
+    - assets/lottie/    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

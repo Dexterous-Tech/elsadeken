@@ -2,11 +2,15 @@ import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/widgets/custom_image_network.dart';
+import 'package:elsadeken/features/home/home/presentation/view/widgets/home_notification.dart';
+import 'package:elsadeken/features/home/notification/presentation/manager/notification_count_cubit.dart';
 import 'package:elsadeken/features/home/notification/presentation/view/notification_screen.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../../core/di/injection_container.dart';
 
 class HomeHeader extends StatefulWidget {
   const HomeHeader({super.key});
@@ -175,30 +179,9 @@ class _HomeHeaderState extends State<HomeHeader> {
           },
         ),
         Spacer(),
-        GestureDetector(
-          child: Container(
-            width: 47.w,
-            height: 47.h,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color(0xffFCF8F5),
-            ),
-            child: Center(
-              child: Image.asset(
-                'assets/images/home/home_notification.png',
-                width: 22.w,
-                height: 20.h,
-              ),
-            ),
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NotificationScreen(),
-              ),
-            );
-          },
+        BlocProvider(
+          create: (context) => sl<NotificationCountCubit>(),
+          child: HomeNotification(),
         ),
       ],
     );

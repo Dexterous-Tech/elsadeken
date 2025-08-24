@@ -111,4 +111,7 @@ class AppImages {
   static String share = '${AppConstants.profileAssetsPath}share.png';
   static String message = '${AppConstants.profileAssetsPath}message.png';
   static String thumbDown = '${AppConstants.profileAssetsPath}thumb-down.png';
+
+  //notification
+  static String emptyNotification = '${AppConstants.notificationAssetsPath}empty_notification.png';
 }
