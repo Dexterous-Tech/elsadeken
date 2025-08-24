@@ -5,7 +5,6 @@ import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
-import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.dart';
 
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
@@ -21,7 +20,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../members/members_section/view/members_screen.dart';
-import '../../../notification/presentation/view/notification_screen.dart';
 import '../../data/models/user_model.dart';
 import 'package:elsadeken/features/chat/presentation/view/chat_page.dart';
 
