@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 
 class ChatOptionsCard extends StatelessWidget {
   const ChatOptionsCard({Key? key}) : super(key: key);
@@ -32,7 +33,7 @@ class ChatOptionsCard extends StatelessWidget {
             text: 'إعدادات الرسائل',
             iconColor: Colors.grey.shade100,
             onTap: () {
-              // Navigate to message settings
+              Navigator.pushNamed(context, AppRoutes.chatSettingsScreen);
             },
           ),
           
