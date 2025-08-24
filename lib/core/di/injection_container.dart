@@ -36,6 +36,7 @@ import 'package:elsadeken/features/profile/interests_list/presentation/manager/f
 import 'package:elsadeken/features/profile/manage_profile/data/data_source/manage_profile_data_source.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/repo/manage_profile_repo.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:elsadeken/features/profile/my_image/data/data_source/my_image_data_source.dart';
 import 'package:elsadeken/features/profile/my_image/data/repo/my_image_repo%20.dart';
 import 'package:elsadeken/features/profile/my_image/presentation/manager/my_image_cubit.dart';
@@ -159,6 +160,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ManageProfileRepoInterface>(
       () => ManageProfileRepoImp(sl()));
   sl.registerFactory<ManageProfileCubit>(() => ManageProfileCubit(sl()));
+  sl.registerFactory<UpdateProfileCubit>(() => UpdateProfileCubit(sl()));
 
   // Profile Details
   sl.registerLazySingleton<ProfileDetailsDataSource>(

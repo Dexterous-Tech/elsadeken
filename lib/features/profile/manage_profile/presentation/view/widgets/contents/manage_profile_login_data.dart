@@ -5,7 +5,9 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/view/widg
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ManageProfileLoginData extends StatelessWidget {
   const ManageProfileLoginData({
@@ -110,8 +112,11 @@ class ManageProfileLoginData extends StatelessWidget {
   }
 
   void _showLoginDataEditDialog(BuildContext context) {
+    final updateProfileCubit = context.read<UpdateProfileCubit>();
+
     final dialogData = ManageProfileDialogData(
       title: 'تعديل بيانات تسجيل الدخول',
+      cubit: updateProfileCubit,
       fields: [
         ManageProfileField(
           label: 'اسم المستخدم',
@@ -119,6 +124,13 @@ class ManageProfileLoginData extends StatelessWidget {
           currentValue: profileData?.name ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.text,
+        ),
+        ManageProfileField(
+          label: 'رقم الهاتف',
+          hint: 'أدخل رقم الهاتف',
+          currentValue: profileData?.phone ?? '',
+          type: ManageProfileFieldType.text,
+          keyboardType: TextInputType.phone,
         ),
         ManageProfileField(
           label: 'البريد الإلكتروني',
@@ -133,10 +145,13 @@ class ManageProfileLoginData extends StatelessWidget {
           currentValue: '',
           type: ManageProfileFieldType.password,
         ),
+        ManageProfileField(
+          label: 'تأكيد كلمة المرور',
+          hint: 'أدخل تأكيد كلمة المرور',
+          currentValue: '',
+          type: ManageProfileFieldType.password,
+        ),
       ],
-      onSave: () {
-        // Handle save logic here
-      },
     );
 
     manageProfileDialog(context, dialogData);
