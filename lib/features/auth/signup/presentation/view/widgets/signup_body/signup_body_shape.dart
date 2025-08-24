@@ -84,7 +84,7 @@ class _SignupBodyShapeState extends State<SignupBodyShape> {
                         )
                       else
                         SignupMultiChoice(
-                          height: 215.h,
+                          height: 220.h,
                           title: 'ما هي لون بشرتك ؟',
                           options: _skinColors
                               .map((skin) => skin.name ?? '')
@@ -117,7 +117,7 @@ class _SignupBodyShapeState extends State<SignupBodyShape> {
                         )
                       else
                         SignupMultiChoice(
-                          height: 55.h,
+                          height: 120.h,
                           title: 'ما هي بنيه الجسم ؟',
                           options: _physiques
                               .map((physique) => physique.name ?? '')

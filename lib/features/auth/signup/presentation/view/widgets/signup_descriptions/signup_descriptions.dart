@@ -138,7 +138,7 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                       ),
                     ],
                   ),
-
+                  verticalSpace(40),
                   Spacer(),
                   CustomNextAndPreviousButton(
                     textButton: 'تسجيل الدخول',

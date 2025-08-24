@@ -5,8 +5,10 @@ import '../../../core/theme/app_color.dart';
 import '../../../core/theme/app_text_styles.dart';
 
 class ContainerSuccessWay extends StatelessWidget {
-  const ContainerSuccessWay({super.key});
+  const ContainerSuccessWay({super.key, this.text});
+  
 
+  final String ?text;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -14,7 +16,7 @@ class ContainerSuccessWay extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 15.h),
       child: Center(
         child: Text(
-          'دليلـــــك نحــــــو النجــــــــاح',
+          text ?? 'دليلـــــك نحــــــو النجــــــــاح',
           style: AppTextStyles.font20LightOrangeMediumLamaSans
               .copyWith(color: AppColors.jasper),
         ),

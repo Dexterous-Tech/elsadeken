@@ -52,7 +52,7 @@ class _SignupAdditionsState extends State<SignupAdditions> {
                 children: [
                   // status
                   SignupMultiChoice(
-                    height: 105.h,
+                    height: 110.h,
                     title: 'التدخين ؟',
                     options: smokingOptions.values.toList(),
                     selected: smokingOptions[cubit.smokingController.text],
@@ -74,7 +74,7 @@ class _SignupAdditionsState extends State<SignupAdditions> {
 
                   // multi wives
                   SignupMultiChoice(
-                      height: 160.h,
+                      height: 170.h,
                       title: widget.gender == 'male'
                           ? 'هل تفضل أن ترتدي شريكتك الحجاب؟'
                           : 'الحجاب ؟',

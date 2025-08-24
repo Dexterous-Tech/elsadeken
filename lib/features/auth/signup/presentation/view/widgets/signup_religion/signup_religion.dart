@@ -53,7 +53,7 @@ class _SignupReligionState extends State<SignupReligion> {
                 children: [
                   // status
                   SignupMultiChoice(
-                    height: 160.h,
+                    height: 170.h,
                     title: 'ما هي التزامك الديني ؟',
                     options: religionOptions.values.toList(),
                     selected: religionOptions[
@@ -76,7 +76,7 @@ class _SignupReligionState extends State<SignupReligion> {
 
                   // multi wives
                   SignupMultiChoice(
-                    height: 160.h,
+                    height: 170.h,
                     title: 'الصلاه ؟',
                     options: prayerOptions.values.toList(),
                     selected: prayerOptions[cubit.prayerController.text],

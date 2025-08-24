@@ -72,7 +72,7 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
                 children: [
                   // Marital Status
                   SignupMultiChoice(
-                    height : 215.h  ,
+                    height: 220.h,
                     title: 'ما هي الحالة الاجتماعية ؟',
                     options: maritalStatusOptions.values.toList(),
                     selected: maritalStatusOptions[
@@ -95,7 +95,7 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
 
                   // Type of Marriage - show for both genders
                   SignupMultiChoice(
-                    height : 105.h ,
+                    height: 110.h,
                     title: 'ما هو نوع الزواج ؟',
                     options: typeOfMarriageOptions.values.toList(),
                     selected: typeOfMarriageOptions[

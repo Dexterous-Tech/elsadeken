@@ -66,4 +66,9 @@ class MyImageCubit extends Cubit<MyImageState> {
       emit(MyImageSuccess(r));
     });
   }
+
+  void deleteImage() {
+    image = null;
+    emit(MyImageInitial());
+  }
 }

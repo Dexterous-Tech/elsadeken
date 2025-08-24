@@ -1,6 +1,4 @@
 import 'package:elsadeken/core/helper/app_images.dart';
-import 'package:elsadeken/core/helper/extensions.dart';
-import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -57,6 +55,7 @@ class ProfileDetailsLogo extends StatelessWidget {
                     )
                   : Stack(
                       alignment: Alignment.bottomCenter,
+                      clipBehavior: Clip.none,
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(100),
@@ -66,29 +65,30 @@ class ProfileDetailsLogo extends StatelessWidget {
                             height: 145.h,
                           ),
                         ),
-                        Positioned(
-                          child: Container(
-                            width: 32.w,
-                            height: 32.h,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(AppImages.ribbonProfile),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'عضو مميز',
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles
-                                    .font16PaleBrownRegularLamaSans
-                                    .copyWith(color: AppColors.white),
-                              ),
-                            ),
-                          ),
-                        ),
+                        // Positioned(
+                        //   top: 40,
+                        //   child: Container(
+                        //     width: 170,
+                        //     height: 170,
+                        //     decoration: BoxDecoration(
+                        //       image: DecorationImage(
+                        //         image: AssetImage(AppImages.ribbonProfile),
+                        //       ),
+                        //     ),
+                        //     child: Center(
+                        //       child: Text(
+                        //         'عضو مميز',
+                        //         textAlign: TextAlign.center,
+                        //         style: AppTextStyles
+                        //             .font16PaleBrownRegularLamaSans
+                        //             .copyWith(color: AppColors.white),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
-              verticalSpace(16),
+              verticalSpace(30),
               isLoading
                   ? SizedBox(
                       width: 20.w,
