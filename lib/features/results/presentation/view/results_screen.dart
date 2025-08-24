@@ -125,6 +125,7 @@ class _SearchResultsViewState extends State<SearchResultsView> {
 }
 
 class PersonData {
+  final int? id;
   final String name;
   final int age;
   final String country;
@@ -134,6 +135,7 @@ class PersonData {
   final bool isOnline;
 
   PersonData({
+    this.id,
     required this.name,
     required this.age,
     required this.country,

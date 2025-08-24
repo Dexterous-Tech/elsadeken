@@ -220,6 +220,7 @@ class _NewMembersViewState extends State<NewMembersView> {
                                 itemBuilder: (context, index) {
                                   final m = items[index];
                                   final data = NewMemberData(
+                                    id: m.id,
                                     name: m.name,
                                     age: m.attribute?.age ?? 0,
                                     location:
@@ -253,6 +254,7 @@ class _NewMembersViewState extends State<NewMembersView> {
 }
 
 class NewMemberData {
+  final int? id;
   final String name;
   final int age;
   final String location;
@@ -260,6 +262,7 @@ class NewMemberData {
   final bool isOnline;
 
   NewMemberData({
+    this.id,
     required this.name,
     required this.age,
     required this.location,
