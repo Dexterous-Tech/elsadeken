@@ -32,6 +32,9 @@ import 'package:elsadeken/features/search/presentation/view/search_page.dart';
 import 'package:elsadeken/features/splash/presentation/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/features/chat/presentation/view/chat_conversation_screen.dart';
+import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
+import 'package:elsadeken/features/chat/presentation/view/chat_settings_screen.dart';
 
 import '../../features/profile/my_ignoring_list/presentation/view/my_ignoring_list_screen.dart';
 
@@ -143,6 +146,16 @@ class AppRouting {
             value: sl<BlogCubit>()..loadBlogs(),
             child: BlogScreen(),
           ),
+        );
+      case AppRoutes.chatConversationScreen:
+        final args = arguments as Map<String, dynamic>;
+        final chatRoom = args['chatRoom'] as ChatRoomModel;
+        return MaterialPageRoute(
+          builder: (_) => ChatConversationScreen(chatRoom: chatRoom),
+        );
+      case AppRoutes.chatSettingsScreen:
+        return MaterialPageRoute(
+          builder: (_) => const ChatSettingsScreen(),
         );
       default:
         return MaterialPageRoute(builder: (_) => Scaffold());

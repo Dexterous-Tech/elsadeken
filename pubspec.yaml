@@ -91,6 +91,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/home/
+    - assets/images/icons/
     - assets/images/splash/
     - assets/images/on_boarding/
     - assets/images/auth/
