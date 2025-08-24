@@ -157,16 +157,7 @@ class ContactUsBody extends StatelessWidget {
                                       width: 17.w,
                                       height: 17.h,
                                     ),
-                                    horizontalSpace(13),
-                                    Text(
-                                      'تحدث معنا',
-                                      style: AppTextStyles
-                                          .font13BlackMediumLamaSans
-                                          .copyWith(
-                                              fontFamily: FontFamilyHelper
-                                                  .lamaSansArabic,
-                                              color: AppColors.sinopia),
-                                    )
+                                  
                                   ],
                                 ),
                               ),

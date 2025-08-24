@@ -1,6 +1,7 @@
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_choice_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../../core/theme/spacing.dart';
 import '../../../../data/models/general_info_models.dart';
@@ -67,74 +68,94 @@ class _SignupBodyShapeState extends State<SignupBodyShape> {
         }
       },
       builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            // Skin Color Selection
-            if (_isLoadingSkinColors)
-              SignupChoiceLoading(
-                title: 'ما هي لون بشرتك ؟',
-              )
-            else
-              SignupMultiChoice(
-                title: 'ما هي لون بشرتك ؟',
-                options: _skinColors.map((skin) => skin.name ?? '').toList(),
-                selected: _selectedSkin?.name,
-                onChanged: (newStatus) {
-                  final selectedSkin = _skinColors.firstWhere(
-                    (skin) => skin.name == newStatus,
-                    orElse: () => GeneralInfoResponseModels(),
-                  );
-                  setState(() {
-                    _selectedSkin = selectedSkin;
-                  });
-                  // Store the ID in the signup cubit
-                  if (selectedSkin.id != null) {
-                    context.read<SignupCubit>().skinColorController.text =
-                        selectedSkin.id.toString();
-                  }
-                },
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      // Skin Color Selection
+                      if (_isLoadingSkinColors)
+                        SignupChoiceLoading(
+                          title: 'ما هي لون بشرتك ؟',
+                        )
+                      else
+                        SignupMultiChoice(
+                          height: 215.h,
+                          title: 'ما هي لون بشرتك ؟',
+                          options: _skinColors
+                              .map((skin) => skin.name ?? '')
+                              .toList(),
+                          selected: _selectedSkin?.name,
+                          onChanged: (newStatus) {
+                            final selectedSkin = _skinColors.firstWhere(
+                              (skin) => skin.name == newStatus,
+                              orElse: () => GeneralInfoResponseModels(),
+                            );
+                            setState(() {
+                              _selectedSkin = selectedSkin;
+                            });
+                            // Store the ID in the signup cubit
+                            if (selectedSkin.id != null) {
+                              context
+                                  .read<SignupCubit>()
+                                  .skinColorController
+                                  .text = selectedSkin.id.toString();
+                            }
+                          },
+                        ),
+
+                      verticalSpace(40),
+
+                      // Body Physique Selection
+                      if (_isLoadingPhysiques)
+                        SignupChoiceLoading(
+                          title: 'ما هي بنيه الجسم ؟',
+                        )
+                      else
+                        SignupMultiChoice(
+                          height: 55.h,
+                          title: 'ما هي بنيه الجسم ؟',
+                          options: _physiques
+                              .map((physique) => physique.name ?? '')
+                              .toList(),
+                          selected: _selectedBody?.name,
+                          onChanged: (newStatus) {
+                            final selectedPhysique = _physiques.firstWhere(
+                              (physique) => physique.name == newStatus,
+                              orElse: () => GeneralInfoResponseModels(),
+                            );
+                            setState(() {
+                              _selectedBody = selectedPhysique;
+                            });
+                            // Store the ID in the signup cubit
+                            if (selectedPhysique.id != null) {
+                              context
+                                  .read<SignupCubit>()
+                                  .physiqueController
+                                  .text = selectedPhysique.id.toString();
+                            }
+                          },
+                        ),
+
+                      verticalSpace(50),
+
+                      Spacer(),
+
+                      CustomNextAndPreviousButton(
+                        onNextPressed: widget.onNextPressed,
+                        onPreviousPressed: widget.onPreviousPressed,
+                        isNextEnabled: _canProceedToNext(),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-
-            verticalSpace(40),
-
-            // Body Physique Selection
-            if (_isLoadingPhysiques)
-              SignupChoiceLoading(
-                title: 'ما هي بنيه الجسم ؟',
-              )
-            else
-              SignupMultiChoice(
-                title: 'ما هي بنيه الجسم ؟',
-                options:
-                    _physiques.map((physique) => physique.name ?? '').toList(),
-                selected: _selectedBody?.name,
-                onChanged: (newStatus) {
-                  final selectedPhysique = _physiques.firstWhere(
-                    (physique) => physique.name == newStatus,
-                    orElse: () => GeneralInfoResponseModels(),
-                  );
-                  setState(() {
-                    _selectedBody = selectedPhysique;
-                  });
-                  // Store the ID in the signup cubit
-                  if (selectedPhysique.id != null) {
-                    context.read<SignupCubit>().physiqueController.text =
-                        selectedPhysique.id.toString();
-                  }
-                },
-              ),
-
-            verticalSpace(50),
-
-            Spacer(),
-
-            CustomNextAndPreviousButton(
-              onNextPressed: widget.onNextPressed,
-              onPreviousPressed: widget.onPreviousPressed,
-              isNextEnabled: _canProceedToNext(),
-            ),
-          ],
+            );
+          },
         );
       },
     );

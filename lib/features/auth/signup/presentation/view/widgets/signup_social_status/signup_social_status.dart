@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../../core/theme/spacing.dart';
 import '../../../manager/signup_cubit.dart';
@@ -27,14 +28,14 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
   Map<String, String> get maritalStatusOptions {
     if (widget.gender.toLowerCase() == 'male') {
       return {
-        'single': 'أعزب',
+        'single': 'عازب',
         'married': 'متزوج',
         'divorced': 'مطلق',
         'widwed': 'أرمل',
       };
     } else {
       return {
-        'single': 'عزباء',
+        'single': 'آنسة',
         'divorced': 'مطلقة',
         'widwed': 'أرملة',
       };
@@ -42,10 +43,19 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
   }
 
   // Type of marriage options
-  final Map<String, String> typeOfMarriageOptions = {
-    'only_one': 'الزوجة الوحيدة',
-    'multi': 'لا مانع من تعدد الزوجات',
-  };
+  Map<String, String> get typeOfMarriageOptions {
+    if (widget.gender.toLowerCase() == 'male') {
+      return {
+        'only_one': 'زوجة اولي',
+        'multi': 'زوجة ثانية',
+      };
+    } else {
+      return {
+        'only_one': 'الزوج الوحيد',
+        'multi': 'لا مانع من تعدل الزوجات',
+      };
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +72,7 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
                 children: [
                   // Marital Status
                   SignupMultiChoice(
+                    height : 215.h  ,
                     title: 'ما هي الحالة الاجتماعية ؟',
                     options: maritalStatusOptions.values.toList(),
                     selected: maritalStatusOptions[
@@ -84,6 +95,7 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
 
                   // Type of Marriage - show for both genders
                   SignupMultiChoice(
+                    height : 105.h ,
                     title: 'ما هو نوع الزواج ؟',
                     options: typeOfMarriageOptions.values.toList(),
                     selected: typeOfMarriageOptions[

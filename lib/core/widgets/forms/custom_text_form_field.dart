@@ -6,7 +6,7 @@ import '../../theme/app_color.dart';
 import '../../theme/app_text_styles.dart';
 
 class CustomTextFormField extends StatelessWidget {
-   CustomTextFormField({
+  CustomTextFormField({
     super.key,
     required this.hintText,
     this.hintStyle,
@@ -32,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
     this.onChanged,
     this.borderColor,
     this.inputFormatters,
+    this.style,
   });
 
   final String? hintText;
@@ -60,6 +61,7 @@ class CustomTextFormField extends StatelessWidget {
   final void Function(String)? onChanged;
   final Color? borderColor;
   final List<TextInputFormatter>? inputFormatters;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +70,7 @@ class CustomTextFormField extends StatelessWidget {
       child: TextFormField(
         textDirection: TextDirection.rtl,
         textAlign: TextAlign.right,
+        style: style ?? AppTextStyles.font16ChineseBlackMediumLamaSans,
         obscureText: obscureText ?? false,
         controller: controller,
         validator: (value) {
@@ -84,9 +87,12 @@ class CustomTextFormField extends StatelessWidget {
         inputFormatters: inputFormatters,
         decoration: InputDecoration(
           hintTextDirection: TextDirection.rtl,
+
           hintText: hintText,
-          hintStyle:
-              hintStyle ?? AppTextStyles.font16ChineseBlackMediumLamaSans,
+          hintStyle: hintStyle ??
+              AppTextStyles.font16PaleBrownRegularLamaSans.copyWith(
+                color: AppColors.lightGray,
+              ),
           labelText: labelText,
           labelStyle:
               labelStyle ?? AppTextStyles.font16ChineseBlackMediumLamaSans,

@@ -69,6 +69,8 @@ class AppImages {
       '${AppConstants.profileAssetsPath}profile_camera.png';
   static const String deleteProfile =
       '${AppConstants.profileAssetsPath}delete.png';
+  static const String ribbonProfile =
+      '${AppConstants.profileAssetsPath}ribbon.png';
 
   static const String checkCorrect =
       '${AppConstants.authAssetsPath}check-correct.png';
@@ -109,5 +111,6 @@ class AppImages {
   static String thumbDown = '${AppConstants.profileAssetsPath}thumb-down.png';
 
   //notification
-  static String emptyNotification = '${AppConstants.notificationAssetsPath}empty_notification.png';
+  static String emptyNotification =
+      '${AppConstants.notificationAssetsPath}empty_notification.png';
 }

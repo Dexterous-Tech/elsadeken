@@ -2,6 +2,7 @@ import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/custom_next_and_previous_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../../core/theme/spacing.dart';
 
 import '../signup_multi_choice.dart';
@@ -51,6 +52,7 @@ class _SignupAdditionsState extends State<SignupAdditions> {
                 children: [
                   // status
                   SignupMultiChoice(
+                    height: 105.h,
                     title: 'التدخين ؟',
                     options: smokingOptions.values.toList(),
                     selected: smokingOptions[cubit.smokingController.text],
@@ -72,6 +74,7 @@ class _SignupAdditionsState extends State<SignupAdditions> {
 
                   // multi wives
                   SignupMultiChoice(
+                      height: 160.h,
                       title: widget.gender == 'male'
                           ? 'هل تفضل أن ترتدي شريكتك الحجاب؟'
                           : 'الحجاب ؟',

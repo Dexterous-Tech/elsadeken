@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:vs_scrollbar/vs_scrollbar.dart';
 import '../../manager/sign_up_lists_cubit.dart';
 
 enum ListType { nationality, country, city }
@@ -38,6 +39,7 @@ class CustomSearchableList extends StatefulWidget {
 
 class _CustomSearchableListState extends State<CustomSearchableList> {
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   List<ListItemModel> _filteredItems = [];
   List<ListItemModel> _allItems = [];
 
@@ -61,6 +63,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -253,42 +256,60 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
     }
 
     if (isSuccess && _filteredItems.isNotEmpty) {
-      return ListView.separated(
-        itemCount: _filteredItems.length,
-        separatorBuilder: (context, index) => verticalSpace(15),
-        itemBuilder: (context, index) {
-          final item = _filteredItems[index];
-          final isSelected = widget.selectedItem?.id == item.id;
+      return Directionality(
+        textDirection: TextDirection.ltr,
+        child: VsScrollbar(
+          controller: _scrollController,
+          showTrackOnHover: true,
+          isAlwaysShown: true,
+          scrollbarFadeDuration: const Duration(milliseconds: 500),
+          scrollbarTimeToFade: const Duration(milliseconds: 800),
+          style: VsScrollbarStyle(
+            hoverThickness: 5.0,
+            radius: const Radius.circular(10),
+            thickness: 8.0,
+            color: AppColors.desire.withValues(alpha: 0.474),
+          ),
+          child: ListView.separated(
+            controller: _scrollController,
+            physics: const BouncingScrollPhysics(),
+            itemCount: _filteredItems.length,
+            separatorBuilder: (context, index) => verticalSpace(15),
+            itemBuilder: (context, index) {
+              final item = _filteredItems[index];
+              final isSelected = widget.selectedItem?.id == item.id;
 
-          return Container(
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? AppColors.sunsetOrange.withValues(alpha: 0.08)
-                  : Colors.transparent,
-            ),
-            child: Directionality(
-              textDirection: TextDirection.rtl,
-              child: ListTile(
-                title: Text(
-                  item.name ?? '',
+              return Container(
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? AppColors.sunsetOrange.withValues(alpha: 0.08)
+                      : Colors.transparent,
+                ),
+                child: Directionality(
                   textDirection: TextDirection.rtl,
-                  style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
-                    color: AppColors.chineseBlack,
-                    fontWeight: FontWeightHelper.bold,
+                  child: ListTile(
+                    title: Text(
+                      item.name ?? '',
+                      textDirection: TextDirection.rtl,
+                      style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+                        color: AppColors.chineseBlack,
+                        fontWeight: FontWeightHelper.bold,
+                      ),
+                    ),
+                    trailing: isSelected
+                        ? SvgPicture.asset(
+                            AppSvg.checkCircle,
+                            width: 16.w,
+                            height: 16.h,
+                          )
+                        : null,
+                    onTap: () => _onItemSelected(item),
                   ),
                 ),
-                trailing: isSelected
-                    ? SvgPicture.asset(
-                        AppSvg.checkCircle,
-                        width: 16.w,
-                        height: 16.h,
-                      )
-                    : null,
-                onTap: () => _onItemSelected(item),
-              ),
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ),
       );
     }
 

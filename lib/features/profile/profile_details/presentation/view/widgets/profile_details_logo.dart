@@ -56,7 +56,7 @@ class ProfileDetailsLogo extends StatelessWidget {
                       ),
                     )
                   : Stack(
-                      alignment: Alignment.bottomRight,
+                      alignment: Alignment.bottomCenter,
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(100),
@@ -67,15 +67,23 @@ class ProfileDetailsLogo extends StatelessWidget {
                           ),
                         ),
                         Positioned(
-                          bottom: 5,
-                          right: 5,
                           child: Container(
                             width: 32.w,
                             height: 32.h,
                             decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.green,
-                                border: Border.all(color: AppColors.white)),
+                              image: DecorationImage(
+                                image: AssetImage(AppImages.ribbonProfile),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'عضو مميز',
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles
+                                    .font16PaleBrownRegularLamaSans
+                                    .copyWith(color: AppColors.white),
+                              ),
+                            ),
                           ),
                         ),
                       ],

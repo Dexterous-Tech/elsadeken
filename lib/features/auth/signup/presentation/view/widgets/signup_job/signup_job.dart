@@ -4,6 +4,7 @@ import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../../core/theme/spacing.dart';
@@ -130,6 +131,7 @@ class _SignupJobState extends State<SignupJob> {
                       )
                     else
                       SignupMultiChoice(
+                        height: 100.h,
                         title: 'ما هي الحاله الصحيه؟',
                         options: _healthOptions
                             .map((health) => health.name ?? '')

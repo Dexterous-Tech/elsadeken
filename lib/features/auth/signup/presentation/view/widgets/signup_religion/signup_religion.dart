@@ -1,6 +1,7 @@
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../../core/theme/spacing.dart';
 import '../custom_next_and_previous_button.dart';
@@ -52,6 +53,7 @@ class _SignupReligionState extends State<SignupReligion> {
                 children: [
                   // status
                   SignupMultiChoice(
+                    height: 160.h,
                     title: 'ما هي التزامك الديني ؟',
                     options: religionOptions.values.toList(),
                     selected: religionOptions[
@@ -74,6 +76,7 @@ class _SignupReligionState extends State<SignupReligion> {
 
                   // multi wives
                   SignupMultiChoice(
+                    height: 160.h,
                     title: 'الصلاه ؟',
                     options: prayerOptions.values.toList(),
                     selected: prayerOptions[cubit.prayerController.text],
