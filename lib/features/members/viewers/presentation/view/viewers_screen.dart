@@ -122,6 +122,7 @@ class _ViewersViewState extends State<ViewersView> {
                         itemBuilder: (context, index) {
                           final m = items[index];
                           final data = ViewersData(
+                            id: m.id,
                             name: m.name,
                             age: m.attribute?.age ?? 0,
                             time: m.createdAt,
@@ -151,11 +152,13 @@ class _ViewersViewState extends State<ViewersView> {
 }
 
 class ViewersData {
+  final int id;
   final String name;
   final int age;
   final String time;
 
   ViewersData({
+    required this.id,
     required this.name,
     required this.age,
     required this.time,

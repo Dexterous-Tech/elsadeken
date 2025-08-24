@@ -200,6 +200,7 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                               itemBuilder: (context, index) {
                                 final m = items[index];
                                 final data = PremiumPersonData(
+                                  id: m.id,
                                   name: m.name,
                                   age: m.attribute?.age ?? 0,
                                   location:
@@ -235,12 +236,14 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
 }
 
 class PremiumPersonData {
+  final int? id;
   final String name;
   final int age;
   final String location;
   final String profileImageUrl;
 
   PremiumPersonData({
+    this.id,
     required this.name,
     required this.age,
     required this.location,

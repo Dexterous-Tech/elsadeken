@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 
 import '../health_statuses_view.dart';
 
@@ -13,14 +14,11 @@ class HealthStatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // onTap: () {
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) => SpecialMembersScreen(),
-      //     ),
-      //   );
-      // },
+      onTap: () {
+        if (healthStatusData.id != null) {
+          Navigator.pushNamed(context, AppRoutes.profileDetailsScreen, arguments: healthStatusData.id);
+        }
+      },
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
