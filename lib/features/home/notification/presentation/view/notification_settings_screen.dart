@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({Key? key}) : super(key: key);
@@ -33,18 +34,16 @@ class _NotificationSettingsScreenState
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildAppBar(),
-                SizedBox(height: 12.h),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: _buildChatContent(),
-                ),
-              ],
-            ),
+        backgroundColor: AppColors.white,
+        body: CustomProfileBody(
+          contentBody: Column(
+            children: [
+              _buildAppBar(),
+              SizedBox(height: 12.h),
+              Expanded(
+                child: _buildChatContent(),
+              ),
+            ],
           ),
         ),
       ),
@@ -52,45 +51,18 @@ class _NotificationSettingsScreenState
   }
 
   // Top Bar with background
-
-
-  PreferredSizeWidget _buildAppBar() {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(80.h),
-      child: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            width: double.infinity,
-            alignment: Alignment.bottomRight,
-            decoration: BoxDecoration(
-              color: AppColors.white,
-            ),
-            child: const ProfileHeader(title: 'إعدادات الإشعارات'),
-          ),
-          Positioned(
-            top: 0,
-            left: -20,
-            child: Image.asset(
-              AppImages.starProfile,
-              width: 400.w,
-              height: 250.h,
-              fit: BoxFit.cover,
-            ),
-          ),
-
-        ],
-      ),
+  Widget _buildAppBar() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      child: const ProfileHeader(title: 'إعدادات الإشعارات'),
     );
   }
-
-
 
   /// Settings List
   Widget _buildChatContent() {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF8F9),
+        color: AppColors.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(8.r),
           topRight: Radius.circular(8.r),
@@ -99,7 +71,9 @@ class _NotificationSettingsScreenState
       child: ListView.separated(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 16.w,),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+        ),
         itemCount: _settings.length,
         separatorBuilder: (_, __) => Divider(
           color: Colors.grey[300],
@@ -119,17 +93,16 @@ class _NotificationSettingsScreenState
                   color: Colors.black,
                 ),
               ),
-
               value: _settings[index]["value"],
               onChanged: (bool newValue) {
                 setState(() {
                   _settings[index]["value"] = newValue;
                 });
               },
-              activeColor: Colors.white,
-              activeTrackColor: Colors.black,
-              inactiveThumbColor: Colors.white,
-              inactiveTrackColor: Colors.grey[300],
+              activeColor: AppColors.primaryOrange,
+              activeTrackColor: AppColors.primaryOrange.withOpacity(0.3),
+              inactiveThumbColor: AppColors.white,
+              inactiveTrackColor: AppColors.grey,
             ),
           );
         },
