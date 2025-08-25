@@ -27,7 +27,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: _buildAppBar(),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         body: SafeArea(
           child: Stack(
             children: [
@@ -170,7 +170,9 @@ PreferredSizeWidget _buildAppBar() {
   }
 
   Widget _buildWhoCanSendSection() {
-    return Column(
+    return Container(
+
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
@@ -185,23 +187,24 @@ PreferredSizeWidget _buildAppBar() {
             title: 'الفئة العمرية',
             subtitle: _selectedAgeCategory,
             trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-            onTap: ()=> _showAgeCategoryDialog,
+            onTap: _showAgeCategoryDialog,
           ),
           SizedBox(height: 12.h),
           _buildSettingRow(
             title: 'الجنسيات',
             subtitle: _selectedNationalities,
             trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-            onTap: ()=> _showNationalitiesDialog,
+            onTap: _showNationalitiesDialog,
           ),
           SizedBox(height: 12.h),
           _buildSettingRow(
             title: 'الدول',
             subtitle: _selectedCountries,
             trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-            onTap:()=> _showCountriesDialog,
+            onTap: _showCountriesDialog,
           ),
         ],
+      ),
     );
   }
 
