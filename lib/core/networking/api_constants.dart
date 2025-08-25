@@ -53,4 +53,7 @@ class ApiConstants {
       '/user/members/latest${countryId != null ? '?country_id=$countryId' : ''}';
   static String visitorsMembers = '/user/members/visitors';
   static String onlineMembers = '/user/members/online';
+
+  // chat
+  static String getChatsList = '/user/chats/list';
 }

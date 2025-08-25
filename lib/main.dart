@@ -1,10 +1,8 @@
 import 'dart:developer';
-
 import 'package:elsadeken/core/routes/app_routing.dart';
 import 'package:elsadeken/core/services/firebase_notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'core/di/injection_container.dart';
 import 'core/routes/app_routes.dart';
 
@@ -43,7 +41,7 @@ class Elsadeken extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(scaffoldBackgroundColor: Colors.white),
         onGenerateRoute: appRouting.onGenerateRouting,
-        initialRoute: AppRoutes.splashScreen,
+        initialRoute: AppRoutes.loginScreen,
       ),
     );
   }

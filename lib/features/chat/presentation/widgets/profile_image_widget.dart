@@ -9,13 +9,13 @@ class ProfileImageWidget extends StatelessWidget {
   final bool showOnlineIndicator;
 
   const ProfileImageWidget({
-    Key? key,
+    super.key,
     required this.imageUrl,
     this.size = 50,
     this.borderWidth = 1,
     this.borderColor,
     this.showOnlineIndicator = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

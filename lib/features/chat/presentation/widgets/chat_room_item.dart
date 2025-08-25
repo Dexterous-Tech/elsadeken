@@ -1,24 +1,23 @@
+import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
-import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_options_popup.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/confirmation_dialog.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/profile_image_widget.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/time_formatter.dart';
 
 class ChatRoomItem extends StatelessWidget {
-  final ChatRoomModel chatRoom;
+  final ChatData chat;
   final VoidCallback onTap;
   final VoidCallback? onLongPress;
 
   const ChatRoomItem({
-    Key? key,
-    required this.chatRoom,
+    super.key,
+    required this.chat,
     required this.onTap,
     this.onLongPress,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,22 +40,20 @@ class ChatRoomItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Profile image
-            ProfileImageWidget(
-              imageUrl: chatRoom.image,
+             ProfileImageWidget(
+              imageUrl: chat.otherUser.image,
               size: 50,
-              showOnlineIndicator: chatRoom.isOnline,
-            ),
+              showOnlineIndicator: false, 
+             ),
             SizedBox(width: 12.w),
-            
-            // Chat info
-            Expanded(
+
+             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    chatRoom.name,
+                    chat.otherUser.name,
                     style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
                       fontSize: 16.sp,
                     ),
@@ -65,7 +62,7 @@ class ChatRoomItem extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    chatRoom.lastMessage ?? 'لا توجد رسائل',
+                    chat.lastMessage?.body ?? 'لا توجد رسائل',
                     style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans.copyWith(
                       fontSize: 14.sp,
                       color: Colors.grey[600],
@@ -76,10 +73,11 @@ class ChatRoomItem extends StatelessWidget {
                 ],
               ),
             ),
-            
-            // Time
-            Text(
-              TimeFormatter.formatChatTime(chatRoom.lastMessageTime),
+
+             Text(
+              TimeFormatter.formatChatTime(
+                DateTime.tryParse(chat.lastMessage?.createdAt ?? '') ?? DateTime.now(),
+              ),
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                 fontSize: 12.sp,
                 color: Colors.grey[500],
@@ -113,12 +111,8 @@ class ChatRoomItem extends StatelessWidget {
         confirmText: 'حذف',
         confirmColor: Colors.red,
         onConfirm: () {
-          // TODO: Implement delete functionality
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('تم حذف المحادثة'),
-              backgroundColor: Colors.red,
-            ),
+            const SnackBar(content: Text('تم حذف المحادثة'), backgroundColor: Colors.red),
           );
         },
       ),
@@ -126,32 +120,20 @@ class ChatRoomItem extends StatelessWidget {
   }
 
   void _muteChat(BuildContext context) {
-    // TODO: Implement mute functionality
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('تم كتم الصوت'),
-        backgroundColor: Colors.orange,
-      ),
+      const SnackBar(content: Text('تم كتم الصوت'), backgroundColor: Colors.orange),
     );
   }
 
   void _blockUser(BuildContext context) {
-    // TODO: Implement block functionality
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('تم حظر المستخدم'),
-        backgroundColor: Colors.red,
-      ),
+      const SnackBar(content: Text('تم حظر المستخدم'), backgroundColor: Colors.red),
     );
   }
 
   void _addToFavorites(BuildContext context) {
-    // TODO: Implement add to favorites functionality
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('تم الإضافة إلى المفضلة'),
-        backgroundColor: Colors.pink,
-      ),
+      const SnackBar(content: Text('تم الإضافة إلى المفضلة'), backgroundColor: Colors.pink),
     );
   }
 }

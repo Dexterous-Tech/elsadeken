@@ -14,6 +14,9 @@ import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit
 import 'package:elsadeken/features/auth/verification_email/data/data_source/verification_data_source.dart';
 import 'package:elsadeken/features/auth/verification_email/data/repo/verification_repo.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/manager/verification_cubit.dart';
+import 'package:elsadeken/features/chat/data/datasources/chat_list_data_source.dart';
+import 'package:elsadeken/features/chat/data/repositories/chat_list_repo.dart';
+import 'package:elsadeken/features/chat/presentation/manager/cubit/chatListCubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/members/data/repositories/members_repository.dart';
 import 'package:elsadeken/features/home/notification/data/data_source/notification_data_source.dart';
 import 'package:elsadeken/features/home/notification/data/repo/notification_repo.dart';
@@ -217,4 +220,12 @@ Future<void> initializeDependencies() async {
       () => NotificationCountCubit(sl()));
   sl.registerFactory<NotificationSettingsCubit>(
       () => NotificationSettingsCubit());
+
+  // Chat
+  sl.registerLazySingleton<ChatListDataSource>(
+      () => ChatListDataSource(sl()));
+  sl.registerLazySingleton<ChatListRepoInterface>(
+      () => ChatListRepoImpl(sl()));
+  sl.registerFactory<ChatListCubit>(() => ChatListCubit(sl()));
+
 }
