@@ -98,7 +98,7 @@ class ChatOptionsPopup extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(vertical: 24.w),
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: AppColors.shimmeringBlush,
               borderRadius: BorderRadius.circular(10).r,
             ),
             child: Center(
@@ -110,7 +110,7 @@ class ChatOptionsPopup extends StatelessWidget {
                   'الغاء',
                   style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.vividRed,
+                    color: AppColors.jet,
                   ),
                 ),
               ),
@@ -135,23 +135,26 @@ class ChatOptionsPopup extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             verticalSpace(24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              textDirection: TextDirection.rtl,
-              children: [
-                Text(
-                  text,
-                  style: AppTextStyles.font18BabyBlueRegularLamaSans,
-                  textDirection: TextDirection.rtl,
-                ),
-                horizontalSpace(16),
-                Image.asset(
-                  imagePath,
-                  width: 24.w,
-                  height: 24.w,
-                  fit: BoxFit.contain,
-                ),
-              ],
+            Padding(
+              padding:  EdgeInsets.symmetric(horizontal: 15.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                textDirection: TextDirection.rtl,
+                children: [
+                  Text(
+                    text,
+                    style: AppTextStyles.font18BabyBlueRegularLamaSans,
+                    textDirection: TextDirection.rtl,
+                  ),
+                  horizontalSpace(16),
+                  Image.asset(
+                    imagePath,
+                    width: 24.w,
+                    height: 24.w,
+                    fit: BoxFit.contain,
+                  ),
+                ],
+              ),
             ),
             verticalSpace(24),
           ],
