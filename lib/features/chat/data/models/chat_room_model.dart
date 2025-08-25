@@ -27,6 +27,25 @@ class ChatRoomModel extends ChatRoom {
     );
   }
 
+  /// Create a temporary chat room for starting a new conversation
+  factory ChatRoomModel.fromUser({
+    required int userId,
+    required String userName,
+    required String userImage,
+  }) {
+    return ChatRoomModel(
+      id: 'temp_${DateTime.now().millisecondsSinceEpoch}', // Temporary ID
+      name: userName,
+      image: userImage,
+      lastMessage: 'ابدأ المحادثة الآن',
+      lastMessageTime: DateTime.now(),
+      unreadCount: 0,
+      isOnline: false,
+      isFavorite: false,
+      receiverId: userId,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

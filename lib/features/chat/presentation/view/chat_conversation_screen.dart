@@ -30,6 +30,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   final ScrollController _scrollController = ScrollController();
   List<ChatMessage> _messages = [];
   int? _currentUserId;
+  String _currentUserName = '';
+  String _currentUserImage = '';
 
   @override
   void initState() {
@@ -39,7 +41,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   }
 
   void _loadChatMessages() {
-    context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
+    // Don't load messages for temporary chat rooms (new conversations)
+    if (!widget.chatRoom.id.startsWith('temp_')) {
+      context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
+    }
   }
 
   void _loadCurrentUserProfile() {
@@ -133,8 +138,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
             if (state is ManageProfileSuccess) {
               setState(() {
                 _currentUserId = state.myProfileResponseModel.data?.id;
+                _currentUserName = state.myProfileResponseModel.data?.name ?? '';
+                _currentUserImage = state.myProfileResponseModel.data?.image ?? '';
               });
-              if (_currentUserId != null) {
+              if (_currentUserId != null && !widget.chatRoom.id.startsWith('temp_')) {
                 context
                     .read<ChatMessagesCubit>()
                     .getChatMessages(widget.chatRoom.id);
@@ -145,9 +152,15 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         BlocListener<SendMessageCubit, SendMessagesState>(
           listener: (context, state) {
             if (state is SendMessagesLoaded) {
-               context
-                  .read<ChatMessagesCubit>()
-                  .getChatMessages(widget.chatRoom.id);
+              if (widget.chatRoom.id.startsWith('temp_')) {
+                // For temporary chat rooms, add the message locally
+                // The message will be added when the user types and sends it
+              } else {
+                // For existing chat rooms, reload messages
+                context
+                    .read<ChatMessagesCubit>()
+                    .getChatMessages(widget.chatRoom.id);
+              }
             } else if (state is SendMessagesError) {
               // Show error message
               ScaffoldMessenger.of(context).showSnackBar(
@@ -427,9 +440,37 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
       );
       return;
     }
+    
+    if (_currentUserName.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('يرجى الانتظار حتى يتم تحميل بيانات المستخدم'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
 
     final message = _messageController.text.trim();
     _messageController.clear();
+
+    // For temporary chat rooms, add the message locally first
+    if (widget.chatRoom.id.startsWith('temp_')) {
+      final newMessage = ChatMessage(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        roomId: widget.chatRoom.id,
+        senderId: _currentUserId.toString(),
+        senderName: _currentUserName, // Current user name
+        senderImage: _currentUserImage, // Current user image
+        message: message,
+        timestamp: DateTime.now(),
+        isRead: false,
+      );
+      
+      setState(() {
+        _messages.add(newMessage);
+      });
+    }
 
     // Send message through API
     context.read<SendMessageCubit>().sendMessages(

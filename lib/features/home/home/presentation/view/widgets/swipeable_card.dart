@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../data/models/user_model.dart';
+import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 
 class SwipeableCard extends StatefulWidget {
   final UserModel user;
@@ -430,16 +431,17 @@ class _SwipeableCardState extends State<SwipeableCard>
                             ),
                             GestureDetector(
                               onTap: () {
-                                // TODO: Implement messaging functionality
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'سيتم إضافة ميزة الرسائل قريباً',
-                                      textAlign: TextAlign.center,
+                                // Navigate to chat conversation with this user
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.chatConversationScreen,
+                                  arguments: {
+                                    "chatRoom": ChatRoomModel.fromUser(
+                                      userId: widget.user.id,
+                                      userName: widget.user.name,
+                                      userImage: widget.user.imageUrl,
                                     ),
-                                    backgroundColor: Colors.blue,
-                                    duration: Duration(milliseconds: 800),
-                                  ),
+                                  },
                                 );
                               },
                               child: Container(
