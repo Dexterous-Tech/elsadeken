@@ -1,10 +1,8 @@
-import 'package:bloc/bloc.dart';
-import 'package:elsadeken/core/networking/dio_factory.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/repo/manage_profile_repo.dart';
 import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
-import 'package:meta/meta.dart';
 
 part 'manage_profile_state.dart';
 

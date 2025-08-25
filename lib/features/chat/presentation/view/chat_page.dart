@@ -1,5 +1,5 @@
 import 'package:elsadeken/core/di/injection_container.dart';
-import 'package:elsadeken/features/chat/presentation/manager/cubit/chatListCubit/cubit/chat_list_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

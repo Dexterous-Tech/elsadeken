@@ -1,5 +1,5 @@
-import 'package:elsadeken/features/chat/presentation/manager/cubit/chatListCubit/cubit/chat_list_cubit.dart';
-import 'package:elsadeken/features/chat/presentation/manager/cubit/chatListCubit/cubit/chat_list_state.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +12,7 @@ import 'package:elsadeken/features/chat/presentation/widgets/empty_chat_illustra
 import 'package:elsadeken/features/chat/presentation/widgets/chat_room_item.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -109,7 +110,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   Navigator.pushNamed(
                     context,
                     AppRoutes.chatConversationScreen,
-                    arguments: {"chatRoom": chat},
+                    arguments: {"chatRoom": chat.toChatRoomModel()},
                   );
                 },
                 onLongPress: () {

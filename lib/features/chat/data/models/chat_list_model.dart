@@ -1,3 +1,5 @@
+import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
+
 class ChatListModel {
   final int currentPage;
   final List<ChatData> data;
@@ -88,6 +90,22 @@ class ChatData {
       otherUser: OtherUser.fromJson(json['other_user']),
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+    );
+  }
+
+  /// Convert ChatData to ChatRoomModel for navigation
+  ChatRoomModel toChatRoomModel() {
+    return ChatRoomModel(
+      id: id.toString(),
+      name: otherUser.name,
+      image: otherUser.image,
+      lastMessage: lastMessage?.body ?? 'لا توجد رسائل',
+      lastMessageTime: lastMessage != null 
+          ? DateTime.tryParse(lastMessage!.createdAt) ?? DateTime.now()
+          : DateTime.now(),
+      unreadCount: unreadCount,
+      isOnline: false, // TODO: Get from API when available
+      isFavorite: false, // TODO: Get from API when available
     );
   }
 }

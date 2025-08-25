@@ -12,6 +12,7 @@ class ChatMessageModel extends ChatMessage {
     required super.isRead,
   });
 
+
   factory ChatMessageModel.fromJson(Map<String, dynamic> json) {
     return ChatMessageModel(
       id: json['id'] as String,

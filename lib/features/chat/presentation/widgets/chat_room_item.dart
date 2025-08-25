@@ -40,21 +40,21 @@ class ChatRoomItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-             ProfileImageWidget(
+            ProfileImageWidget(
               imageUrl: chat.otherUser.image,
               size: 50,
-              showOnlineIndicator: false, 
-             ),
+              showOnlineIndicator: false,
+            ),
             SizedBox(width: 12.w),
-
-             Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     chat.otherUser.name,
-                    style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
+                    style:
+                        AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
                       fontSize: 16.sp,
                     ),
                     maxLines: 1,
@@ -63,7 +63,8 @@ class ChatRoomItem extends StatelessWidget {
                   SizedBox(height: 4.h),
                   Text(
                     chat.lastMessage?.body ?? 'لا توجد رسائل',
-                    style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans.copyWith(
+                    style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans
+                        .copyWith(
                       fontSize: 14.sp,
                       color: Colors.grey[600],
                     ),
@@ -73,15 +74,38 @@ class ChatRoomItem extends StatelessWidget {
                 ],
               ),
             ),
-
-             Text(
-              TimeFormatter.formatChatTime(
-                DateTime.tryParse(chat.lastMessage?.createdAt ?? '') ?? DateTime.now(),
-              ),
-              style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                fontSize: 12.sp,
-                color: Colors.grey[500],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  TimeFormatter.formatChatTime(
+                    DateTime.tryParse(chat.lastMessage?.createdAt ?? '') ??
+                        DateTime.now(),
+                  ),
+                  style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                    fontSize: 12.sp,
+                    color: Colors.grey[500],
+                  ),
+                ),
+                SizedBox(height: 6.h),
+                if (chat.unreadCount > 0)
+                  Container(
+                    width: 20.w,
+                    height: 20.w,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.green,
+                    ),
+                    child: Text(
+                      chat.unreadCount.toString(),
+                      style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                        fontSize: 12.sp,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ],
         ),
@@ -107,12 +131,14 @@ class ChatRoomItem extends StatelessWidget {
       context: context,
       builder: (context) => ConfirmationDialog(
         title: 'تأكيد الحذف',
-        message: 'هل أنت متأكد من حذف هذه المحادثة؟ لا يمكن التراجع عن هذا الإجراء.',
+        message:
+            'هل أنت متأكد من حذف هذه المحادثة؟ لا يمكن التراجع عن هذا الإجراء.',
         confirmText: 'حذف',
         confirmColor: Colors.red,
         onConfirm: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('تم حذف المحادثة'), backgroundColor: Colors.red),
+            const SnackBar(
+                content: Text('تم حذف المحادثة'), backgroundColor: Colors.red),
           );
         },
       ),
@@ -121,19 +147,23 @@ class ChatRoomItem extends StatelessWidget {
 
   void _muteChat(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('تم كتم الصوت'), backgroundColor: Colors.orange),
+      const SnackBar(
+          content: Text('تم كتم الصوت'), backgroundColor: Colors.orange),
     );
   }
 
   void _blockUser(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('تم حظر المستخدم'), backgroundColor: Colors.red),
+      const SnackBar(
+          content: Text('تم حظر المستخدم'), backgroundColor: Colors.red),
     );
   }
 
   void _addToFavorites(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('تم الإضافة إلى المفضلة'), backgroundColor: Colors.pink),
+      const SnackBar(
+          content: Text('تم الإضافة إلى المفضلة'),
+          backgroundColor: Colors.pink),
     );
   }
 }
