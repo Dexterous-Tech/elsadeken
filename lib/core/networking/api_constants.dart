@@ -57,5 +57,7 @@ class ApiConstants {
   // chat
   static String getChatsList = '/user/chats/list';
   static String userChat(String id) => '/user/chats/chat-messages/$id';
+  static String sendMessage = '/user/chats/send-message';
+
 
 }

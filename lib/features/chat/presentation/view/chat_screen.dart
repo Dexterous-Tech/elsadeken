@@ -12,7 +12,6 @@ import 'package:elsadeken/features/chat/presentation/widgets/empty_chat_illustra
 import 'package:elsadeken/features/chat/presentation/widgets/chat_room_item.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
-import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -83,9 +82,7 @@ class _ChatScreenState extends State<ChatScreen> {
         if (state is ChatListLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is ChatListError) {
-          return Center(
-            child: Text(state.message, style: TextStyle(color: Colors.red)),
-          );
+          return _buildEmptyState();
         } else if (state is ChatListLoaded) {
           final chats = state.chatList.data;
 

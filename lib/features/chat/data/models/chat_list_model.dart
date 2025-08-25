@@ -106,6 +106,7 @@ class ChatData {
       unreadCount: unreadCount,
       isOnline: false, // TODO: Get from API when available
       isFavorite: false, // TODO: Get from API when available
+      receiverId: otherUser.id, // Add receiver ID for sending messages
     );
   }
 }

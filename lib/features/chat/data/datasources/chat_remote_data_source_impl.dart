@@ -67,6 +67,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         unreadCount: 0, // Reset unread count for current user's message
         isOnline: oldRoom.isOnline,
         isFavorite: oldRoom.isFavorite,
+        receiverId: oldRoom.receiverId,
       );
     }
 
@@ -110,6 +111,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         unreadCount: 0,
         isOnline: oldRoom.isOnline,
         isFavorite: oldRoom.isFavorite,
+        receiverId: oldRoom.receiverId,
       );
     }
 
@@ -155,16 +157,17 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     // Update all chat rooms' unread counts
     for (int i = 0; i < _mockChatRooms.length; i++) {
       final oldRoom = _mockChatRooms[i];
-      _mockChatRooms[i] = ChatRoomModel(
-        id: oldRoom.id,
-        name: oldRoom.name,
-        image: oldRoom.image,
-        lastMessage: oldRoom.lastMessage,
-        lastMessageTime: oldRoom.lastMessageTime,
-        unreadCount: 0,
-        isOnline: oldRoom.isOnline,
-        isFavorite: oldRoom.isFavorite,
-      );
+             _mockChatRooms[i] = ChatRoomModel(
+         id: oldRoom.id,
+         name: oldRoom.name,
+         image: oldRoom.image,
+         lastMessage: oldRoom.lastMessage,
+         lastMessageTime: oldRoom.lastMessageTime,
+         unreadCount: 0,
+         isOnline: oldRoom.isOnline,
+         isFavorite: oldRoom.isFavorite,
+         receiverId: oldRoom.receiverId,
+       );
     }
     
     await Future.delayed(const Duration(milliseconds: 300));
@@ -196,6 +199,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         unreadCount: 2,
         isOnline: true,
         isFavorite: true,
+        receiverId: 1,
       ),
       ChatRoomModel(
         id: '2',
@@ -206,6 +210,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         unreadCount: 0,
         isOnline: false,
         isFavorite: false,
+        receiverId: 2,
       ),
       ChatRoomModel(
         id: '3',
@@ -216,6 +221,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         unreadCount: 1,
         isOnline: true,
         isFavorite: false,
+        receiverId: 3,
       ),
       ChatRoomModel(
         id: '4',
@@ -226,6 +232,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         unreadCount: 3,
         isOnline: false,
         isFavorite: true,
+        receiverId: 4,
       ),
       ChatRoomModel(
         id: '5',
@@ -236,6 +243,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         unreadCount: 0,
         isOnline: false,
         isFavorite: false,
+        receiverId: 5,
       ),
     ];
   }

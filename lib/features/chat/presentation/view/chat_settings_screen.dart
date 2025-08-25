@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
-import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
 
 class ChatSettingsScreen extends StatefulWidget {
-  const ChatSettingsScreen({Key? key}) : super(key: key);
+  const ChatSettingsScreen({super.key});
 
   @override
   State<ChatSettingsScreen> createState() => _ChatSettingsScreenState();
@@ -67,36 +66,34 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     );
   }
 
-PreferredSizeWidget _buildAppBar() {
-  return PreferredSize(
-    preferredSize: Size.fromHeight(80.h), 
-    child: Stack(
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          width: double.infinity,
-          alignment: Alignment.bottomRight,
-          decoration: BoxDecoration(
-            color: AppColors.white,
+  PreferredSizeWidget _buildAppBar() {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(80.h),
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            width: double.infinity,
+            alignment: Alignment.bottomRight,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+            ),
+            child: const ProfileHeader(title: 'إعدادات الرسائل'),
           ),
-          child: const ProfileHeader(title: 'إعدادات الرسائل'),
-        ),
-        Positioned(
-          top: 0,
-          left: -20,
-          child: Image.asset(
-            AppImages.starProfile,
-            width: 400.w,
-            height: 250.h,
-            fit: BoxFit.cover,
+          Positioned(
+            top: 0,
+            left: -20,
+            child: Image.asset(
+              AppImages.starProfile,
+              width: 400.w,
+              height: 250.h,
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-
-      ],
-    ),
-  );
-}
-
+        ],
+      ),
+    );
+  }
 
   Widget _buildBody() {
     return Column(
@@ -171,7 +168,6 @@ PreferredSizeWidget _buildAppBar() {
 
   Widget _buildWhoCanSendSection() {
     return Container(
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -263,57 +259,55 @@ PreferredSizeWidget _buildAppBar() {
     );
   }
 
- Widget _buildSettingRow({
-  required String title,
-  required String subtitle,
-  Widget? trailing,
-  VoidCallback? onTap,
-  bool showGreenDot = false, // Add this flag
-}) {
-  return InkWell(
-    onTap: onTap,
-    child: Container(
-      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-      decoration: BoxDecoration(
-        color: const Color(0xFFfbecef).withOpacity(0.7),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              if (showGreenDot) ...[
-                SizedBox(width: 8.w),
-                Container(
-                  width: 20.w,
-                  height: 20.w,
-                  decoration: const BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
+  Widget _buildSettingRow({
+    required String title,
+    required String subtitle,
+    Widget? trailing,
+    VoidCallback? onTap,
+    bool showGreenDot = false, // Add this flag
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+        decoration: BoxDecoration(
+          color: const Color(0xFFfbecef).withOpacity(0.7),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                if (showGreenDot) ...[
+                  SizedBox(width: 8.w),
+                  Container(
+                    width: 20.w,
+                    height: 20.w,
+                    decoration: const BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ],
+                SizedBox(
+                  width: 5.w,
+                ),
+                Text(
+                  title,
+                  style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
-              SizedBox(width: 5.w,),
-              Text(
-                title,
-                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-
-            ],
-          ),
-
-          if (trailing != null) trailing,
-
-        ],
+            ),
+            if (trailing != null) trailing,
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildDivider() {
     return Container(

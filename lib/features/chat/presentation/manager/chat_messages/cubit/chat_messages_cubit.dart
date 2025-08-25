@@ -1,9 +1,9 @@
-import 'package:elsadeken/features/chat/data/repositories/chat_list_repo.dart';
+import 'package:elsadeken/features/chat/data/repositories/chat_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'chat_messages_state.dart';
 
 class ChatMessagesCubit extends Cubit<ChatMessagesState> {
-  final ChatListRepoInterface repo;
+  final ChatRepoInterface repo;
 
   ChatMessagesCubit(this.repo) : super(ChatMessagesInitial());
 

@@ -37,6 +37,7 @@ import 'package:elsadeken/features/chat/presentation/view/chat_conversation_scre
 import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 import 'package:elsadeken/features/chat/presentation/view/chat_settings_screen.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 
 import '../../features/profile/my_ignoring_list/presentation/view/my_ignoring_list_screen.dart';
@@ -158,6 +159,7 @@ class AppRouting {
             providers: [
               BlocProvider(create: (context) => sl<ChatMessagesCubit>()),
               BlocProvider(create: (context) => sl<ManageProfileCubit>()),
+              BlocProvider(create: (context) => sl<SendMessageCubit>()),
             ],
             child: ChatConversationScreen(chatRoom: chatRoom),
           ),

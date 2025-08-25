@@ -10,6 +10,7 @@ class ChatRoomModel extends ChatRoom {
     required super.unreadCount,
     required super.isOnline,
     required super.isFavorite,
+    required super.receiverId,
   });
 
   factory ChatRoomModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +23,7 @@ class ChatRoomModel extends ChatRoom {
       unreadCount: json['unread_count'] as int,
       isOnline: json['is_online'] as bool,
       isFavorite: json['is_favorite'] as bool,
+      receiverId: json['receiver_id'] as int,
     );
   }
 
@@ -35,6 +37,7 @@ class ChatRoomModel extends ChatRoom {
       'unread_count': unreadCount,
       'is_online': isOnline,
       'is_favorite': isFavorite,
+      'receiver_id': receiverId,
     };
   }
 }

@@ -2,11 +2,12 @@ import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
 import 'package:elsadeken/features/chat/data/models/chat_conversation_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
+import 'package:elsadeken/features/chat/data/models/send_message_model.dart';
 
-class ChatListDataSource {
+class ChatDataSource {
   final ApiServices _apiServices;
 
-  ChatListDataSource(this._apiServices);
+  ChatDataSource(this._apiServices);
 
   Future<ChatListModel> getAllChatList() async {
     var response = await _apiServices.get(
@@ -24,5 +25,20 @@ class ChatListDataSource {
     );
 
     return ChatMessagesConversation.fromJson(response.data);
+  }
+
+  Future<SendMessageModel> sendMessage(
+    int receiverId,
+    String message,
+  ) async {
+    var response = await _apiServices.post(
+      endpoint: ApiConstants.sendMessage,
+      requestBody: {
+        'receiver_id': receiverId,
+        'body': message,
+      },
+    );
+
+    return SendMessageModel.fromJson(response.data);
   }
 }

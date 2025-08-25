@@ -9,6 +9,8 @@ import 'package:elsadeken/features/chat/domain/entities/chat_message.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_message_bubble.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_state.dart';
+import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_state.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 
 class ChatConversationScreen extends StatefulWidget {
@@ -137,6 +139,23 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                     .read<ChatMessagesCubit>()
                     .getChatMessages(widget.chatRoom.id);
               }
+            }
+          },
+        ),
+        BlocListener<SendMessageCubit, SendMessagesState>(
+          listener: (context, state) {
+            if (state is SendMessagesLoaded) {
+               context
+                  .read<ChatMessagesCubit>()
+                  .getChatMessages(widget.chatRoom.id);
+            } else if (state is SendMessagesError) {
+              // Show error message
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
+                ),
+              );
             }
           },
         ),
@@ -308,99 +327,115 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   }
 
   Widget _buildMessageInput() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      padding: EdgeInsets.all(10.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(25.r),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Color(0xfffff9f6),
-                borderRadius: BorderRadius.circular(15.r),
-                border: Border.all(
-                  color: Colors.grey[200]!,
-                  width: 1,
-                ),
-              ),
-              child: TextField(
-                controller: _messageController,
-                textDirection: TextDirection.rtl,
-                decoration: InputDecoration(
-                  hintText: 'اكتب رسالتك...',
-                  hintStyle: TextStyle(
-                    color: Colors.grey[500],
-                    fontSize: 18.sp,
-                    fontFamily: FontFamilyHelper.plexSansArabic,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                    vertical: 16.h,
-                  ),
-                  fillColor: Colors.transparent,
-                  filled: true,
-                  suffixIcon: Container(
-                    margin: EdgeInsets.only(right: 8.w),
-                    child: IconButton(
-                      icon: Image.asset(
-                        'assets/images/icons/send.png',
-                        width: 24.w,
-                        height: 24.w,
-                        color: AppColors.primaryOrange,
-                      ),
-                      onPressed: _sendMessage,
-                      style: IconButton.styleFrom(
-                        backgroundColor:
-                            AppColors.primaryOrange.withOpacity(0.1),
-                        shape: CircleBorder(),
-                        padding: EdgeInsets.all(8.w),
-                      ),
+    return BlocBuilder<SendMessageCubit, SendMessagesState>(
+      builder: (context, state) {
+        final isLoading = state is SendMessagesLoading;
+
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          padding: EdgeInsets.all(10.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(25.r),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xfffff9f6),
+                    borderRadius: BorderRadius.circular(15.r),
+                    border: Border.all(
+                      color: Colors.grey[200]!,
+                      width: 1,
                     ),
                   ),
+                  child: TextField(
+                    controller: _messageController,
+                    textDirection: TextDirection.rtl,
+                    enabled: !isLoading, // Disable input while sending
+                    decoration: InputDecoration(
+                      hintText: 'اكتب رسالتك...',
+                      hintStyle: TextStyle(
+                        color: Colors.grey[500],
+                        fontSize: 18.sp,
+                        fontFamily: FontFamilyHelper.plexSansArabic,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 16.h,
+                      ),
+                      fillColor: Colors.transparent,
+                      filled: true,
+                      suffixIcon: Container(
+                        margin: EdgeInsets.only(right: 8.w),
+                        child: IconButton(
+                          icon: isLoading
+                              ? SizedBox(
+                                  width: 20.w,
+                                  height: 20.w,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        AppColors.primaryOrange),
+                                  ),
+                                )
+                              : Image.asset(
+                                  'assets/images/icons/send.png',
+                                  width: 24.w,
+                                  height: 24.w,
+                                  color: AppColors.primaryOrange,
+                                ),
+                          onPressed: isLoading ? null : _sendMessage,
+                          style: IconButton.styleFrom(
+                            backgroundColor:
+                                AppColors.primaryOrange.withOpacity(0.1),
+                            shape: CircleBorder(),
+                            padding: EdgeInsets.all(8.w),
+                          ),
+                        ),
+                      ),
+                    ),
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (message) {
+                      if (message.trim().isNotEmpty && !isLoading) {
+                        _sendMessage();
+                      }
+                    },
+                    maxLines: null,
+                    minLines: 1,
+                  ),
                 ),
-                textInputAction: TextInputAction.send,
-                onSubmitted: (message) {
-                  if (message.trim().isNotEmpty) {
-                    _sendMessage();
-                  }
-                },
-                maxLines: null,
-                minLines: 1,
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   void _sendMessage() {
     if (_messageController.text.trim().isEmpty) return;
+    if (_currentUserId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('يرجى الانتظار حتى يتم تحميل الملف الشخصي'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
 
-    // TODO: Implement actual message sending to API
-    // For now, we'll just add it locally
-    final newMessage = ChatMessage(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      roomId: widget.chatRoom.id,
-      senderId: _currentUserId?.toString() ?? 'current_user',
-      senderName: 'أنا',
-      senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
-      message: _messageController.text.trim(),
-      timestamp: DateTime.now(),
-      isRead: false,
-    );
-
-    setState(() {
-      _messages.add(newMessage);
-    });
-
+    final message = _messageController.text.trim();
     _messageController.clear();
+
+    // Send message through API
+    context.read<SendMessageCubit>().sendMessages(
+          widget.chatRoom.receiverId,
+          message,
+        );
 
     // Scroll to bottom
     Future.delayed(Duration(milliseconds: 100), () {
