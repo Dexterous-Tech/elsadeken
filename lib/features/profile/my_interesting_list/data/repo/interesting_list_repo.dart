@@ -6,7 +6,8 @@ import 'package:elsadeken/features/profile/my_interesting_list/data/data_source/
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 
 abstract class InterestingListRepo {
-  Future<Either<ApiErrorModel, UsersResponseModel>> interestingList();
+  Future<Either<ApiErrorModel, UsersResponseModel>> interestingList(
+      {int? page});
 }
 
 class InterestingRepoImpl implements InterestingListRepo {
@@ -15,9 +16,11 @@ class InterestingRepoImpl implements InterestingListRepo {
   InterestingRepoImpl(this.interestingListDataSource);
 
   @override
-  Future<Either<ApiErrorModel, UsersResponseModel>> interestingList() async {
+  Future<Either<ApiErrorModel, UsersResponseModel>> interestingList(
+      {int? page}) async {
     try {
-      var response = await interestingListDataSource.interestingList();
+      var response =
+          await interestingListDataSource.interestingList(page: page);
       return Right(response);
     } catch (error) {
       log("error in interesting list $error");

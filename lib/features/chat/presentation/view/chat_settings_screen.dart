@@ -1,8 +1,9 @@
+import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
-import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
 
 class ChatSettingsScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class ChatSettingsScreen extends StatefulWidget {
 }
 
 class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
-  bool _isOnline = false;
+  bool _isOnline = true;
   bool _newMessagesNotification = false;
   bool _profilePictureNotification = false;
   String _selectedAgeCategory = 'أي شخص';
@@ -22,149 +23,113 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    try {
-      return Directionality(
-        textDirection: TextDirection.rtl,
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: _buildAppBar(),
-          body: _buildBody(),
-        ),
-      );
-    } catch (e) {
-      // Fallback UI if something goes wrong
-      return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: const CustomArrowBack(),
-          title: Text(
-            'إعدادات الرسائل',
-            style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          centerTitle: true,
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: _buildAppBar(),
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Stack(
             children: [
-              Icon(Icons.error_outline, size: 64.w, color: Colors.grey),
-              SizedBox(height: 16.h),
-              Text(
-                'حدث خطأ في تحميل الشاشة',
-                style: AppTextStyles.font16BlackSemiBoldLamaSans,
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                'يرجى المحاولة مرة أخرى',
-                style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-  }
-
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Colors.black),
-        onPressed: () => Navigator.pop(context),
-      ),
-      title: Text(
-        'إعدادات الرسائل',
-        style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
-          fontSize: 20.sp,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      centerTitle: true,
-    );
-  }
-
-  Widget _buildBody() {
-    return Stack(
-      children: [
-        // Background image with error handling
-        Positioned.fill(
-          child: _buildBackgroundImage(),
-        ),
-        
-        // Main content
-        SingleChildScrollView(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20.h),
-              
-              // Main settings card
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Color(0xFFFFF0F0).withOpacity(0.9), // More transparent to show background
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(20.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Connection Status Section
-                      _buildConnectionStatusSection(),
-                      
-                      SizedBox(height: 24.h),
-                      _buildDivider(),
-                      SizedBox(height: 24.h),
-                      
-                      // Who can send messages Section
-                      _buildWhoCanSendSection(),
-                      
-                      SizedBox(height: 24.h),
-                      _buildDivider(),
-                      SizedBox(height: 24.h),
-                      
-                      // Notification Settings Section
-                      _buildNotificationSettingsSection(),
-                    ],
+              Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: _buildBody(),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-              
-              SizedBox(height: 40.h),
-              
-              // Save Button
-              _buildSaveButton(),
-              
-              SizedBox(height: 100.h), // Space for bottom navigation
+              Positioned.fill(child: _buildBackgroundImage()),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 
   Widget _buildBackgroundImage() {
     return Image.asset(
       'assets/images/chat/mail 1.png',
-      fit: BoxFit.cover,
+      width: 300,
+      height: 300,
       errorBuilder: (context, error, stackTrace) {
-        // Fallback to colored background if image fails
         return Container(
           decoration: BoxDecoration(
-            color: Color(0xFFFFF0F0).withOpacity(0.3),
+            color: const Color(0xFFFFF0F0).withOpacity(0.3),
           ),
         );
       },
+    );
+  }
+
+PreferredSizeWidget _buildAppBar() {
+  return PreferredSize(
+    preferredSize: Size.fromHeight(80.h), 
+    child: Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          width: double.infinity,
+          alignment: Alignment.bottomRight,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+          ),
+          child: const ProfileHeader(title: 'إعدادات الرسائل'),
+        ),
+        Positioned(
+          top: 0,
+          left: -20,
+          child: Image.asset(
+            AppImages.starProfile,
+            width: 400.w,
+            height: 250.h,
+            fit: BoxFit.cover,
+          ),
+        ),
+
+      ],
+    ),
+  );
+}
+
+
+  Widget _buildBody() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF0F0).withOpacity(0.5),
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(20.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildConnectionStatusSection(),
+                SizedBox(height: 24.h),
+                _buildDivider(),
+                SizedBox(height: 24.h),
+                _buildWhoCanSendSection(),
+                SizedBox(height: 24.h),
+                _buildDivider(),
+                SizedBox(height: 24.h),
+                _buildNotificationSettingsSection(),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 40.h),
+        _buildSaveButton(),
+        SizedBox(height: 100.h),
+      ],
     );
   }
 
@@ -181,76 +146,65 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         ),
         SizedBox(height: 16.h),
         _buildSettingRow(
-          title: 'متصل اللآن',
+          title: 'متصل الآن',
           subtitle: 'أظهر أنك متصل',
-          trailing: Row(
-            children: [
-              Container(
-                width: 20.w,
-                height: 20.w,
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Switch(
-                value: _isOnline,
-                onChanged: (value) {
-                  setState(() {
-                    _isOnline = value;
-                  });
-                },
-                activeColor: AppColors.primaryOrange,
-              ),
-            ],
+          showGreenDot: true,
+          trailing: Transform.scale(
+            scale: 0.8,
+            child: Switch(
+              value: _isOnline,
+              onChanged: (value) {
+                setState(() {
+                  _isOnline = value;
+                });
+              },
+              activeColor: Colors.white,
+              activeTrackColor: Colors.black,
+              inactiveThumbColor: Colors.white,
+              inactiveTrackColor: Colors.black,
+            ),
           ),
-        ),
+        )
       ],
     );
   }
 
   Widget _buildWhoCanSendSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'من يستطيع إرسال الرسائل إليك؟',
-          style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
+    return Container(
+
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'من يستطيع إرسال الرسائل إليك؟',
+            style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        SizedBox(height: 16.h),
-        
-        // Age Category
-        _buildSettingRow(
-          title: 'الفئة العمرية',
-          subtitle: _selectedAgeCategory,
-          trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-          onTap: () => _showAgeCategoryDialog(),
-        ),
-        
-        SizedBox(height: 12.h),
-        
-        // Nationalities
-        _buildSettingRow(
-          title: 'الجنسيات',
-          subtitle: _selectedNationalities,
-          trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-          onTap: () => _showNationalitiesDialog(),
-        ),
-        
-        SizedBox(height: 12.h),
-        
-        // Countries
-        _buildSettingRow(
-          title: 'الدول',
-          subtitle: _selectedCountries,
-          trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-          onTap: () => _showCountriesDialog(),
-        ),
-      ],
+          SizedBox(height: 16.h),
+          _buildSettingRow(
+            title: 'الفئة العمرية',
+            subtitle: _selectedAgeCategory,
+            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+            onTap: _showAgeCategoryDialog,
+          ),
+          SizedBox(height: 12.h),
+          _buildSettingRow(
+            title: 'الجنسيات',
+            subtitle: _selectedNationalities,
+            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+            onTap: _showNationalitiesDialog,
+          ),
+          SizedBox(height: 12.h),
+          _buildSettingRow(
+            title: 'الدول',
+            subtitle: _selectedCountries,
+            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+            onTap: _showCountriesDialog,
+          ),
+        ],
+      ),
     );
   }
 
@@ -266,71 +220,100 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
           ),
         ),
         SizedBox(height: 16.h),
-        
         _buildSettingRow(
           title: 'رسائل جديدة',
           subtitle: 'إشعارات الرسائل الجديدة',
-          trailing: Switch(
-            value: _newMessagesNotification,
-            onChanged: (value) {
-              setState(() {
-                _newMessagesNotification = value;
-              });
-            },
-            activeColor: AppColors.primaryOrange,
+          trailing: Transform.scale(
+            scale: 0.8,
+            child: Switch(
+              value: _newMessagesNotification,
+              onChanged: (value) {
+                setState(() {
+                  _newMessagesNotification = value;
+                });
+              },
+              activeColor: Colors.white,
+              activeTrackColor: Colors.black,
+              inactiveThumbColor: Colors.white,
+              inactiveTrackColor: Colors.black,
+            ),
           ),
         ),
-        
         SizedBox(height: 12.h),
-        
         _buildSettingRow(
           title: 'من سمح لي برؤية صورته؟',
           subtitle: 'إشعارات الصور الشخصية',
-          trailing: Switch(
-            value: _profilePictureNotification,
-            onChanged: (value) {
-              setState(() {
-                _profilePictureNotification = value;
-              });
-            },
-            activeColor: AppColors.primaryOrange,
+          trailing: Transform.scale(
+            scale: 0.8,
+            child: Switch(
+              value: _profilePictureNotification,
+              onChanged: (value) {
+                setState(() {
+                  _profilePictureNotification = value;
+                });
+              },
+              activeColor: Colors.white,
+              activeTrackColor: Colors.black,
+              inactiveThumbColor: Colors.white,
+              inactiveTrackColor: Colors.black,
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildSettingRow({
-    required String title,
-    required String subtitle,
-    Widget? trailing,
-    VoidCallback? onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-        decoration: BoxDecoration(
-          color: Color(0xFFfbecef).withOpacity(0.7),
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-
-            if (trailing != null) trailing,
-          ],
-        ),
+ Widget _buildSettingRow({
+  required String title,
+  required String subtitle,
+  Widget? trailing,
+  VoidCallback? onTap,
+  bool showGreenDot = false, // Add this flag
+}) {
+  return InkWell(
+    onTap: onTap,
+    child: Container(
+      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+      decoration: BoxDecoration(
+        color: const Color(0xFFfbecef).withOpacity(0.7),
+        borderRadius: BorderRadius.circular(12.r),
       ),
-    );
-  }
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              if (showGreenDot) ...[
+                SizedBox(width: 8.w),
+                Container(
+                  width: 20.w,
+                  height: 20.w,
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ],
+              SizedBox(width: 5.w,),
+              Text(
+                title,
+                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
+            ],
+          ),
+
+          if (trailing != null) trailing,
+
+        ],
+      ),
+    ),
+  );
+}
+
 
   Widget _buildDivider() {
     return Container(
@@ -340,13 +323,13 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   }
 
   Widget _buildSaveButton() {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 56.h,
       child: ElevatedButton(
         onPressed: _saveSettings,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryOrange,
+          backgroundColor: AppColors.shimmeringBlush,
           foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -365,9 +348,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   }
 
   void _saveSettings() {
-    // TODO: Implement save functionality
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('تم حفظ الإعدادات بنجاح'),
         backgroundColor: Colors.green,
       ),
@@ -378,7 +360,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('اختر الفئة العمرية'),
+        title: const Text('اختر الفئة العمرية'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -412,7 +394,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('اختر الجنسيات'),
+        title: const Text('اختر الجنسيات'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -438,7 +420,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('اختر الدول'),
+        title: const Text('اختر الدول'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

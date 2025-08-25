@@ -7,9 +7,11 @@ class IgnoreUserDataSource {
 
   IgnoreUserDataSource(this._apiServices);
 
-  Future<UsersResponseModel> ignoreUsers() async {
-    var response =
-        await _apiServices.get(endpoint: ApiConstants.ignoreUserList);
+  Future<UsersResponseModel> ignoreUsers({int? page}) async {
+    var response = await _apiServices.get(
+      endpoint: ApiConstants.ignoreUserList,
+      queryParameters: page != null ? {'page': page} : null,
+    );
 
     return UsersResponseModel.fromJson(response.data);
   }

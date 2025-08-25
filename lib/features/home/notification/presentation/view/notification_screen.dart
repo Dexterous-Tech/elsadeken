@@ -4,6 +4,7 @@ import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/features/home/notification/presentation/view/notification_settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -72,10 +73,27 @@ class NotificationScreen extends StatelessWidget {
                           style: AppTextStyles.font20WhiteBoldLamaSans
                               .copyWith(color: AppColors.black),
                         ),
-                        SizedBox(
-                          width: 40.w,
-                          height: 40.h,
-                        )
+                        GestureDetector(
+                          onTap: () {
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NotificationSettingsPage(),
+                          ),
+                        );
+                          },
+                          child: Container(
+                        width: 40.w,
+                        height: 40.h,
+                        child: Center(
+                          child: Icon(
+                            Icons.settings,
+                            size: 20.w,
+                            color: AppColors.black,
+                          ),
+                        ),
+                        ),
+                        ),
                       ],
                     ),
                   ),

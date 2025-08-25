@@ -10,7 +10,7 @@ class MyInterestingListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<InterestingListCubit>()..favUser(),
+      create: (context) => sl<InterestingListCubit>()..favUser(page: 1),
       child: Scaffold(
         body: MyInterestingListBody(),
       ),

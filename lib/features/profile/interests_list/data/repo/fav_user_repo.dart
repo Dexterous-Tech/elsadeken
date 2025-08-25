@@ -5,9 +5,8 @@ import 'package:elsadeken/core/networking/api_error_model.dart';
 import 'package:elsadeken/features/profile/interests_list/data/data_source/fav_user_data_source.dart';
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 
-
 abstract class FavUserRepoInterface {
-  Future<Either<ApiErrorModel, UsersResponseModel>> favUsers();
+  Future<Either<ApiErrorModel, UsersResponseModel>> favUsers({int? page});
 }
 
 class FavUserRepoImpl implements FavUserRepoInterface {
@@ -16,9 +15,10 @@ class FavUserRepoImpl implements FavUserRepoInterface {
   FavUserRepoImpl(this.favUserDataSource);
 
   @override
-  Future<Either<ApiErrorModel, UsersResponseModel>> favUsers() async {
+  Future<Either<ApiErrorModel, UsersResponseModel>> favUsers(
+      {int? page}) async {
     try {
-      var response = await favUserDataSource.favUsers();
+      var response = await favUserDataSource.favUsers(page: page);
       return Right(response);
     } catch (error) {
       log("error in fav user $error");

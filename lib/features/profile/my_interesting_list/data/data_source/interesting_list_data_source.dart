@@ -7,9 +7,11 @@ class InterestingListDataSource {
 
   InterestingListDataSource(this._apiServices);
 
-  Future<UsersResponseModel> interestingList() async {
-    var response =
-        await _apiServices.get(endpoint: ApiConstants.interestingList);
+  Future<UsersResponseModel> interestingList({int? page}) async {
+    var response = await _apiServices.get(
+      endpoint: ApiConstants.interestingList,
+      queryParameters: page != null ? {'page': page} : null,
+    );
 
     return UsersResponseModel.fromJson(response.data);
   }

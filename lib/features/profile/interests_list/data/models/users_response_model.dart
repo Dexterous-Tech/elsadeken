@@ -45,6 +45,24 @@ class UsersResponseModel {
     map['type'] = type;
     return map;
   }
+
+  UsersResponseModel copyWith({
+    List<UsersDataModel>? data,
+    UsersLinksModel? links,
+    UsersMetaModel? meta,
+    String? message,
+    int? code,
+    String? type,
+  }) {
+    return UsersResponseModel(
+      data: data ?? this.data,
+      links: links ?? this.links,
+      meta: meta ?? this.meta,
+      message: message ?? this.message,
+      code: code ?? this.code,
+      type: type ?? this.type,
+    );
+  }
 }
 
 class UsersDataModel {
@@ -212,7 +230,7 @@ class UsersAttributeModel {
     lifePartner = json['life_partner'];
     aboutMe = json['about_me'];
   }
-  
+
   int? id;
   String? nationality;
   String? city;

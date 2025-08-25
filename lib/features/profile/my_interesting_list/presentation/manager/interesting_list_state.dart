@@ -15,5 +15,9 @@ final class InterestingListStateFailure extends InterestingListState {
 
 final class InterestingListStateSuccess extends InterestingListState {
   final UsersResponseModel favUserListModel;
-  InterestingListStateSuccess(this.favUserListModel);
+  final bool hasNextPage;
+  final int currentPage;
+
+  InterestingListStateSuccess(this.favUserListModel,
+      {this.hasNextPage = false, this.currentPage = 1});
 }

@@ -7,9 +7,11 @@ class FavUserDataSource {
 
   FavUserDataSource(this._apiServices);
 
-  Future<UsersResponseModel> favUsers() async {
-    var response =
-        await _apiServices.get(endpoint: ApiConstants.favUserList);
+  Future<UsersResponseModel> favUsers({int? page}) async {
+    var response = await _apiServices.get(
+      endpoint: ApiConstants.favUserList,
+      queryParameters: page != null ? {'page': page} : null,
+    );
 
     return UsersResponseModel.fromJson(response.data);
   }

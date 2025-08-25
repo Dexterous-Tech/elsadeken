@@ -10,7 +10,7 @@ class MyIgnoringListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<IgnoreUserCubit>()..ignoreUsers(),
+      create: (context) => sl<IgnoreUserCubit>()..ignoreUsers(page: 1),
       child: Scaffold(
         body: MyIgnoringListBody(),
       ),
