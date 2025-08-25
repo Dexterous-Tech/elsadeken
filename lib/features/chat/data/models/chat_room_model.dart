@@ -10,6 +10,7 @@ class ChatRoomModel extends ChatRoom {
     required super.unreadCount,
     required super.isOnline,
     required super.isFavorite,
+    required super.receiverId,
   });
 
   factory ChatRoomModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +23,26 @@ class ChatRoomModel extends ChatRoom {
       unreadCount: json['unread_count'] as int,
       isOnline: json['is_online'] as bool,
       isFavorite: json['is_favorite'] as bool,
+      receiverId: json['receiver_id'] as int,
+    );
+  }
+
+  /// Create a temporary chat room for starting a new conversation
+  factory ChatRoomModel.fromUser({
+    required int userId,
+    required String userName,
+    required String userImage,
+  }) {
+    return ChatRoomModel(
+      id: 'temp_${DateTime.now().millisecondsSinceEpoch}', // Temporary ID
+      name: userName,
+      image: userImage,
+      lastMessage: 'ابدأ المحادثة الآن',
+      lastMessageTime: DateTime.now(),
+      unreadCount: 0,
+      isOnline: false,
+      isFavorite: false,
+      receiverId: userId,
     );
   }
 
@@ -35,6 +56,7 @@ class ChatRoomModel extends ChatRoom {
       'unread_count': unreadCount,
       'is_online': isOnline,
       'is_favorite': isFavorite,
+      'receiver_id': receiverId,
     };
   }
 }

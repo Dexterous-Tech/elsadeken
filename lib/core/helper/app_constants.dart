@@ -25,3 +25,13 @@ class AppConstants {
   static const double defaultBorderRadius = 12.0;
   static const double searchFieldHeight = 50.0;
 }
+
+// Pusher Configuration
+class PusherConfig {
+  static const String appId = '1893366';
+  static const String appKey = '488b28cd543c3e616398';
+  static const String appSecret = 'bb14accaa8c913fd988f';
+  static const String cluster = 'eu';
+  static const int port = 443;
+  static const bool encrypted = true;
+}

@@ -9,6 +9,7 @@ class ChatRoom extends Equatable {
   final int unreadCount;
   final bool isOnline;
   final bool isFavorite;
+  final int receiverId; 
 
   const ChatRoom({
     required this.id,
@@ -19,6 +20,7 @@ class ChatRoom extends Equatable {
     required this.unreadCount,
     required this.isOnline,
     required this.isFavorite,
+    required this.receiverId,
   });
 
   @override
@@ -31,5 +33,6 @@ class ChatRoom extends Equatable {
         unreadCount,
         isOnline,
         isFavorite,
+        receiverId,
       ];
 }

@@ -14,6 +14,15 @@ import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit
 import 'package:elsadeken/features/auth/verification_email/data/data_source/verification_data_source.dart';
 import 'package:elsadeken/features/auth/verification_email/data/repo/verification_repo.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/manager/verification_cubit.dart';
+import 'package:elsadeken/features/chat/data/datasources/chat_data_source.dart';
+import 'package:elsadeken/features/chat/data/repositories/chat_repo.dart';
+import 'package:elsadeken/features/chat/data/repositories/pusher_repo_impl.dart';
+import 'package:elsadeken/features/chat/data/services/pusher_service.dart';
+import 'package:elsadeken/features/chat/domain/repositories/pusher_repo_interface.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/members/data/repositories/members_repository.dart';
 import 'package:elsadeken/features/home/notification/data/data_source/notification_data_source.dart';
 import 'package:elsadeken/features/home/notification/data/repo/notification_repo.dart';
@@ -217,4 +226,18 @@ Future<void> initializeDependencies() async {
       () => NotificationCountCubit(sl()));
   sl.registerFactory<NotificationSettingsCubit>(
       () => NotificationSettingsCubit());
+
+  // Chat
+  sl.registerLazySingleton<ChatDataSource>(() => ChatDataSource(sl()));
+  sl.registerLazySingleton<ChatRepoInterface>(() => ChatRepoImpl(sl()));
+  sl.registerFactory<ChatListCubit>(() => ChatListCubit(sl()));
+
+  // Chat Conversation
+  sl.registerFactory<ChatMessagesCubit>(() => ChatMessagesCubit(sl()));
+  sl.registerFactory<SendMessageCubit>(() => SendMessageCubit(sl()));
+
+  // Pusher
+  sl.registerLazySingleton(() => PusherService.instance);
+  sl.registerLazySingleton<PusherRepoInterface>(() => PusherRepoImpl(sl()));
+  sl.registerFactory<PusherCubit>(() => PusherCubit(sl()));
 }

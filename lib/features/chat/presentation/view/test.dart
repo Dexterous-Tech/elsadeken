@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
-import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
 
 class ChatSettingsScreen extends StatefulWidget {
-  const ChatSettingsScreen({Key? key}) : super(key: key);
+  const ChatSettingsScreen({super.key});
 
   @override
   State<ChatSettingsScreen> createState() => _ChatSettingsScreenState();
@@ -111,7 +110,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Color(0xFFFFF0F0).withOpacity(0.9), // More transparent to show background
+                  color: Color(0xFFFFF0F0)
+                      .withOpacity(0.9), // More transparent to show background
                   borderRadius: BorderRadius.circular(16.r),
                 ),
                 child: Padding(
@@ -266,7 +266,6 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
           ),
         ),
         SizedBox(height: 16.h),
-
         _buildSettingRow(
           title: 'رسائل جديدة',
           subtitle: 'إشعارات الرسائل الجديدة',
@@ -280,9 +279,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             activeColor: AppColors.primaryOrange,
           ),
         ),
-
         SizedBox(height: 12.h),
-
         _buildSettingRow(
           title: 'من سمح لي برؤية صورته؟',
           subtitle: 'إشعارات الصور الشخصية',
@@ -324,7 +321,6 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-
             if (trailing != null) trailing,
           ],
         ),
@@ -340,7 +336,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   }
 
   Widget _buildSaveButton() {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 56.h,
       child: ElevatedButton(

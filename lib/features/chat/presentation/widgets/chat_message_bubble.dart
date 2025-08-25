@@ -23,7 +23,6 @@ class ChatMessageBubble extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isCurrentUser) ...[
-            // Profile image for other user's messages
             Container(
               width: 32.w,
               height: 32.w,

@@ -1,6 +1,5 @@
 part of 'manage_profile_cubit.dart';
 
-@immutable
 sealed class ManageProfileState {}
 
 final class ManageProfileInitial extends ManageProfileState {}
