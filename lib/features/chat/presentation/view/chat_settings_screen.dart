@@ -14,7 +14,7 @@ class ChatSettingsScreen extends StatefulWidget {
 }
 
 class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
-  bool _isOnline = false;
+  bool _isOnline = true;
   bool _newMessagesNotification = false;
   bool _profilePictureNotification = false;
   String _selectedAgeCategory = 'أي شخص';
@@ -27,22 +27,24 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: _buildAppBar(),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: Stack(
             children: [
-              Positioned.fill(child: _buildBackgroundImage()),
               Column(
                 children: [
-                  SizedBox(height: 12.h),
                   Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: _buildBody(),
+                    child: Container(
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: _buildBody(),
+                      ),
                     ),
                   ),
                 ],
               ),
+              Positioned.fill(child: _buildBackgroundImage()),
             ],
           ),
         ),
@@ -70,6 +72,15 @@ PreferredSizeWidget _buildAppBar() {
     preferredSize: Size.fromHeight(80.h), 
     child: Stack(
       children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          width: double.infinity,
+          alignment: Alignment.bottomRight,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+          ),
+          child: const ProfileHeader(title: 'إعدادات الرسائل'),
+        ),
         Positioned(
           top: 0,
           left: -20,
@@ -80,12 +91,7 @@ PreferredSizeWidget _buildAppBar() {
             fit: BoxFit.cover,
           ),
         ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          width: double.infinity,
-          alignment: Alignment.bottomRight,
-          child: const ProfileHeader(title: 'إعدادات الرسائل'),
-        ),
+
       ],
     ),
   );
@@ -143,17 +149,20 @@ PreferredSizeWidget _buildAppBar() {
           title: 'متصل الآن',
           subtitle: 'أظهر أنك متصل',
           showGreenDot: true,
-          trailing: Switch(
-            value: _isOnline,
-            onChanged: (value) {
-              setState(() {
-                _isOnline = value;
-              });
-            },
-            activeColor: Colors.white,
-            activeTrackColor: Colors.black,
-            inactiveThumbColor: Colors.white,
-            inactiveTrackColor: Colors.grey[300],
+          trailing: Transform.scale(
+            scale: 0.8,
+            child: Switch(
+              value: _isOnline,
+              onChanged: (value) {
+                setState(() {
+                  _isOnline = value;
+                });
+              },
+              activeColor: Colors.white,
+              activeTrackColor: Colors.black,
+              inactiveThumbColor: Colors.white,
+              inactiveTrackColor: Colors.black,
+            ),
           ),
         )
       ],
@@ -162,37 +171,37 @@ PreferredSizeWidget _buildAppBar() {
 
   Widget _buildWhoCanSendSection() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'من يستطيع إرسال الرسائل إليك؟',
-          style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'من يستطيع إرسال الرسائل إليك؟',
+            style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        SizedBox(height: 16.h),
-        _buildSettingRow(
-          title: 'الفئة العمرية',
-          subtitle: _selectedAgeCategory,
-          trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-          onTap: _showAgeCategoryDialog,
-        ),
-        SizedBox(height: 12.h),
-        _buildSettingRow(
-          title: 'الجنسيات',
-          subtitle: _selectedNationalities,
-          trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-          onTap: _showNationalitiesDialog,
-        ),
-        SizedBox(height: 12.h),
-        _buildSettingRow(
-          title: 'الدول',
-          subtitle: _selectedCountries,
-          trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-          onTap: _showCountriesDialog,
-        ),
-      ],
+          SizedBox(height: 16.h),
+          _buildSettingRow(
+            title: 'الفئة العمرية',
+            subtitle: _selectedAgeCategory,
+            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+            onTap: ()=> _showAgeCategoryDialog,
+          ),
+          SizedBox(height: 12.h),
+          _buildSettingRow(
+            title: 'الجنسيات',
+            subtitle: _selectedNationalities,
+            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+            onTap: ()=> _showNationalitiesDialog,
+          ),
+          SizedBox(height: 12.h),
+          _buildSettingRow(
+            title: 'الدول',
+            subtitle: _selectedCountries,
+            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+            onTap:()=> _showCountriesDialog,
+          ),
+        ],
     );
   }
 
@@ -211,34 +220,40 @@ PreferredSizeWidget _buildAppBar() {
         _buildSettingRow(
           title: 'رسائل جديدة',
           subtitle: 'إشعارات الرسائل الجديدة',
-          trailing: Switch(
-            value: _newMessagesNotification,
-            onChanged: (value) {
-              setState(() {
-                _newMessagesNotification = value;
-              });
-            },
-            activeColor: Colors.white,
-            activeTrackColor: Colors.black,
-            inactiveThumbColor: Colors.white,
-            inactiveTrackColor: Colors.grey[300],
+          trailing: Transform.scale(
+            scale: 0.8,
+            child: Switch(
+              value: _newMessagesNotification,
+              onChanged: (value) {
+                setState(() {
+                  _newMessagesNotification = value;
+                });
+              },
+              activeColor: Colors.white,
+              activeTrackColor: Colors.black,
+              inactiveThumbColor: Colors.white,
+              inactiveTrackColor: Colors.black,
+            ),
           ),
         ),
         SizedBox(height: 12.h),
         _buildSettingRow(
           title: 'من سمح لي برؤية صورته؟',
           subtitle: 'إشعارات الصور الشخصية',
-          trailing: Switch(
-            value: _profilePictureNotification,
-            onChanged: (value) {
-              setState(() {
-                _profilePictureNotification = value;
-              });
-            },
-            activeColor: Colors.white,
-            activeTrackColor: Colors.black,
-            inactiveThumbColor: Colors.white,
-            inactiveTrackColor: Colors.grey[300],
+          trailing: Transform.scale(
+            scale: 0.8,
+            child: Switch(
+              value: _profilePictureNotification,
+              onChanged: (value) {
+                setState(() {
+                  _profilePictureNotification = value;
+                });
+              },
+              activeColor: Colors.white,
+              activeTrackColor: Colors.black,
+              inactiveThumbColor: Colors.white,
+              inactiveTrackColor: Colors.black,
+            ),
           ),
         ),
       ],
@@ -265,13 +280,6 @@ PreferredSizeWidget _buildAppBar() {
         children: [
           Row(
             children: [
-              Text(
-                title,
-                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
               if (showGreenDot) ...[
                 SizedBox(width: 8.w),
                 Container(
@@ -283,9 +291,20 @@ PreferredSizeWidget _buildAppBar() {
                   ),
                 ),
               ],
+              SizedBox(width: 5.w,),
+              Text(
+                title,
+                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
             ],
           ),
+
           if (trailing != null) trailing,
+
         ],
       ),
     ),
