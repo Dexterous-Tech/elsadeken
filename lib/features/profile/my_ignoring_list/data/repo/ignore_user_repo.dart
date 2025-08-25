@@ -6,7 +6,7 @@ import 'package:elsadeken/features/profile/my_ignoring_list/data/data_source/ign
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 
 abstract class IgnoreUserRepoInterface {
-  Future<Either<ApiErrorModel, UsersResponseModel>> ignoreUsers();
+  Future<Either<ApiErrorModel, UsersResponseModel>> ignoreUsers({int? page});
 }
 
 class IgnoreUserRepoImpl implements IgnoreUserRepoInterface {
@@ -15,9 +15,10 @@ class IgnoreUserRepoImpl implements IgnoreUserRepoInterface {
   IgnoreUserRepoImpl(this.ignoreUserDataSource);
 
   @override
-  Future<Either<ApiErrorModel, UsersResponseModel>> ignoreUsers() async {
+  Future<Either<ApiErrorModel, UsersResponseModel>> ignoreUsers(
+      {int? page}) async {
     try {
-      var response = await ignoreUserDataSource.ignoreUsers();
+      var response = await ignoreUserDataSource.ignoreUsers(page: page);
       return Right(response);
     } catch (error) {
       log("error in ignore user $error");

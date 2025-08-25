@@ -14,11 +14,15 @@ class IgnoreUserLoading extends IgnoreUserState {}
 
 class IgnoreUserSuccess extends IgnoreUserState {
   final UsersResponseModel ignoreUsersResponseModel;
+  final bool hasNextPage;
+  final int currentPage;
 
-  const IgnoreUserSuccess(this.ignoreUsersResponseModel);
+  const IgnoreUserSuccess(this.ignoreUsersResponseModel,
+      {this.hasNextPage = false, this.currentPage = 1});
 
   @override
-  List<Object> get props => [ignoreUsersResponseModel];
+  List<Object> get props =>
+      [ignoreUsersResponseModel, hasNextPage, currentPage];
 }
 
 class IgnoreUserFailure extends IgnoreUserState {

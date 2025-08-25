@@ -15,5 +15,9 @@ final class FavUserFailure extends FavUserState {
 
 final class FavUserSuccess extends FavUserState {
   final UsersResponseModel favUserListModel;
-  FavUserSuccess(this.favUserListModel);
+  final bool hasNextPage;
+  final int currentPage;
+
+  FavUserSuccess(this.favUserListModel,
+      {this.hasNextPage = false, this.currentPage = 1});
 }
