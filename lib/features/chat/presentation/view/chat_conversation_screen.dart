@@ -15,6 +15,7 @@ import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_state.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_state.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'dart:async';
 
@@ -89,16 +90,23 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: _buildAppBar(),
-        body: Column(
-          children: [
-            Expanded(
-              child: _buildChatMessages(),
-            ),
-            _buildMessageInput(),
-          ],
+      child: WillPopScope(
+        onWillPop: () async {
+          // Refresh chat list when going back to update unread counts
+          _refreshChatListOnBack();
+          return true;
+        },
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: _buildAppBar(),
+          body: Column(
+            children: [
+              Expanded(
+                child: _buildChatMessages(),
+              ),
+              _buildMessageInput(),
+            ],
+          ),
         ),
       ),
     );
@@ -765,6 +773,24 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     });
   }
 
+  /// Refresh chat list when going back to update unread counts
+  void _refreshChatListOnBack() {
+    try {
+      // Use a post-frame callback to ensure the navigation has completed
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        try {
+          // Navigate to the chat list and refresh it
+          context.read<ChatListCubit>().getChatList();
+          print('🔄 Refreshing chat list on back to update unread counts');
+        } catch (e) {
+          print('⚠️ Error refreshing chat list on back: $e');
+        }
+      });
+    } catch (e) {
+      print('⚠️ Error setting up chat list refresh: $e');
+    }
+  }
+
   @override
   void dispose() {
     _refreshTimer?.cancel();
@@ -772,6 +798,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     _messageDelayTimer?.cancel();
     _messageController.dispose();
     _scrollController.dispose();
+
     // Unsubscribe from Pusher channel when leaving the screen
     try {
       context.read<PusherCubit>().unsubscribeFromChatChannel();
