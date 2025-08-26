@@ -15,6 +15,7 @@ import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_state.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'dart:async';
 
 class ChatConversationScreen extends StatefulWidget {
   final ChatRoomModel chatRoom;
@@ -35,6 +36,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   int? _currentUserId;
   String _currentUserName = '';
   String _currentUserImage = '';
+  Timer? _refreshTimer;
 
   @override
   void initState() {
@@ -42,6 +44,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     _loadChatMessages();
     _loadCurrentUserProfile();
     _initializePusher();
+    _startPeriodicRefresh();
   }
 
   void _initializePusher() {
@@ -51,7 +54,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         // Give the network stack more time to initialize
         Future.delayed(Duration(milliseconds: 1500), () {
           if (mounted) {
-            context.read<PusherCubit>().initialize();
+            try {
+              context.read<PusherCubit>().initialize();
+            } catch (e) {
+              // Handle Pusher initialization errors gracefully
+              print('⚠️ Pusher initialization failed: $e');
+              print('ℹ️ Chat will continue to work without real-time updates');
+            }
           }
         });
       }
@@ -86,6 +95,16 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         ),
       ),
     );
+  }
+
+  /// Check if Pusher is available and working
+  bool _isPusherAvailable() {
+    try {
+      final pusherCubit = context.read<PusherCubit>();
+      return pusherCubit.state is! PusherConnectionError;
+    } catch (e) {
+      return false;
+    }
   }
 
   PreferredSizeWidget _buildAppBar() {
@@ -126,14 +145,45 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         ],
       ),
       actions: [
-        // Test button for Pusher
-        IconButton(
-          icon: Icon(Icons.wifi, color: AppColors.darkerBlue),
-          onPressed: _testPusherConnection,
-          tooltip: 'Test Pusher Connection',
-        ),
+        // Add refresh button when Pusher is not available
+        if (!_isPusherAvailable())
+          IconButton(
+            icon: Icon(Icons.refresh, color: AppColors.darkerBlue),
+            onPressed: _refreshChatMessages,
+            tooltip: 'تحديث الرسائل',
+          ),
+        // Only show Pusher test button if Pusher is available
+        if (_isPusherAvailable())
+          IconButton(
+            icon: Icon(Icons.wifi, color: AppColors.darkerBlue),
+            onPressed: _testPusherConnection,
+            tooltip: 'Test Pusher Connection',
+          ),
       ],
     );
+  }
+
+  /// Refresh chat messages manually when Pusher is not available
+  void _refreshChatMessages() {
+    try {
+      _loadChatMessages();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('جاري تحديث الرسائل...'),
+          backgroundColor: Colors.blue,
+          duration: Duration(seconds: 1),
+        ),
+      );
+    } catch (e) {
+      print('Error refreshing chat messages: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('فشل في تحديث الرسائل'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   Widget _buildChatMessages() {
@@ -252,10 +302,15 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                 ),
               );
             } else if (state is PusherConnectionError) {
-              // Handle errors silently - don't show to user
-              print(
-                  '⚠️ PUSHER: Connection issue (handled silently): ${state.error}');
-              // No SnackBar - we're handling this silently
+              // Handle errors gracefully - show user-friendly message
+              print('⚠️ PUSHER: Connection issue: ${state.error}');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('فشل في الاتصال بالخادم - الرسائل ستظهر عند التحديث'),
+                  backgroundColor: Colors.orange,
+                  duration: Duration(seconds: 3),
+                ),
+              );
             } else if (state is PusherSubscribed) {
               print('🟢 PUSHER: Subscribed to channel successfully');
             } else if (state is PusherInitialized) {
@@ -537,16 +592,38 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   }
 
   void _testPusherConnection() {
-    print('🧪 Testing Pusher connection...');
-    if (_currentUserId != null) {
-      context.read<PusherCubit>().subscribeToChatChannel(_currentUserId!);
+    if (!_isPusherAvailable()) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('جاري اختبار الاتصال...'),
-          backgroundColor: Colors.blue,
+          content: Text('Pusher غير متاح حالياً'),
+          backgroundColor: Colors.orange,
           duration: Duration(seconds: 2),
         ),
       );
+      return;
+    }
+
+    print('🧪 Testing Pusher connection...');
+    if (_currentUserId != null) {
+      try {
+        context.read<PusherCubit>().subscribeToChatChannel(_currentUserId!);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('جاري اختبار الاتصال...'),
+            backgroundColor: Colors.blue,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } catch (e) {
+        print('Error testing Pusher connection: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('فشل في اختبار الاتصال'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -592,12 +669,28 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         );
   }
 
+  /// Start periodic refresh when Pusher is not available
+  void _startPeriodicRefresh() {
+    // Refresh messages every 30 seconds when Pusher is not available
+    _refreshTimer = Timer.periodic(Duration(seconds: 30), (timer) {
+      if (mounted && !_isPusherAvailable()) {
+        _loadChatMessages();
+      }
+    });
+  }
+
   @override
   void dispose() {
+    _refreshTimer?.cancel();
     _messageController.dispose();
     _scrollController.dispose();
     // Unsubscribe from Pusher channel when leaving the screen
-    context.read<PusherCubit>().unsubscribeFromChatChannel();
+    try {
+      context.read<PusherCubit>().unsubscribeFromChatChannel();
+    } catch (e) {
+      print('Error unsubscribing from Pusher: $e');
+    }
+    
     super.dispose();
   }
 }
