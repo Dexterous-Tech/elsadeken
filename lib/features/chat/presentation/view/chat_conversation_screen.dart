@@ -79,6 +79,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     // Don't load messages for temporary chat rooms (new conversations)
     if (!widget.chatRoom.id.startsWith('temp_')) {
       context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
+      // Also refresh chat list to clear unread count immediately
+      _refreshChatListOnBack();
     }
   }
 
@@ -300,7 +302,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                 // If this was a temporary chat, refresh the chat list to show the new chat
                 if (widget.chatRoom.id.startsWith('temp_')) {
                   _refreshChatListAfterTemporaryMessage();
-                  
+
                   // Show success message for first message
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -359,9 +361,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
       ],
       child: BlocBuilder<ChatMessagesCubit, ChatMessagesState>(
         builder: (context, state) {
+          // Show loading indicator first when loading messages
           if (state is ChatMessagesLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is ChatMessagesError) {
+          }
+
+          // Show error state if there's an error
+          if (state is ChatMessagesError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -395,7 +401,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
             );
           }
 
-          if (_messages.isEmpty) {
+          // Show empty state only after messages have been loaded and are empty
+          if (state is ChatMessagesLoaded && _messages.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -404,7 +411,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                       size: 64, color: Colors.grey[400]),
                   SizedBox(height: 16),
                   Text(
-                    widget.chatRoom.id.startsWith('temp_') 
+                    widget.chatRoom.id.startsWith('temp_')
                         ? 'ابدأ المحادثة الآن'
                         : 'لا توجد رسائل حتى الآن',
                     style: TextStyle(
@@ -428,37 +435,43 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
             );
           }
 
-          return ListView.builder(
-            controller: _scrollController,
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-            itemCount: _messages.length + 1 + (_isOtherUserTyping ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                // Day separator at the top
-                return _buildDaySeparator();
-              }
+          // Show messages if they exist
+          if (_messages.isNotEmpty) {
+            return ListView.builder(
+              controller: _scrollController,
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              itemCount: _messages.length + 1 + (_isOtherUserTyping ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  // Day separator at the top
+                  return _buildDaySeparator();
+                }
 
-              final messageIndex = index - 1;
+                final messageIndex = index - 1;
 
-              // Show typing indicator at the bottom if other user is typing
-              if (_isOtherUserTyping && messageIndex == _messages.length) {
-                return TypingIndicator(
-                  isCurrentUser: false,
-                  otherUserName: widget.chatRoom.name,
-                  otherUserImage: widget.chatRoom.image,
+                // Show typing indicator at the bottom if other user is typing
+                if (_isOtherUserTyping && messageIndex == _messages.length) {
+                  return TypingIndicator(
+                    isCurrentUser: false,
+                    otherUserName: widget.chatRoom.name,
+                    otherUserImage: widget.chatRoom.image,
+                  );
+                }
+
+                final message = _messages[messageIndex];
+                final isCurrentUser =
+                    message.senderId == _currentUserId.toString();
+
+                return ChatMessageBubble(
+                  message: message,
+                  isCurrentUser: isCurrentUser,
                 );
-              }
+              },
+            );
+          }
 
-              final message = _messages[messageIndex];
-              final isCurrentUser =
-                  message.senderId == _currentUserId.toString();
-
-              return ChatMessageBubble(
-                message: message,
-                isCurrentUser: isCurrentUser,
-              );
-            },
-          );
+          // Default case: show loading indicator while waiting for initial state
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );
@@ -562,7 +575,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                 textDirection: TextDirection.rtl,
                 onChanged: _onTextChanged,
                 decoration: InputDecoration(
-                  hintText: widget.chatRoom.id.startsWith('temp_') 
+                  hintText: widget.chatRoom.id.startsWith('temp_')
                       ? 'اكتب رسالتك الأولى...'
                       : 'اكتب رسالتك...',
                   hintStyle: TextStyle(
@@ -842,12 +855,12 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     _messageDelayTimer?.cancel();
     _messageController.dispose();
     _scrollController.dispose();
-    
+
     // If this was a temporary chat, refresh the chat list to show the new chat
     if (widget.chatRoom.id.startsWith('temp_')) {
       _refreshChatListAfterTemporaryMessage();
     }
-    
+
     // Unsubscribe from Pusher channel when leaving the screen
     try {
       context.read<PusherCubit>().unsubscribeFromChatChannel();
