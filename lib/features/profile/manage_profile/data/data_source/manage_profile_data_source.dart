@@ -29,4 +29,67 @@ class ManageProfileDataSource {
 
     return MyProfileResponseModel.fromJson(response.data);
   }
+
+  Future<MyProfileResponseModel> updateProfileLocationData(
+      UpdateProfileLocationDataModel updateProfileData) async {
+    var response = await _apiServices.patch(
+        endpoint: ApiConstants.updateProfileLocationData,
+        requestBody: updateProfileData.toJson());
+
+    return MyProfileResponseModel.fromJson(response.data);
+  }
+
+  Future<MyProfileResponseModel> updateProfileMarriageData(
+      UpdateProfileMarriageDataModel updateProfileData) async {
+    var response = await _apiServices.patch(
+        endpoint: ApiConstants.updateProfileMarriageData,
+        requestBody: updateProfileData.toJson());
+
+    return MyProfileResponseModel.fromJson(response.data);
+  }
+
+  Future<MyProfileResponseModel> updateProfilePhysicalData(
+      UpdateProfilePhysicalDataModel updateProfileData) async {
+    var response = await _apiServices.patch(
+        endpoint: ApiConstants.updateProfilePhysicsData,
+        requestBody: updateProfileData.toJson());
+
+    return MyProfileResponseModel.fromJson(response.data);
+  }
+
+  Future<MyProfileResponseModel> updateProfileReligiousData(
+      UpdateProfileReligiousDataModel updateProfileData) async {
+    var response = await _apiServices.patch(
+        endpoint: ApiConstants.updateProfileReligiousData,
+        requestBody: updateProfileData.toJson());
+
+    return MyProfileResponseModel.fromJson(response.data);
+  }
+
+  Future<MyProfileResponseModel> updateProfileWorkData(
+      UpdateProfileWorkDataModel updateProfileData) async {
+    var response = await _apiServices.patch(
+        endpoint: ApiConstants.updateProfileWorkingData,
+        requestBody: updateProfileData.toJson());
+
+    return MyProfileResponseModel.fromJson(response.data);
+  }
+
+  Future<MyProfileResponseModel> updateProfileAboutMeData(
+      UpdateProfileAboutMeDataModel updateProfileData) async {
+    var response = await _apiServices.patch(
+        endpoint: ApiConstants.updateProfileAboutMeData,
+        requestBody: updateProfileData.toJson());
+
+    return MyProfileResponseModel.fromJson(response.data);
+  }
+
+  Future<MyProfileResponseModel> updateProfileAboutPartnerData(
+      UpdateProfileAboutPartnerDataModel updateProfileData) async {
+    var response = await _apiServices.patch(
+        endpoint: ApiConstants.updateProfileAboutPartnerData,
+        requestBody: updateProfileData.toJson());
+
+    return MyProfileResponseModel.fromJson(response.data);
+  }
 }

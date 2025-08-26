@@ -117,6 +117,8 @@ class ManageProfileLoginData extends StatelessWidget {
     final dialogData = ManageProfileDialogData(
       title: 'تعديل بيانات تسجيل الدخول',
       cubit: updateProfileCubit,
+      signUpListsCubit: null, // Login data doesn't need SignUpListsCubit
+      dialogType: ManageProfileDialogType.loginData,
       fields: [
         ManageProfileField(
           label: 'اسم المستخدم',

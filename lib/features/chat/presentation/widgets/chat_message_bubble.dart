@@ -23,6 +23,7 @@ class ChatMessageBubble extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isCurrentUser) ...[
+            // Profile image for received messages (left side)
             Container(
               width: 32.w,
               height: 32.w,
@@ -71,13 +72,17 @@ class ChatMessageBubble extends StatelessWidget {
                 vertical: 12.h,
               ),
               decoration: BoxDecoration(
-                color: Color(0xfffeefef),
+                color: isCurrentUser ? Color(0xfffeefef) : Colors.white,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16.r),
                   topRight: Radius.circular(16.r),
                   bottomLeft: Radius.circular(!isCurrentUser ? 16.r : 4.r),
                   bottomRight: Radius.circular(!isCurrentUser ? 4.r : 16.r),
                 ),
+                border: !isCurrentUser ? Border.all(
+                  color: Colors.grey.shade200,
+                  width: 1,
+                ) : null,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.05),
@@ -101,7 +106,7 @@ class ChatMessageBubble extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
 
-                  // Timestamp and read status
+                  // Timestamp and read status (only for sent messages)
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -112,12 +117,14 @@ class ChatMessageBubble extends StatelessWidget {
                           color: Colors.grey[600],
                         ),
                       ),
-                      SizedBox(width: 4.w),
-                      Icon(
-                        message.isRead ? Icons.done_all : Icons.done,
-                        size: 14.w,
-                        color: Colors.blue[200],
-                      ),
+                      if (isCurrentUser) ...[
+                        SizedBox(width: 4.w),
+                        Icon(
+                          message.isRead ? Icons.done_all : Icons.done,
+                          size: 14.w,
+                          color: Colors.blue[200],
+                        ),
+                      ],
                     ],
                   ),
                 ],
@@ -126,7 +133,7 @@ class ChatMessageBubble extends StatelessWidget {
           ),
 
           if (isCurrentUser) ...[
-            // Profile image for current user's messages
+            // Profile image for current user's messages (right side)
             Container(
               width: 32.w,
               height: 32.w,
