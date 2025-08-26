@@ -5,7 +5,9 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/view/widg
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ManageProfileWritingContent extends StatelessWidget {
@@ -59,28 +61,47 @@ class ManageProfileWritingContent extends StatelessWidget {
   }
 
   void _showWritingContentEditDialog(BuildContext context, String label) {
+    final updateProfileCubit = context.read<UpdateProfileCubit>();
+
     // Determine which field to use based on the label
     final isLifePartner = label.contains('شريكة حياتك');
     final currentValue = isLifePartner
         ? profileData?.attribute?.lifePartner ?? ''
         : profileData?.attribute?.aboutMe ?? '';
 
-    final dialogData = ManageProfileDialogData(
-      title: 'تعديل المحتوى المكتوب',
-      fields: [
+    // Create separate fields for about me and life partner
+    final fields = <ManageProfileField>[];
+
+    if (isLifePartner) {
+      fields.add(
         ManageProfileField(
-          label: label,
-          hint: isLifePartner ? 'اكتب عن مواصفات شريكة حياتك' : 'اكتب عن نفسك',
+          label: 'شريك الحياة',
+          hint: 'اكتب عن مواصفات شريك حياتك',
           currentValue: currentValue,
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.multiline,
           maxLines: 5,
         ),
-      ],
-      onSave: () {
-        // Handle save logic here
-        print('Saving writing content...');
-      },
+      );
+    } else {
+      fields.add(
+        ManageProfileField(
+          label: 'نبذة عني',
+          hint: 'اكتب عن نفسك',
+          currentValue: currentValue,
+          type: ManageProfileFieldType.text,
+          keyboardType: TextInputType.multiline,
+          maxLines: 5,
+        ),
+      );
+    }
+
+    final dialogData = ManageProfileDialogData(
+      title: 'تعديل المحتوى المكتوب',
+      cubit: updateProfileCubit,
+      signUpListsCubit: null, // No lists needed for text fields
+      dialogType: ManageProfileDialogType.descriptions,
+      fields: fields,
     );
 
     manageProfileDialog(context, dialogData);

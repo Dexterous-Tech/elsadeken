@@ -33,6 +33,17 @@ class ApiConstants {
   static String userDetails(int userId) => '/user/show-one-user/$userId';
   static String updateImage = '/user/update-image';
   static String updateProfileLoginData = '/user/update-profile/personal-info';
+  static String updateProfileLocationData =
+      '/user/update-profile/location-info';
+  static String updateProfileMarriageData =
+      '/user/update-profile/marriage-info';
+  static String updateProfilePhysicsData = '/user/update-profile/physical-info';
+  static String updateProfileReligiousData =
+      '/user/update-profile/religious-info';
+  static String updateProfileWorkingData = '/user/update-profile/work-info';
+  static String updateProfileAboutMeData = '/user/update-profile/aboutme-info';
+  static String updateProfileAboutPartnerData =
+      '/user/update-profile/lifepartner-info';
 
   //search-home
   static String matchesUsers = '/user/home/matches-users';
@@ -58,6 +69,4 @@ class ApiConstants {
   static String getChatsList = '/user/chats/list';
   static String userChat(String id) => '/user/chats/chat-messages/$id';
   static String sendMessage = '/user/chats/send-message';
-
-
 }

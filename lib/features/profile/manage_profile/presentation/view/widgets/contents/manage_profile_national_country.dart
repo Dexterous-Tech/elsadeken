@@ -1,9 +1,12 @@
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../manage_profile_content_item.dart';
 import '../manage_profile_custom_separator.dart';
 
@@ -55,105 +58,38 @@ class ManageProfileNationalCountry extends StatelessWidget {
   }
 
   void _showNationalCountryEditDialog(BuildContext context) {
+    final updateProfileCubit = context.read<UpdateProfileCubit>();
+    final signUpListsCubit = context.read<SignUpListsCubit>();
+
     final dialogData = ManageProfileDialogData(
       title: 'تعديل الجنسية والدولة والمدينة',
+      cubit: updateProfileCubit,
+      signUpListsCubit: signUpListsCubit,
+      dialogType: ManageProfileDialogType.nationalCountry,
       fields: [
         ManageProfileField(
           label: 'الجنسية',
           hint: 'اختر الجنسية',
           currentValue: profileData?.attribute?.nationality ?? '',
           type: ManageProfileFieldType.dropdown,
-          options: [
-            'السعودية',
-            'المصرية',
-            'الأردنية',
-            'اللبنانية',
-            'السورية',
-            'العراقية',
-            'الكويتية',
-            'الإماراتية',
-            'القطرية',
-            'البحرينية',
-            'العمانية',
-            'اليمنية',
-            'الفلسطينية',
-            'السودانية',
-            'الجزائرية',
-            'المغربية',
-            'التونسية',
-            'الليبية',
-            'الموريتانية',
-            'الصومالية',
-            'الجيبوتية',
-            'القمرية',
-          ],
+          dataType: ManageProfileFieldDataType.nationality,
         ),
         ManageProfileField(
           label: 'الدولة',
           hint: 'اختر الدولة',
           currentValue: profileData?.attribute?.country ?? '',
           type: ManageProfileFieldType.dropdown,
-          options: [
-            'السعودية',
-            'مصر',
-            'الأردن',
-            'لبنان',
-            'سوريا',
-            'العراق',
-            'الكويت',
-            'الإمارات',
-            'قطر',
-            'البحرين',
-            'عمان',
-            'اليمن',
-            'فلسطين',
-            'السودان',
-            'الجزائر',
-            'المغرب',
-            'تونس',
-            'ليبيا',
-            'موريتانيا',
-            'الصومال',
-            'جيبوتي',
-            'جزر القمر',
-          ],
+          dataType: ManageProfileFieldDataType.country,
         ),
         ManageProfileField(
           label: 'المدينة',
           hint: 'اختر المدينة',
           currentValue: profileData?.attribute?.city ?? '',
           type: ManageProfileFieldType.dropdown,
-          options: [
-            'الرياض',
-            'جدة',
-            'مكة المكرمة',
-            'المدينة المنورة',
-            'الدمام',
-            'الخبر',
-            'الظهران',
-            'تبوك',
-            'أبها',
-            'جازان',
-            'نجران',
-            'الباحة',
-            'الجوف',
-            'حائل',
-            'القصيم',
-            'عسير',
-            'الباحة',
-            'جازان',
-            'نجران',
-            'الجوف',
-            'حائل',
-            'القصيم',
-            'عسير',
-          ],
+          dataType: ManageProfileFieldDataType.city,
+          dependentFieldLabel: 'الدولة', // Cities depend on country selection
         ),
       ],
-      onSave: () {
-        // Handle save logic here
-        print('Saving national country data...');
-      },
     );
 
     manageProfileDialog(context, dialogData);

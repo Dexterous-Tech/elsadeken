@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
@@ -7,6 +7,7 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/view/widg
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 
 class ManageProfileReligion extends StatelessWidget {
   const ManageProfileReligion({
@@ -42,7 +43,7 @@ class ManageProfileReligion extends StatelessWidget {
         ManageProfileContentItem(
           title: 'التدخين',
           itemContent: ManageProfileContentText(
-            text: profileData?.attribute?.smoking ?? '',
+            text: profileData?.attribute?.smoking?.toString() ?? '',
             isLoading: isLoading,
           ),
         ),
@@ -63,8 +64,20 @@ class ManageProfileReligion extends StatelessWidget {
   }
 
   void _showReligionEditDialog(BuildContext context) {
+    final updateProfileCubit = context.read<UpdateProfileCubit>();
+
+    // Debug: Print current values to understand what we're receiving
+    print(
+        'DEBUG: Religious Commitment: "${profileData?.attribute?.religiousCommitment}"');
+    print('DEBUG: Prayer: "${profileData?.attribute?.prayer}"');
+    print('DEBUG: Smoking: "${profileData?.attribute?.smoking}"');
+    print('DEBUG: Hijab: "${profileData?.attribute?.hijab}"');
+
     final dialogData = ManageProfileDialogData(
       title: 'تعديل المعلومات الدينية',
+      cubit: updateProfileCubit,
+      signUpListsCubit: null, // No lists needed for religious data
+      dialogType: ManageProfileDialogType.religion,
       fields: [
         ManageProfileField(
           label: 'الإلتزام الديني',
@@ -72,11 +85,9 @@ class ManageProfileReligion extends StatelessWidget {
           currentValue: profileData?.attribute?.religiousCommitment ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
-            'غير متدينة',
-            'متدينة قليلا',
-            'متدينة',
-            'متدينة كثرا',
-            'متدينة جدا',
+            'غير متدين',
+            'متدين قليلا',
+            'متدين',
           ],
         ),
         ManageProfileField(
@@ -86,18 +97,19 @@ class ManageProfileReligion extends StatelessWidget {
           type: ManageProfileFieldType.dropdown,
           options: [
             'اصلي دائما',
-            'اصلي احيانا',
+            'اصلي اغلب الاوقات',
             'لا اصلي',
           ],
         ),
         ManageProfileField(
           label: 'التدخين',
           hint: 'اختر حالة التدخين',
-          currentValue: profileData?.attribute?.smoking ?? '',
+          currentValue:
+              _getSmokingDisplayValue(profileData?.attribute?.smoking),
           type: ManageProfileFieldType.dropdown,
           options: [
             'نعم',
-            'لأ',
+            'لا',
           ],
         ),
         ManageProfileField(
@@ -106,19 +118,26 @@ class ManageProfileReligion extends StatelessWidget {
           currentValue: profileData?.attribute?.hijab ?? '',
           type: ManageProfileFieldType.dropdown,
           options: [
-            'محجبة',
-            'محجبة (النقاب)',
-            'غير محجبة',
-            'افضل ان اقول لا',
+            'محجبه',
+            'محجبه (النقاب)',
+            'غير محجبه',
           ],
         ),
       ],
-      onSave: () {
-        // Handle save logic here
-        print('Saving religion data...');
-      },
     );
 
     manageProfileDialog(context, dialogData);
+  }
+
+  /// Helper method to convert smoking API value to display text
+  String _getSmokingDisplayValue(String? smoking) {
+    if (smoking == null || smoking.isEmpty) return '';
+
+    // Handle both string and numeric values
+    if (smoking == '1' || smoking == 'نعم') return 'نعم';
+    if (smoking == '0' || smoking == 'لا') return 'لا';
+
+    // Default case
+    return '';
   }
 }
