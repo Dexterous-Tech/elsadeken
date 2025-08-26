@@ -758,7 +758,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   void _simulateTypingIndicator() {
     // Show typing indicator after a short delay when chat opens
     _messageDelayTimer?.cancel();
-    _messageDelayTimer = Timer(Duration(milliseconds: 2000), () {
+    _messageDelayTimer = Timer(Duration(milliseconds: 4000), () {
       if (mounted) {
         _showTypingIndicator();
       }
