@@ -22,6 +22,9 @@ abstract class ManageProfileRepoInterface {
   Future<Either<ApiErrorModel, MyProfileResponseModel>>
       updateProfilePhysicalData(
           UpdateProfilePhysicalDataModel updateProfileData);
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfileReligiousData(
+          UpdateProfileReligiousDataModel updateProfileData);
   Future<Either<ApiErrorModel, MyProfileResponseModel>> updateProfileWorkData(
       UpdateProfileWorkDataModel updateProfileData);
   Future<Either<ApiErrorModel, MyProfileResponseModel>>
@@ -124,6 +127,23 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
       return Right(response);
     } catch (error) {
       log("error in update profile physical data $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfileReligiousData(
+          UpdateProfileReligiousDataModel updateProfileData) async {
+    try {
+      var response = await manageProfileDataSource
+          .updateProfileReligiousData(updateProfileData);
+      return Right(response);
+    } catch (error) {
+      log("error in update profile religious data $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

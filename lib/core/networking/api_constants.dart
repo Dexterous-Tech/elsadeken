@@ -38,6 +38,8 @@ class ApiConstants {
   static String updateProfileMarriageData =
       '/user/update-profile/marriage-info';
   static String updateProfilePhysicsData = '/user/update-profile/physical-info';
+  static String updateProfileReligiousData =
+      '/user/update-profile/religious-info';
   static String updateProfileWorkingData = '/user/update-profile/work-info';
   static String updateProfileAboutMeData = '/user/update-profile/aboutme-info';
   static String updateProfileAboutPartnerData =

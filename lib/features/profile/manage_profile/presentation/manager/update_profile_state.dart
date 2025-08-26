@@ -58,6 +58,19 @@ final class UpdateProfilePhysicalDataSuccess extends UpdateProfileState {
   UpdateProfilePhysicalDataSuccess(this.myProfileResponseModel);
 }
 
+// Religious Data States
+final class UpdateProfileReligiousDataLoading extends UpdateProfileState {}
+
+final class UpdateProfileReligiousDataFailure extends UpdateProfileState {
+  final String error;
+  UpdateProfileReligiousDataFailure(this.error);
+}
+
+final class UpdateProfileReligiousDataSuccess extends UpdateProfileState {
+  final MyProfileResponseModel myProfileResponseModel;
+  UpdateProfileReligiousDataSuccess(this.myProfileResponseModel);
+}
+
 // Work Data States
 final class UpdateProfileWorkDataLoading extends UpdateProfileState {}
 

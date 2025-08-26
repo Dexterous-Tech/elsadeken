@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
@@ -7,6 +7,8 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/view/widg
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 
 class ManageProfileAppearance extends StatelessWidget {
   const ManageProfileAppearance({
@@ -24,7 +26,7 @@ class ManageProfileAppearance extends StatelessWidget {
       textDirection: TextDirection.rtl,
       children: [
         ManageProfileContentItem(
-          title: 'الزون(كغ)',
+          title: 'الوزن(كغ)',
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.weight?.toString() ?? '',
             isLoading: isLoading,
@@ -64,18 +66,24 @@ class ManageProfileAppearance extends StatelessWidget {
   }
 
   void _showAppearanceEditDialog(BuildContext context) {
+    final updateProfileCubit = context.read<UpdateProfileCubit>();
+    final signUpListsCubit = context.read<SignUpListsCubit>();
+
     final dialogData = ManageProfileDialogData(
       title: 'تعديل المظهر الخارجي',
+      cubit: updateProfileCubit,
+      signUpListsCubit: signUpListsCubit,
+      dialogType: ManageProfileDialogType.bodyInfo,
       fields: [
         ManageProfileField(
-          label: 'الزون(كغ)',
+          label: 'الوزن',
           hint: 'أدخل الوزن بالكيلوغرام',
           currentValue: profileData?.attribute?.weight?.toString() ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.number,
         ),
         ManageProfileField(
-          label: 'الطول(سم)',
+          label: 'الطول',
           hint: 'أدخل الطول بالسنتيمتر',
           currentValue: profileData?.attribute?.height?.toString() ?? '',
           type: ManageProfileFieldType.text,
@@ -86,33 +94,16 @@ class ManageProfileAppearance extends StatelessWidget {
           hint: 'اختر لون البشرة',
           currentValue: profileData?.attribute?.skinColor ?? '',
           type: ManageProfileFieldType.dropdown,
-          options: [
-            'أبيض',
-            'أسمر',
-            'حنطي مائل للبياض',
-            'حنطي مائل للسمرة',
-            'أسود',
-            'أشقر',
-          ],
+          dataType: ManageProfileFieldDataType.skinColor,
         ),
         ManageProfileField(
-          label: 'بنية الجسم',
-          hint: 'اختر بنية الجسم',
+          label: 'البنية الجسدية',
+          hint: 'اختر البنية الجسدية',
           currentValue: profileData?.attribute?.physique ?? '',
           type: ManageProfileFieldType.dropdown,
-          options: [
-            'نحيفة',
-            'متوسطة',
-            'سمينة',
-            'رياضية',
-            'ممتلئة',
-          ],
+          dataType: ManageProfileFieldDataType.physique,
         ),
       ],
-      onSave: () {
-        // Handle save logic here
-        print('Saving appearance data...');
-      },
     );
 
     manageProfileDialog(context, dialogData);

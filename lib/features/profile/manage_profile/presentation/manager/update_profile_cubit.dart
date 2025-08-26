@@ -54,10 +54,10 @@ class UpdateProfileCubit extends Cubit<UpdateProfileState> {
   }
 
   void updateProfileMarriageData({
-    required String maritalStatus,
-    required String typeOfMarriage,
-    required int childrenNumber,
-    required int age,
+    String? maritalStatus,
+    String? typeOfMarriage,
+    int? childrenNumber,
+    int? age,
   }) async {
     emit(UpdateProfileMarriageDataLoading());
 
@@ -75,10 +75,10 @@ class UpdateProfileCubit extends Cubit<UpdateProfileState> {
   }
 
   void updateProfilePhysicalData({
-    required int weight,
-    required int height,
-    required int skinColorId,
-    required int physiqueId,
+    int? weight,
+    int? height,
+    int? skinColorId,
+    int? physiqueId,
   }) async {
     emit(UpdateProfilePhysicalDataLoading());
 
@@ -95,12 +95,34 @@ class UpdateProfileCubit extends Cubit<UpdateProfileState> {
             emit(UpdateProfilePhysicalDataSuccess(responseModel)));
   }
 
+  void updateProfileReligiousData({
+    String? religiousCommitment,
+    String? prayer,
+    int? smoking,
+    String? hijab,
+  }) async {
+    emit(UpdateProfileReligiousDataLoading());
+
+    var response = await manageProfileRepoInterface.updateProfileReligiousData(
+        UpdateProfileReligiousDataModel(
+            religiousCommitment: religiousCommitment,
+            prayer: prayer,
+            smoking: smoking,
+            hijab: hijab));
+
+    response.fold(
+        (error) =>
+            emit(UpdateProfileReligiousDataFailure(error.displayMessage)),
+        (responseModel) =>
+            emit(UpdateProfileReligiousDataSuccess(responseModel)));
+  }
+
   void updateProfileWorkData({
-    required String qualificationId,
-    required int income,
-    required String job,
-    required String healthConditionId,
-    required String financialSituationId,
+    String? qualificationId,
+    int? income,
+    String? job,
+    String? healthConditionId,
+    String? financialSituationId,
   }) async {
     emit(UpdateProfileWorkDataLoading());
 
@@ -118,7 +140,7 @@ class UpdateProfileCubit extends Cubit<UpdateProfileState> {
   }
 
   void updateProfileAboutMeData({
-    required String aboutMe,
+    String? aboutMe,
   }) async {
     emit(UpdateProfileAboutMeDataLoading());
 
@@ -132,7 +154,7 @@ class UpdateProfileCubit extends Cubit<UpdateProfileState> {
   }
 
   void updateProfileAboutPartnerData({
-    required String lifePartner,
+    String? lifePartner,
   }) async {
     emit(UpdateProfileAboutPartnerDataLoading());
 
