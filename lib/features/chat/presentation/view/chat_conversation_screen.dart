@@ -8,6 +8,7 @@ import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 import 'package:elsadeken/features/chat/data/models/pusher_message_model.dart';
 import 'package:elsadeken/features/chat/domain/entities/chat_message.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_message_bubble.dart';
+import 'package:elsadeken/features/chat/presentation/widgets/typing_indicator.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_state.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
@@ -38,6 +39,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   String _currentUserImage = '';
   Timer? _refreshTimer;
 
+  // Typing indicator state
+  bool _isOtherUserTyping = false;
+  Timer? _typingTimer;
+  Timer? _messageDelayTimer;
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +51,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     _loadCurrentUserProfile();
     _initializePusher();
     _startPeriodicRefresh();
+    _simulateTypingIndicator(); // Show typing indicator when chat opens
   }
 
   void _initializePusher() {
@@ -306,7 +313,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
               print('⚠️ PUSHER: Connection issue: ${state.error}');
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('فشل في الاتصال بالخادم - الرسائل ستظهر عند التحديث'),
+                  content: Text(
+                      'فشل في الاتصال بالخادم - الرسائل ستظهر عند التحديث'),
                   backgroundColor: Colors.orange,
                   duration: Duration(seconds: 3),
                 ),
@@ -389,7 +397,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
           return ListView.builder(
             controller: _scrollController,
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-            itemCount: _messages.length + 1,
+            itemCount: _messages.length + 1 + (_isOtherUserTyping ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == 0) {
                 // Day separator at the top
@@ -397,6 +405,16 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
               }
 
               final messageIndex = index - 1;
+
+              // Show typing indicator at the bottom if other user is typing
+              if (_isOtherUserTyping && messageIndex == _messages.length) {
+                return TypingIndicator(
+                  isCurrentUser: false,
+                  otherUserName: widget.chatRoom.name,
+                  otherUserImage: widget.chatRoom.image,
+                );
+              }
+
               final message = _messages[messageIndex];
               final isCurrentUser =
                   message.senderId == _currentUserId.toString();
@@ -508,6 +526,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
               child: TextField(
                 controller: _messageController,
                 textDirection: TextDirection.rtl,
+                onChanged: _onTextChanged,
                 decoration: InputDecoration(
                   hintText: 'اكتب رسالتك...',
                   hintStyle: TextStyle(
@@ -587,8 +606,21 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
             );
           }
         });
+
+        // Simulate typing indicator after receiving a message (for demo purposes)
+        _simulateOtherUserTyping();
       }
     }
+  }
+
+  /// Simulate the other user typing after receiving a message
+  void _simulateOtherUserTyping() {
+    // Wait a moment then show typing indicator
+    Timer(Duration(milliseconds: 800), () {
+      if (mounted) {
+        _showTypingIndicator();
+      }
+    });
   }
 
   void _testPusherConnection() {
@@ -659,6 +691,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     final message = _messageController.text.trim();
     _messageController.clear();
 
+    // Hide typing indicator when sending a message
+    _hideTypingIndicator();
+
     // For temporary chat rooms, we'll add the message when the API response comes back
     // This ensures consistency with the server data
 
@@ -667,6 +702,19 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
           widget.chatRoom.receiverId,
           message,
         );
+  }
+
+  /// Handle text field changes to show typing indicator
+  void _onTextChanged(String text) {
+    // Show typing indicator when user starts typing (for demo purposes)
+    if (text.isNotEmpty && !_isOtherUserTyping) {
+      _showTypingIndicator();
+    }
+
+    // Hide typing indicator when text is cleared
+    if (text.isEmpty) {
+      _hideTypingIndicator();
+    }
   }
 
   /// Start periodic refresh when Pusher is not available
@@ -679,9 +727,49 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     });
   }
 
+  /// Show typing indicator for the other user
+  void _showTypingIndicator() {
+    if (!_isOtherUserTyping) {
+      setState(() {
+        _isOtherUserTyping = true;
+      });
+
+      // Auto-hide typing indicator after 2 seconds
+      _typingTimer?.cancel();
+      _typingTimer = Timer(Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _isOtherUserTyping = false;
+          });
+        }
+      });
+    }
+  }
+
+  /// Hide typing indicator immediately
+  void _hideTypingIndicator() {
+    _typingTimer?.cancel();
+    setState(() {
+      _isOtherUserTyping = false;
+    });
+  }
+
+  /// Simulate typing indicator when chat is opened (for demo purposes)
+  void _simulateTypingIndicator() {
+    // Show typing indicator after a short delay when chat opens
+    _messageDelayTimer?.cancel();
+    _messageDelayTimer = Timer(Duration(milliseconds: 2000), () {
+      if (mounted) {
+        _showTypingIndicator();
+      }
+    });
+  }
+
   @override
   void dispose() {
     _refreshTimer?.cancel();
+    _typingTimer?.cancel();
+    _messageDelayTimer?.cancel();
     _messageController.dispose();
     _scrollController.dispose();
     // Unsubscribe from Pusher channel when leaving the screen
@@ -690,7 +778,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     } catch (e) {
       print('Error unsubscribing from Pusher: $e');
     }
-    
+
     super.dispose();
   }
 }
