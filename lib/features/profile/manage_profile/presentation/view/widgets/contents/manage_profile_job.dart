@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
+
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
@@ -7,6 +9,7 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/view/widg
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 
 class ManageProfileJob extends StatelessWidget {
   const ManageProfileJob({
@@ -80,34 +83,28 @@ class ManageProfileJob extends StatelessWidget {
   }
 
   void _showJobEditDialog(BuildContext context) {
+    final updateProfileCubit = context.read<UpdateProfileCubit>();
+    final signUpListsCubit = context.read<SignUpListsCubit>();
+
     final dialogData = ManageProfileDialogData(
       title: 'تعديل المعلومات المهنية',
+      cubit: updateProfileCubit,
+      signUpListsCubit: signUpListsCubit,
+      dialogType: ManageProfileDialogType.job,
       fields: [
         ManageProfileField(
           label: 'المؤهل التعليمي',
           hint: 'اختر المؤهل التعليمي',
           currentValue: profileData?.attribute?.qualification ?? '',
           type: ManageProfileFieldType.dropdown,
-          options: [
-            'ابتدائي',
-            'متوسط',
-            'ثانوي',
-            'دراسة جامعية',
-            'ماجستير',
-            'دكتوراه',
-          ],
+          dataType: ManageProfileFieldDataType.qualification,
         ),
         ManageProfileField(
           label: 'الوضع المادي',
           hint: 'اختر الوضع المادي',
           currentValue: profileData?.attribute?.financialSituation ?? '',
           type: ManageProfileFieldType.dropdown,
-          options: [
-            'ضعيف',
-            'متوسط',
-            'جيد',
-            'ممتاز',
-          ],
+          dataType: ManageProfileFieldDataType.financialSituation,
         ),
         ManageProfileField(
           label: 'مجال العمل',
@@ -150,22 +147,9 @@ class ManageProfileJob extends StatelessWidget {
           hint: 'اختر الحالة الصحية',
           currentValue: profileData?.attribute?.healthCondition ?? '',
           type: ManageProfileFieldType.dropdown,
-          options: [
-            'ممتازة',
-            'جيدة',
-            'متوسطة',
-            'ضعيفة',
-            'بهاق',
-            'سكري',
-            'ضغط',
-            'أخرى',
-          ],
+          dataType: ManageProfileFieldDataType.healthCondition,
         ),
       ],
-      onSave: () {
-        // Handle save logic here
-        print('Saving job data...');
-      },
     );
 
     manageProfileDialog(context, dialogData);

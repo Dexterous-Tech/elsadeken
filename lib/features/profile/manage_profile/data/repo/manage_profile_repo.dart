@@ -13,6 +13,22 @@ abstract class ManageProfileRepoInterface {
   Future<Either<ApiErrorModel, ProfileActionResponseModel>> deleteAccount();
   Future<Either<ApiErrorModel, MyProfileResponseModel>> updateProfileLoginData(
       UpdateProfileLoginDataRequestModel updateProfileData);
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfileLocationData(
+          UpdateProfileLocationDataModel updateProfileData);
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfileMarriageData(
+          UpdateProfileMarriageDataModel updateProfileData);
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfilePhysicalData(
+          UpdateProfilePhysicalDataModel updateProfileData);
+  Future<Either<ApiErrorModel, MyProfileResponseModel>> updateProfileWorkData(
+      UpdateProfileWorkDataModel updateProfileData);
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfileAboutMeData(UpdateProfileAboutMeDataModel updateProfileData);
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfileAboutPartnerData(
+          UpdateProfileAboutPartnerDataModel updateProfileData);
 }
 
 class ManageProfileRepoImp implements ManageProfileRepoInterface {
@@ -57,6 +73,107 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
       return Right(response);
     } catch (error) {
       log("error in update profile login data $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfileLocationData(
+          UpdateProfileLocationDataModel updateProfileData) async {
+    try {
+      var response = await manageProfileDataSource
+          .updateProfileLocationData(updateProfileData);
+      return Right(response);
+    } catch (error) {
+      log("error in update profile location data $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfileMarriageData(
+          UpdateProfileMarriageDataModel updateProfileData) async {
+    try {
+      var response = await manageProfileDataSource
+          .updateProfileMarriageData(updateProfileData);
+      return Right(response);
+    } catch (error) {
+      log("error in update profile marriage data $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfilePhysicalData(
+          UpdateProfilePhysicalDataModel updateProfileData) async {
+    try {
+      var response = await manageProfileDataSource
+          .updateProfilePhysicalData(updateProfileData);
+      return Right(response);
+    } catch (error) {
+      log("error in update profile physical data $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, MyProfileResponseModel>> updateProfileWorkData(
+      UpdateProfileWorkDataModel updateProfileData) async {
+    try {
+      var response = await manageProfileDataSource
+          .updateProfileWorkData(updateProfileData);
+      return Right(response);
+    } catch (error) {
+      log("error in update profile work data $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfileAboutMeData(
+          UpdateProfileAboutMeDataModel updateProfileData) async {
+    try {
+      var response = await manageProfileDataSource
+          .updateProfileAboutMeData(updateProfileData);
+      return Right(response);
+    } catch (error) {
+      log("error in update profile about me data $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, MyProfileResponseModel>>
+      updateProfileAboutPartnerData(
+          UpdateProfileAboutPartnerDataModel updateProfileData) async {
+    try {
+      var response = await manageProfileDataSource
+          .updateProfileAboutPartnerData(updateProfileData);
+      return Right(response);
+    } catch (error) {
+      log("error in update profile about partner data $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }
