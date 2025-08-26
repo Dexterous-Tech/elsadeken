@@ -15,6 +15,7 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/manager/m
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_body.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,8 +29,11 @@ class HomeScreenWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<ProfileDetailsCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => sl<ProfileDetailsCubit>()),
+        BlocProvider(create: (context) => sl<ChatListCubit>()),
+      ],
       child: Scaffold(
         body: HomeScreen(),
       ),
@@ -75,6 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadMatchesUsers();
+    // Load chat list so SwipeableCard can access existing chat rooms
+    context.read<ChatListCubit>().getChatList();
     // _loadUserData();
     // _loadUserData();
 

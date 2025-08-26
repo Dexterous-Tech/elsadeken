@@ -154,6 +154,14 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                     fontSize: 12,
                   ),
                 ),
+                if (widget.chatRoom.id.startsWith('temp_'))
+                  Text(
+                    'محادثة جديدة',
+                    style: TextStyle(
+                      color: Colors.orange,
+                      fontSize: 10,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -288,6 +296,20 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                     );
                   }
                 });
+
+                // If this was a temporary chat, refresh the chat list to show the new chat
+                if (widget.chatRoom.id.startsWith('temp_')) {
+                  _refreshChatListAfterTemporaryMessage();
+                  
+                  // Show success message for first message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('تم إنشاء المحادثة بنجاح!'),
+                      backgroundColor: Colors.green,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
               }
             } else if (state is SendMessagesError) {
               // Show error message
@@ -382,7 +404,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                       size: 64, color: Colors.grey[400]),
                   SizedBox(height: 16),
                   Text(
-                    'لا توجد رسائل حتى الآن',
+                    widget.chatRoom.id.startsWith('temp_') 
+                        ? 'ابدأ المحادثة الآن'
+                        : 'لا توجد رسائل حتى الآن',
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontSize: 18,
@@ -391,7 +415,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'ابدأ المحادثة بإرسال رسالة',
+                    widget.chatRoom.id.startsWith('temp_')
+                        ? 'أرسل رسالة لبدء المحادثة مع ${widget.chatRoom.name}'
+                        : 'ابدأ المحادثة بإرسال رسالة',
                     style: TextStyle(
                       color: Colors.grey[500],
                       fontSize: 14,
@@ -536,7 +562,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                 textDirection: TextDirection.rtl,
                 onChanged: _onTextChanged,
                 decoration: InputDecoration(
-                  hintText: 'اكتب رسالتك...',
+                  hintText: widget.chatRoom.id.startsWith('temp_') 
+                      ? 'اكتب رسالتك الأولى...'
+                      : 'اكتب رسالتك...',
                   hintStyle: TextStyle(
                     color: Colors.grey[500],
                     fontSize: 18.sp,
@@ -791,6 +819,22 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     }
   }
 
+  /// Refresh the chat list after sending a message in a temporary chat
+  void _refreshChatListAfterTemporaryMessage() {
+    try {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        try {
+          context.read<ChatListCubit>().getChatList();
+          print('🔄 Refreshing chat list after temporary message');
+        } catch (e) {
+          print('⚠️ Error refreshing chat list after temporary message: $e');
+        }
+      });
+    } catch (e) {
+      print('⚠️ Error setting up temporary message refresh: $e');
+    }
+  }
+
   @override
   void dispose() {
     _refreshTimer?.cancel();
@@ -798,7 +842,12 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     _messageDelayTimer?.cancel();
     _messageController.dispose();
     _scrollController.dispose();
-
+    
+    // If this was a temporary chat, refresh the chat list to show the new chat
+    if (widget.chatRoom.id.startsWith('temp_')) {
+      _refreshChatListAfterTemporaryMessage();
+    }
+    
     // Unsubscribe from Pusher channel when leaving the screen
     try {
       context.read<PusherCubit>().unsubscribeFromChatChannel();
