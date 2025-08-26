@@ -27,8 +27,8 @@ class ChatMessagesConversation {
     };
   }
 
-   List<ChatMessage> toChatMessages(String currentUserId, String otherUserName, String otherUserImage) {
-    return messages.map((message) => message.toChatMessage(currentUserId, otherUserName, otherUserImage)).toList();
+   List<ChatMessage> toChatMessages(String currentUserId, String otherUserName, String otherUserImage, String currentUserImage) {
+    return messages.map((message) => message.toChatMessage(currentUserId, otherUserName, otherUserImage, currentUserImage)).toList();
   }
 
    static ChatMessagesConversation fromRawJson(String str) =>
@@ -79,7 +79,7 @@ class Message {
   }
 
   /// Convert to ChatMessage entity with sender info
-  ChatMessage toChatMessage(String currentUserId, String otherUserName, String otherUserImage) {
+  ChatMessage toChatMessage(String currentUserId, String otherUserName, String otherUserImage, String currentUserImage) {
     final isCurrentUser = senderId.toString() == currentUserId;
     
     return ChatMessage(
@@ -87,7 +87,7 @@ class Message {
       roomId: chatId.toString(),
       senderId: senderId.toString(),
       senderName: isCurrentUser ? 'أنا' : otherUserName,
-      senderImage: isCurrentUser ? 'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png' : otherUserImage,
+      senderImage: isCurrentUser ? currentUserImage : otherUserImage,
       message: body,
       timestamp: createdAt,
       isRead: isRead == 1,

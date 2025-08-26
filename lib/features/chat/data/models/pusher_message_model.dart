@@ -48,13 +48,15 @@ class PusherMessageModel extends Equatable {
 
   /// Convert to ChatMessage entity
   ChatMessage toChatMessage(
-      String currentUserId, String senderName, String senderImage) {
+      String currentUserId, String otherUserName, String otherUserImage, String currentUserImage) {
+    final isCurrentUser = senderId.toString() == currentUserId;
+    
     return ChatMessage(
       id: id.toString(),
       roomId: chatId.toString(),
       senderId: senderId.toString(),
-      senderName: senderName,
-      senderImage: senderImage,
+      senderName: isCurrentUser ? 'أنا' : otherUserName,
+      senderImage: isCurrentUser ? currentUserImage : otherUserImage,
       message: body,
       timestamp: createdAt,
       isRead: false,

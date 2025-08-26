@@ -147,6 +147,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                   _currentUserId.toString(),
                   widget.chatRoom.name,
                   widget.chatRoom.image,
+                  _currentUserImage,
                 );
               });
 
@@ -430,92 +431,75 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   }
 
   Widget _buildMessageInput() {
-    return BlocBuilder<SendMessageCubit, SendMessagesState>(
-      builder: (context, state) {
-        final isLoading = state is SendMessagesLoading;
-
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          padding: EdgeInsets.all(10.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(25.r),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xfffff9f6),
-                    borderRadius: BorderRadius.circular(15.r),
-                    border: Border.all(
-                      color: Colors.grey[200]!,
-                      width: 1,
-                    ),
-                  ),
-                  child: TextField(
-                    controller: _messageController,
-                    textDirection: TextDirection.rtl,
-                    enabled: !isLoading, // Disable input while sending
-                    decoration: InputDecoration(
-                      hintText: 'اكتب رسالتك...',
-                      hintStyle: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: 18.sp,
-                        fontFamily: FontFamilyHelper.plexSansArabic,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
-                        vertical: 16.h,
-                      ),
-                      fillColor: Colors.transparent,
-                      filled: true,
-                      suffixIcon: Container(
-                        margin: EdgeInsets.only(right: 8.w),
-                        child: IconButton(
-                          icon: isLoading
-                              ? SizedBox(
-                                  width: 20.w,
-                                  height: 20.w,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        AppColors.primaryOrange),
-                                  ),
-                                )
-                              : Image.asset(
-                                  'assets/images/icons/send.png',
-                                  width: 24.w,
-                                  height: 24.w,
-                                  color: AppColors.primaryOrange,
-                                ),
-                          onPressed: isLoading ? null : _sendMessage,
-                          style: IconButton.styleFrom(
-                            backgroundColor:
-                                AppColors.primaryOrange.withOpacity(0.1),
-                            shape: CircleBorder(),
-                            padding: EdgeInsets.all(8.w),
-                          ),
-                        ),
-                      ),
-                    ),
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (message) {
-                      if (message.trim().isNotEmpty && !isLoading) {
-                        _sendMessage();
-                      }
-                    },
-                    maxLines: null,
-                    minLines: 1,
-                  ),
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.all(10.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(25.r),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Color(0xfffff9f6),
+                borderRadius: BorderRadius.circular(15.r),
+                border: Border.all(
+                  color: Colors.grey[200]!,
+                  width: 1,
                 ),
               ),
-            ],
+              child: TextField(
+                controller: _messageController,
+                textDirection: TextDirection.rtl,
+                decoration: InputDecoration(
+                  hintText: 'اكتب رسالتك...',
+                  hintStyle: TextStyle(
+                    color: Colors.grey[500],
+                    fontSize: 18.sp,
+                    fontFamily: FontFamilyHelper.plexSansArabic,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 16.h,
+                  ),
+                  fillColor: Colors.transparent,
+                  filled: true,
+                  suffixIcon: Container(
+                    margin: EdgeInsets.only(right: 8.w),
+                    child: IconButton(
+                      icon: Image.asset(
+                        'assets/images/icons/send.png',
+                        width: 24.w,
+                        height: 24.w,
+                        color: AppColors.primaryOrange,
+                      ),
+                      onPressed: _sendMessage,
+                      style: IconButton.styleFrom(
+                        backgroundColor:
+                            AppColors.primaryOrange.withOpacity(0.1),
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(8.w),
+                      ),
+                    ),
+                  ),
+                ),
+                textInputAction: TextInputAction.send,
+                onSubmitted: (message) {
+                  if (message.trim().isNotEmpty) {
+                    _sendMessage();
+                  }
+                },
+                maxLines: null,
+                minLines: 1,
+              ),
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
@@ -529,6 +513,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         _currentUserId.toString(),
         widget.chatRoom.name,
         widget.chatRoom.image,
+        _currentUserImage,
       );
 
       // Add message to the list if it doesn't already exist
