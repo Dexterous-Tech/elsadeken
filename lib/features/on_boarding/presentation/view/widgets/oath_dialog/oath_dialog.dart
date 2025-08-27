@@ -7,11 +7,9 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/dialog/custom_dialog.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/core/widgets/custom_radio.dart';
-import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/gestures.dart';
-import 'package:elsadeken/features/on_boarding/terms_and_conditions/presentation/view/terms_and_conditions_screen.dart';
 
 Future<void> oathDialog({
   required BuildContext context,
@@ -69,10 +67,7 @@ Future<void> oathDialog({
                   ),
                   TextSpan(
                     text: 'بشروط وقوانين',
-                    style: AppTextStyles.font15BistreSemiBoldLamaSans.copyWith(
-                      color: AppColors.pumpkinOrange,
-                      decoration: TextDecoration.underline,
-                    ),
+                    style: AppTextStyles.font14PumpkinOrangeBoldLamaSans,
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         context.pushNamed(AppRoutes.termsAndConditionsScreen);

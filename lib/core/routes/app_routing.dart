@@ -15,6 +15,7 @@ import 'package:elsadeken/features/profile/blog/presentation/cubit/blog_cubit.da
 import 'package:elsadeken/features/profile/blog/presentation/view/blog_screen.dart';
 import 'package:elsadeken/features/profile/contact_us/presentation/view/contact_us_screen.dart';
 import 'package:elsadeken/features/profile/excellence_package/presentation/view/excellence_package_screen.dart';
+import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:elsadeken/features/profile/interests_list/presentation/view/interests_list_screen.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/manage_profile_screen.dart';
 import 'package:elsadeken/features/profile/members_profile/presentation/view/members_profile_screen.dart';
@@ -99,17 +100,23 @@ class AppRouting {
       case AppRoutes.notificationScreen:
         return MaterialPageRoute(builder: (_) => NotificationScreen());
       case AppRoutes.profileDetailsScreen:
-        // Handle both int and string arguments for userId
-        int userId;
-        if (arguments is int) {
-          userId = arguments;
-        } else if (arguments is String) {
-          userId = int.tryParse(arguments) ?? 0;
+        // Handle UsersDataModel argument
+        UsersDataModel user;
+        if (arguments is UsersDataModel) {
+          user = arguments;
         } else {
-          userId = 0; // fallback
+          // Fallback for backward compatibility
+          int userId = 0;
+          if (arguments is int) {
+            userId = arguments;
+          } else if (arguments is String) {
+            userId = int.tryParse(arguments) ?? 0;
+          }
+          // Create a minimal user model with just the ID
+          user = UsersDataModel(id: userId);
         }
         return MaterialPageRoute(
-            builder: (_) => ProfileDetailsScreen(userId: userId));
+            builder: (_) => ProfileDetailsScreen(user: user));
       case AppRoutes.personDetailsScreen:
         final args = arguments as Map<String, dynamic>;
         final personId = args['personId'] as int;

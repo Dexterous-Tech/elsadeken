@@ -4,6 +4,9 @@ import 'package:elsadeken/features/home/person_details/data/models/person_model.
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/routes/app_routes.dart';
+import '../../../../chat/data/models/chat_room_model.dart';
+
 class PersonInfoSheet extends StatefulWidget {
   final PersonModel person;
 
@@ -373,6 +376,20 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         ),
         horizontalSpace(21),
         GestureDetector(
+          onTap: () {
+            // Navigate to chat conversation with this user
+            Navigator.pushNamed(
+              context,
+              AppRoutes.chatConversationScreen,
+              arguments: {
+                "chatRoom": ChatRoomModel.fromUser(
+                  userId: widget.person.id,
+                  userName: widget.person.name,
+                  userImage: widget.person.image,
+                ),
+              },
+            );
+          },
           child: Container(
             width: 50.w,
             height: 50.h,

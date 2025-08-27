@@ -6,6 +6,7 @@ import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
 import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
+import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/custom_container.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_data.dart';
@@ -14,10 +15,13 @@ import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfileDetailsBody extends StatefulWidget {
-  const ProfileDetailsBody({super.key, required this.userId});
+import '../../../../../../core/routes/app_routes.dart';
+import '../../../../../chat/data/models/chat_room_model.dart';
 
-  final int userId;
+class ProfileDetailsBody extends StatefulWidget {
+  const ProfileDetailsBody({super.key, required this.user});
+
+  final UsersDataModel user;
   @override
   State<ProfileDetailsBody> createState() => _ProfileDetailsBodyState();
 }
@@ -27,7 +31,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
   void initState() {
     super.initState();
     // Call getProfileDetails once when widget initializes
-    context.read<ProfileDetailsCubit>().getProfileDetails(widget.userId);
+    context.read<ProfileDetailsCubit>().getProfileDetails(widget.user.id!);
   }
 
   @override
@@ -82,7 +86,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                     onTap: () {
                       context
                           .read<ProfileDetailsCubit>()
-                          .likeUser(widget.userId);
+                          .likeUser(widget.user.id!);
                     },
                   ),
                 ),
@@ -117,14 +121,30 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                     onTap: () {
                       context
                           .read<ProfileDetailsCubit>()
-                          .ignoreUser(widget.userId);
+                          .ignoreUser(widget.user.id!);
                     },
                   ),
                 ),
-                CustomContainer(
-                  img: AppImages.message,
-                  color: AppColors.orangeLight.withValues(alpha: 0.07),
-                  text: 'رسائل',
+                GestureDetector(
+                  onTap: () {
+                    // Navigate to chat conversation with this user
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.chatConversationScreen,
+                      arguments: {
+                        "chatRoom": ChatRoomModel.fromUser(
+                          userId: widget.user.id!,
+                          userName: widget.user.name!,
+                          userImage: widget.user.image!,
+                        ),
+                      },
+                    );
+                  },
+                  child: CustomContainer(
+                    img: AppImages.message,
+                    color: AppColors.orangeLight.withValues(alpha: 0.07),
+                    text: 'رسائل',
+                  ),
                 ),
                 CustomContainer(
                   img: AppImages.block,
