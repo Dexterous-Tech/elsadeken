@@ -44,6 +44,7 @@ class ApiConstants {
   static String updateProfileAboutMeData = '/user/update-profile/aboutme-info';
   static String updateProfileAboutPartnerData =
       '/user/update-profile/lifepartner-info';
+  static String getMembersProfile = '/user/members/images';
 
   //search-home
   static String matchesUsers = '/user/home/matches-users';
