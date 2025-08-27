@@ -5,7 +5,6 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/excellence_package/data/models/packages_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../../core/theme/app_text_styles.dart';
 
 class PaymentMethodsBottomSheet extends StatefulWidget {
@@ -31,7 +30,6 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Handle bar
           Container(
             decoration: BoxDecoration(
               color: AppColors.white,
@@ -50,6 +48,10 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                           setState(() {
                             selectedOption = index;
                           });
+
+                          Navigator.of(context).pop({
+                            "selectedPackage": package,
+                          });
                         },
                         child: Container(
                           color: selectedOption == index
@@ -62,7 +64,7 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                               children: [
                                 verticalSpace(24),
                                 Text(
-                                  '${package.name ?? ''} - ${package.countMonths ?? 0} أشهر - ${package.price ?? 0} ريال',
+                                  '${package.name ?? ''} في ${package.countMonths ?? 0} أشهر - ${package.price ?? 0} بريال',
                                   style: AppTextStyles
                                       .font18BabyBlueRegularLamaSans,
                                   textDirection: TextDirection.rtl,

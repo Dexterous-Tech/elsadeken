@@ -18,7 +18,7 @@ class PackagesDataSource {
   }
 
     Future<AssignPackageToUserModel> assignPackageToUser(String id) async {
-    final response = await _apiServices.get(
+    final response = await _apiServices.post(requestBody: id,
       endpoint: ApiConstants.assignPackageToUser(id),
       requiresAuth: true,
     );
