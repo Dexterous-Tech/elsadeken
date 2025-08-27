@@ -270,7 +270,13 @@ class _ManageProfileDialogContentState
                     controller: widget.controllers[field.label]!,
                     selectedValue: widget.selectedValues[field.label],
                     onChanged: (value) {
+                      print(
+                          'DEBUG: Field "${field.label}" changed to: "$value"');
                       widget.selectedValues[field.label] = value;
+                      // Also update the controller for dropdown fields
+                      if (field.type == ManageProfileFieldType.dropdown) {
+                        widget.controllers[field.label]?.text = value ?? '';
+                      }
                       _handleFieldChange(field, value);
                     },
                   ),
@@ -322,39 +328,63 @@ class _ManageProfileDialogContentState
       final countryId = _getCountryIdByName(value);
       if (countryId != null) {
         signUpListsCubit.getCites(countryId.toString());
+
+        // Reset city field when country changes
+        final cityController = widget.controllers['المدينة'];
+        if (cityController != null) {
+          cityController.clear();
+          widget.selectedValues['المدينة'] =
+              null; // Set to null instead of empty string
+          setState(() {}); // Trigger rebuild to update UI
+        }
       }
     }
   }
 
   int? _getCountryIdByName(String countryName) {
     try {
+      print('DEBUG: Looking for country: "$countryName"');
+      print(
+          'DEBUG: Available countries: ${countriesList.map((c) => '${c.name} (ID: ${c.id})').toList()}');
       final country = countriesList.firstWhere(
         (country) => country.name == countryName,
       );
+      print('DEBUG: Found country ID: ${country.id}');
       return country.id;
     } catch (e) {
+      print('DEBUG: Country not found: $e');
       return null;
     }
   }
 
   int? _getNationalityIdByName(String nationalityName) {
     try {
+      print('DEBUG: Looking for nationality: "$nationalityName"');
+      print(
+          'DEBUG: Available nationalities: ${nationalitiesList.map((n) => '${n.name} (ID: ${n.id})').toList()}');
       final nationality = nationalitiesList.firstWhere(
         (nationality) => nationality.name == nationalityName,
       );
+      print('DEBUG: Found nationality ID: ${nationality.id}');
       return nationality.id;
     } catch (e) {
+      print('DEBUG: Nationality not found: $e');
       return null;
     }
   }
 
   int? _getCityIdByName(String cityName) {
     try {
+      print('DEBUG: Looking for city: "$cityName"');
+      print(
+          'DEBUG: Available cities: ${citiesList.map((c) => '${c.name} (ID: ${c.id})').toList()}');
       final city = citiesList.firstWhere(
         (city) => city.name == cityName,
       );
+      print('DEBUG: Found city ID: ${city.id}');
       return city.id;
     } catch (e) {
+      print('DEBUG: City not found: $e');
       return null;
     }
   }
@@ -382,6 +412,51 @@ class _ManageProfileDialogContentState
           (item) => item.name == physiqueName,
         );
         return physique.id;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  int? _getQualificationIdByName(String qualificationName) {
+    try {
+      final qualifications = generalDataLists['qualifications'];
+      if (qualifications != null && qualifications.isNotEmpty) {
+        final qualification = qualifications.firstWhere(
+          (item) => item.name == qualificationName,
+        );
+        return qualification.id;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  int? _getFinancialSituationIdByName(String financialSituationName) {
+    try {
+      final financialSituations = generalDataLists['financialSituations'];
+      if (financialSituations != null && financialSituations.isNotEmpty) {
+        final financialSituation = financialSituations.firstWhere(
+          (item) => item.name == financialSituationName,
+        );
+        return financialSituation.id;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  int? _getHealthConditionIdByName(String healthConditionName) {
+    try {
+      final healthConditions = generalDataLists['healthConditions'];
+      if (healthConditions != null && healthConditions.isNotEmpty) {
+        final healthCondition = healthConditions.firstWhere(
+          (item) => item.name == healthConditionName,
+        );
+        return healthCondition.id;
       }
       return null;
     } catch (e) {
@@ -503,9 +578,9 @@ class _ManageProfileDialogContentState
   void _handleSave(BuildContext context) {
     if (widget.formKey.currentState!.validate()) {
       // Get password and confirm password values for login data
-      final password = widget.controllers['كلمة المرور']?.text ?? '';
+      final password = widget.controllers['كلمة المرور (اختياري)']?.text ?? '';
       final passwordConfirmation =
-          widget.controllers['تأكيد كلمة المرور']?.text ?? '';
+          widget.controllers['تأكيد كلمة المرور (اختياري)']?.text ?? '';
 
       // If password is entered, confirm password is required
       if (password.isNotEmpty && passwordConfirmation.isEmpty) {
@@ -562,16 +637,39 @@ class _ManageProfileDialogContentState
         final countryName = widget.controllers['الدولة']?.text ?? '';
         final cityName = widget.controllers['المدينة']?.text ?? '';
 
-        // Get IDs from names using mapping functions
-        final nationalityId = _getNationalityIdByName(nationalityName) ?? 1;
-        final countryId = _getCountryIdByName(countryName) ?? 1;
-        final cityId = _getCityIdByName(cityName) ?? 1;
+        print('DEBUG: Extracted values from controllers:');
+        print('  - nationalityName: "$nationalityName"');
+        print('  - countryName: "$countryName"');
+        print('  - cityName: "$cityName"');
 
-        widget.data.cubit!.updateProfileLocationData(
-          nationalityId: nationalityId,
-          countryId: countryId,
-          cityId: cityId,
-        );
+        // Get IDs from names using mapping functions - only send if valid selections are made
+        final nationalityId = _getNationalityIdByName(nationalityName);
+        final countryId = _getCountryIdByName(countryName);
+        final cityId = _getCityIdByName(cityName);
+
+        print('DEBUG: Extracted IDs:');
+        print('  - nationalityId: $nationalityId');
+        print('  - countryId: $countryId');
+        print('  - cityId: $cityId');
+
+        // Only proceed if we have valid IDs for all required fields
+        if (nationalityId != null && countryId != null && cityId != null) {
+          print('DEBUG: All IDs are valid, making API call');
+          widget.data.cubit!.updateProfileLocationData(
+            nationalityId: nationalityId,
+            countryId: countryId,
+            cityId: cityId,
+          );
+        } else {
+          print('DEBUG: Some IDs are null, showing error message');
+          // Show error message if any required field is missing
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('يرجى اختيار جميع الحقول المطلوبة'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
         break;
 
       case ManageProfileDialogType.job:
@@ -579,27 +677,49 @@ class _ManageProfileDialogContentState
             widget.controllers['المؤهل التعليمي']?.text ?? '';
         final financialSituationName =
             widget.controllers['الوضع المادي']?.text ?? '';
-        // final workField = widget.controllers['مجال العمل']?.text ?? ''; // Not used in API
         final jobTitle = widget.controllers['الوظيفة']?.text ?? '';
         final monthlyIncomeStr = widget.controllers['الدخل الشهري']?.text ?? '';
         final healthConditionName =
             widget.controllers['الحالة الصحية']?.text ?? '';
 
-        // Convert income string to number (you might need to implement proper parsing)
-        int income = 0;
+        // Debug: Print collected values
+        print('DEBUG: Collected Job Values:');
+        print('  - qualificationName: "$qualificationName"');
+        print('  - financialSituationName: "$financialSituationName"');
+        print('  - jobTitle: "$jobTitle"');
+        print('  - monthlyIncomeStr: "$monthlyIncomeStr"');
+        print('  - healthConditionName: "$healthConditionName"');
+
+        // Get IDs from names using mapping functions
+        final qualificationId = _getQualificationIdByName(qualificationName);
+        final financialSituationId =
+            _getFinancialSituationIdByName(financialSituationName);
+        final healthConditionId =
+            _getHealthConditionIdByName(healthConditionName);
+
+        // Convert income string to number
+        int? income;
         try {
-          income = int.parse(monthlyIncomeStr);
+          income =
+              monthlyIncomeStr.isNotEmpty ? int.parse(monthlyIncomeStr) : null;
         } catch (e) {
-          // Handle income parsing error
+          print('DEBUG: Income parsing error: $e');
+          income = null;
         }
 
+        // Debug: Print extracted IDs
+        print('DEBUG: Extracted Job IDs:');
+        print('  - qualificationId: $qualificationId');
+        print('  - financialSituationId: $financialSituationId');
+        print('  - healthConditionId: $healthConditionId');
+        print('  - income: $income');
+
         widget.data.cubit!.updateProfileWorkData(
-          qualificationId:
-              qualificationName, // Note: API expects string, not int
+          qualificationId: qualificationId?.toString(),
           income: income,
-          job: jobTitle,
-          healthConditionId: healthConditionName,
-          financialSituationId: financialSituationName,
+          job: jobTitle.isNotEmpty ? jobTitle : null,
+          healthConditionId: healthConditionId?.toString(),
+          financialSituationId: financialSituationId?.toString(),
         );
         break;
 
@@ -771,13 +891,19 @@ class _ManageProfileDialogContentState
         if (religiousCommitment.isNotEmpty) {
           switch (religiousCommitment) {
             case 'غير متدين':
-              religiousCommitmentValue = 'religious';
+              religiousCommitmentValue = 'irreligious';
               break;
             case 'متدين قليلا':
               religiousCommitmentValue = 'little_religious';
               break;
             case 'متدين':
-              religiousCommitmentValue = 'irreligious';
+              religiousCommitmentValue = 'religious';
+              break;
+            case 'متدين كثيرا':
+              religiousCommitmentValue = 'much_religious';
+              break;
+            case 'أفضل الا اقول':
+              religiousCommitmentValue = 'dont_say';
               break;
           }
         }
@@ -789,10 +915,16 @@ class _ManageProfileDialogContentState
               prayerValue = 'always';
               break;
             case 'اصلي اغلب الاوقات':
-              prayerValue = 'interittent';
+              prayerValue = 'most_times';
+              break;
+            case 'اصلي بعض الاحيان':
+              prayerValue = 'sometimes';
               break;
             case 'لا اصلي':
               prayerValue = 'no_pray';
+              break;
+            case 'أفضل الا اقول':
+              prayerValue = 'dont_say';
               break;
           }
         }
@@ -806,14 +938,20 @@ class _ManageProfileDialogContentState
         String? hijabValue;
         if (hijab.isNotEmpty) {
           switch (hijab) {
-            case 'محجبه':
+            case 'غير محجبه':
+              hijabValue = 'not_hijab';
+              break;
+            case 'محجبه(كشف الوجه)':
               hijabValue = 'hijab';
               break;
             case 'محجبه (النقاب)':
               hijabValue = 'hijab_and_veil';
               break;
-            case 'غير محجبه':
-              hijabValue = 'not_hijab';
+            case 'محجبه (غطاء الوجه)':
+              hijabValue = 'hijab_face';
+              break;
+            case 'افضل الا اقول':
+              hijabValue = 'dont_say';
               break;
           }
         }
@@ -874,6 +1012,7 @@ class _ManageProfileDialogContentState
             hint: field.hint,
             items: [], // Empty items when cubit not available
             onChanged: onChanged,
+            initialValue: null, // Always null when no items available
           ),
         ],
       );
@@ -978,6 +1117,8 @@ class _ManageProfileDialogContentState
                     hint: field.hint,
                     items: items,
                     onChanged: onChanged,
+                    initialValue:
+                        selectedValue, // Pass the selected value directly
                   ),
           ],
         );
@@ -1051,6 +1192,7 @@ class _ManageProfileDialogContentState
             hint: field.hint,
             items: field.options ?? [],
             onChanged: onChanged,
+            initialValue: selectedValue,
           );
         }
     }

@@ -43,15 +43,6 @@ class ManageProfileJob extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'مجال العمل',
-          itemContent: ManageProfileContentText(
-            text:
-                'مجال النقل', // This field is not in the model, keeping default
-            isLoading: isLoading,
-          ),
-        ),
-        ManageProfileCustomSeparator(),
-        ManageProfileContentItem(
           title: 'الوظيفة',
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.job ?? '',
@@ -107,22 +98,6 @@ class ManageProfileJob extends StatelessWidget {
           dataType: ManageProfileFieldDataType.financialSituation,
         ),
         ManageProfileField(
-          label: 'مجال العمل',
-          hint: 'اختر مجال العمل',
-          currentValue: 'مجال النقل',
-          type: ManageProfileFieldType.dropdown,
-          options: [
-            'مجال النقل',
-            'مجال الصحة',
-            'مجال التعليم',
-            'مجال التجارة',
-            'مجال التكنولوجيا',
-            'مجال الزراعة',
-            'مجال الصناعة',
-            'مجال الخدمات',
-          ],
-        ),
-        ManageProfileField(
           label: 'الوظيفة',
           hint: 'أدخل الوظيفة',
           currentValue: profileData?.attribute?.job ?? '',
@@ -131,16 +106,10 @@ class ManageProfileJob extends StatelessWidget {
         ),
         ManageProfileField(
           label: 'الدخل الشهري',
-          hint: 'اختر الدخل الشهري',
+          hint: 'أدخل الدخل الشهري',
           currentValue: profileData?.attribute?.income?.toString() ?? '',
-          type: ManageProfileFieldType.dropdown,
-          options: [
-            'أقل من 2000 ريال',
-            '2000-5000 ريال',
-            '5000-10000 ريال',
-            '10000-20000 ريال',
-            'أكثر من 20000 ريال',
-          ],
+          type: ManageProfileFieldType.text,
+          keyboardType: TextInputType.number,
         ),
         ManageProfileField(
           label: 'الحالة الصحية',

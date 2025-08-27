@@ -31,9 +31,11 @@ class _SignupAdditionsState extends State<SignupAdditions> {
 
   Map<String, String> get scarfOptions {
     return {
-      'hijab': 'محجبه',
-      'hijab_and_veil': 'محجبه (النقاب)',
       'not_hijab ': 'غير محجبه',
+      'hijab': 'محجبه(كشف الوجه)',
+      'hijab_and_veil': 'محجبه (النقاب)',
+      'hijab_face': 'محجبه (غطاء الوجه)',
+      'dont_say': 'افضل الا اقول',
     };
   }
 
