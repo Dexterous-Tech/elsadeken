@@ -2,13 +2,19 @@ import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/features/profile/excellence_package/data/models/packages_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/theme/app_text_styles.dart';
 
 class PaymentMethodsBottomSheet extends StatefulWidget {
-  const PaymentMethodsBottomSheet({super.key});
+  final List<Data>? packages;
+
+  const PaymentMethodsBottomSheet({
+    super.key,
+    this.packages,
+  });
 
   @override
   State<PaymentMethodsBottomSheet> createState() =>
@@ -17,33 +23,6 @@ class PaymentMethodsBottomSheet extends StatefulWidget {
 
 class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
   int? selectedOption;
-
-  final List<Map<String, dynamic>> subscriptionOptions = [
-    {
-      'title': 'شهر واحد',
-      'duration': '1',
-      'price': '246.99',
-      'currency': 'جنيه',
-    },
-    {
-      'title': '3 اشهر',
-      'duration': '3',
-      'price': '246.99',
-      'currency': 'جنيه',
-    },
-    {
-      'title': '6 اشهر',
-      'duration': '6',
-      'price': '246.99',
-      'currency': 'جنيه',
-    },
-    {
-      'title': 'عام واحد',
-      'duration': '12',
-      'price': '246.99',
-      'currency': 'جنيه',
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -58,44 +37,64 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
               color: AppColors.white,
               borderRadius: BorderRadius.circular(10).r,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: subscriptionOptions.asMap().entries.map((entry) {
-                final index = entry.key;
-                final option = entry.value;
+            child: widget.packages != null && widget.packages!.isNotEmpty
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: widget.packages!.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final package = entry.value;
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedOption = index;
-                    });
-                  },
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        verticalSpace(24),
-                        Text(
-                          '${option['title']} - ${option['price']} ${option['currency']}',
-                          style: AppTextStyles.font18BabyBlueRegularLamaSans,
-                          textDirection: TextDirection.rtl,
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedOption = index;
+                          });
+                        },
+                        child: Container(
+                          color: selectedOption == index
+                              ? AppColors.lightWhite
+                              : Colors.transparent,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                verticalSpace(24),
+                                Text(
+                                  '${package.name ?? ''} - ${package.countMonths ?? 0} أشهر - ${package.price ?? 0} ريال',
+                                  style: AppTextStyles
+                                      .font18BabyBlueRegularLamaSans,
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                verticalSpace(24),
+                                index == widget.packages!.length - 1
+                                    ? SizedBox.shrink()
+                                    : Container(
+                                        width: double.infinity,
+                                        height: 0.5,
+                                        color: AppColors.grey,
+                                      ),
+                              ],
+                            ),
+                          ),
                         ),
-                        verticalSpace(24),
-                        index == 3
-                            ? SizedBox.shrink()
-                            : Container(
-                                width: double.infinity,
-                                height: 0.5,
-                                color: AppColors.grey,
-                              ),
-                      ],
-                    ),
+                      );
+                    }).toList(),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      verticalSpace(24),
+                      Text(
+                        'لا توجد باقات متاحة حالياً',
+                        style: AppTextStyles.font18BabyBlueRegularLamaSans,
+                        textDirection: TextDirection.rtl,
+                      ),
+                      verticalSpace(24),
+                    ],
                   ),
-                );
-              }).toList(),
-            ),
           ),
           verticalSpace(10),
           Container(
@@ -125,13 +124,14 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
   }
 }
 
-// Helper function to show the bottom sheet
 Future<Map<String, dynamic>?> showPaymentMethodsBottomSheet(
-    BuildContext context) {
+  BuildContext context, {
+  List<Data>? packages,
+}) {
   return showModalBottomSheet<Map<String, dynamic>>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (context) => const PaymentMethodsBottomSheet(),
+    builder: (context) => PaymentMethodsBottomSheet(packages: packages),
   );
 }

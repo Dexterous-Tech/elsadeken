@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
+import 'package:elsadeken/features/profile/excellence_package/data/models/assign_package_model.dart';
 import 'package:elsadeken/features/profile/excellence_package/data/models/packages_model.dart';
 
 class PackagesDataSource {
@@ -16,12 +17,12 @@ class PackagesDataSource {
     return PackagesModel.fromJson(response.data);
   }
 
-    Future<PackagesModel> assignPackageToUser(String id) async {
+    Future<AssignPackageToUserModel> assignPackageToUser(String id) async {
     final response = await _apiServices.get(
       endpoint: ApiConstants.assignPackageToUser(id),
       requiresAuth: true,
     );
 
-    return PackagesModel.fromJson(response.data);
+    return AssignPackageToUserModel.fromJson(response.data);
   }
 }

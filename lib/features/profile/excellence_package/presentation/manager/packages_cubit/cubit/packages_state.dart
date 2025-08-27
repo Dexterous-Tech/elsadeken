@@ -1,3 +1,4 @@
+import 'package:elsadeken/features/profile/excellence_package/data/models/assign_package_model.dart';
 import 'package:elsadeken/features/profile/excellence_package/data/models/packages_model.dart';
 
 abstract class PackagesState {
@@ -23,7 +24,7 @@ class GetPackagesFailure extends PackagesState {
 class AssignPackageLoading extends PackagesState {}
 
 class AssignPackageSuccess extends PackagesState {
-  final PackagesModel response;
+  final AssignPackageToUserModel response;
 
   const AssignPackageSuccess(this.response);
 }

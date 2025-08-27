@@ -200,7 +200,13 @@ class ExcellencePackageBody extends StatelessWidget {
                   CustomElevatedButton(
                     height: 60,
                     onPressed: () {
-                      showPaymentMethodsBottomSheet(context);
+                      final packagesState = context.read<PackagesCubit>().state;
+                      if (packagesState is GetPackagesSuccess && packagesState.packages.data != null) {
+                        showPaymentMethodsBottomSheet(
+                          context,
+                          packages: packagesState.packages.data!,
+                        );
+                      }
                     },
                     textButton: 'اشترك الان',
                     radius: 100,
