@@ -1,9 +1,11 @@
 import 'dart:developer';
 import 'dart:convert';
+import 'dart:io';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:elsadeken/core/helper/app_constants.dart';
 import 'package:elsadeken/features/chat/data/models/pusher_message_model.dart';
+import 'dart:async'; // Added for Timer
 
 class PusherService {
   static PusherService? _instance;
@@ -23,9 +25,36 @@ class PusherService {
   Function(String)? onConnectionEstablished;
   Function(String)? onConnectionError;
 
+  /// Check if there's internet connectivity
+  Future<bool> _hasInternetConnection() async {
+    try {
+      // Simple HTTP connectivity check
+      final client = HttpClient();
+      client.connectionTimeout = Duration(seconds: 3);
+      
+      final request = await client.getUrl(Uri.parse('https://httpbin.org/status/200'));
+      final response = await request.close();
+      client.close();
+      
+      return response.statusCode == 200;
+    } catch (e) {
+      // If connectivity check fails, assume internet is available and let Pusher try
+      // This prevents blocking Pusher when the check fails
+      return true;
+    }
+  }
+
   /// Initialize WebSocket connection to Pusher
   Future<void> initialize() async {
     try {
+      // Check internet connectivity first
+      final hasInternet = await _hasInternetConnection();
+      if (!hasInternet) {
+        log('⚠️ No internet connection available - skipping Pusher initialization');
+        _isConnected = false;
+        return;
+      }
+
       // Wait for network to be ready (Android sometimes needs a moment)
       await Future.delayed(Duration(milliseconds: 800));
 
@@ -35,7 +64,30 @@ class PusherService {
 
       log('🔄 Attempting to connect to: $wsUrl');
 
-      _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
+      try {
+        _channel = WebSocketChannel.connect(
+          Uri.parse(wsUrl),
+          protocols: ['websocket'],
+        );
+        
+        // Add a timeout to the connection
+        Timer(Duration(seconds: 10), () {
+          if (!_isConnected && _channel != null) {
+            log('⚠️ WebSocket connection timeout - closing connection');
+            try {
+              _channel!.sink.close();
+              _channel = null;
+            } catch (e) {
+              log('⚠️ Error closing timed out connection: $e');
+            }
+          }
+        });
+      } catch (e) {
+        log('⚠️ WebSocket connection failed: $e');
+        _isConnected = false;
+        // Don't rethrow - handle gracefully
+        return;
+      }
 
       // Listen for connection
       _channel!.stream.listen(
@@ -96,7 +148,13 @@ class PusherService {
     try {
       if (_channel == null) {
         log('🔄 WebSocket channel is null, initializing...');
-        await initialize();
+        try {
+          await initialize();
+        } catch (e) {
+          log('⚠️ Failed to initialize WebSocket: $e');
+          // Don't rethrow - handle gracefully
+          return;
+        }
       }
 
       // Ensure we have a stable connection before subscribing
@@ -113,7 +171,11 @@ class PusherService {
           // Try to reconnect if still not connected
           if (!_isConnected && retryCount > 3) {
             log('🔄 Attempting silent reconnection...');
-            await initialize();
+            try {
+              await initialize();
+            } catch (e) {
+              log('⚠️ Reconnection failed: $e');
+            }
           }
         }
 
@@ -121,10 +183,17 @@ class PusherService {
           // Instead of throwing, we'll try one more time
           log('⚠️ Still not connected, final attempt...');
           await Future.delayed(Duration(milliseconds: 1000));
-          await initialize();
+          try {
+            await initialize();
+          } catch (e) {
+            log('⚠️ Final connection attempt failed: $e');
+            // Don't throw - just log and return
+            return;
+          }
 
           if (!_isConnected) {
-            throw Exception('Failed to establish stable connection');
+            log('⚠️ Failed to establish stable connection - continuing without Pusher');
+            return; // Don't throw - handle gracefully
           }
         }
       }
@@ -142,7 +211,12 @@ class PusherService {
       };
 
       log('🔗 Subscribing to channel: $channelName');
-      _channel!.sink.add(jsonEncode(subscribeMessage));
+      try {
+        _channel!.sink.add(jsonEncode(subscribeMessage));
+      } catch (e) {
+        log('⚠️ Failed to send subscription message: $e');
+        return; // Don't throw - handle gracefully
+      }
 
       // Wait a moment to ensure subscription is processed
       await Future.delayed(Duration(milliseconds: 300));
@@ -150,7 +224,7 @@ class PusherService {
       log('✅ Successfully subscribed to chat channel: $channelName');
     } catch (e) {
       log('❌ Error subscribing to chat channel: $e');
-      rethrow;
+      // Don't rethrow - handle gracefully
     }
   }
 

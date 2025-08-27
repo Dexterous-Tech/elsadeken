@@ -3,7 +3,8 @@ import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
-import 'package:elsadeken/features/on_boarding/terms_and_conditions/presentation/manager/terms_and_conditions_cubit.dart';
+import 'package:elsadeken/features/profile/terms_conditions/presentation/manager/terms_and_conditions_cubit.dart';
+import 'package:elsadeken/features/profile/terms_conditions/presentation/manager/terms_and_conditions_state.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
 
   @override
   void initState() {
-    TermsAndConditionsCubit.get(context).getTermsAndConditions();
+    TermsCubit.get(context).loadTerms();
     super.initState();
   }
 
@@ -44,13 +45,13 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
         children: [
           ProfileHeader(title: 'الشروط والأحكام'),
           verticalSpace(16),
-          BlocBuilder<TermsAndConditionsCubit, TermsAndConditionsState>(
+          BlocBuilder<TermsCubit, TermsState>(
             buildWhen: (context, state) =>
-                state is TermsAndConditionsLoading ||
-                state is TermsAndConditionsFailure ||
-                state is TermsAndConditionsSuccess,
+                state is TermsLoading ||
+                state is TermsError ||
+                state is TermsLoaded,
             builder: (context, state) {
-              if (state is TermsAndConditionsSuccess) {
+              if (state is TermsLoaded) {
                 return Expanded(
                   child: Directionality(
                     textDirection: TextDirection.rtl,
@@ -70,36 +71,44 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
                         controller: _scrollController,
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return Html(
-                            data: state.termsAndConditionsResponseModel.data
-                                    ?.description ??
-                                '',
-                            style: {
-                              "body": Style(
-                                fontSize: FontSize(14.sp),
-                                color: AppColors.lightMixGrayAndBlue,
-                                textAlign: TextAlign.right,
-                                direction: TextDirection.rtl,
+                          if (state.terms.isNotEmpty) {
+                            return Html(
+                              data: state.terms[index].description ?? '',
+                              style: {
+                                "body": Style(
+                                  fontSize: FontSize(14.sp),
+                                  color: AppColors.lightMixGrayAndBlue,
+                                  textAlign: TextAlign.right,
+                                  direction: TextDirection.rtl,
+                                ),
+                                "p": Style(
+                                  margin: Margins.symmetric(vertical: 8.h),
+                                ),
+                              },
+                            );
+                          } else {
+                            return Center(
+                              child: Text(
+                                'لا توجد شروط وأحكام متاحة',
+                                style: AppTextStyles.font20LightOrangeMediumLamaSans
+                                    .copyWith(color: AppColors.lightMixGrayAndBlue),
                               ),
-                              "p": Style(
-                                margin: Margins.symmetric(vertical: 8.h),
-                              ),
-                            },
-                          );
+                            );
+                          }
                         },
                         separatorBuilder: (_, index) {
                           return verticalSpace(30);
                         },
-                        itemCount: 1,
+                        itemCount: state.terms.isNotEmpty ? state.terms.length : 1,
                       ),
                     ),
                   ),
                 );
-              } else if (state is TermsAndConditionsFailure) {
+              } else if (state is TermsError) {
                 return Expanded(
                     child: Center(
                   child: Text(
-                    state.error,
+                    state.message,
                     style: AppTextStyles.font20LightOrangeMediumLamaSans
                         .copyWith(color: AppColors.red),
                   ),
@@ -117,7 +126,6 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
           CustomElevatedButton(
             onPressed: () => Navigator.pop(context),
             textButton: 'اغلاق',
-            backgroundColor: AppColors.desire.withValues(alpha: 0.474),
             height: 45.h,
           ),
         ],

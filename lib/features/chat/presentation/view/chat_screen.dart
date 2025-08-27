@@ -20,18 +20,48 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen>
+    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   int _selectedTabIndex = 0; // 0: All, 1: Favorites
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    context.read<ChatListCubit>().getChatList();
+  }
 
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    // Refresh chat list when app is resumed to ensure unread counts are up to date
+    if (state == AppLifecycleState.resumed) {
+      context.read<ChatListCubit>().getChatList();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Refresh chat list when dependencies change (e.g., when screen becomes focused)
+    // This ensures unread counts are updated when returning from a conversation
     context.read<ChatListCubit>().getChatList();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: SafeArea(
