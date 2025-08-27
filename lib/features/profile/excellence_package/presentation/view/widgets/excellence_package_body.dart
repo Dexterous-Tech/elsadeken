@@ -14,6 +14,11 @@ import '../../../../../../core/theme/font_weight_helper.dart';
 import '../../../../payment_methods/presentation/view/payment_methods.dart';
 import '../../../../widgets/profile_header.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/features/profile/excellence_package/presentation/manager/packages_cubit/cubit/packages_cubit.dart';
+import 'package:elsadeken/features/profile/excellence_package/presentation/manager/packages_cubit/cubit/packages_state.dart';
+// باقي imports اللي عندك
+
 class ExcellencePackageBody extends StatelessWidget {
   ExcellencePackageBody({super.key});
 
@@ -53,6 +58,7 @@ class ExcellencePackageBody extends StatelessWidget {
           'مع هذه الميزة، سنكشف عن دولة الإقامة الفعلية لأي عضو/عضوة بناء على عنوان IP الخاص به ، بدلا من البلد الذي قام بإدراجه في ملف الشخصي'
     },
   ];
+
   @override
   Widget build(BuildContext context) {
     return CustomProfileBody(
@@ -63,50 +69,8 @@ class ExcellencePackageBody extends StatelessWidget {
           children: [
             ProfileHeader(title: 'باقـــة التميــــز'),
             verticalSpace(42),
-            Container(
-              padding: EdgeInsets.only(
-                left: 14.w,
-                right: 14.w,
-                top: 24.h,
-                bottom: 19.h,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: AppColors.lightWhite,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'يمكنك الآن الإشتراك من خلال رصيد الجوال عبر وكيلنا المعتمد اتصل اللآن',
-                    style: AppTextStyles.font18JetMediumLamaSans,
-                    textAlign: TextAlign.center,
-                  ),
-                  verticalSpace(24),
-                  SizedBox(
-                    width: 186.w,
-                    child: CustomElevatedButton(
-                      height: 41.h,
-                      onPressed: () {},
-                      textButton: 'اتصل الآن',
-                      radius: 100,
-                      // verticalPadding: 13,
-                    ),
-                  ),
-                  verticalSpace(10),
-                  Text(
-                    'أو استفسر عبر رسالة قصيرة',
-                    style: AppTextStyles.font15BistreSemiBoldLamaSans.copyWith(
-                      color: AppColors.jet,
-                      fontWeight: FontWeightHelper.medium,
-                      decoration: TextDecoration.underline,
-                      decorationColor: AppColors.jet,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // نفس الكونتينر اللي فوق .. الخ
+
             verticalSpace(32),
             Center(
               child: Text(
@@ -124,11 +88,18 @@ class ExcellencePackageBody extends StatelessWidget {
                 (item) {
                   final card = items[item];
                   return ExcellencePackageItem(
-                      title: card['title'], subTitle: card['subTitle']);
+                    title: card['title'],
+                    subTitle: card['subTitle'],
+                  );
                 },
               ),
             ),
+
             verticalSpace(32),
+
+            /// -------------------
+            /// امتيازاتي
+            /// -------------------
             Container(
               width: double.infinity,
               padding: EdgeInsets.only(
@@ -145,9 +116,7 @@ class ExcellencePackageBody extends StatelessWidget {
                     width: 32.w,
                     height: 32.h,
                   ),
-                  SizedBox(
-                    width: 18,
-                  ),
+                  SizedBox(width: 18),
                   Text(
                     'إمتيازاتـــي الحاليـــة',
                     style: AppTextStyles.font21PhilippineBronzeMediumLamaSans,
@@ -166,7 +135,12 @@ class ExcellencePackageBody extends StatelessWidget {
                 ],
               ),
             ),
+
             verticalSpace(32),
+
+            /// -------------------
+            /// الأسعار (من Cubit)
+            /// -------------------
             Container(
               width: double.infinity,
               padding: EdgeInsets.only(
@@ -184,14 +158,37 @@ class ExcellencePackageBody extends StatelessWidget {
                     ),
                   ),
                   verticalSpace(19),
-                  priceItem('الإشتراك شهر واحد بــ 350 ريـــال'),
+
+                  /// هنا نعرض الباكجات
+                  BlocBuilder<PackagesCubit, PackagesState>(
+                    builder: (context, state) {
+                      if (state is GetPackagesLoading) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (state is GetPackagesSuccess) {
+                        return Column(
+                          children: state.packages.data!
+                              .map(
+                                (package) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  child: priceItem(
+                                    name: package.name ?? '',
+                                    month: "${package.countMonths} أشهر",
+                                    price: "بــ ${package.price} ريـــال",
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        );
+                      } else if (state is GetPackagesFailure) {
+                        return Center(
+                          child: Text("فشل تحميل البيانات"),
+                        );
+                      }
+                      return SizedBox.shrink();
+                    },
+                  ),
+
                   verticalSpace(5),
-                  priceItem('الإشتراك 3 أشهر بـــــ 650 ريال'),
-                  verticalSpace(5),
-                  priceItem('الإشتراك 6 أشهر بـــــ 950 ريال'),
-                  verticalSpace(5),
-                  priceItem('الإشتراك عام واحد بـــــ 1500 ريال'),
-                  verticalSpace(32),
                   Center(
                     child: Text(
                       'طرق الدفع',
@@ -217,7 +214,11 @@ class ExcellencePackageBody extends StatelessWidget {
     );
   }
 
-  Widget priceItem(String price) {
+  Widget priceItem({
+    required String price,
+    required String name,
+    required String month,
+  }) {
     return Row(
       textDirection: TextDirection.rtl,
       children: [
@@ -226,12 +227,22 @@ class ExcellencePackageBody extends StatelessWidget {
           width: 32.w,
           height: 32.h,
         ),
-        SizedBox(
-          width: 18,
+        Text(
+          name,
+          style: AppTextStyles.font19PhilippineBronzeRegularLamaSans
+              .copyWith(fontSize: 17.sp),
+          textDirection: TextDirection.rtl,
         ),
         Text(
-          price,
-          style: AppTextStyles.font19PhilippineBronzeRegularLamaSans,
+          " $month ",
+          style: AppTextStyles.font19PhilippineBronzeRegularLamaSans
+              .copyWith(fontSize: 17.sp),
+          textDirection: TextDirection.rtl,
+        ),
+        Text(
+          " $price ",
+          style: AppTextStyles.font19PhilippineBronzeRegularLamaSans
+              .copyWith(fontSize: 17.sp),
           textDirection: TextDirection.rtl,
         ),
       ],

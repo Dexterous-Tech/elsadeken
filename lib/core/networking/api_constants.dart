@@ -72,4 +72,9 @@ class ApiConstants {
 
   // Features
   static String getFeatures = '/user/my-features';
+
+  // Packages
+  static String getPackages = '/user/packages';
+  static String assignPackageToUser(String id) =>
+      '/user/assign-package-to-user/$id';
 }
