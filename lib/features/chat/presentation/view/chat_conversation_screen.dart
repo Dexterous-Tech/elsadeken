@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -191,12 +195,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         BlocListener<SendMessageCubit, SendMessagesState>(
           listener: (context, state) {
             if (state is SendMessagesLoaded) {
-              // Don't reload all messages, just add the new message locally
-              // The message will be added when the user types and sends it
-              print(
-                  'Message sent successfully: ${state.sendMessageModel.message}');
+              log('Message sent successfully: ${state.sendMessageModel.message}');
 
-              // Add the sent message to the local list for immediate display
               if (_currentUserId != null) {
                 final newMessage = ChatMessage(
                   id: state.sendMessageModel.data.id.toString(),
@@ -307,24 +307,16 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.chat_bubble_outline,
-                      size: 64, color: Colors.grey[400]),
-                  SizedBox(height: 16),
-                  Text(
-                    'لا توجد رسائل حتى الآن',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  Image.asset(
+                    AppImages.emptyChatImage,
                   ),
+                  SizedBox(height: 16),
+                  Text('لا توجد رسائل حتى الآن',
+                      style: AppTextStyles.font20JetRegularLamaSans),
                   SizedBox(height: 8),
                   Text(
                     'ابدأ المحادثة بإرسال رسالة',
-                    style: TextStyle(
-                      color: Colors.grey[500],
-                      fontSize: 14,
-                    ),
+                    style: AppTextStyles.font14LightGrayRegularLamaSans,
                   ),
                 ],
               ),
