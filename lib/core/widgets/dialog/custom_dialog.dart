@@ -22,28 +22,31 @@ Future customDialog({
           Navigator.pop(context, true); // Always pop with true
         }
       },
-      child: Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius ?? 20).r,
-        ),
-        backgroundColor: Colors.transparent,
-        child: FittedBox(
-          child: ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Dialog(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius ?? 20).r,
-            child: Container(
-              width: width ?? 370.w,
-              height: height,
-              padding: padding ??
-                  EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-              decoration: ShapeDecoration(
-                color: backgroundColor ??
-                    Color(0xFFFFF9F2).withValues(alpha: 0.84),
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.transparent),
-                  borderRadius: BorderRadius.circular(radius ?? 20).r,
+          ),
+          backgroundColor: Colors.transparent,
+          child: FittedBox(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(radius ?? 20).r,
+              child: Container(
+                width: width ?? 370.w,
+                height: height,
+                padding: padding ??
+                    EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+                decoration: ShapeDecoration(
+                  color: backgroundColor ??
+                      Color(0xFFFFF9F2).withValues(alpha: 0.721),
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.transparent),
+                    borderRadius: BorderRadius.circular(radius ?? 20).r,
+                  ),
                 ),
+                child: dialogContent,
               ),
-              child: dialogContent,
             ),
           ),
         ),

@@ -17,7 +17,7 @@ Future<void> oathDialog({
 }) async {
   await customDialog(
     context: context,
-    padding: EdgeInsetsGeometry.symmetric(vertical: 50.h, horizontal: 30.w),
+    padding: EdgeInsetsGeometry.symmetric(vertical: 70.h, horizontal: 30.w),
     dialogContent: StatefulBuilder(
       builder: (context, setStateDialog) {
         return Column(
@@ -29,9 +29,9 @@ Future<void> oathDialog({
               textDirection: TextDirection.rtl,
               style: AppTextStyles.font22BistreSemiBoldLamaSans,
             ),
-            verticalSpace(6),
+            // verticalSpace(6),
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.symmetric(horizontal: 20.0.w),
               child: Text(
                 'لإتاحة الفرصة لجميع الأعضاء، فإن\n التسجيل مجاني.',
                 textDirection: TextDirection.rtl,
