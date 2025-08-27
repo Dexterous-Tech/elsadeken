@@ -49,6 +49,9 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/manager/u
 import 'package:elsadeken/features/profile/my_image/data/data_source/my_image_data_source.dart';
 import 'package:elsadeken/features/profile/my_image/data/repo/my_image_repo%20.dart';
 import 'package:elsadeken/features/profile/my_image/presentation/manager/my_image_cubit.dart';
+import 'package:elsadeken/features/profile/my_excellence/data/data_source/features_data_source.dart';
+import 'package:elsadeken/features/profile/my_excellence/data/repo/features_repo.dart';
+import 'package:elsadeken/features/profile/my_excellence/presentation/manager/feature_cubit/cubit/features_cubit.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/data/data_source/interesting_list_data_source.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/data/repo/interesting_list_repo.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/interesting_list_cubit.dart';
@@ -211,6 +214,11 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<MyImageDataSource>(() => MyImageDataSource(sl()));
   sl.registerLazySingleton<MyImageRepoInterface>(() => MyImageRepoImp(sl()));
   sl.registerFactory<MyImageCubit>(() => MyImageCubit(sl()));
+
+  // Features
+  sl.registerLazySingleton<FeaturesDataSource>(() => FeaturesDataSource(sl()));
+  sl.registerLazySingleton<FeaturesRepoInterface>(() => FeaturesRepoImpl(sl()));
+  sl.registerFactory<FeaturesCubit>(() => FeaturesCubit(sl()));
 
   //Members
   sl.registerLazySingleton<MembersRepository>(() => MembersRepository());

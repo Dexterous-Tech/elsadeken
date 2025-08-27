@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:elsadeken/core/services/firebase_notification_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';

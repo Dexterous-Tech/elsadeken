@@ -8,16 +8,13 @@ import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 import 'package:elsadeken/features/chat/data/models/pusher_message_model.dart';
 import 'package:elsadeken/features/chat/domain/entities/chat_message.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_message_bubble.dart';
-import 'package:elsadeken/features/chat/presentation/widgets/typing_indicator.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_state.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_state.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_state.dart';
-import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
-import 'dart:async';
 
 class ChatConversationScreen extends StatefulWidget {
   final ChatRoomModel chatRoom;
@@ -38,12 +35,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   int? _currentUserId;
   String _currentUserName = '';
   String _currentUserImage = '';
-  Timer? _refreshTimer;
-
-  // Typing indicator state
-  bool _isOtherUserTyping = false;
-  Timer? _typingTimer;
-  Timer? _messageDelayTimer;
 
   @override
   void initState() {
@@ -51,8 +42,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     _loadChatMessages();
     _loadCurrentUserProfile();
     _initializePusher();
-    _startPeriodicRefresh();
-    _simulateTypingIndicator(); // Show typing indicator when chat opens
   }
 
   void _initializePusher() {
@@ -62,13 +51,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         // Give the network stack more time to initialize
         Future.delayed(Duration(milliseconds: 1500), () {
           if (mounted) {
-            try {
-              context.read<PusherCubit>().initialize();
-            } catch (e) {
-              // Handle Pusher initialization errors gracefully
-              print('⚠️ Pusher initialization failed: $e');
-              print('ℹ️ Chat will continue to work without real-time updates');
-            }
+            context.read<PusherCubit>().initialize();
           }
         });
       }
@@ -79,8 +62,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     // Don't load messages for temporary chat rooms (new conversations)
     if (!widget.chatRoom.id.startsWith('temp_')) {
       context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
-      // Also refresh chat list to clear unread count immediately
-      _refreshChatListOnBack();
     }
   }
 
@@ -92,36 +73,19 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: WillPopScope(
-        onWillPop: () async {
-          // Refresh chat list when going back to update unread counts
-          _refreshChatListOnBack();
-          return true;
-        },
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: _buildAppBar(),
-          body: Column(
-            children: [
-              Expanded(
-                child: _buildChatMessages(),
-              ),
-              _buildMessageInput(),
-            ],
-          ),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: _buildAppBar(),
+        body: Column(
+          children: [
+            Expanded(
+              child: _buildChatMessages(),
+            ),
+            _buildMessageInput(),
+          ],
         ),
       ),
     );
-  }
-
-  /// Check if Pusher is available and working
-  bool _isPusherAvailable() {
-    try {
-      final pusherCubit = context.read<PusherCubit>();
-      return pusherCubit.state is! PusherConnectionError;
-    } catch (e) {
-      return false;
-    }
   }
 
   PreferredSizeWidget _buildAppBar() {
@@ -156,59 +120,20 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                     fontSize: 12,
                   ),
                 ),
-                if (widget.chatRoom.id.startsWith('temp_'))
-                  Text(
-                    'محادثة جديدة',
-                    style: TextStyle(
-                      color: Colors.orange,
-                      fontSize: 10,
-                    ),
-                  ),
               ],
             ),
           ),
         ],
       ),
       actions: [
-        // Add refresh button when Pusher is not available
-        if (!_isPusherAvailable())
-          IconButton(
-            icon: Icon(Icons.refresh, color: AppColors.darkerBlue),
-            onPressed: _refreshChatMessages,
-            tooltip: 'تحديث الرسائل',
-          ),
-        // Only show Pusher test button if Pusher is available
-        if (_isPusherAvailable())
-          IconButton(
-            icon: Icon(Icons.wifi, color: AppColors.darkerBlue),
-            onPressed: _testPusherConnection,
-            tooltip: 'Test Pusher Connection',
-          ),
+        // Test button for Pusher
+        IconButton(
+          icon: Icon(Icons.wifi, color: AppColors.darkerBlue),
+          onPressed: _testPusherConnection,
+          tooltip: 'Test Pusher Connection',
+        ),
       ],
     );
-  }
-
-  /// Refresh chat messages manually when Pusher is not available
-  void _refreshChatMessages() {
-    try {
-      _loadChatMessages();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('جاري تحديث الرسائل...'),
-          backgroundColor: Colors.blue,
-          duration: Duration(seconds: 1),
-        ),
-      );
-    } catch (e) {
-      print('Error refreshing chat messages: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('فشل في تحديث الرسائل'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 2),
-        ),
-      );
-    }
   }
 
   Widget _buildChatMessages() {
@@ -298,20 +223,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                     );
                   }
                 });
-
-                // If this was a temporary chat, refresh the chat list to show the new chat
-                if (widget.chatRoom.id.startsWith('temp_')) {
-                  _refreshChatListAfterTemporaryMessage();
-
-                  // Show success message for first message
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('تم إنشاء المحادثة بنجاح!'),
-                      backgroundColor: Colors.green,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                }
               }
             } else if (state is SendMessagesError) {
               // Show error message
@@ -341,16 +252,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                 ),
               );
             } else if (state is PusherConnectionError) {
-              // Handle errors gracefully - show user-friendly message
-              print('⚠️ PUSHER: Connection issue: ${state.error}');
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                      'فشل في الاتصال بالخادم - الرسائل ستظهر عند التحديث'),
-                  backgroundColor: Colors.orange,
-                  duration: Duration(seconds: 3),
-                ),
-              );
+              // Handle errors silently - don't show to user
+              print(
+                  '⚠️ PUSHER: Connection issue (handled silently): ${state.error}');
+              // No SnackBar - we're handling this silently
             } else if (state is PusherSubscribed) {
               print('🟢 PUSHER: Subscribed to channel successfully');
             } else if (state is PusherInitialized) {
@@ -361,13 +266,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
       ],
       child: BlocBuilder<ChatMessagesCubit, ChatMessagesState>(
         builder: (context, state) {
-          // Show loading indicator first when loading messages
           if (state is ChatMessagesLoading) {
             return const Center(child: CircularProgressIndicator());
-          }
-
-          // Show error state if there's an error
-          if (state is ChatMessagesError) {
+          } else if (state is ChatMessagesError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -401,8 +302,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
             );
           }
 
-          // Show empty state only after messages have been loaded and are empty
-          if (state is ChatMessagesLoaded && _messages.isEmpty) {
+          if (_messages.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -411,9 +311,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                       size: 64, color: Colors.grey[400]),
                   SizedBox(height: 16),
                   Text(
-                    widget.chatRoom.id.startsWith('temp_')
-                        ? 'ابدأ المحادثة الآن'
-                        : 'لا توجد رسائل حتى الآن',
+                    'لا توجد رسائل حتى الآن',
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontSize: 18,
@@ -422,9 +320,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    widget.chatRoom.id.startsWith('temp_')
-                        ? 'أرسل رسالة لبدء المحادثة مع ${widget.chatRoom.name}'
-                        : 'ابدأ المحادثة بإرسال رسالة',
+                    'ابدأ المحادثة بإرسال رسالة',
                     style: TextStyle(
                       color: Colors.grey[500],
                       fontSize: 14,
@@ -435,43 +331,27 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
             );
           }
 
-          // Show messages if they exist
-          if (_messages.isNotEmpty) {
-            return ListView.builder(
-              controller: _scrollController,
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              itemCount: _messages.length + 1 + (_isOtherUserTyping ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  // Day separator at the top
-                  return _buildDaySeparator();
-                }
+          return ListView.builder(
+            controller: _scrollController,
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            itemCount: _messages.length + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                // Day separator at the top
+                return _buildDaySeparator();
+              }
 
-                final messageIndex = index - 1;
+              final messageIndex = index - 1;
+              final message = _messages[messageIndex];
+              final isCurrentUser =
+                  message.senderId == _currentUserId.toString();
 
-                // Show typing indicator at the bottom if other user is typing
-                if (_isOtherUserTyping && messageIndex == _messages.length) {
-                  return TypingIndicator(
-                    isCurrentUser: false,
-                    otherUserName: widget.chatRoom.name,
-                    otherUserImage: widget.chatRoom.image,
-                  );
-                }
-
-                final message = _messages[messageIndex];
-                final isCurrentUser =
-                    message.senderId == _currentUserId.toString();
-
-                return ChatMessageBubble(
-                  message: message,
-                  isCurrentUser: isCurrentUser,
-                );
-              },
-            );
-          }
-
-          // Default case: show loading indicator while waiting for initial state
-          return const Center(child: CircularProgressIndicator());
+              return ChatMessageBubble(
+                message: message,
+                isCurrentUser: isCurrentUser,
+              );
+            },
+          );
         },
       ),
     );
@@ -573,11 +453,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
               child: TextField(
                 controller: _messageController,
                 textDirection: TextDirection.rtl,
-                onChanged: _onTextChanged,
                 decoration: InputDecoration(
-                  hintText: widget.chatRoom.id.startsWith('temp_')
-                      ? 'اكتب رسالتك الأولى...'
-                      : 'اكتب رسالتك...',
+                  hintText: 'اكتب رسالتك...',
                   hintStyle: TextStyle(
                     color: Colors.grey[500],
                     fontSize: 18.sp,
@@ -655,56 +532,21 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
             );
           }
         });
-
-        // Simulate typing indicator after receiving a message (for demo purposes)
-        _simulateOtherUserTyping();
       }
     }
-  }
-
-  /// Simulate the other user typing after receiving a message
-  void _simulateOtherUserTyping() {
-    // Wait a moment then show typing indicator
-    Timer(Duration(milliseconds: 800), () {
-      if (mounted) {
-        _showTypingIndicator();
-      }
-    });
   }
 
   void _testPusherConnection() {
-    if (!_isPusherAvailable()) {
+    print('🧪 Testing Pusher connection...');
+    if (_currentUserId != null) {
+      context.read<PusherCubit>().subscribeToChatChannel(_currentUserId!);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Pusher غير متاح حالياً'),
-          backgroundColor: Colors.orange,
+          content: Text('جاري اختبار الاتصال...'),
+          backgroundColor: Colors.blue,
           duration: Duration(seconds: 2),
         ),
       );
-      return;
-    }
-
-    print('🧪 Testing Pusher connection...');
-    if (_currentUserId != null) {
-      try {
-        context.read<PusherCubit>().subscribeToChatChannel(_currentUserId!);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('جاري اختبار الاتصال...'),
-            backgroundColor: Colors.blue,
-            duration: Duration(seconds: 2),
-          ),
-        );
-      } catch (e) {
-        print('Error testing Pusher connection: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('فشل في اختبار الاتصال'),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -740,9 +582,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     final message = _messageController.text.trim();
     _messageController.clear();
 
-    // Hide typing indicator when sending a message
-    _hideTypingIndicator();
-
     // For temporary chat rooms, we'll add the message when the API response comes back
     // This ensures consistency with the server data
 
@@ -753,121 +592,12 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         );
   }
 
-  /// Handle text field changes to show typing indicator
-  void _onTextChanged(String text) {
-    // Show typing indicator when user starts typing (for demo purposes)
-    if (text.isNotEmpty && !_isOtherUserTyping) {
-      _showTypingIndicator();
-    }
-
-    // Hide typing indicator when text is cleared
-    if (text.isEmpty) {
-      _hideTypingIndicator();
-    }
-  }
-
-  /// Start periodic refresh when Pusher is not available
-  void _startPeriodicRefresh() {
-    // Refresh messages every 30 seconds when Pusher is not available
-    _refreshTimer = Timer.periodic(Duration(seconds: 30), (timer) {
-      if (mounted && !_isPusherAvailable()) {
-        _loadChatMessages();
-      }
-    });
-  }
-
-  /// Show typing indicator for the other user
-  void _showTypingIndicator() {
-    if (!_isOtherUserTyping) {
-      setState(() {
-        _isOtherUserTyping = true;
-      });
-
-      // Auto-hide typing indicator after 2 seconds
-      _typingTimer?.cancel();
-      _typingTimer = Timer(Duration(seconds: 2), () {
-        if (mounted) {
-          setState(() {
-            _isOtherUserTyping = false;
-          });
-        }
-      });
-    }
-  }
-
-  /// Hide typing indicator immediately
-  void _hideTypingIndicator() {
-    _typingTimer?.cancel();
-    setState(() {
-      _isOtherUserTyping = false;
-    });
-  }
-
-  /// Simulate typing indicator when chat is opened (for demo purposes)
-  void _simulateTypingIndicator() {
-    // Show typing indicator after a short delay when chat opens
-    _messageDelayTimer?.cancel();
-    _messageDelayTimer = Timer(Duration(milliseconds: 4000), () {
-      if (mounted) {
-        _showTypingIndicator();
-      }
-    });
-  }
-
-  /// Refresh chat list when going back to update unread counts
-  void _refreshChatListOnBack() {
-    try {
-      // Use a post-frame callback to ensure the navigation has completed
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        try {
-          // Navigate to the chat list and refresh it
-          context.read<ChatListCubit>().getChatList();
-          print('🔄 Refreshing chat list on back to update unread counts');
-        } catch (e) {
-          print('⚠️ Error refreshing chat list on back: $e');
-        }
-      });
-    } catch (e) {
-      print('⚠️ Error setting up chat list refresh: $e');
-    }
-  }
-
-  /// Refresh the chat list after sending a message in a temporary chat
-  void _refreshChatListAfterTemporaryMessage() {
-    try {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        try {
-          context.read<ChatListCubit>().getChatList();
-          print('🔄 Refreshing chat list after temporary message');
-        } catch (e) {
-          print('⚠️ Error refreshing chat list after temporary message: $e');
-        }
-      });
-    } catch (e) {
-      print('⚠️ Error setting up temporary message refresh: $e');
-    }
-  }
-
   @override
   void dispose() {
-    _refreshTimer?.cancel();
-    _typingTimer?.cancel();
-    _messageDelayTimer?.cancel();
     _messageController.dispose();
     _scrollController.dispose();
-
-    // If this was a temporary chat, refresh the chat list to show the new chat
-    if (widget.chatRoom.id.startsWith('temp_')) {
-      _refreshChatListAfterTemporaryMessage();
-    }
-
     // Unsubscribe from Pusher channel when leaving the screen
-    try {
-      context.read<PusherCubit>().unsubscribeFromChatChannel();
-    } catch (e) {
-      print('Error unsubscribing from Pusher: $e');
-    }
-
+    context.read<PusherCubit>().unsubscribeFromChatChannel();
     super.dispose();
   }
 }
