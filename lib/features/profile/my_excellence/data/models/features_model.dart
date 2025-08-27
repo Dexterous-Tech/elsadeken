@@ -40,10 +40,13 @@ class Data {
 
   Data({this.feature, this.active});
 
-  Data.fromJson(Map<String, dynamic> json) {
-    feature = json['feature'];
-    active = json['active'];
-  }
+ Data.fromJson(Map<String, dynamic> json) {
+  feature = json['feature'];
+  active = (json['active'] is int)
+      ? json['active'] as int
+      : int.tryParse(json['active'].toString()) ?? 0;
+}
+
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

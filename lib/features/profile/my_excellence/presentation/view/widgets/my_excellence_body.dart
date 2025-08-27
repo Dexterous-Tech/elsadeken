@@ -23,11 +23,9 @@ class MyExcellenceBody extends StatelessWidget {
         builder: (context, state) {
           if (state is GetFeaturesLoading) {
             log('Features loading');
-
             return const Center(child: CircularProgressIndicator());
           } else if (state is GetFeaturesFailure) {
             log('Features Failed');
-
             return Center(child: Text(state.error));
           } else if (state is GetFeaturesSuccess) {
             log('Features loaded successfully');
@@ -46,8 +44,12 @@ class MyExcellenceBody extends StatelessWidget {
                       features.length,
                       (index) {
                         final feature = features[index];
+                        final activeValue = feature.active ?? 0;
+
+                        log("FEATURE: ${feature.feature} | ACTIVE: $activeValue | isCorrect: ${activeValue == 1}");
+
                         return MyExcellenceItem(
-                          isCorrect: feature.active == 1, 
+                          isCorrect: activeValue == 1,
                           title: feature.feature ?? "",
                         );
                       },
