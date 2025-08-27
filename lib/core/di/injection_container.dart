@@ -31,9 +31,6 @@ import 'package:elsadeken/features/home/notification/presentation/manager/notifi
 import 'package:elsadeken/features/profile/about_us/data/data_source/about_us_data_source.dart';
 import 'package:elsadeken/features/profile/about_us/data/repo/abouts_us_repo.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/manager/about_us_cubit.dart';
-import 'package:elsadeken/features/on_boarding/terms_and_conditions/data/data_source/terms_and_conditions_data_source.dart';
-import 'package:elsadeken/features/on_boarding/terms_and_conditions/data/repo/terms_and_conditions_repo.dart';
-import 'package:elsadeken/features/on_boarding/terms_and_conditions/presentation/manager/terms_and_conditions_cubit.dart';
 import 'package:elsadeken/features/profile/contact_us/data/data_source/contact_us_data_source.dart';
 import 'package:elsadeken/features/profile/contact_us/data/repo/contact_us_repo.dart';
 import 'package:elsadeken/features/profile/contact_us/presentation/manager/contact_us_cubit.dart';
@@ -69,6 +66,11 @@ import 'package:elsadeken/features/profile/success_stories/data/repository/succe
 import 'package:elsadeken/features/profile/success_stories/domain/repository/success_storie_repo.dart';
 import 'package:elsadeken/features/profile/success_stories/domain/use_cases/get_success_story.dart';
 import 'package:elsadeken/features/profile/success_stories/presentation/cubit/success_story_cubit.dart';
+import 'package:elsadeken/features/profile/terms_conditions/data/datasources/terms_api.dart';
+import 'package:elsadeken/features/profile/terms_conditions/data/repository/blog_repo_impl.dart';
+import 'package:elsadeken/features/profile/terms_conditions/domain/repository/terms_repo.dart';
+import 'package:elsadeken/features/profile/terms_conditions/domain/use_cases/get_blog_posts.dart' as terms;
+import 'package:elsadeken/features/profile/terms_conditions/presentation/manager/terms_and_conditions_cubit.dart';
 import 'package:elsadeken/features/search/logic/repository/search_repository.dart';
 import 'package:elsadeken/features/search/logic/repository/search_repository_impl.dart';
 import 'package:get_it/get_it.dart';
@@ -154,13 +156,10 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<AboutsUsRepoInterface>(() => AboutsUsRepoImpl(sl()));
   sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
 
-  // terms and conditions (on_boarding)
-  sl.registerLazySingleton<TermsAndConditionsDataSource>(
-      () => TermsAndConditionsDataSource(sl()));
-  sl.registerLazySingleton<TermsAndConditionsRepoInterface>(
-      () => TermsAndConditionsRepoImpl(sl()));
-  sl.registerFactory<TermsAndConditionsCubit>(
-      () => TermsAndConditionsCubit(sl()));
+  // terms and conditions (profile)
+  sl.registerLazySingleton<TermsApi>(() => TermsApi(sl()));
+  sl.registerLazySingleton<TermsRepo>(() => TermsRepoImpl(sl()));
+  sl.registerFactory<TermsCubit>(() => TermsCubit(terms.GetBlogPosts(sl())));
 
   // contact us
   sl.registerLazySingleton<ContactUsDataSource>(

@@ -9,7 +9,6 @@ import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart'
 import 'package:elsadeken/features/home/notification/presentation/view/notification_screen.dart';
 import 'package:elsadeken/features/home/person_details/view/person_details.dart';
 import 'package:elsadeken/features/on_boarding/presentation/view/on_boarding_screen.dart';
-import 'package:elsadeken/features/on_boarding/terms_and_conditions/presentation/view/terms_and_conditions_screen.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_screen.dart';
 import 'package:elsadeken/features/profile/blog/presentation/cubit/blog_cubit.dart';
 import 'package:elsadeken/features/profile/blog/presentation/view/blog_screen.dart';
@@ -42,6 +41,7 @@ import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 
 import '../../features/profile/my_ignoring_list/presentation/view/my_ignoring_list_screen.dart';
+import 'package:elsadeken/features/profile/terms_conditions/presentation/view/terms_and_conditions_screen.dart';
 
 class AppRouting {
   Route onGenerateRouting(RouteSettings setting) {
