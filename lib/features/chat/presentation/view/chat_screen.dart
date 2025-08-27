@@ -90,7 +90,7 @@ class _ChatScreenState extends State<ChatScreen>
       ),
       child: Column(
         children: [
-          ProfileHeader(title: 'الرسائل'),
+          ProfileHeader(title: 'الرسائل',showBackButton: false,),
           SizedBox(height: 16.h),
           ChatTabBar(
             selectedIndex: _selectedTabIndex,

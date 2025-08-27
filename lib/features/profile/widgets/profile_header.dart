@@ -6,19 +6,31 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/custom_arrow_back.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key, required this.title, this.background});
+  const ProfileHeader({
+    super.key, 
+    required this.title, 
+    this.background,
+    this.showBackButton = true,
+  });
 
   final String title;
   final Color? background;
+  final bool showBackButton;
   @override
   Widget build(BuildContext context) {
     return Row(
       textDirection: TextDirection.rtl,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        CustomArrowBack(
-          background: background ?? AppColors.white,
-        ),
+        if (showBackButton)
+          CustomArrowBack(
+            background: background ?? AppColors.white,
+          )
+        else
+          SizedBox(
+            width: 30.w,
+            height: 30.h,
+          ),
         Center(
           child: Text(
             title,

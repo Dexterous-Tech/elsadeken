@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 
 class ChatSettingsScreen extends StatefulWidget {
   const ChatSettingsScreen({super.key});
@@ -30,11 +31,38 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         body: SafeArea(
           child: Stack(
             children: [
+              // Background image should be behind content
+             /* Positioned(
+                top: 100.h,
+                right: -100.w,
+                child: _buildBackgroundImage(),
+              ),*/
+              // Fallback background decoration
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  width: 300.w,
+                  height: 300.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF0F0).withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(150),
+                  ),
+                ),
+              ),
+              // Content should be on top and interactive
               Column(
                 children: [
                   Expanded(
                     child: Container(
-                      color: Colors.white,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        image: DecorationImage(
+                          image: AssetImage(
+                            'assets/images/chat/mail 1.png',
+                          ),
+                        ),
+                      ),
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.symmetric(horizontal: 24.0),
                         child: _buildBody(),
@@ -43,7 +71,6 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                   ),
                 ],
               ),
-              Positioned.fill(child: _buildBackgroundImage()),
             ],
           ),
         ),
@@ -54,12 +81,22 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   Widget _buildBackgroundImage() {
     return Image.asset(
       'assets/images/chat/mail 1.png',
-      width: 300,
-      height: 300,
+      width: 400,
+      height: 400,
+      fit: BoxFit.contain,
       errorBuilder: (context, error, stackTrace) {
+        print('Background image error: $error'); // Debug print
         return Container(
+          width: 400,
+          height: 400,
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF0F0).withOpacity(0.3),
+            color: const Color(0xFFFFF0F0).withOpacity(0.5),
+            borderRadius: BorderRadius.circular(200),
+          ),
+          child: Icon(
+            Icons.mail,
+            size: 100,
+            color: Colors.grey[400],
           ),
         );
       },
@@ -155,10 +192,10 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                   _isOnline = value;
                 });
               },
-              activeColor: Colors.white,
+              activeColor: Colors.orangeAccent,
               activeTrackColor: Colors.black,
-              inactiveThumbColor: Colors.white,
-              inactiveTrackColor: Colors.black,
+              inactiveThumbColor: Colors.red,
+              inactiveTrackColor: Colors.white,
             ),
           ),
         )
@@ -218,7 +255,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         SizedBox(height: 16.h),
         _buildSettingRow(
           title: 'رسائل جديدة',
-          subtitle: 'إشعارات الرسائل الجديدة',
+          subtitle: '',
           trailing: Transform.scale(
             scale: 0.8,
             child: Switch(
@@ -228,17 +265,17 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                   _newMessagesNotification = value;
                 });
               },
-              activeColor: Colors.white,
+              activeColor: Colors.orangeAccent,
               activeTrackColor: Colors.black,
-              inactiveThumbColor: Colors.white,
-              inactiveTrackColor: Colors.black,
+              inactiveThumbColor: Colors.red,
+              inactiveTrackColor: Colors.white,
             ),
           ),
         ),
         SizedBox(height: 12.h),
         _buildSettingRow(
           title: 'من سمح لي برؤية صورته؟',
-          subtitle: 'إشعارات الصور الشخصية',
+          subtitle: '',
           trailing: Transform.scale(
             scale: 0.8,
             child: Switch(
@@ -248,10 +285,10 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                   _profilePictureNotification = value;
                 });
               },
-              activeColor: Colors.white,
+              activeColor: Colors.orangeAccent,
               activeTrackColor: Colors.black,
-              inactiveThumbColor: Colors.white,
-              inactiveTrackColor: Colors.black,
+              inactiveThumbColor: Colors.red,
+              inactiveTrackColor: Colors.white,
             ),
           ),
         ),
@@ -267,41 +304,60 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     bool showGreenDot = false, // Add this flag
   }) {
     return InkWell(
-      onTap: onTap,
+      splashColor: Colors.blue.withOpacity(0.3),
+      highlightColor: Colors.blue.withOpacity(0.1),
+      onTap: onTap != null ? () {
+        print('Tapped on: $title'); // Debug print
+        onTap();
+      } : null,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
         decoration: BoxDecoration(
-          color: const Color(0xFFfbecef).withOpacity(0.7),
+          color: const Color(0xFFfbecef).withOpacity(0.3),
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                if (showGreenDot) ...[
-                  SizedBox(width: 8.w),
-                  Container(
-                    width: 20.w,
-                    height: 20.w,
-                    decoration: const BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
+            Expanded(
+              child: Row(
+                children: [
+                  if (showGreenDot) ...[
+                    SizedBox(width: 8.w),
+                    Container(
+                      width: 20.w,
+                      height: 20.w,
+                      decoration: const BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ],
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
-                SizedBox(
-                  width: 5.w,
-                ),
-                Text(
-                  title,
-                  style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+              ),
             ),
+            if (subtitle.isNotEmpty) ...[
+              Text(
+                subtitle,
+                style: AppTextStyles.font14BlackRegularLamaSans.copyWith(
+                  fontSize: 14.sp,
+                  color: Colors.grey[600],
+                ),
+              ),
+              SizedBox(width: 8.w),
+            ],
             if (trailing != null) trailing,
           ],
         ),
@@ -317,26 +373,14 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   }
 
   Widget _buildSaveButton() {
-    return SizedBox(
-      width: double.infinity,
+    return CustomElevatedButton(
+      onPressed: _saveSettings,
+      textButton: 'حفظ',
       height: 56.h,
-      child: ElevatedButton(
-        onPressed: _saveSettings,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.shimmeringBlush,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28.r),
-          ),
-        ),
-        child: Text(
-          'حفظ',
-          style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+      radius: 28.r,
+      styleTextButton: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+        fontSize: 18.sp,
+        fontWeight: FontWeight.w600,
       ),
     );
   }
