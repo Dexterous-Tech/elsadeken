@@ -1,6 +1,8 @@
+import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/custom_image_network.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,8 @@ class UserDataWidget extends StatelessWidget {
     return BlocBuilder<ManageProfileCubit, ManageProfileState>(
       builder: (context, state) {
         if (state is ManageProfileSuccess) {
+          final isFeatured = state.myProfileResponseModel.data?.isFeatured == 1;
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -30,20 +34,29 @@ class UserDataWidget extends StatelessWidget {
               ),
               Text(
                 state.myProfileResponseModel.data?.name ?? '',
-                style: AppTextStyles.font23ChineseBlackBoldLamaSans
-                    .copyWith(
+                style: AppTextStyles.font23ChineseBlackBoldLamaSans.copyWith(
                   color: AppColors.white,
                   fontWeight: FontWeightHelper.semiBold,
                 ),
               ),
               Text(
                 '${state.myProfileResponseModel.data?.email?.split('@')[0]}@',
-                style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans
-                    .copyWith(
+                style:
+                    AppTextStyles.font14ChineseBlackSemiBoldLamaSans.copyWith(
                   color: AppColors.white,
                   fontWeight: FontWeightHelper.regular,
                 ),
               ),
+              if (isFeatured) ...[
+                verticalSpace(8),
+                Text(
+                  'عضو مميز',
+                  style: AppTextStyles.font14JetRegularLamaSans.copyWith(
+                    color: AppColors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ],
           );
         }

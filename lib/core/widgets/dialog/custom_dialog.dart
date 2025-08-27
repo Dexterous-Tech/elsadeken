@@ -12,7 +12,7 @@ Future customDialog({
   Color? backgroundColor,
 }) async {
   final result = await showDialog(
-    barrierColor: Color(0xFF120B03).withValues(alpha: 0.8),
+    barrierColor: Color(0xFF120B03).withValues(alpha: 0.7),
     context: context,
     barrierDismissible: false,
     builder: (context) => PopScope(
@@ -22,31 +22,28 @@ Future customDialog({
           Navigator.pop(context, true); // Always pop with true
         }
       },
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-        child: Dialog(
-          shape: RoundedRectangleBorder(
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radius ?? 20).r,
+        ),
+        backgroundColor: Colors.transparent,
+        child: FittedBox(
+          child: ClipRRect(
             borderRadius: BorderRadius.circular(radius ?? 20).r,
-          ),
-          backgroundColor: Colors.transparent,
-          child: FittedBox(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(radius ?? 20).r,
-              child: Container(
-                width: width ?? 370.w,
-                height: height,
-                padding: padding ??
-                    EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-                decoration: ShapeDecoration(
-                  color: backgroundColor ??
-                      Color(0xFFFFF9F2).withValues(alpha: 0.9),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.transparent),
-                    borderRadius: BorderRadius.circular(radius ?? 20).r,
-                  ),
+            child: Container(
+              width: width ?? 370.w,
+              height: height,
+              padding: padding ??
+                  EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+              decoration: ShapeDecoration(
+                color: backgroundColor ??
+                    Color(0xFFFFF9F2).withValues(alpha: 0.84),
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.transparent),
+                  borderRadius: BorderRadius.circular(radius ?? 20).r,
                 ),
-                child: dialogContent,
               ),
+              child: dialogContent,
             ),
           ),
         ),

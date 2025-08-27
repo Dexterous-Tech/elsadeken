@@ -23,6 +23,7 @@ class ProfileDetailsLogo extends StatelessWidget {
         String name = 'لا يوجد';
         String status = 'لا يوجد';
         bool isLoading = state is GetProfileDetailsLoading;
+        bool isFeatured = false;
 
         if (state is GetProfileDetailsSuccess) {
           final userData = state.profileDetailsResponseModel.data;
@@ -39,6 +40,9 @@ class ProfileDetailsLogo extends StatelessWidget {
 
             // Get status (you might need to add this field to your model)
             status = userData.attribute?.maritalStatus ?? 'غير معروف';
+
+            // Check if user is featured
+            isFeatured = userData.isFeatured == 1;
           }
         }
 
@@ -53,40 +57,13 @@ class ProfileDetailsLogo extends StatelessWidget {
                         color: AppColors.philippineBronze,
                       ),
                     )
-                  : Stack(
-                      alignment: Alignment.bottomCenter,
-                      clipBehavior: Clip.none,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: CustomImageNetwork(
-                            image: image,
-                            width: 145.w,
-                            height: 145.h,
-                          ),
-                        ),
-                        // Positioned(
-                        //   top: 40,
-                        //   child: Container(
-                        //     width: 170,
-                        //     height: 170,
-                        //     decoration: BoxDecoration(
-                        //       image: DecorationImage(
-                        //         image: AssetImage(AppImages.ribbonProfile),
-                        //       ),
-                        //     ),
-                        //     child: Center(
-                        //       child: Text(
-                        //         'عضو مميز',
-                        //         textAlign: TextAlign.center,
-                        //         style: AppTextStyles
-                        //             .font16PaleBrownRegularLamaSans
-                        //             .copyWith(color: AppColors.white),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-                      ],
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: CustomImageNetwork(
+                        image: image,
+                        width: 145.w,
+                        height: 145.h,
+                      ),
                     ),
               verticalSpace(30),
               isLoading
@@ -119,7 +96,17 @@ class ProfileDetailsLogo extends StatelessWidget {
                   : Text(
                       status,
                       style: AppTextStyles.font13BlackMediumLamaSans,
-                    )
+                    ),
+              if (isFeatured) ...[
+                verticalSpace(8),
+                Text(
+                  'عضو مميز',
+                  style: AppTextStyles.font14JetRegularLamaSans.copyWith(
+                    color: AppColors.philippineBronze,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ],
           ),
         );

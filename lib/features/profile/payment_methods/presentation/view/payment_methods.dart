@@ -49,6 +49,22 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                             selectedOption = index;
                           });
 
+                          // Show success message before closing
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'تم إضافة الباقة بنجاح!',
+                                textDirection: TextDirection.rtl,
+                                style: AppTextStyles.font16BlackSemiBoldLamaSans
+                                    .copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              backgroundColor: AppColors.green,
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+
                           Navigator.of(context).pop({
                             "selectedPackage": package,
                           });

@@ -148,6 +148,7 @@ class MyProfileDataModel {
     this.phone,
     this.gender,
     this.image,
+    this.isFeatured,
     this.createdAt,
     this.attribute,
   });
@@ -160,6 +161,7 @@ class MyProfileDataModel {
     phone = json['phone'];
     gender = json['gender'];
     image = json['image'];
+    isFeatured = json['is_featured'];
     createdAt = json['created_at'];
     attribute = json['attribute'] != null
         ? MyProfileAttributeModel.fromJson(json['attribute'])
@@ -172,6 +174,7 @@ class MyProfileDataModel {
   String? phone;
   String? gender;
   String? image;
+  int? isFeatured;
   String? createdAt;
   MyProfileAttributeModel? attribute;
 
@@ -184,6 +187,7 @@ class MyProfileDataModel {
     map['phone'] = phone;
     map['gender'] = gender;
     map['image'] = image;
+    map['is_featured'] = isFeatured;
     map['created_at'] = createdAt;
     if (attribute != null) {
       map['attribute'] = attribute?.toJson();

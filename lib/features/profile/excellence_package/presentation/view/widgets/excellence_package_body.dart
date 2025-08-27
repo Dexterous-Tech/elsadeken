@@ -19,6 +19,9 @@ import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/font_weight_helper.dart';
 import '../../../../payment_methods/presentation/view/payment_methods.dart';
 import '../../../../widgets/profile_header.dart';
+import '../../../../my_excellence/presentation/manager/feature_cubit/cubit/features_cubit.dart';
+import '../../../../my_excellence/presentation/manager/feature_cubit/cubit/features_state.dart';
+import '../../../../manage_profile/presentation/manager/manage_profile_cubit.dart';
 
 class ExcellencePackageBody extends StatelessWidget {
   ExcellencePackageBody({super.key});
@@ -62,195 +65,322 @@ class ExcellencePackageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomProfileBody(
-      contentBody: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          textDirection: TextDirection.rtl,
-          children: [
-            ProfileHeader(title: 'باقـــة التميــــز'),
-            verticalSpace(42),
-            Container(
-              padding: EdgeInsets.only(
-                left: 14.w,
-                right: 14.w,
-                top: 24.h,
-                bottom: 19.h,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: AppColors.lightWhite,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'يمكنك الآن الإشتراك من خلال رصيد الجوال عبر وكيلنا المعتمد اتصل اللآن',
-                    style: AppTextStyles.font18JetMediumLamaSans,
-                    textAlign: TextAlign.center,
+      contentBody: BlocListener<PackagesCubit, PackagesState>(
+        listener: (context, packagesState) {
+          if (packagesState is AssignPackageSuccess) {
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  packagesState.response.message ?? 'تم الاشتراك بنجاح!',
+                  textDirection: TextDirection.rtl,
+                  style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                    color: Colors.white,
                   ),
-                  verticalSpace(24),
-                  SizedBox(
-                    width: 186.w,
-                    child: CustomElevatedButton(
-                      height: 41.h,
-                      onPressed: () {},
-                      textButton: 'اتصل الآن',
-                      radius: 100,
-                      // verticalPadding: 13,
+                ),
+                backgroundColor: Colors.green,
+                duration: Duration(seconds: 3),
+              ),
+            );
+          } else if (packagesState is AssignPackageFailure) {
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  packagesState.error,
+                  textDirection: TextDirection.rtl,
+                  style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
+                backgroundColor: Colors.red,
+                duration: Duration(seconds: 3),
+              ),
+            );
+          }
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            textDirection: TextDirection.rtl,
+            children: [
+              ProfileHeader(title: 'باقـــة التميــــز'),
+              verticalSpace(42),
+              Container(
+                padding: EdgeInsets.only(
+                  left: 14.w,
+                  right: 14.w,
+                  top: 24.h,
+                  bottom: 19.h,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: AppColors.lightWhite,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'يمكنك الآن الإشتراك من خلال رصيد الجوال عبر وكيلنا المعتمد اتصل اللآن',
+                      style: AppTextStyles.font18JetMediumLamaSans,
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  verticalSpace(10),
-                  Text(
-                    'أو استفسر عبر رسالة قصيرة',
-                    style: AppTextStyles.font15BistreSemiBoldLamaSans.copyWith(
-                      color: AppColors.jet,
-                      fontWeight: FontWeightHelper.medium,
-                      decoration: TextDecoration.underline,
-                      decorationColor: AppColors.jet,
+                    verticalSpace(24),
+                    SizedBox(
+                      width: 186.w,
+                      child: CustomElevatedButton(
+                        height: 41.h,
+                        onPressed: () {},
+                        textButton: 'اتصل الآن',
+                        radius: 100,
+                        // verticalPadding: 13,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            verticalSpace(32),
-            Center(
-              child: Text(
-                'المزايـــــا',
-                style: AppTextStyles.font22BistreSemiBoldLamaSans.copyWith(
-                  color: AppColors.jet,
-                  fontWeight: FontWeightHelper.medium,
+                    verticalSpace(10),
+                    Text(
+                      'أو استفسر عبر رسالة قصيرة',
+                      style:
+                          AppTextStyles.font15BistreSemiBoldLamaSans.copyWith(
+                        color: AppColors.jet,
+                        fontWeight: FontWeightHelper.medium,
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.jet,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            verticalSpace(33),
-            Column(
-              children: List.generate(items.length, (item) {
-                final card = items[item];
-                return ExcellencePackageItem(
-                  title: card['title'],
-                  subTitle: card['subTitle'],
-                );
-              }),
-            ),
-            verticalSpace(32),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.only(top: 10.5.h, bottom: 10.5.h, left: 8.w),
-              decoration: BoxDecoration(color: AppColors.lightWhite),
-              child: Row(
-                textDirection: TextDirection.rtl,
-                children: [
-                  Image.asset(AppImages.boldStar, width: 32.w, height: 32.h),
-                  SizedBox(width: 18),
-                  Text(
-                    'إمتيازاتـــي الحاليـــة',
-                    style: AppTextStyles.font21PhilippineBronzeMediumLamaSans,
+              verticalSpace(32),
+              Center(
+                child: Text(
+                  'المزايـــــا',
+                  style: AppTextStyles.font22BistreSemiBoldLamaSans.copyWith(
+                    color: AppColors.jet,
+                    fontWeight: FontWeightHelper.medium,
                   ),
-                  Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      context.pushNamed(AppRoutes.profileMyExcellenceScreen);
-                    },
-                    child: Image.asset(
-                      AppImages.leftArrow,
-                      width: 24.w,
-                      height: 24.h,
+                ),
+              ),
+              verticalSpace(33),
+              Column(
+                children: List.generate(items.length, (item) {
+                  final card = items[item];
+                  return ExcellencePackageItem(
+                    title: card['title'],
+                    subTitle: card['subTitle'],
+                  );
+                }),
+              ),
+              verticalSpace(32),
+              Container(
+                width: double.infinity,
+                padding:
+                    EdgeInsets.only(top: 10.5.h, bottom: 10.5.h, left: 8.w),
+                decoration: BoxDecoration(color: AppColors.lightWhite),
+                child: Row(
+                  textDirection: TextDirection.rtl,
+                  children: [
+                    Image.asset(AppImages.boldStar, width: 32.w, height: 32.h),
+                    SizedBox(width: 18),
+                    Text(
+                      'إمتيازاتـــي الحاليـــة',
+                      style: AppTextStyles.font21PhilippineBronzeMediumLamaSans,
                     ),
-                  ),
-                ],
-              ),
-            ),
-            verticalSpace(32),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.only(
-                top: 25.h,
-                bottom: 40.h,
-                left: 8.w,
-                right: 8.w,
-              ),
-              decoration: BoxDecoration(color: AppColors.lightWhite),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                textDirection: TextDirection.rtl,
-                children: [
-                  Center(
-                    child: Text(
-                      'الأسعار',
-                      style: AppTextStyles.font18JetMediumLamaSans.copyWith(
-                        fontSize: 23.sp,
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        context.pushNamed(AppRoutes.profileMyExcellenceScreen);
+                      },
+                      child: Image.asset(
+                        AppImages.leftArrow,
+                        width: 24.w,
+                        height: 24.h,
                       ),
                     ),
-                  ),
-                  verticalSpace(19),
-                  BlocBuilder<PackagesCubit, PackagesState>(
-                    builder: (context, state) {
-                      if (state is GetPackagesLoading) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (state is GetPackagesSuccess) {
-                        return Column(
-                          children: state.packages.data!
-                              .map(
-                                (package) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: priceItem(
-                                    name: package.name ?? '',
-                                    month: "${package.countMonths} أشهر",
-                                    price: "بــ ${package.price} ريـــال",
+                  ],
+                ),
+              ),
+              verticalSpace(32),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(
+                  top: 25.h,
+                  bottom: 40.h,
+                  left: 8.w,
+                  right: 8.w,
+                ),
+                decoration: BoxDecoration(color: AppColors.lightWhite),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  textDirection: TextDirection.rtl,
+                  children: [
+                    Center(
+                      child: Text(
+                        'الأسعار',
+                        style: AppTextStyles.font18JetMediumLamaSans.copyWith(
+                          fontSize: 23.sp,
+                        ),
+                      ),
+                    ),
+                    verticalSpace(19),
+                    BlocBuilder<PackagesCubit, PackagesState>(
+                      buildWhen: (context, state) =>
+                          state is GetPackagesLoading ||
+                          state is GetPackagesSuccess ||
+                          state is GetPackagesFailure,
+                      builder: (context, state) {
+                        if (state is GetPackagesLoading) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (state is GetPackagesSuccess) {
+                          return Column(
+                            children: state.packages.data!
+                                .map(
+                                  (package) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: priceItem(
+                                      name: package.name ?? '',
+                                      month: "${package.countMonths} أشهر",
+                                      price: "بــ ${package.price} ريـــال",
+                                    ),
                                   ),
-                                ),
-                              )
-                              .toList(),
-                        );
-                      } else if (state is GetPackagesFailure) {
-                        return Center(
-                          child: Text("فشل تحميل البيانات"),
-                        );
-                      }
-                      return SizedBox.shrink();
-                    },
-                  ),
-                  verticalSpace(32),
-                  Center(
-                    child: Text(
-                      'طرق الدفع',
-                      style: AppTextStyles.font18JetMediumLamaSans.copyWith(
-                        fontSize: 23.sp,
+                                )
+                                .toList(),
+                          );
+                        } else if (state is GetPackagesFailure) {
+                          return Center(
+                            child: Text("فشل تحميل البيانات"),
+                          );
+                        }
+                        return SizedBox.shrink();
+                      },
+                    ),
+                    verticalSpace(32),
+                    Center(
+                      child: Text(
+                        'طرق الدفع',
+                        style: AppTextStyles.font18JetMediumLamaSans.copyWith(
+                          fontSize: 23.sp,
+                        ),
                       ),
                     ),
-                  ),
-                  verticalSpace(15),
-                  CustomElevatedButton(
-                    height: 60,
-                    onPressed: () async {
-                      final packagesState = context.read<PackagesCubit>().state;
-                      if (packagesState is GetPackagesSuccess &&
-                          packagesState.packages.data != null) {
-                        final result = await showPaymentMethodsBottomSheet(
-                          context,
-                          packages: packagesState.packages.data!,
-                        );
-
-                        if (result != null &&
-                            result["selectedPackage"] != null) {
-                          final selected = result["selectedPackage"] as Data;
-                          // ignore: use_build_context_synchronously
-                          context
-                              .read<PackagesCubit>()
-                              .assignPackageToUser(selected.id.toString());
-                        
-                          log("Selected Package: ${selected.name} - ${selected.price}");
+                    verticalSpace(15),
+                    BlocBuilder<ManageProfileCubit, ManageProfileState>(
+                      builder: (context, profileState) {
+                        // Check if user is featured
+                        bool isUserFeatured = false;
+                        if (profileState is ManageProfileSuccess) {
+                          isUserFeatured = profileState
+                                  .myProfileResponseModel.data?.isFeatured ==
+                              1;
                         }
-                      }
-                    },
-                    textButton: 'اشترك الان',
-                    radius: 100,
-                  ),
-                ],
+
+                        return BlocBuilder<FeaturesCubit, FeaturesState>(
+                          builder: (context, featuresState) {
+                            // Check if user has any active features (indicating active subscription)
+                            bool hasActiveSubscription = false;
+                            if (featuresState is GetFeaturesSuccess) {
+                              final features =
+                                  featuresState.featuresModel.data ?? [];
+                              hasActiveSubscription = features
+                                  .any((feature) => (feature.active ?? 0) == 1);
+                            }
+
+                            return BlocBuilder<PackagesCubit, PackagesState>(
+                              builder: (context, packagesState) {
+                                if (packagesState is AssignPackageLoading) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+
+                                // Hide payment button if user is featured or has active subscription
+                                bool shouldHidePayment =
+                                    isUserFeatured || hasActiveSubscription;
+
+                                return Column(
+                                  children: [
+                                    if (!shouldHidePayment) ...[
+                                      CustomElevatedButton(
+                                        height: 60,
+                                        onPressed: () async {
+                                          if (packagesState
+                                                  is GetPackagesSuccess &&
+                                              packagesState.packages.data !=
+                                                  null) {
+                                            final result =
+                                                await showPaymentMethodsBottomSheet(
+                                              context,
+                                              packages:
+                                                  packagesState.packages.data!,
+                                            );
+
+                                            if (result != null &&
+                                                result["selectedPackage"] !=
+                                                    null) {
+                                              final selected =
+                                                  result["selectedPackage"]
+                                                      as Data;
+                                              // ignore: use_build_context_synchronously
+                                              context
+                                                  .read<PackagesCubit>()
+                                                  .assignPackageToUser(
+                                                      selected.id.toString());
+
+                                              log("Selected Package: ${selected.name} - ${selected.price}");
+                                            }
+                                          }
+                                        },
+                                        textButton: 'اشترك الان',
+                                        radius: 100,
+                                      ),
+                                    ] else ...[
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 20.h),
+                                        child: Center(
+                                          child: Text(
+                                            isUserFeatured
+                                                ? 'أنت عضو مميز بالفعل'
+                                                : 'لديك اشتراك نشط',
+                                            style: AppTextStyles
+                                                .font16BlackSemiBoldLamaSans
+                                                .copyWith(
+                                              color: AppColors.philippineBronze,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            textDirection: TextDirection.rtl,
+                                          ),
+                                        ),
+                                      ),
+                                      if (hasActiveSubscription) ...[
+                                        verticalSpace(16),
+                                        Center(
+                                          child: Text(
+                                            'لا يمكن الاشتراك في باقة أخرى أثناء وجود اشتراك نشط',
+                                            style: AppTextStyles
+                                                .font14JetRegularLamaSans
+                                                .copyWith(
+                                              color: Colors.red,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            textDirection: TextDirection.rtl,
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

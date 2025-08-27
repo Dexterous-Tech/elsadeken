@@ -67,7 +67,11 @@ Future<void> oathDialog({
                   ),
                   TextSpan(
                     text: 'بشروط وقوانين',
-                    style: AppTextStyles.font14PumpkinOrangeBoldLamaSans,
+                    style:
+                        AppTextStyles.font14PumpkinOrangeBoldLamaSans.copyWith(
+                      decoration: TextDecoration.underline,
+                      decorationColor: Color(0xFFC86D22),
+                    ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         context.pushNamed(AppRoutes.termsAndConditionsScreen);
