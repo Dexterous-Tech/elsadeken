@@ -46,3 +46,17 @@ final class GetProfileDetailsSuccess extends ProfileDetailsState {
 
   GetProfileDetailsSuccess(this.profileDetailsResponseModel);
 }
+
+final class ReportUserLoading extends ProfileDetailsState {}
+
+final class ReportUserFailure extends ProfileDetailsState {
+  final String error;
+
+  ReportUserFailure(this.error);
+}
+
+final class ReportUserSuccess extends ProfileDetailsState {
+  final ProfileDetailsActionResponseModel profileDetailsActionResponseModel;
+
+  ReportUserSuccess(this.profileDetailsActionResponseModel);
+}

@@ -14,6 +14,8 @@ abstract class ProfileDetailsRepoInterface {
       int userId);
   Future<Either<ApiErrorModel, ProfileDetailsResponseModel>> getProfileDetails(
       int userId);
+  Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> reportUser(
+      int userId);
 }
 
 class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
@@ -58,6 +60,21 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
       return Right(response);
     } catch (error) {
       log("error in get profile details $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> reportUser(
+      int userId) async {
+    try {
+      var response = await profileDetailsDataSource.reportUser(userId);
+      return Right(response);
+    } catch (error) {
+      log("error in report user $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

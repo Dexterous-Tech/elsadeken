@@ -22,6 +22,7 @@ class ProfileDetailsBody extends StatefulWidget {
   const ProfileDetailsBody({super.key, required this.user});
 
   final UsersDataModel user;
+
   @override
   State<ProfileDetailsBody> createState() => _ProfileDetailsBodyState();
 }
@@ -146,10 +147,40 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                     text: 'رسائل',
                   ),
                 ),
-                CustomContainer(
-                  img: AppImages.block,
-                  color: AppColors.lightRed.withValues(alpha: 0.07),
-                  text: 'ابلاغ',
+                BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
+                  listenWhen: (context, current) =>
+                      current is ReportUserLoading ||
+                      current is ReportUserFailure ||
+                      current is ReportUserSuccess,
+                  listener: (context, state) {
+                    if (state is ReportUserLoading) {
+                      loadingDialog(context);
+                    } else if (state is ReportUserFailure) {
+                      context.pop();
+                      errorDialog(context: context, error: state.error);
+                    } else if (state is ReportUserSuccess) {
+                      context.pop();
+                      successDialog(
+                          context: context,
+                          message:
+                              state.profileDetailsActionResponseModel.message ??
+                                  'تم الابلاغ',
+                          onPressed: () {
+                            context.pop();
+                            context.pop();
+                          });
+                    }
+                  },
+                  child: CustomContainer(
+                    img: AppImages.block,
+                    color: AppColors.lightRed.withValues(alpha: 0.07),
+                    text: 'ابلاغ',
+                    onTap: () {
+                      context
+                          .read<ProfileDetailsCubit>()
+                          .reportUser(widget.user.id!);
+                    },
+                  ),
                 ),
               ],
             ),

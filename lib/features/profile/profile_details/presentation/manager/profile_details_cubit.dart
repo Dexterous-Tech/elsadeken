@@ -47,4 +47,16 @@ class ProfileDetailsCubit extends Cubit<ProfileDetailsState> {
       emit(GetProfileDetailsSuccess(profileDetailsResponseModel));
     });
   }
+
+  void reportUser(int userId) async {
+    emit(ReportUserLoading());
+
+    var response = await profileDetailsRepoInterface.reportUser(userId);
+
+    response.fold((error) {
+      emit(ReportUserFailure(error.displayMessage));
+    }, (likeUserResponseModel) {
+      emit(ReportUserSuccess(likeUserResponseModel));
+    });
+  }
 }

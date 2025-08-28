@@ -34,4 +34,13 @@ class ProfileDetailsDataSource {
 
     return ProfileDetailsResponseModel.fromJson(response.data);
   }
+
+  Future<ProfileDetailsActionResponseModel> reportUser(int userId) async {
+    var response = await _apiServices.get(
+      endpoint: ApiConstants.reportUser(userId),
+      requiresAuth: true,
+    );
+
+    return ProfileDetailsActionResponseModel.fromJson(response.data);
+  }
 }
