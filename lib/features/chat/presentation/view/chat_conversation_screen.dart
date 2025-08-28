@@ -77,27 +77,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     }
   }
 
-  void _manualRefreshMessages() {
-    print('🔄 Manually refreshing messages...');
-    if (_currentUserId != null) {
-      context.read<PusherCubit>().unsubscribeFromChatChannel();
-      context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('تم تحديث الرسائل بنجاح'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('يرجى الانتظار حتى يتم تحميل الملف الشخصي'),
-          backgroundColor: Colors.orange,
-        ),
-      );
-    }
-  }
+
 
   void _loadChatMessages() {
     // Don't load messages for temporary chat rooms (new conversations)
@@ -153,33 +133,12 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                Text(
-                  widget.chatRoom.isOnline ? 'متصل الآن' : 'غير متصل',
-                  style: TextStyle(
-                    color:
-                        widget.chatRoom.isOnline ? Colors.green : Colors.grey,
-                    fontSize: 12,
-                  ),
-                ),
               ],
             ),
           ),
         ],
       ),
-      actions: [
-        // Manual refresh button for testing
-        IconButton(
-          icon: Icon(Icons.refresh, color: AppColors.darkerBlue),
-          onPressed: _manualRefreshMessages,
-          tooltip: 'Manual Refresh Messages',
-        ),
-        // Test button for Pusher
-        IconButton(
-          icon: Icon(Icons.wifi, color: AppColors.darkerBlue),
-          onPressed: _testPusherConnection,
-          tooltip: 'Test Pusher Connection',
-        ),
-      ],
+
     );
   }
 
@@ -295,28 +254,14 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
               _handlePusherMessage(state.message);
             } else if (state is PusherConnectionEstablished) {
               print('🟢 PUSHER: Connection established: ${state.message}');
-              // Show success message to user
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('تم الاتصال بالخادم بنجاح'),
-                  backgroundColor: Colors.green,
-                  duration: Duration(seconds: 2),
-                ),
-              );
+              // Connection established silently - no user notification
             } else if (state is PusherConnectionError) {
               // Handle errors silently - don't show to user
               print('⚠️ PUSHER: Connection issue (handled silently): ${state.error}');
               // No SnackBar - we're handling this silently
             } else if (state is PusherSubscribed) {
               print('🟢 PUSHER: Subscribed to channel successfully');
-              // Show success message
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('تم الاشتراك في القناة بنجاح'),
-                  backgroundColor: Colors.blue,
-                  duration: Duration(seconds: 2),
-                ),
-              );
+              // Subscription successful silently - no user notification
             } else if (state is PusherInitialized) {
               print('🟢 PUSHER: Initialized successfully');
               // Now subscribe to the chat room
@@ -597,26 +542,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     }
   }
 
-  void _testPusherConnection() {
-    print('🧪 Testing Pusher connection...');
-    if (_currentUserId != null) {
-      context.read<PusherCubit>().subscribeToChatChannel(_currentUserId!);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('جاري اختبار الاتصال...'),
-          backgroundColor: Colors.blue,
-          duration: Duration(seconds: 2),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('يرجى الانتظار حتى يتم تحميل الملف الشخصي'),
-          backgroundColor: Colors.orange,
-        ),
-      );
-    }
-  }
+
 
   void _sendMessage() {
     if (_messageController.text.trim().isEmpty) return;

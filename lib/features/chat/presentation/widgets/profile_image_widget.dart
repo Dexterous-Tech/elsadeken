@@ -7,6 +7,7 @@ class ProfileImageWidget extends StatelessWidget {
   final double? borderWidth;
   final Color? borderColor;
   final bool showOnlineIndicator;
+  final int? unreadCount;
 
   const ProfileImageWidget({
     super.key,
@@ -15,6 +16,7 @@ class ProfileImageWidget extends StatelessWidget {
     this.borderWidth = 1,
     this.borderColor,
     this.showOnlineIndicator = false,
+    this.unreadCount,
   });
 
   @override
@@ -68,6 +70,33 @@ class ProfileImageWidget extends StatelessWidget {
                 border: Border.all(
                   color: Colors.white,
                   width: 2.w,
+                ),
+              ),
+            ),
+          ),
+        if (unreadCount != null && unreadCount! > 0)
+          Positioned(
+            right: 0,
+            top: 0,
+            child: Container(
+              width: (size * 0.4).w,
+              height: (size * 0.4).w,
+              decoration: BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2.w,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  unreadCount! > 99 ? '99+' : unreadCount!.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: (size * 0.2).w,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

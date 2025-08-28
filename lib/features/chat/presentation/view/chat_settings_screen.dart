@@ -428,7 +428,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                 _buildWhoCanSendSection(),
                 SizedBox(height: 24.h),
                 _buildDivider(),
-                SizedBox(height: 24.h),
+                SizedBox(height: 12.h),
                 _buildNotificationSettingsSection(),
               ],
             ),
@@ -440,8 +440,6 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
       ],
     );
   }
-
-
 
   Widget _buildConnectionStatusSection() {
     return Column(
@@ -498,14 +496,14 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
             onTap: _showAgeCategoryDialog,
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 4.h),
           _buildSettingRow(
             title: 'الجنسيات',
             subtitle: _selectedNationalities,
             trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
             onTap: _showNationalitiesDialog,
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 4.h),
           _buildSettingRow(
             title: 'الدول',
             subtitle: _selectedCountries,
@@ -528,7 +526,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: 8.h),
         _buildSettingRow(
           title: 'رسائل جديدة',
           subtitle: '',
@@ -539,26 +537,6 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               onChanged: (value) {
                 setState(() {
                   _newMessagesNotification = value;
-                });
-              },
-              activeColor: Colors.orangeAccent,
-              activeTrackColor: Colors.black,
-              inactiveThumbColor: Colors.red,
-              inactiveTrackColor: Colors.white,
-            ),
-          ),
-        ),
-        SizedBox(height: 12.h),
-        _buildSettingRow(
-          title: 'من سمح لي برؤية صورته؟',
-          subtitle: '',
-          trailing: Transform.scale(
-            scale: 0.8,
-            child: Switch(
-              value: _profilePictureNotification,
-              onChanged: (value) {
-                setState(() {
-                  _profilePictureNotification = value;
                 });
               },
               activeColor: Colors.orangeAccent,
