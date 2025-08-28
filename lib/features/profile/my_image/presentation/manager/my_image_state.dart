@@ -24,3 +24,17 @@ final class MyImageSuccess extends MyImageState {
 
   MyImageSuccess(this.profileActionResponseModel);
 }
+
+final class UpdateImageSettingLoading extends MyImageState {}
+
+final class UpdateImageSettingSuccess extends MyImageState {
+  final ProfileActionResponseModel profileActionResponseModel;
+
+  UpdateImageSettingSuccess(this.profileActionResponseModel);
+}
+
+final class UpdateImageSettingFailure extends MyImageState {
+  final String error;
+
+  UpdateImageSettingFailure(this.error);
+}

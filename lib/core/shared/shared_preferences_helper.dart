@@ -47,4 +47,14 @@ class SharedPreferencesHelper {
     final value = await flutterSecureStorage.read(key: key);
     return value == 'true';
   }
+
+  /// Gets the isFeatured value from FlutterSecureStorage.
+  static Future<bool> getIsFeatured() async {
+    return await getBool(SharedPreferencesKey.isFeatured);
+  }
+
+  /// Sets the isFeatured value in FlutterSecureStorage.
+  static Future<void> setIsFeatured(bool value) async {
+    await setBool(SharedPreferencesKey.isFeatured, value);
+  }
 }

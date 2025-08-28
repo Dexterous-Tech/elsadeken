@@ -20,3 +20,20 @@ class MyImageModel {
     return formData;
   }
 }
+
+class UpdateImageSetting {
+  UpdateImageSetting({
+    this.photoVisibility,
+  });
+
+  UpdateImageSetting.fromJson(dynamic json) {
+    photoVisibility = json['photo_visibility'];
+  }
+  String? photoVisibility;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['photo_visibility'] = photoVisibility;
+    return map;
+  }
+}

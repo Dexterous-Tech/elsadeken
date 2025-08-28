@@ -1,4 +1,3 @@
-import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
@@ -21,10 +20,12 @@ class ProfileDataLogo extends StatefulWidget {
 }
 
 class _ProfileDataLogoState extends State<ProfileDataLogo> {
+  bool isFeatured = false;
+
   @override
   void initState() {
-    context.read<ManageProfileCubit>().getProfile();
     super.initState();
+    context.read<ManageProfileCubit>().getProfile();
   }
 
   @override
@@ -39,11 +40,18 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
             ),
           );
         } else if (state is ManageProfileSuccess) {
-          final isFeatured = state.myProfileResponseModel.data?.isFeatured == 1;
-
-          // Save isFeatured status in SharedPreferences
-          SharedPreferencesHelper.setBool(
-              SharedPreferencesKey.isFeatured, isFeatured);
+          // Update isFeatured when profile is loaded
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (state.myProfileResponseModel.data?.isFeatured != null) {
+              bool newIsFeatured =
+                  state.myProfileResponseModel.data!.isFeatured == 1;
+              if (newIsFeatured != isFeatured) {
+                setState(() {
+                  isFeatured = newIsFeatured;
+                });
+              }
+            }
+          });
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,7 +64,8 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
                       await context.pushNamed(AppRoutes.profileMyImageScreen);
                   // If we returned from the image screen, refresh the profile data
                   if (result == true) {
-                    context.read<ManageProfileCubit>().getProfile();
+                    if (context.mounted)
+                      context.read<ManageProfileCubit>().getProfile();
                   }
                 },
                 child: ClipRRect(
