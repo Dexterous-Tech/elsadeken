@@ -140,10 +140,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                       // Check if chat list is already loaded, if not, load it
                       if (chatListCubit.state is! ChatListLoaded) {
                         print('🔄 [ProfileDetails] Chat list not loaded, loading now...');
-                        await chatListCubit.getChatList();
-                        
-                        // Wait a bit more to ensure state is updated
-                        await Future.delayed(Duration(milliseconds: 100));
+                        await chatListCubit.forceRefreshChatList();
                       } else {
                         print('✅ [ProfileDetails] Chat list already loaded');
                       }

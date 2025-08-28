@@ -42,6 +42,24 @@ class PusherService {
   /// Initialize WebSocket connection to EU cluster only
   Future<void> initialize() async {
     try {
+      // Prevent multiple simultaneous initialization attempts
+      if (_isConnected && _webSocketChannel != null) {
+        log('✅ WebSocket already connected, skipping initialization');
+        return;
+      }
+      
+      // Clean up existing connection if any
+      if (_webSocketChannel != null) {
+        log('🔄 Cleaning up existing WebSocket connection...');
+        try {
+          _webSocketChannel!.sink.close();
+        } catch (e) {
+          log('⚠️ Error closing existing WebSocket: $e');
+        }
+        _webSocketChannel = null;
+        _isConnected = false;
+      }
+      
       log('🔄 Initializing WebSocket connection to EU cluster...');
       
       // Use only EU cluster as backend depends on it
@@ -63,12 +81,14 @@ class PusherService {
           onDone: () {
             log('❌ WebSocket closed');
             _isConnected = false;
+            _webSocketChannel = null;
             // Schedule reconnection
             _scheduleReconnection();
           },
           onError: (error) {
             log('❌ WebSocket error: $error');
             _isConnected = false;
+            _webSocketChannel = null;
             onConnectionError?.call(error.toString());
             // Schedule reconnection
             _scheduleReconnection();
@@ -85,10 +105,27 @@ class PusherService {
     } catch (e) {
       log('❌ WebSocket initialization failed: $e');
       _isConnected = false;
+      _webSocketChannel = null;
       onConnectionError?.call('WebSocket failed: $e');
       // Schedule reconnection for initialization failures
       _scheduleReconnection();
     }
+  }
+
+  /// Dispose of the WebSocket connection
+  void dispose() {
+    log('🔄 Disposing WebSocket connection...');
+    if (_webSocketChannel != null) {
+      try {
+        _webSocketChannel!.sink.close();
+      } catch (e) {
+        log('⚠️ Error closing WebSocket during dispose: $e');
+      }
+      _webSocketChannel = null;
+    }
+    _isConnected = false;
+    _currentChannelName = null;
+    log('✅ WebSocket connection disposed');
   }
 
   /// Schedule automatic reconnection
@@ -110,8 +147,20 @@ class PusherService {
 
   /// Subscribe to a private chat channel
   Future<void> subscribeToChatChannel(int chatRoomId) async {
-    if (!_isConnected) {
+    // Only initialize if not connected and no WebSocket exists
+    if (!_isConnected || _webSocketChannel == null) {
+      log('🔄 WebSocket not connected, initializing first...');
       await initialize();
+      
+      // Wait a bit for connection to stabilize
+      await Future.delayed(Duration(milliseconds: 500));
+    }
+
+    // Check if we're actually connected now
+    if (!_isConnected || _webSocketChannel == null) {
+      log('❌ Failed to establish WebSocket connection for subscription');
+      onConnectionError?.call('Failed to establish connection for subscription');
+      return;
     }
 
     final channelName = 'private-chat.$chatRoomId';

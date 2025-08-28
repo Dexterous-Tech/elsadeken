@@ -23,6 +23,31 @@ class ChatListCubit extends Cubit<ChatListState> {
     );
   }
 
+  /// Force refresh chat list and wait for it to be loaded
+  Future<void> forceRefreshChatList() async {
+    try {
+      print('🔄 [ChatListCubit] Force refreshing chat list...');
+      emit(const ChatListLoading());
+      
+      final Either<ApiErrorModel, ChatListModel> failureOrData =
+          await chatListRepo.getAllChatList();
+
+      failureOrData.fold(
+        (failure) {
+          print('❌ [ChatListCubit] Failed to refresh chat list: ${failure.message}');
+          emit(ChatListError(failure.message ?? failure.toString()));
+        },
+        (data) {
+          print('✅ [ChatListCubit] Chat list refreshed successfully with ${data.data.length} chats');
+          emit(ChatListLoaded(data));
+        },
+      );
+    } catch (e) {
+      print('❌ [ChatListCubit] Exception in forceRefreshChatList: $e');
+      emit(ChatListError('حدث خطأ أثناء تحديث قائمة المحادثات'));
+    }
+  }
+
   /// Find an existing chat room by receiver ID
   ChatRoomModel? findExistingChatRoom(int receiverId) {
     try {
@@ -33,9 +58,15 @@ class ChatListCubit extends Cubit<ChatListState> {
       if (currentState is ChatListLoaded) {
         print('🔍 [ChatListCubit] Chat list is loaded, checking ${currentState.chatList.data.length} chats');
         
+        // Debug: Print all chat data to understand the structure
+        for (int i = 0; i < currentState.chatList.data.length; i++) {
+          final chat = currentState.chatList.data[i];
+          print('🔍 [ChatListCubit] Chat $i: ID=${chat.id}, OtherUserID=${chat.otherUser.id}, OtherUserName=${chat.otherUser.name}');
+        }
+        
         final existingChats = currentState.chatList.data
             .where((chat) {
-              print('🔍 [ChatListCubit] Checking chat: ${chat.otherUser.id} vs $receiverId');
+              print('🔍 [ChatListCubit] Checking chat: ${chat.otherUser.id} vs $receiverId (${chat.otherUser.id == receiverId})');
               return chat.otherUser.id == receiverId;
             })
             .toList();
