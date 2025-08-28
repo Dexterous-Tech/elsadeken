@@ -51,24 +51,68 @@ class PusherService {
       if (!await _hasInternetConnection()) {
         log('⚠️ No internet connection');
         _isConnected = false;
+        onConnectionError?.call('No internet connection available');
         return;
       }
 
-      final wsUrl =
-          'wss://ws-${PusherConfig.cluster}.pusherapp.com/app/${PusherConfig.appKey}?protocol=7&client=dart&version=1.0&flash=false';
+      // Try eu cluster first (as requested), then fallback options if it fails
+      final clusterOptions = [
+        'eu',          // Primary - your preferred cluster
+        'us-east-1',   // Fallback if eu fails
+        'ap1',         // Asia Pacific fallback
+        'ap2',         // Asia Pacific 2 fallback
+      ];
 
-      log('🔄 Connecting to: $wsUrl');
+      bool connectionSuccessful = false;
+      String lastError = '';
 
-      try {
-        _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
-      } catch (e) {
-        log('⚠️ WebSocket connection failed: $e');
+      for (final cluster in clusterOptions) {
+        if (connectionSuccessful) break;
+
+        try {
+          final wsUrl = 'wss://ws-$cluster.pusherapp.com/app/${PusherConfig.appKey}?protocol=7&client=dart&version=1.0&flash=false';
+          log('🔄 Attempting connection to: $wsUrl');
+
+          _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
+          
+          // Wait a moment for connection to establish
+          await Future.delayed(Duration(milliseconds: 2000));
+          
+          if (_channel != null) {
+            connectionSuccessful = true;
+            _isConnected = true;
+            onConnectionEstablished?.call('Connected to Pusher via $cluster cluster');
+            log('✅ Pusher WebSocket service initialized successfully via $cluster cluster');
+            break;
+          }
+        } catch (e) {
+          lastError = e.toString();
+          log('⚠️ Failed to connect to $cluster cluster: $e');
+          
+          // Close any existing connection before trying next
+          if (_channel != null) {
+            try {
+              _channel!.sink.close();
+              _channel = null;
+            } catch (closeError) {
+              log('⚠️ Error closing connection: $closeError');
+            }
+          }
+          
+          // Wait before trying next cluster
+          await Future.delayed(Duration(milliseconds: 1000));
+        }
+      }
+
+      if (!connectionSuccessful) {
+        log('❌ Failed to connect to any Pusher cluster');
         _isConnected = false;
+        onConnectionError?.call('Unable to connect to any Pusher cluster: $lastError');
         return;
       }
 
       _channel!.stream.listen(
-            (message) => _handleWebSocketMessage(message),
+        (message) => _handleWebSocketMessage(message),
         onDone: () {
           log('❌ WebSocket closed');
           _isConnected = false;
@@ -82,6 +126,7 @@ class PusherService {
     } catch (e) {
       log('⚠️ Initialization error: $e');
       _isConnected = false;
+      onConnectionError?.call('Initialization failed: $e');
     }
   }
 
