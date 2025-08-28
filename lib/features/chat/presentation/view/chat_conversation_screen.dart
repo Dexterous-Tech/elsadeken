@@ -16,6 +16,8 @@ import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_state.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 
 class ChatConversationScreen extends StatefulWidget {
   final ChatRoomModel chatRoom;
@@ -56,7 +58,21 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     }
   }
 
-  void _initializePusher() {
+  void _initializePusher() async {
+    // Get the auth token for private channels
+    try {
+      final token = await SharedPreferencesHelper.getSecuredString(SharedPreferencesKey.apiTokenKey);
+      if (token.isNotEmpty) {
+        // Set the auth token in PusherCubit
+        context.read<PusherCubit>().setAuthToken(token);
+        print('🔑 Auth token set for Pusher private channels');
+      } else {
+        print('⚠️ No auth token available for Pusher');
+      }
+    } catch (e) {
+      print('⚠️ Error getting auth token: $e');
+    }
+
     // Initialize Pusher after the widget is fully built with additional delay for network readiness
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -609,7 +625,12 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     _messageController.dispose();
     _scrollController.dispose();
     // Unsubscribe from Pusher channel when leaving the screen
-    context.read<PusherCubit>().unsubscribeFromChatChannel();
+    try {
+      context.read<PusherCubit>().unsubscribeFromChatChannel();
+    } catch (e) {
+      // Widget is being disposed, ignore context errors
+      print('Pusher unsubscribe skipped during dispose: $e');
+    }
     super.dispose();
   }
 }

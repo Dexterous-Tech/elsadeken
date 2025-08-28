@@ -5,6 +5,7 @@ import 'pusher_state.dart';
 
 class PusherCubit extends Cubit<PusherState> {
   final PusherRepoInterface _pusherRepo;
+  bool _isInitializing = false;
 
   PusherCubit(this._pusherRepo) : super(PusherInitial()) {
     _setupCallbacks();
@@ -16,9 +17,22 @@ class PusherCubit extends Cubit<PusherState> {
     _pusherRepo.setErrorCallback(_onConnectionError);
   }
 
+  /// Set authentication token for private channels
+  void setAuthToken(String token) {
+    // Set the auth token in the repository
+    _pusherRepo.setAuthToken(token);
+  }
+
   /// Initialize Pusher connection
   Future<void> initialize() async {
+    // Prevent multiple simultaneous initialization attempts
+    if (_isInitializing) {
+      print('⚠️ Pusher initialization already in progress, skipping...');
+      return;
+    }
+
     try {
+      _isInitializing = true;
       emit(PusherLoading());
 
       // Add a small delay to ensure network is ready
@@ -41,6 +55,8 @@ class PusherCubit extends Cubit<PusherState> {
       print('⚠️ Pusher initialization exception (handled silently): $e');
       // Don't emit error - we'll retry silently
       emit(PusherInitialized()); // Emit initialized state anyway
+    } finally {
+      _isInitializing = false;
     }
   }
 
@@ -51,7 +67,10 @@ class PusherCubit extends Cubit<PusherState> {
         await initialize();
       }
 
-      emit(PusherSubscribing());
+      // Don't emit subscribing state if already subscribed
+      if (state is! PusherSubscribing) {
+        emit(PusherSubscribing());
+      }
 
       final result = await _pusherRepo.subscribeToChatChannel(userId);
 
@@ -59,14 +78,25 @@ class PusherCubit extends Cubit<PusherState> {
         (failure) {
           // Handle failures gracefully - emit error but don't crash
           print('⚠️ Pusher subscription failed: ${failure.message}');
-          emit(PusherSubscribed()); // Emit subscribed state anyway
+          // Only emit if not already subscribed
+          if (state is! PusherSubscribed) {
+            emit(PusherSubscribed());
+          }
         },
-        (_) => emit(PusherSubscribed()),
+        (_) {
+          // Only emit if not already subscribed
+          if (state is! PusherSubscribed) {
+            emit(PusherSubscribed());
+          }
+        },
       );
     } catch (e) {
       // Handle exceptions gracefully - emit error but don't crash
       print('⚠️ Pusher subscription exception: $e');
-      emit(PusherSubscribed()); // Emit subscribed state anyway
+      // Only emit if not already subscribed
+      if (state is! PusherSubscribed) {
+        emit(PusherSubscribed());
+      }
     }
   }
 

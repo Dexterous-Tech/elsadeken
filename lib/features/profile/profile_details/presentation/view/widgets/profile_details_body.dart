@@ -17,6 +17,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/routes/app_routes.dart';
 import '../../../../../chat/data/models/chat_room_model.dart';
+import '../../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import '../../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 
 class ProfileDetailsBody extends StatefulWidget {
   const ProfileDetailsBody({super.key, this.user, required this.userId});
@@ -128,38 +130,60 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    // Navigate to chat conversation with this user
-                    // Get user data from the current state if available
-                    final cubit = context.read<ProfileDetailsCubit>();
-                    final state = cubit.state;
-
-                    String userName = 'User';
-                    String userImage = '';
-
-                    if (state is GetProfileDetailsSuccess) {
-                      final userData = state.profileDetailsResponseModel.data;
-                      if (userData != null) {
-                        userName = userData.name ?? 'User';
-                        userImage = userData.image ?? '';
-                      }
-                    } else if (widget.user != null) {
-                      // Fallback to passed user data if available
-                      userName = widget.user!.name ?? 'User';
-                      userImage = widget.user!.image ?? '';
+                  onTap: () async {
+                    // Check if there's an existing chat room first
+                    final chatListCubit = context.read<ChatListCubit>();
+                    
+                    // Check if chat list is already loaded, if not, load it
+                    if (chatListCubit.state is! ChatListLoaded) {
+                      await chatListCubit.getChatList();
                     }
+                    
+                    // Find existing chat room between current user and this profile user
+                    final existingChatRoom = chatListCubit.findExistingChatRoom(widget.userId);
+                    
+                    if (existingChatRoom != null) {
+                      // Navigate to existing chat room
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.chatConversationScreen,
+                        arguments: {
+                          "chatRoom": existingChatRoom,
+                        },
+                      );
+                    } else {
+                      // Get user data from the current state if available
+                      final cubit = context.read<ProfileDetailsCubit>();
+                      final state = cubit.state;
 
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.chatConversationScreen,
-                      arguments: {
-                        "chatRoom": ChatRoomModel.fromUser(
-                          userId: widget.userId,
-                          userName: userName,
-                          userImage: userImage,
-                        ),
-                      },
-                    );
+                      String userName = 'User';
+                      String userImage = '';
+
+                      if (state is GetProfileDetailsSuccess) {
+                        final userData = state.profileDetailsResponseModel.data;
+                        if (userData != null) {
+                          userName = userData.name ?? 'User';
+                          userImage = userData.image ?? '';
+                        }
+                      } else if (widget.user != null) {
+                        // Fallback to passed user data if available
+                        userName = widget.user!.name ?? 'User';
+                        userImage = widget.user!.image ?? '';
+                      }
+
+                      // Create new temporary chat room for new conversation
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.chatConversationScreen,
+                        arguments: {
+                          "chatRoom": ChatRoomModel.fromUser(
+                            userId: widget.userId,
+                            userName: userName,
+                            userImage: userImage,
+                          ),
+                        },
+                      );
+                    }
                   },
                   child: CustomContainer(
                     img: AppImages.message,

@@ -2,10 +2,13 @@ import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/home/person_details/data/models/person_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/routes/app_routes.dart';
 import '../../../../chat/data/models/chat_room_model.dart';
+import '../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import '../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 
 class PersonInfoSheet extends StatefulWidget {
   final PersonModel person;
@@ -376,19 +379,67 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         ),
         horizontalSpace(21),
         GestureDetector(
-          onTap: () {
-            // Navigate to chat conversation with this user
-            Navigator.pushNamed(
-              context,
-              AppRoutes.chatConversationScreen,
-              arguments: {
-                "chatRoom": ChatRoomModel.fromUser(
-                  userId: widget.person.id,
-                  userName: widget.person.name,
-                  userImage: widget.person.image,
-                ),
-              },
-            );
+          onTap: () async {
+            try {
+              print('🔍 [PersonInfo] Message icon tapped for user ID: ${widget.person.id}');
+              
+              // Check if there's an existing chat room first
+              final chatListCubit = context.read<ChatListCubit>();
+              
+              // Check if chat list is already loaded, if not, load it
+              if (chatListCubit.state is! ChatListLoaded) {
+                print('🔄 [PersonInfo] Chat list not loaded, loading now...');
+                await chatListCubit.getChatList();
+                
+                // Wait a bit more to ensure state is updated
+                await Future.delayed(Duration(milliseconds: 100));
+              } else {
+                print('✅ [PersonInfo] Chat list already loaded');
+              }
+              
+              // Find existing chat room between current user and this profile user
+              final existingChatRoom = chatListCubit.findExistingChatRoom(widget.person.id);
+              
+              if (existingChatRoom != null) {
+                print('✅ [PersonInfo] Found existing chat room, navigating to it');
+                // Navigate to existing chat room
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.chatConversationScreen,
+                  arguments: {
+                    "chatRoom": existingChatRoom,
+                  },
+                );
+              } else {
+                print('🆕 [PersonInfo] No existing chat room found, creating new temporary chat');
+                // Create new temporary chat room for new conversation
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.chatConversationScreen,
+                  arguments: {
+                    "chatRoom": ChatRoomModel.fromUser(
+                      userId: widget.person.id,
+                      userName: widget.person.name,
+                      userImage: widget.person.image,
+                    ),
+                  },
+                );
+              }
+            } catch (e) {
+              print('❌ [PersonInfo] Error in message icon onTap: $e');
+              // Fallback to creating new chat
+              Navigator.pushNamed(
+                context,
+                AppRoutes.chatConversationScreen,
+                arguments: {
+                  "chatRoom": ChatRoomModel.fromUser(
+                    userId: widget.person.id,
+                    userName: widget.person.name,
+                    userImage: widget.person.image,
+                  ),
+                },
+              );
+            }
           },
           child: Container(
             width: 50.w,
