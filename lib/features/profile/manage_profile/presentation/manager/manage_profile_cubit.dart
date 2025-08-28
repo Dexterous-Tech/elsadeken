@@ -14,6 +14,7 @@ class ManageProfileCubit extends Cubit<ManageProfileState> {
   final ManageProfileRepoInterface manageProfileRepoInterface;
 
   void getProfile() async {
+    print('🔄 ManageProfileCubit: getProfile() called');
     emit(ManageProfileLoading());
     var response = await manageProfileRepoInterface.getProfile();
     response.fold((l) {

@@ -11,6 +11,7 @@ import 'package:elsadeken/features/profile/profile/presentation/view/widgets/pro
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
 
 class ProfileContent extends StatefulWidget {
   const ProfileContent({super.key});
@@ -24,190 +25,245 @@ class _ProfileContentState extends State<ProfileContent> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<NotificationSettingsCubit, NotificationSettingsState>(
+    return BlocListener<ProfileCubit, ProfileState>(
       listener: (context, state) {
-        // Handle state changes if needed
-      },
-      child: BlocBuilder<NotificationSettingsCubit, NotificationSettingsState>(
-        builder: (context, state) {
-          // Load notification settings on first build
-          if (!_hasLoadedSettings) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              context
-                  .read<NotificationSettingsCubit>()
-                  .loadNotificationSettings();
-              _hasLoadedSettings = true;
-            });
-          }
-
-          final List<ProfileContentItemModel> personalInformation = [
-            ProfileContentItemModel(
-              image: AppImages.myProfileIcon,
-              title: 'ادارة حسابي',
-              onPressed: () {
-                context.pushNamed(AppRoutes.manageProfileScreen);
-              },
-            ),
-            ProfileContentItemModel(
-              image: AppImages.interestsListIcon,
-              title: 'قائمه الاهتمام',
-              onPressed: () {
-                context.pushNamed(AppRoutes.profileInterestsListScreen);
-              },
-            ),
-            ProfileContentItemModel(
-              image: AppImages.ignoringListIcon,
-              title: 'قائمه التجاهل',
-              onPressed: () {
-                context.pushNamed(AppRoutes.profileMyIgnoringListScreen);
-              },
-            ),
-            ProfileContentItemModel(
-              image: AppImages.interestingMeIcon,
-              title: 'من يهتم بي',
-              onPressed: () {
-                context.pushNamed(AppRoutes.profileMyInterestingListScreen);
-              },
-            ),
-            ProfileContentItemModel(
-              image: AppImages.searchAdvancedIcon,
-              title: 'بحث متقدم',
-              onPressed: () {
-                context.pushNamed(AppRoutes.searchScreen);
-              },
-            ),
-            ProfileContentItemModel(
-              image: AppImages.membersProfileImagesIcon,
-              title: 'صور الاعضاء',
-              onPressed: () {
-                context.pushNamed(AppRoutes.profileMembersProfileScreen);
-              },
-            ),
-            ProfileContentItemModel(
-              image: AppImages.excellencePackageIcon,
-              title: 'باقه التميز',
-              onPressed: () {
-                context.pushNamed(AppRoutes.profileExcellencePackageScreen);
-              },
-            ),
-            ProfileContentItemModel(
-              image: AppImages.successStoryIcon,
-              title: 'قصص نجاح',
-              onPressed: () {
-                context.pushNamed(AppRoutes.successStoriesScreen);
-              },
-            ),
-            ProfileContentItemModel(
-              image: AppImages.elsadekenNotesIcon,
-              title: 'مدونه الصادقين والصادقات',
-              onPressed: () {
-                context.pushNamed(AppRoutes.blogScreen);
-              },
-            ),
-          ];
-
-          final List<ProfileContentItemModel> appSettings = [
-            ProfileContentItemModel(
-              image: AppImages.aboutUsIcon,
-              title: 'نبذه عننا',
-              onPressed: () {
-                context.pushNamed(AppRoutes.profileAboutUsScreen);
-              },
-            ),
-            ProfileContentItemModel(
-              image: AppImages.notificationIcon,
-              title: 'الاشعارات',
-              onPressed: () {
-                // Navigate to notification screen
-                context.pushNamed(AppRoutes.notificationScreen);
-              },
-              leading: _buildNotificationToggle(state),
-            ),
-            ProfileContentItemModel(
-              image: AppImages.appShareIcon,
-              title: 'مشاركه التطبيق',
-              onPressed: () {},
-            ),
-            ProfileContentItemModel(
-              image: AppImages.contactUsIcon,
-              title: 'اتصل بنا',
-              onPressed: () {
-                context.pushNamed(AppRoutes.profileContactUsScreen);
-              },
-            ),
-          ];
-
-          return Container(
-            width: double.infinity,
-            padding: EdgeInsets.only(
-              top: 21.h,
-              right: 46.5.w,
-              left: 66.5,
-              bottom: 19.h,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
+        if (state is DeleteImageLoading) {
+          // Show loading indicator if needed
+        } else if (state is DeleteImageFailure) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                state.error,
+                textDirection: TextDirection.rtl,
+                textAlign: TextAlign.center,
               ),
-            ),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints:
-                        BoxConstraints(minHeight: constraints.maxHeight),
-                    child: IntrinsicHeight(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            'معلومات شخصية',
-                            style: AppTextStyles.font12GrayMediumLamaSans,
-                          ),
-                          verticalSpace(16),
-                          ...listGenerationContentItems(
-                              items: personalInformation),
-                          verticalSpace(24),
-                          Text(
-                            'إعدادات التطبيق',
-                            style: AppTextStyles.font12GrayMediumLamaSans,
-                          ),
-                          verticalSpace(16),
-                          ...listGenerationContentItems(items: appSettings),
-                          verticalSpace(21),
-                          GestureDetector(
-                            onTap: () {
-                              logoutDialog(context);
-                            },
-                            child: Row(
-                              textDirection: TextDirection.rtl,
-                              children: [
-                                Image.asset(
-                                  AppImages.logoutIcon,
-                                  width: 44.w,
-                                  height: 44.h,
-                                ),
-                                horizontalSpace(16),
-                                Text(
-                                  'تسجيل الخروج',
-                                  style: AppTextStyles
-                                      .font14CharlestonGreenMediumLamaSans
-                                      .copyWith(color: AppColors.coralRed),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
+              backgroundColor: AppColors.coralRed,
             ),
           );
+        } else if (state is DeleteImageSuccess) {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                state.logoutResponseModel.message ?? 'تم حذف الصورة بنجاح',
+                textDirection: TextDirection.rtl,
+                textAlign: TextAlign.center,
+              ),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      },
+      child: BlocListener<NotificationSettingsCubit, NotificationSettingsState>(
+        listener: (context, state) {
+          // Handle state changes if needed
         },
+        child:
+            BlocBuilder<NotificationSettingsCubit, NotificationSettingsState>(
+          builder: (context, state) {
+            // Load notification settings on first build
+            if (!_hasLoadedSettings) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                context
+                    .read<NotificationSettingsCubit>()
+                    .loadNotificationSettings();
+                _hasLoadedSettings = true;
+              });
+            }
+
+            final List<ProfileContentItemModel> personalInformation = [
+              ProfileContentItemModel(
+                image: AppImages.myProfileIcon,
+                title: 'ادارة حسابي',
+                onPressed: () {
+                  context.pushNamed(AppRoutes.manageProfileScreen);
+                },
+              ),
+              ProfileContentItemModel(
+                image: AppImages.interestsListIcon,
+                title: 'قائمه الاهتمام',
+                onPressed: () {
+                  context.pushNamed(AppRoutes.profileInterestsListScreen);
+                },
+              ),
+              ProfileContentItemModel(
+                image: AppImages.ignoringListIcon,
+                title: 'قائمه التجاهل',
+                onPressed: () {
+                  context.pushNamed(AppRoutes.profileMyIgnoringListScreen);
+                },
+              ),
+              ProfileContentItemModel(
+                image: AppImages.interestingMeIcon,
+                title: 'من يهتم بي',
+                onPressed: () {
+                  context.pushNamed(AppRoutes.profileMyInterestingListScreen);
+                },
+              ),
+              ProfileContentItemModel(
+                image: AppImages.searchAdvancedIcon,
+                title: 'بحث متقدم',
+                onPressed: () {
+                  context.pushNamed(AppRoutes.searchScreen);
+                },
+              ),
+              ProfileContentItemModel(
+                image: AppImages.membersProfileImagesIcon,
+                title: 'صور الاعضاء',
+                onPressed: () {
+                  context.pushNamed(AppRoutes.profileMembersProfileScreen);
+                },
+              ),
+              ProfileContentItemModel(
+                image: AppImages.excellencePackageIcon,
+                title: 'باقه التميز',
+                onPressed: () {
+                  context.pushNamed(AppRoutes.profileExcellencePackageScreen);
+                },
+              ),
+              ProfileContentItemModel(
+                image: AppImages.successStoryIcon,
+                title: 'قصص نجاح',
+                onPressed: () {
+                  context.pushNamed(AppRoutes.successStoriesScreen);
+                },
+              ),
+              ProfileContentItemModel(
+                image: AppImages.elsadekenNotesIcon,
+                title: 'مدونه الصادقين والصادقات',
+                onPressed: () {
+                  context.pushNamed(AppRoutes.blogScreen);
+                },
+              ),
+            ];
+
+            final List<ProfileContentItemModel> appSettings = [
+              ProfileContentItemModel(
+                image: AppImages.aboutUsIcon,
+                title: 'نبذه عننا',
+                onPressed: () {
+                  context.pushNamed(AppRoutes.profileAboutUsScreen);
+                },
+              ),
+              ProfileContentItemModel(
+                image: AppImages.notificationIcon,
+                title: 'الاشعارات',
+                onPressed: () {
+                  // Navigate to notification screen
+                  context.pushNamed(AppRoutes.notificationScreen);
+                },
+                leading: _buildNotificationToggle(state),
+              ),
+              ProfileContentItemModel(
+                image: AppImages.appShareIcon,
+                title: 'مشاركه التطبيق',
+                onPressed: () {},
+              ),
+              ProfileContentItemModel(
+                image: AppImages.contactUsIcon,
+                title: 'اتصل بنا',
+                onPressed: () {
+                  context.pushNamed(AppRoutes.profileContactUsScreen);
+                },
+              ),
+            ];
+
+            return Container(
+              width: double.infinity,
+              padding: EdgeInsets.only(
+                top: 21.h,
+                right: 46.5.w,
+                left: 66.5,
+                bottom: 19.h,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(40),
+                  topRight: Radius.circular(40),
+                ),
+              ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints:
+                          BoxConstraints(minHeight: constraints.maxHeight),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'معلومات شخصية',
+                              style: AppTextStyles.font12GrayMediumLamaSans,
+                            ),
+                            verticalSpace(16),
+                            ...listGenerationContentItems(
+                                items: personalInformation),
+                            verticalSpace(24),
+                            Text(
+                              'إعدادات التطبيق',
+                              style: AppTextStyles.font12GrayMediumLamaSans,
+                            ),
+                            verticalSpace(16),
+                            ...listGenerationContentItems(items: appSettings),
+                            verticalSpace(21),
+                            GestureDetector(
+                              onTap: () {
+                                context.read<ProfileCubit>().deleteImage();
+                              },
+                              child: Row(
+                                textDirection: TextDirection.rtl,
+                                children: [
+                                  Icon(
+                                    Icons.delete_forever,
+                                    size: 40,
+                                    color: AppColors.coralRed,
+                                  ),
+                                  horizontalSpace(16),
+                                  Text(
+                                    'مسح صورتي',
+                                    style: AppTextStyles
+                                        .font14CharlestonGreenMediumLamaSans
+                                        .copyWith(color: AppColors.coralRed),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            verticalSpace(21),
+                            GestureDetector(
+                              onTap: () {
+                                logoutDialog(context);
+                              },
+                              child: Row(
+                                textDirection: TextDirection.rtl,
+                                children: [
+                                  Image.asset(
+                                    AppImages.logoutIcon,
+                                    width: 44.w,
+                                    height: 44.h,
+                                  ),
+                                  horizontalSpace(16),
+                                  Text(
+                                    'تسجيل الخروج',
+                                    style: AppTextStyles
+                                        .font14CharlestonGreenMediumLamaSans
+                                        .copyWith(color: AppColors.coralRed),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
