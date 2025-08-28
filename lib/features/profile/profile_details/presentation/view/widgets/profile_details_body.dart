@@ -131,55 +131,81 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    // Check if there's an existing chat room first
-                    final chatListCubit = context.read<ChatListCubit>();
-                    
-                    // Check if chat list is already loaded, if not, load it
-                    if (chatListCubit.state is! ChatListLoaded) {
-                      await chatListCubit.getChatList();
-                    }
-                    
-                    // Find existing chat room between current user and this profile user
-                    final existingChatRoom = chatListCubit.findExistingChatRoom(widget.userId);
-                    
-                    if (existingChatRoom != null) {
-                      // Navigate to existing chat room
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.chatConversationScreen,
-                        arguments: {
-                          "chatRoom": existingChatRoom,
-                        },
-                      );
-                    } else {
-                      // Get user data from the current state if available
-                      final cubit = context.read<ProfileDetailsCubit>();
-                      final state = cubit.state;
-
-                      String userName = 'User';
-                      String userImage = '';
-
-                      if (state is GetProfileDetailsSuccess) {
-                        final userData = state.profileDetailsResponseModel.data;
-                        if (userData != null) {
-                          userName = userData.name ?? 'User';
-                          userImage = userData.image ?? '';
-                        }
-                      } else if (widget.user != null) {
-                        // Fallback to passed user data if available
-                        userName = widget.user!.name ?? 'User';
-                        userImage = widget.user!.image ?? '';
+                    try {
+                      print('🔍 [ProfileDetails] Message icon tapped for user ID: ${widget.userId}');
+                      
+                      // Check if there's an existing chat room first
+                      final chatListCubit = context.read<ChatListCubit>();
+                      
+                      // Check if chat list is already loaded, if not, load it
+                      if (chatListCubit.state is! ChatListLoaded) {
+                        print('🔄 [ProfileDetails] Chat list not loaded, loading now...');
+                        await chatListCubit.getChatList();
+                        
+                        // Wait a bit more to ensure state is updated
+                        await Future.delayed(Duration(milliseconds: 100));
+                      } else {
+                        print('✅ [ProfileDetails] Chat list already loaded');
                       }
+                      
+                      // Find existing chat room between current user and this profile user
+                      final existingChatRoom = chatListCubit.findExistingChatRoom(widget.userId);
+                      
+                      if (existingChatRoom != null) {
+                        print('✅ [ProfileDetails] Found existing chat room, navigating to it');
+                        // Navigate to existing chat room
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.chatConversationScreen,
+                          arguments: {
+                            "chatRoom": existingChatRoom,
+                          },
+                        );
+                      } else {
+                        print('🆕 [ProfileDetails] No existing chat room found, creating new temporary chat');
+                        // Get user data from the current state if available
+                        final cubit = context.read<ProfileDetailsCubit>();
+                        final state = cubit.state;
 
-                      // Create new temporary chat room for new conversation
+                        String userName = 'User';
+                        String userImage = '';
+
+                        if (state is GetProfileDetailsSuccess) {
+                          final userData = state.profileDetailsResponseModel.data;
+                          if (userData != null) {
+                            userName = userData.name ?? 'User';
+                            userImage = userData.image ?? '';
+                          }
+                        } else if (widget.user != null) {
+                          // Fallback to passed user data if available
+                          userName = widget.user!.name ?? 'User';
+                          userImage = widget.user!.image ?? '';
+                        }
+
+                        // Create new temporary chat room for new conversation
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.chatConversationScreen,
+                          arguments: {
+                            "chatRoom": ChatRoomModel.fromUser(
+                              userId: widget.userId,
+                              userName: userName,
+                              userImage: userImage,
+                            ),
+                          },
+                        );
+                      }
+                    } catch (e) {
+                      print('❌ [ProfileDetails] Error in message icon onTap: $e');
+                      // Fallback to creating new chat
                       Navigator.pushNamed(
                         context,
                         AppRoutes.chatConversationScreen,
                         arguments: {
                           "chatRoom": ChatRoomModel.fromUser(
                             userId: widget.userId,
-                            userName: userName,
-                            userImage: userImage,
+                            userName: widget.user?.name ?? 'User',
+                            userImage: widget.user?.image ?? '',
                           ),
                         },
                       );

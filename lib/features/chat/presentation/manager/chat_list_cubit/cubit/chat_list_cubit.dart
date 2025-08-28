@@ -26,19 +26,32 @@ class ChatListCubit extends Cubit<ChatListState> {
   /// Find an existing chat room by receiver ID
   ChatRoomModel? findExistingChatRoom(int receiverId) {
     try {
+      print('🔍 [ChatListCubit] Looking for existing chat room for user ID: $receiverId');
+      print('🔍 [ChatListCubit] Current state: ${state.runtimeType}');
+      
       final currentState = state;
       if (currentState is ChatListLoaded) {
+        print('🔍 [ChatListCubit] Chat list is loaded, checking ${currentState.chatList.data.length} chats');
+        
         final existingChats = currentState.chatList.data
-            .where((chat) => chat.otherUser.id == receiverId)
+            .where((chat) {
+              print('🔍 [ChatListCubit] Checking chat: ${chat.otherUser.id} vs $receiverId');
+              return chat.otherUser.id == receiverId;
+            })
             .toList();
 
         if (existingChats.isNotEmpty) {
+          print('✅ [ChatListCubit] Found existing chat: ${existingChats.first.id}');
           return existingChats.first.toChatRoomModel();
+        } else {
+          print('❌ [ChatListCubit] No existing chat found for user $receiverId');
         }
+      } else {
+        print('⚠️ [ChatListCubit] Chat list not loaded yet. Current state: ${state.runtimeType}');
       }
       return null;
     } catch (e) {
-      print('⚠️ Error finding existing chat room: $e');
+      print('⚠️ [ChatListCubit] Error finding existing chat room: $e');
       return null;
     }
   }
