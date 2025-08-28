@@ -115,11 +115,9 @@ class PusherCubit extends Cubit<PusherState> {
   /// Check connection health and reconnect if needed
   Future<bool> checkConnectionHealth() async {
     try {
-      // This would need to be implemented in the repository interface
-      // For now, we'll just check the current connection status
-      return _pusherRepo.isConnected;
+      return await _pusherRepo.checkConnectionHealth();
     } catch (e) {
-      emit(PusherConnectionError('Connection health check failed: $e'));
+      print('⚠️ Connection health check failed: $e');
       return false;
     }
   }

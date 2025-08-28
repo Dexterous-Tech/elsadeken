@@ -24,7 +24,8 @@ class _ChatTabBarState extends State<ChatTabBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
+
+      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
       decoration: BoxDecoration(
         color: AppColors.lighterOrange,
         borderRadius: BorderRadius.circular(10).r,

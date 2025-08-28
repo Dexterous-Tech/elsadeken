@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/theme/font_family_helper.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,12 +52,33 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         // Give the network stack more time to initialize
         Future.delayed(Duration(milliseconds: 1500), () {
           if (mounted) {
+            print('🔄 Initializing Pusher...');
             context.read<PusherCubit>().initialize();
           }
         });
       }
     });
   }
+
+  void _subscribeToChatRoom() {
+    if (_currentUserId != null && !widget.chatRoom.id.startsWith('temp_')) {
+      print('🔗 Subscribing to chat room: ${widget.chatRoom.id}');
+      print('👤 Current user ID: $_currentUserId');
+      print('👥 Chat room receiver ID: ${widget.chatRoom.receiverId}');
+      
+      // Subscribe to the specific chat room channel
+      // The channel name should match what the backend is using
+      final chatRoomId = widget.chatRoom.id;
+      print('📡 Subscribing to chat room channel: $chatRoomId');
+      
+      // Try different channel naming conventions that the backend might be using
+      context.read<PusherCubit>().subscribeToChatChannel(int.parse(chatRoomId));
+    } else {
+      print('⚠️ Cannot subscribe: userId=$_currentUserId, chatRoomId=${widget.chatRoom.id}');
+    }
+  }
+
+
 
   void _loadChatMessages() {
     // Don't load messages for temporary chat rooms (new conversations)
@@ -112,27 +134,12 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                Text(
-                  widget.chatRoom.isOnline ? 'متصل الآن' : 'غير متصل',
-                  style: TextStyle(
-                    color:
-                        widget.chatRoom.isOnline ? Colors.green : Colors.grey,
-                    fontSize: 12,
-                  ),
-                ),
               ],
             ),
           ),
         ],
       ),
-      actions: [
-        // Test button for Pusher
-        IconButton(
-          icon: Icon(Icons.wifi, color: AppColors.darkerBlue),
-          onPressed: _testPusherConnection,
-          tooltip: 'Test Pusher Connection',
-        ),
-      ],
+
     );
   }
 
@@ -240,26 +247,26 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
             if (state is PusherMessageReceived) {
               // Handle real-time message from Pusher
               print('🟢 PUSHER: Message received: ${state.message.body}');
+              print('🟢 PUSHER: Message chat ID: ${state.message.chatId}');
+              print('🟢 PUSHER: Current chat room ID: ${widget.chatRoom.id}');
+              print('🟢 PUSHER: Message sender ID: ${state.message.senderId}');
+              print('🟢 PUSHER: Current user ID: $_currentUserId');
+              
               _handlePusherMessage(state.message);
             } else if (state is PusherConnectionEstablished) {
               print('🟢 PUSHER: Connection established: ${state.message}');
-              // Show success message to user
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('تم الاتصال بالخادم بنجاح'),
-                  backgroundColor: Colors.green,
-                  duration: Duration(seconds: 2),
-                ),
-              );
+              // Connection established silently - no user notification
             } else if (state is PusherConnectionError) {
               // Handle errors silently - don't show to user
-              print(
-                  '⚠️ PUSHER: Connection issue (handled silently): ${state.error}');
+              print('⚠️ PUSHER: Connection issue (handled silently): ${state.error}');
               // No SnackBar - we're handling this silently
             } else if (state is PusherSubscribed) {
               print('🟢 PUSHER: Subscribed to channel successfully');
+              // Subscription successful silently - no user notification
             } else if (state is PusherInitialized) {
               print('🟢 PUSHER: Initialized successfully');
+              // Now subscribe to the chat room
+              _subscribeToChatRoom();
             }
           },
         ),
@@ -522,6 +529,19 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
           _messages.add(chatMessage);
         });
 
+        // Update the chat list to reflect the new message
+        // This ensures the chat list shows updated unread count and last message
+        try {
+          final chatListCubit = context.read<ChatListCubit>();
+          if (chatListCubit != null) {
+            // Refresh the chat list to show the new message
+            chatListCubit.getChatList();
+            print('[ChatConversationScreen] Chat list refreshed after receiving Pusher message');
+          }
+        } catch (e) {
+          print('[ChatConversationScreen] Error refreshing chat list: $e');
+        }
+
         // Scroll to bottom
         Future.delayed(Duration(milliseconds: 100), () {
           if (_scrollController.hasClients) {
@@ -536,26 +556,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     }
   }
 
-  void _testPusherConnection() {
-    print('🧪 Testing Pusher connection...');
-    if (_currentUserId != null) {
-      context.read<PusherCubit>().subscribeToChatChannel(_currentUserId!);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('جاري اختبار الاتصال...'),
-          backgroundColor: Colors.blue,
-          duration: Duration(seconds: 2),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('يرجى الانتظار حتى يتم تحميل الملف الشخصي'),
-          backgroundColor: Colors.orange,
-        ),
-      );
-    }
-  }
+
 
   void _sendMessage() {
     if (_messageController.text.trim().isEmpty) return;

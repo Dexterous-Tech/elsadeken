@@ -5,6 +5,7 @@ import 'package:elsadeken/features/auth/login/presentation/view/login_screen.dar
 import 'package:elsadeken/features/auth/new_password/presentation/view/new_password_screen.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/signup_screen.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/view/verification_email_screen.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart';
 import 'package:elsadeken/features/home/notification/notification/presentation/view/notification_screen.dart';
 import 'package:elsadeken/features/home/person_details/view/person_details.dart';
@@ -36,6 +37,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/chat/presentation/view/chat_conversation_screen.dart';
 import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 import 'package:elsadeken/features/chat/presentation/view/chat_settings_screen.dart';
+import 'package:elsadeken/features/chat/presentation/view/chat_settings_screen_example.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
@@ -169,13 +171,14 @@ class AppRouting {
               BlocProvider(create: (context) => sl<ManageProfileCubit>()),
               BlocProvider(create: (context) => sl<SendMessageCubit>()),
               BlocProvider(create: (context) => sl<PusherCubit>()),
+              BlocProvider(create: (context) => sl<ChatListCubit>()),
             ],
             child: ChatConversationScreen(chatRoom: chatRoom),
           ),
         );
       case AppRoutes.chatSettingsScreen:
         return MaterialPageRoute(
-          builder: (_) => const ChatSettingsScreen(),
+          builder: (_) => const ChatSettingsScreenWrapper(),
         );
       case AppRoutes.termsAndConditionsScreen:
         return MaterialPageRoute(builder: (_) => TermsAndConditionsScreen());

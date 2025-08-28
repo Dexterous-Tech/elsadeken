@@ -65,7 +65,7 @@ class ApiServices {
       // Update headers based on whether authentication is required
       await DioFactory.addDioHeaders(includeAuth: requiresAuth);
 
-      // Perform the PUT request
+      // Perform the PATCH request
       final response = await _dio.patch<T>(
         '${ApiConstants.baseUrl}$endpoint', // Combine base URL and endpoint
         data: requestBody,

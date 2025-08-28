@@ -4,9 +4,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 
 class ChatOptionsCard extends StatelessWidget {
-  const ChatOptionsCard({Key? key}) : super(key: key);
+  final ChatListCubit chatListCubit;
+  
+  const ChatOptionsCard({
+    Key? key,
+    required this.chatListCubit,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +49,10 @@ class ChatOptionsCard extends StatelessWidget {
           // Delete Chats
           _buildOptionItem(
             image_icon: AppImages.deleteChatIcon,
-            text: 'حذف المحادثات',
+            text: 'حذف جميع المحادثات',
             iconColor: Colors.blue,
             onTap: () {
-              // _showDeleteConfirmationDialog(context);
+              _showDeleteAllChatsConfirmationDialog(context);
             },
           ),
           
@@ -56,7 +63,10 @@ class ChatOptionsCard extends StatelessWidget {
             image_icon: AppImages.readChatIcon,
             text: 'وضع علامة مقروء على جميع المحادثات',
             iconColor: Colors.green,
-            onTap: () {},
+            onTap: () {
+              // Show confirmation dialog
+              _showMarkAllAsReadConfirmationDialog(context);
+            },
           ),
         ],
       ),
@@ -131,7 +141,7 @@ class ChatOptionsCard extends StatelessWidget {
   //           ),
   //           TextButton(
   //             onPressed: () {},
-  //             child: Text(
+  //             child: child: Text(
   //               'حذف',
   //               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
   //                 color: Colors.red,
@@ -143,4 +153,137 @@ class ChatOptionsCard extends StatelessWidget {
   //     },
   //   );
   // }
+
+    void _showMarkAllAsReadConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          title: Text(
+            'تأكيد',
+            style: AppTextStyles.font40BlackSemiBoldPlexSans,
+            textAlign: TextAlign.center,
+          ),
+          content: Text(
+            'هل تريد وضع علامة مقروء على جميع الرسائل؟',
+            style: AppTextStyles.font16BlackSemiBoldLamaSans,
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'إلغاء',
+                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+            TextButton(
+                              onPressed: () {
+                  Navigator.of(context).pop();
+                  // Call the cubit method to mark all as read
+                  chatListCubit.markAllMessagesAsRead();
+                  
+                  // Show success snackbar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text(
+                        'تم وضع علامة مقروء على جميع الرسائل',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      backgroundColor: Colors.green,
+                      duration: const Duration(seconds: 2),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  );
+                },
+              child: Text(
+                'تأكيد',
+                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                  color: Colors.green,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDeleteAllChatsConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          alignment: Alignment.center,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          title: Text(
+            'تأكيد الحذف',
+            style: AppTextStyles.font23ChineseBlackBoldLamaSans,
+            textAlign: TextAlign.center,
+          ),
+          content: Text(
+            'هل أنت متأكد من حذف جميع المحادثات؟ لا يمكن التراجع عن هذا الإجراء.',
+            style: AppTextStyles.font16BlackSemiBoldLamaSans,
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'إلغاء',
+                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // Call the cubit method to delete all chats
+                chatListCubit.deleteAllChats();
+
+                // Show success snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text(
+                      'تم حذف جميع المحادثات بنجاح',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    backgroundColor: Colors.red,
+                    duration: const Duration(seconds: 3),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                );
+              },
+              child: Text(
+                'حذف',
+                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

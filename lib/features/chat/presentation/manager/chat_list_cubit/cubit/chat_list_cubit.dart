@@ -43,5 +43,156 @@ class ChatListCubit extends Cubit<ChatListState> {
     }
   }
 
+  /// Mark all messages as read
+  Future<void> markAllMessagesAsRead() async {
+    try {
+      print('[ChatListCubit] Marking all messages as read...');
+      
+      final Either<ApiErrorModel, Map<String, dynamic>> result = 
+          await chatListRepo.markAllMessagesAsRead();
+      
+      result.fold(
+        (failure) {
+          print('[ChatListCubit] Mark all as read failed: ${failure.message}');
+          // You could emit an error state here if needed
+        },
+        (success) {
+          print('[ChatListCubit] Mark all as read successful: $success');
+          
+          // Update the current state to reflect all messages as read
+          final currentState = state;
+          if (currentState is ChatListLoaded) {
+            // Create new chat list with all unread counts set to 0
+            final updatedChatList = currentState.chatList.copyWith(
+              data: currentState.chatList.data.map((chat) => 
+                chat.copyWith(unreadCount: 0)
+              ).toList(),
+            );
+            
+            // Emit updated state
+            emit(ChatListLoaded(updatedChatList));
+          }
+        },
+      );
+    } catch (e) {
+      print('[ChatListCubit] Exception in markAllMessagesAsRead: $e');
+    }
+  }
+
+  /// Report a user
+  Future<void> reportUser(int userId) async {
+    try {
+      print('[ChatListCubit] Reporting user $userId...');
+      
+      final Either<ApiErrorModel, Map<String, dynamic>> result = 
+          await chatListRepo.reportChat(userId);
+      
+      result.fold(
+        (failure) {
+          print('[ChatListCubit] Report user failed: ${failure.message}');
+          // Show error message to user
+          emit(ChatListError(failure.message ?? 'فشل في الإبلاغ عن المستخدم'));
+        },
+        (success) {
+          print('[ChatListCubit] Report user successful: $success');
+          // Show success message and refresh chat list
+          getChatList();
+        },
+      );
+    } catch (e) {
+      print('[ChatListCubit] Exception in reportUser: $e');
+      emit(ChatListError('حدث خطأ أثناء الإبلاغ عن المستخدم'));
+    }
+  }
+
+  /// Mute a user
+  Future<void> muteUser(int userId) async {
+    try {
+      print('[ChatListCubit] Muting user $userId...');
+      
+      final Either<ApiErrorModel, Map<String, dynamic>> result = 
+          await chatListRepo.muteChat(userId);
+      
+      result.fold(
+        (failure) {
+          print('[ChatListCubit] Mute user failed: ${failure.message}');
+          // Show error message to user
+          emit(ChatListError(failure.message ?? 'فشل في كتم صوت المستخدم'));
+        },
+        (success) {
+          print('[ChatListCubit] Mute user successful: $success');
+          // Show success message and refresh chat list
+          getChatList();
+        },
+      );
+    } catch (e) {
+      print('[ChatListCubit] Exception in muteUser: $e');
+      emit(ChatListError('حدث خطأ أثناء كتم صوت المستخدم'));
+    }
+  }
+
+  /// Delete one chat
+  Future<void> deleteOneChat(int chatId) async {
+    try {
+      print('[ChatListCubit] Deleting chat $chatId...');
+      
+      final Either<ApiErrorModel, Map<String, dynamic>> result = 
+          await chatListRepo.deleteOneChat(chatId);
+      
+      result.fold(
+        (failure) {
+          print('[ChatListCubit] Delete chat failed: ${failure.message}');
+          // Show error message to user
+          emit(ChatListError(failure.message ?? 'فشل في حذف المحادثة'));
+        },
+        (success) {
+          print('[ChatListCubit] Delete chat successful: $success');
+          // Remove the deleted chat from the current state
+          final currentState = state;
+          if (currentState is ChatListLoaded) {
+            final updatedChatList = currentState.chatList.copyWith(
+              data: currentState.chatList.data.where((chat) => chat.id != chatId).toList(),
+            );
+            emit(ChatListLoaded(updatedChatList));
+          }
+        },
+      );
+    } catch (e) {
+      print('[ChatListCubit] Exception in deleteOneChat: $e');
+      emit(ChatListError('حدث خطأ أثناء حذف المحادثة'));
+    }
+  }
+
+  /// Delete all chats
+  Future<void> deleteAllChats() async {
+    try {
+      print('[ChatListCubit] Deleting all chats...');
+      
+      final Either<ApiErrorModel, Map<String, dynamic>> result = 
+          await chatListRepo.deleteAllChats();
+      
+      result.fold(
+        (failure) {
+          print('[ChatListCubit] Delete all chats failed: ${failure.message}');
+          // Show error message to user
+          emit(ChatListError(failure.message ?? 'فشل في حذف جميع المحادثات'));
+        },
+        (success) {
+          print('[ChatListCubit] Delete all chats successful: $success');
+          // Clear all chats from the current state
+          final currentState = state;
+          if (currentState is ChatListLoaded) {
+            final updatedChatList = currentState.chatList.copyWith(
+              data: [],
+            );
+            emit(ChatListLoaded(updatedChatList));
+          }
+        },
+      );
+    } catch (e) {
+      print('[ChatListCubit] Exception in deleteAllChats: $e');
+      emit(ChatListError('حدث خطأ أثناء حذف جميع المحادثات'));
+    }
+  }
 
 }

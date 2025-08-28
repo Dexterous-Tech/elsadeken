@@ -3,6 +3,7 @@ import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 
 class ChatOptionsPopup extends StatelessWidget {
   final VoidCallback onDelete;
@@ -95,25 +96,16 @@ class ChatOptionsPopup extends StatelessWidget {
           ),
           verticalSpace(10),
           // Cancel Button
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 24.w),
-            decoration: BoxDecoration(
-              color: AppColors.shimmeringBlush,
-              borderRadius: BorderRadius.circular(10).r,
-            ),
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  'الغاء',
-                  style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.jet,
-                  ),
-                ),
-              ),
+          CustomElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            textButton: 'الغاء',
+            height: 56.h,
+            radius: 10.r,
+            styleTextButton: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+              fontWeight: FontWeight.bold,
+              color: AppColors.jet,
             ),
           ),
         ],
