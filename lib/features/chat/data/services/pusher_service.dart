@@ -62,7 +62,6 @@ class PusherService {
       // Connect to Pusher
       await _pusher!.connect();
       log('✅ Pusher initialization completed');
-
     } catch (e) {
       log('⚠️ Initialization error: $e');
       _isConnected = false;
@@ -90,7 +89,7 @@ class PusherService {
           _handlePusherEvent(event);
         },
       );
-      
+
       log('✅ Successfully subscribed to $channelName');
     } catch (e) {
       log('❌ Failed to subscribe to $channelName: $e');
@@ -103,11 +102,11 @@ class PusherService {
     try {
       if (event.eventName == 'App\\Events\\MessageSent') {
         log('💬 Message event received');
-        
+
         // Parse the event data
         final eventData = jsonDecode(event.data);
         final messageData = eventData['message'] ?? eventData;
-        
+
         if (messageData is Map<String, dynamic>) {
           final pusherMessage = PusherMessageModel.fromJson(messageData);
           log('✅ Parsed PusherMessage: ${pusherMessage.body}');
@@ -149,4 +148,39 @@ class PusherService {
 
   bool get isConnected => _isConnected;
   String? get currentChannelName => _currentChannelName;
+
+  /// Check connection health and attempt to reconnect if needed
+  Future<bool> checkConnectionHealth() async {
+    try {
+      // Check if we have a valid pusher instance
+      if (_pusher == null) {
+        log('⚠️ Pusher instance is null, attempting to reinitialize...');
+        await initialize();
+        return _isConnected;
+      }
+
+      // Check if we're connected
+      if (_isConnected) {
+        log('✅ Connection is healthy');
+        return true;
+      }
+
+      // If not connected, try to reconnect
+      log('🔄 Connection lost, attempting to reconnect...');
+      await initialize();
+
+      // If we have a channel to subscribe to, resubscribe
+      if (_currentChannelName != null) {
+        final channelId = _currentChannelName!.split('.').last;
+        if (channelId.isNotEmpty) {
+          await subscribeToChatChannel(int.tryParse(channelId) ?? 0);
+        }
+      }
+
+      return _isConnected;
+    } catch (e) {
+      log('❌ Connection health check failed: $e');
+      return false;
+    }
+  }
 }

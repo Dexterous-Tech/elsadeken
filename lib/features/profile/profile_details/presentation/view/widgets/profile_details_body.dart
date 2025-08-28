@@ -17,6 +17,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/routes/app_routes.dart';
 import '../../../../../chat/data/models/chat_room_model.dart';
+import '../../../../../chat/data/models/chat_list_model.dart';
+import '../../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import '../../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 
 class ProfileDetailsBody extends StatefulWidget {
   const ProfileDetailsBody({super.key, this.user, required this.userId});
@@ -128,7 +131,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     // Navigate to chat conversation with this user
                     // Get user data from the current state if available
                     final cubit = context.read<ProfileDetailsCubit>();
@@ -149,17 +152,51 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                       userImage = widget.user!.image ?? '';
                     }
 
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.chatConversationScreen,
-                      arguments: {
-                        "chatRoom": ChatRoomModel.fromUser(
-                          userId: widget.userId,
-                          userName: userName,
-                          userImage: userImage,
-                        ),
-                      },
-                    );
+                    // First, try to find an existing chat room
+                    final chatListCubit = context.read<ChatListCubit>();
+                    await chatListCubit.getChatList();
+
+                    // Wait a bit for the chat list to load
+                    await Future.delayed(Duration(milliseconds: 500));
+
+                    // Check if a chat room already exists with this user
+                    ChatData? existingChatRoom;
+                    if (chatListCubit.state is ChatListLoaded) {
+                      final chatList =
+                          (chatListCubit.state as ChatListLoaded).chatList;
+                      try {
+                        existingChatRoom = chatList.data.firstWhere(
+                          (chat) => chat.otherUser.id == widget.userId,
+                        );
+                      } catch (e) {
+                        // No existing chat room found
+                        existingChatRoom = null;
+                      }
+                    }
+
+                    if (existingChatRoom != null) {
+                      // Navigate to existing chat room
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.chatConversationScreen,
+                        arguments: {
+                          "chatRoom": existingChatRoom,
+                        },
+                      );
+                    } else {
+                      // Create new chat room
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.chatConversationScreen,
+                        arguments: {
+                          "chatRoom": ChatRoomModel.fromUser(
+                            userId: widget.userId,
+                            userName: userName,
+                            userImage: userImage,
+                          ),
+                        },
+                      );
+                    }
                   },
                   child: CustomContainer(
                     img: AppImages.message,
