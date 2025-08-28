@@ -102,23 +102,22 @@ class AppRouting {
       case AppRoutes.notificationScreen:
         return MaterialPageRoute(builder: (_) => NotificationScreen());
       case AppRoutes.profileDetailsScreen:
-        // Handle UsersDataModel argument
-        UsersDataModel user;
+        // Handle both UsersDataModel and int arguments
         if (arguments is UsersDataModel) {
-          user = arguments;
+          return MaterialPageRoute(
+              builder: (_) => ProfileDetailsScreen(user: arguments));
+        } else if (arguments is int) {
+          return MaterialPageRoute(
+              builder: (_) => ProfileDetailsScreen(userId: arguments));
+        } else if (arguments is String) {
+          final userId = int.tryParse(arguments) ?? 0;
+          return MaterialPageRoute(
+              builder: (_) => ProfileDetailsScreen(userId: userId));
         } else {
           // Fallback for backward compatibility
-          int userId = 0;
-          if (arguments is int) {
-            userId = arguments;
-          } else if (arguments is String) {
-            userId = int.tryParse(arguments) ?? 0;
-          }
-          // Create a minimal user model with just the ID
-          user = UsersDataModel(id: userId);
+          return MaterialPageRoute(
+              builder: (_) => ProfileDetailsScreen(userId: 0));
         }
-        return MaterialPageRoute(
-            builder: (_) => ProfileDetailsScreen(user: user));
       case AppRoutes.personDetailsScreen:
         final args = arguments as Map<String, dynamic>;
         final personId = args['personId'] as int;

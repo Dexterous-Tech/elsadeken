@@ -7,15 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileDetailsScreen extends StatelessWidget {
-  const ProfileDetailsScreen({super.key, required this.user});
+  const ProfileDetailsScreen({super.key, this.user, this.userId});
 
-  final UsersDataModel user;
+  final UsersDataModel? user;
+  final int? userId;
+
   @override
   Widget build(BuildContext context) {
+    // Determine the actual user ID to use
+    final int actualUserId = user?.id ?? userId ?? 0;
+
     return BlocProvider(
       create: (context) => sl<ProfileDetailsCubit>(),
       child: Scaffold(
-        body: ProfileDetailsBody(user: user),
+        body: ProfileDetailsBody(user: user, userId: actualUserId),
       ),
     );
   }

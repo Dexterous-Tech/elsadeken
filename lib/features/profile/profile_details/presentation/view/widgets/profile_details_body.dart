@@ -19,9 +19,10 @@ import '../../../../../../core/routes/app_routes.dart';
 import '../../../../../chat/data/models/chat_room_model.dart';
 
 class ProfileDetailsBody extends StatefulWidget {
-  const ProfileDetailsBody({super.key, required this.user});
+  const ProfileDetailsBody({super.key, this.user, required this.userId});
 
-  final UsersDataModel user;
+  final UsersDataModel? user;
+  final int userId;
 
   @override
   State<ProfileDetailsBody> createState() => _ProfileDetailsBodyState();
@@ -32,7 +33,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
   void initState() {
     super.initState();
     // Call getProfileDetails once when widget initializes
-    context.read<ProfileDetailsCubit>().getProfileDetails(widget.user.id!);
+    context.read<ProfileDetailsCubit>().getProfileDetails(widget.userId);
   }
 
   @override
@@ -87,7 +88,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                     onTap: () {
                       context
                           .read<ProfileDetailsCubit>()
-                          .likeUser(widget.user.id!);
+                          .likeUser(widget.userId);
                     },
                   ),
                 ),
@@ -122,21 +123,40 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                     onTap: () {
                       context
                           .read<ProfileDetailsCubit>()
-                          .ignoreUser(widget.user.id!);
+                          .ignoreUser(widget.userId);
                     },
                   ),
                 ),
                 GestureDetector(
                   onTap: () {
                     // Navigate to chat conversation with this user
+                    // Get user data from the current state if available
+                    final cubit = context.read<ProfileDetailsCubit>();
+                    final state = cubit.state;
+
+                    String userName = 'User';
+                    String userImage = '';
+
+                    if (state is GetProfileDetailsSuccess) {
+                      final userData = state.profileDetailsResponseModel.data;
+                      if (userData != null) {
+                        userName = userData.name ?? 'User';
+                        userImage = userData.image ?? '';
+                      }
+                    } else if (widget.user != null) {
+                      // Fallback to passed user data if available
+                      userName = widget.user!.name ?? 'User';
+                      userImage = widget.user!.image ?? '';
+                    }
+
                     Navigator.pushNamed(
                       context,
                       AppRoutes.chatConversationScreen,
                       arguments: {
                         "chatRoom": ChatRoomModel.fromUser(
-                          userId: widget.user.id!,
-                          userName: widget.user.name!,
-                          userImage: widget.user.image!,
+                          userId: widget.userId,
+                          userName: userName,
+                          userImage: userImage,
                         ),
                       },
                     );
@@ -178,7 +198,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                     onTap: () {
                       context
                           .read<ProfileDetailsCubit>()
-                          .reportUser(widget.user.id!);
+                          .reportUser(widget.userId);
                     },
                   ),
                 ),

@@ -1,4 +1,7 @@
 import 'dart:developer';
+import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:elsadeken/features/profile/members_profile/presentation/manager/members_profile_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../core/theme/app_color.dart';
@@ -79,70 +82,76 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
       city?.isNotEmpty == true ? city : 'لا يوجد',
     ].join(' , ');
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
-      decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(6).r,
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.black.withValues(alpha: 0.04),
-              blurRadius: 36,
-              offset: Offset(0, 4),
+    return GestureDetector(
+      onTap: () {
+        context.pushNamed(AppRoutes.profileDetailsScreen, arguments: member.id);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
+        decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(6).r,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.black.withValues(alpha: 0.04),
+                blurRadius: 36,
+                offset: Offset(0, 4),
+              ),
+            ]),
+        child: Row(
+          textDirection: TextDirection.rtl,
+          children: [
+            CircleAvatar(
+              radius: 25.r,
+              backgroundImage:
+                  member.image != null ? NetworkImage(member.image) : null,
+              child: member.image == null
+                  ? Icon(Icons.person, size: 30.sp, color: AppColors.grey)
+                  : null,
             ),
-          ]),
-      child: Row(
-        textDirection: TextDirection.rtl,
-        children: [
-          CircleAvatar(
-            radius: 25.r,
-            backgroundImage:
-                member.image != null ? NetworkImage(member.image) : null,
-            child: member.image == null
-                ? Icon(Icons.person, size: 30.sp, color: AppColors.grey)
-                : null,
-          ),
-          horizontalSpace(16),
-          Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              textDirection: TextDirection.rtl,
-              children: [
-                Text(
-                  member.name ?? '',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.font14BeerMediumLamaSans
-                      .copyWith(color: Color(0xff7D7D7D)),
-                ),
-                Row(
-                  textDirection: TextDirection.rtl,
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      size: 12.5.sp,
-                      color: AppColors.grey,
-                    ),
-                    Expanded(
-                      child: Text(
-                        location,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.right,
-                        style: AppTextStyles.font13BlackMediumLamaSans.copyWith(
-                          color: AppColors.black.withValues(
-                            alpha: 0.87,
+            horizontalSpace(16),
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                textDirection: TextDirection.rtl,
+                children: [
+                  Text(
+                    member.name ?? '',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.font14BeerMediumLamaSans
+                        .copyWith(color: Color(0xff7D7D7D)),
+                  ),
+                  Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        size: 12.5.sp,
+                        color: AppColors.grey,
+                      ),
+                      Expanded(
+                        child: Text(
+                          location,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.right,
+                          style:
+                              AppTextStyles.font13BlackMediumLamaSans.copyWith(
+                            color: AppColors.black.withValues(
+                              alpha: 0.87,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
