@@ -27,6 +27,12 @@ class PusherService {
   bool _isConnected = false;
   String? _currentChannelName;
   String? _authToken;
+  
+  // Reconnection management
+  Timer? _reconnectionTimer;
+  int _reconnectionAttempts = 0;
+  static const int _maxReconnectionAttempts = 5;
+  static const int _baseReconnectionDelay = 3; // seconds
 
   // Callbacks
   Function(PusherMessageModel)? onMessageReceived;
@@ -71,12 +77,13 @@ class PusherService {
       // Wait for connection
       await Future.delayed(Duration(milliseconds: 2000));
       
-      if (_webSocketChannel != null) {
-        _isConnected = true;
-        onConnectionEstablished?.call('Connected to Pusher via EU cluster');
-        log('✅ WebSocket connected successfully via EU cluster');
+        if (_webSocketChannel != null) {
+          _isConnected = true;
+          _resetReconnectionAttempts(); // Reset reconnection attempts on successful connection
+          onConnectionEstablished?.call('Connected to Pusher via EU cluster');
+          log('✅ WebSocket connected successfully via EU cluster');
 
-        _webSocketChannel!.stream.listen(
+          _webSocketChannel!.stream.listen(
           (message) => _handleWebSocketMessage(message),
           onDone: () {
             log('❌ WebSocket closed');
@@ -112,9 +119,22 @@ class PusherService {
     }
   }
 
+  /// Reset reconnection attempts when connection is successful
+  void _resetReconnectionAttempts() {
+    _reconnectionAttempts = 0;
+    _reconnectionTimer?.cancel();
+    _reconnectionTimer = null;
+    log('✅ Reconnection attempts reset to 0');
+  }
+
   /// Dispose of the WebSocket connection
   void dispose() {
     log('🔄 Disposing WebSocket connection...');
+    
+    // Cancel any pending reconnection timer
+    _reconnectionTimer?.cancel();
+    _reconnectionTimer = null;
+    
     if (_webSocketChannel != null) {
       try {
         _webSocketChannel!.sink.close();
@@ -125,6 +145,7 @@ class PusherService {
     }
     _isConnected = false;
     _currentChannelName = null;
+    _reconnectionAttempts = 0; // Reset reconnection attempts
     log('✅ WebSocket connection disposed');
   }
 
@@ -132,14 +153,33 @@ class PusherService {
   void _scheduleReconnection() {
     if (_isConnected) return; // Already reconnecting or connected
     
-    log('🔄 Scheduling reconnection in 3 seconds...');
-    Timer(Duration(seconds: 3), () async {
+    // Check if we've exceeded maximum reconnection attempts
+    if (_reconnectionAttempts >= _maxReconnectionAttempts) {
+      log('❌ Maximum reconnection attempts ($_maxReconnectionAttempts) reached. Stopping reconnection.');
+      onConnectionError?.call('Failed to connect after $_maxReconnectionAttempts attempts. Please check your network connection.');
+      return;
+    }
+    
+    // Cancel any existing reconnection timer
+    _reconnectionTimer?.cancel();
+    
+    // Calculate delay with exponential backoff
+    final delay = _baseReconnectionDelay * (1 << _reconnectionAttempts); // Exponential backoff: 3, 6, 12, 24, 48 seconds
+    _reconnectionAttempts++;
+    
+    log('🔄 Scheduling reconnection attempt $_reconnectionAttempts in ${delay} seconds... (${_maxReconnectionAttempts - _reconnectionAttempts} attempts remaining)');
+    
+    _reconnectionTimer = Timer(Duration(seconds: delay), () async {
       if (!_isConnected) {
-        log('🔄 Attempting to reconnect...');
+        log('🔄 Attempting reconnection $_reconnectionAttempts...');
         try {
           await initialize();
         } catch (e) {
-          log('❌ Reconnection failed: $e');
+          log('❌ Reconnection attempt $_reconnectionAttempts failed: $e');
+          // Schedule next reconnection attempt if we haven't reached the limit
+          if (_reconnectionAttempts < _maxReconnectionAttempts) {
+            _scheduleReconnection();
+          }
         }
       }
     });
