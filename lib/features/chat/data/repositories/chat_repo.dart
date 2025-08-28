@@ -16,6 +16,12 @@ abstract class ChatRepoInterface {
     int receiverId,
     String message,
   );
+  
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> markAllMessagesAsRead();
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> reportChat(int chatId);
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> muteChat(int chatId);
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteOneChat(int chatId);
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteAllChats();
 }
 
 class ChatRepoImpl extends ChatRepoInterface {
@@ -61,6 +67,76 @@ class ChatRepoImpl extends ChatRepoInterface {
       return Right(response);
     } catch (error) {
       log("error in sendMessage: $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> markAllMessagesAsRead() async {
+    try {
+      final response = await chatDataSource.markAllMessagesAsRead();
+      return Right(response);
+    } catch (error) {
+      log("error in markAllMessagesAsRead: $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> reportChat(int chatId) async {
+    try {
+      final response = await chatDataSource.reportChat(chatId);
+      return Right(response);
+    } catch (error) {
+      log("error in reportChat: $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> muteChat(int chatId) async {
+    try {
+      final response = await chatDataSource.muteChat(chatId);
+      return Right(response);
+    } catch (error) {
+      log("error in muteChat: $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteOneChat(int chatId) async {
+    try {
+      final response = await chatDataSource.deleteOneChat(chatId);
+      return Right(response);
+    } catch (error) {
+      log("error in deleteOneChat: $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteAllChats() async {
+    try {
+      final response = await chatDataSource.deleteAllChats();
+      return Right(response);
+    } catch (error) {
+      log("error in deleteAllChats: $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

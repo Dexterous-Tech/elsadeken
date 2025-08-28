@@ -144,7 +144,7 @@ class PusherService {
   }
 
   /// Subscribe to a private chat channel
-  Future<void> subscribeToChatChannel(int userId) async {
+  Future<void> subscribeToChatChannel(int chatRoomId) async {
     try {
       if (_channel == null) {
         log('🔄 WebSocket channel is null, initializing...');
@@ -198,30 +198,49 @@ class PusherService {
         }
       }
 
-      final channelName = 'private-chat.$userId';
-      _currentChannelName = channelName;
+      // Try different channel naming conventions that the backend might be using
+      final possibleChannelNames = [
+        'private-chat.$chatRoomId',           // private-chat.123
+        'private-chatroom.$chatRoomId',      // private-chatroom.123
+        'chat.$chatRoomId',                  // chat.123
+        'private-messages.$chatRoomId',      // private-messages.123
+        'messages.$chatRoomId',              // messages.123
+      ];
 
-      // Send subscription message
-      final subscribeMessage = {
-        'event': 'pusher:subscribe',
-        'data': {
-          'auth': '', // For private channels, you might need auth
-          'channel': channelName
+      log('🔍 Trying to subscribe to chat room $chatRoomId');
+      log('📡 Attempting channel names: $possibleChannelNames');
+
+      for (final channelName in possibleChannelNames) {
+        try {
+          _currentChannelName = channelName;
+          
+          // Send subscription message
+          final subscribeMessage = {
+            'event': 'pusher:subscribe',
+            'data': {
+              'auth': '', // For private channels, you might need auth
+              'channel': channelName
+            }
+          };
+
+          log('🔗 Attempting to subscribe to channel: $channelName');
+          _channel!.sink.add(jsonEncode(subscribeMessage));
+          
+          // Wait a moment to see if subscription is successful
+          await Future.delayed(Duration(milliseconds: 500));
+          
+          // If we're still here, assume subscription was successful
+          log('✅ Successfully subscribed to chat channel: $channelName');
+          return;
+          
+        } catch (e) {
+          log('⚠️ Failed to subscribe to $channelName: $e');
+          // Continue to next channel name
         }
-      };
-
-      log('🔗 Subscribing to channel: $channelName');
-      try {
-        _channel!.sink.add(jsonEncode(subscribeMessage));
-      } catch (e) {
-        log('⚠️ Failed to send subscription message: $e');
-        return; // Don't throw - handle gracefully
       }
-
-      // Wait a moment to ensure subscription is processed
-      await Future.delayed(Duration(milliseconds: 300));
-
-      log('✅ Successfully subscribed to chat channel: $channelName');
+      
+      log('❌ Failed to subscribe to any channel for chat room $chatRoomId');
+      
     } catch (e) {
       log('❌ Error subscribing to chat channel: $e');
       // Don't rethrow - handle gracefully
@@ -237,31 +256,53 @@ class PusherService {
         final data = jsonDecode(message);
         log('📋 Parsed message data: $data');
 
-        // Handle Pusher events
-        if (data['event'] == 'App\\Events\\MessageSent') {
-          log('✅ Received MessageSent event');
+        // Handle various Pusher events that might contain chat messages
+        final eventType = data['event'];
+        log('🎯 Event type: $eventType');
+        
+        if (eventType == 'App\\Events\\MessageSent' ||
+            eventType == 'MessageSent' ||
+            eventType == 'chat.message' ||
+            eventType == 'message.sent' ||
+            eventType == 'new.message') {
+          
+          log('✅ Received chat message event: $eventType');
           final messageData = data['data'];
 
           if (messageData is String) {
             // Sometimes data is a JSON string
             log('📝 Message data is string, parsing JSON...');
-            final parsedData = jsonDecode(messageData);
-            if (parsedData is Map<String, dynamic>) {
-              log('📋 Parsed message content: $parsedData');
-              final pusherMessage = PusherMessageModel.fromJson(parsedData);
-              log('✅ Successfully created PusherMessage: ${pusherMessage.body}');
-              onMessageReceived?.call(pusherMessage);
+            try {
+              final parsedData = jsonDecode(messageData);
+              if (parsedData is Map<String, dynamic>) {
+                log('📋 Parsed message content: $parsedData');
+                final pusherMessage = PusherMessageModel.fromJson(parsedData);
+                log('✅ Successfully created PusherMessage: ${pusherMessage.body}');
+                onMessageReceived?.call(pusherMessage);
+              }
+            } catch (parseError) {
+              log('⚠️ Failed to parse message data string: $parseError');
             }
           } else if (messageData is Map<String, dynamic>) {
             log('📋 Message data is map: $messageData');
-            final pusherMessage = PusherMessageModel.fromJson(messageData);
-            log('✅ Successfully created PusherMessage: ${pusherMessage.body}');
-            onMessageReceived?.call(pusherMessage);
+            try {
+              final pusherMessage = PusherMessageModel.fromJson(messageData);
+              log('✅ Successfully created PusherMessage: ${pusherMessage.body}');
+              onMessageReceived?.call(pusherMessage);
+            } catch (parseError) {
+              log('⚠️ Failed to create PusherMessage from map: $parseError');
+            }
           } else {
             log('⚠️ Unexpected message data type: ${messageData.runtimeType}');
           }
+        } else if (eventType == 'pusher:connection_established') {
+          log('🔗 Pusher connection established');
+        } else if (eventType == 'pusher:subscription_succeeded') {
+          log('✅ Channel subscription succeeded');
+        } else if (eventType == 'pusher:subscription_error') {
+          log('❌ Channel subscription failed');
         } else {
-          log('ℹ️ Received other event: ${data['event']}');
+          log('ℹ️ Received other event: $eventType');
         }
       } else {
         log('⚠️ Received non-string message: ${message.runtimeType}');

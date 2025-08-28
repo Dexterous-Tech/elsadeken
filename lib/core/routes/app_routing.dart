@@ -36,6 +36,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/chat/presentation/view/chat_conversation_screen.dart';
 import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 import 'package:elsadeken/features/chat/presentation/view/chat_settings_screen.dart';
+import 'package:elsadeken/features/chat/presentation/view/chat_settings_screen_example.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
@@ -175,7 +176,7 @@ class AppRouting {
         );
       case AppRoutes.chatSettingsScreen:
         return MaterialPageRoute(
-          builder: (_) => const ChatSettingsScreen(),
+          builder: (_) => const ChatSettingsScreenWrapper(),
         );
       case AppRoutes.termsAndConditionsScreen:
         return MaterialPageRoute(builder: (_) => TermsAndConditionsScreen());

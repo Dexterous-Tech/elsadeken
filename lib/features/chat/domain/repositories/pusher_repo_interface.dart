@@ -26,4 +26,7 @@ abstract class PusherRepoInterface {
   
   /// Check if connected to Pusher
   bool get isConnected;
+  
+  /// Check connection health and reconnect if needed
+  Future<bool> checkConnectionHealth();
 }

@@ -23,6 +23,12 @@ import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
+import 'package:elsadeken/features/chat/data/services/chat_settings_service.dart';
+import 'package:elsadeken/features/chat/data/repositories/chat_settings_repository.dart';
+import 'package:elsadeken/features/chat/presentation/cubit/chat_settings_cubit.dart';
+import 'package:elsadeken/features/chat/data/services/lists_service.dart';
+import 'package:elsadeken/features/chat/data/repositories/lists_repository.dart';
+import 'package:elsadeken/features/chat/presentation/cubit/lists_cubit.dart';
 import 'package:elsadeken/features/members/data/repositories/members_repository.dart';
 import 'package:elsadeken/features/home/notification/data/data_source/notification_data_source.dart';
 import 'package:elsadeken/features/home/notification/data/repo/notification_repo.dart';
@@ -257,6 +263,16 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ChatDataSource>(() => ChatDataSource(sl()));
   sl.registerLazySingleton<ChatRepoInterface>(() => ChatRepoImpl(sl()));
   sl.registerFactory<ChatListCubit>(() => ChatListCubit(sl()));
+
+  // Chat Settings
+sl.registerLazySingleton<ChatSettingsService>(() => ChatSettingsService(sl()));
+sl.registerLazySingleton<ChatSettingsRepository>(() => ChatSettingsRepository(sl()));
+sl.registerFactory<ChatSettingsCubit>(() => ChatSettingsCubit(sl()));
+
+// Lists (Nationalities & Countries)
+sl.registerLazySingleton<ListsService>(() => ListsService(sl()));
+sl.registerLazySingleton<ListsRepository>(() => ListsRepository(sl()));
+sl.registerFactory<ListsCubit>(() => ListsCubit(sl()));
 
   // Chat Conversation
   sl.registerFactory<ChatMessagesCubit>(() => ChatMessagesCubit(sl()));

@@ -51,11 +51,52 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         // Give the network stack more time to initialize
         Future.delayed(Duration(milliseconds: 1500), () {
           if (mounted) {
+            print('🔄 Initializing Pusher...');
             context.read<PusherCubit>().initialize();
           }
         });
       }
     });
+  }
+
+  void _subscribeToChatRoom() {
+    if (_currentUserId != null && !widget.chatRoom.id.startsWith('temp_')) {
+      print('🔗 Subscribing to chat room: ${widget.chatRoom.id}');
+      print('👤 Current user ID: $_currentUserId');
+      print('👥 Chat room receiver ID: ${widget.chatRoom.receiverId}');
+      
+      // Subscribe to the specific chat room channel
+      // The channel name should match what the backend is using
+      final chatRoomId = widget.chatRoom.id;
+      print('📡 Subscribing to chat room channel: $chatRoomId');
+      
+      // Try different channel naming conventions that the backend might be using
+      context.read<PusherCubit>().subscribeToChatChannel(int.parse(chatRoomId));
+    } else {
+      print('⚠️ Cannot subscribe: userId=$_currentUserId, chatRoomId=${widget.chatRoom.id}');
+    }
+  }
+
+  void _manualRefreshMessages() {
+    print('🔄 Manually refreshing messages...');
+    if (_currentUserId != null) {
+      context.read<PusherCubit>().unsubscribeFromChatChannel();
+      context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('تم تحديث الرسائل بنجاح'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('يرجى الانتظار حتى يتم تحميل الملف الشخصي'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
   }
 
   void _loadChatMessages() {
@@ -126,6 +167,12 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         ],
       ),
       actions: [
+        // Manual refresh button for testing
+        IconButton(
+          icon: Icon(Icons.refresh, color: AppColors.darkerBlue),
+          onPressed: _manualRefreshMessages,
+          tooltip: 'Manual Refresh Messages',
+        ),
         // Test button for Pusher
         IconButton(
           icon: Icon(Icons.wifi, color: AppColors.darkerBlue),
@@ -240,6 +287,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
             if (state is PusherMessageReceived) {
               // Handle real-time message from Pusher
               print('🟢 PUSHER: Message received: ${state.message.body}');
+              print('🟢 PUSHER: Message chat ID: ${state.message.chatId}');
+              print('🟢 PUSHER: Current chat room ID: ${widget.chatRoom.id}');
+              print('🟢 PUSHER: Message sender ID: ${state.message.senderId}');
+              print('🟢 PUSHER: Current user ID: $_currentUserId');
+              
               _handlePusherMessage(state.message);
             } else if (state is PusherConnectionEstablished) {
               print('🟢 PUSHER: Connection established: ${state.message}');
@@ -253,13 +305,22 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
               );
             } else if (state is PusherConnectionError) {
               // Handle errors silently - don't show to user
-              print(
-                  '⚠️ PUSHER: Connection issue (handled silently): ${state.error}');
+              print('⚠️ PUSHER: Connection issue (handled silently): ${state.error}');
               // No SnackBar - we're handling this silently
             } else if (state is PusherSubscribed) {
               print('🟢 PUSHER: Subscribed to channel successfully');
+              // Show success message
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('تم الاشتراك في القناة بنجاح'),
+                  backgroundColor: Colors.blue,
+                  duration: Duration(seconds: 2),
+                ),
+              );
             } else if (state is PusherInitialized) {
               print('🟢 PUSHER: Initialized successfully');
+              // Now subscribe to the chat room
+              _subscribeToChatRoom();
             }
           },
         ),

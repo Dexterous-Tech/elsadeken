@@ -66,4 +66,14 @@ class PusherRepoImpl implements PusherRepoInterface {
 
   @override
   bool get isConnected => _pusherService.isConnected;
+
+  @override
+  Future<bool> checkConnectionHealth() async {
+    try {
+      return await _pusherService.checkConnectionHealth();
+    } catch (e) {
+      print('⚠️ Connection health check failed: $e');
+      return false;
+    }
+  }
 }

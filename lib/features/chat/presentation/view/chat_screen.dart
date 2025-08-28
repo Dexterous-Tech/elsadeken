@@ -12,6 +12,7 @@ import 'package:elsadeken/features/chat/presentation/widgets/empty_chat_illustra
 import 'package:elsadeken/features/chat/presentation/widgets/chat_room_item.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -69,7 +70,9 @@ class _ChatScreenState extends State<ChatScreen>
           children: [
             _buildTopBar(),
             Expanded(child: _buildChatContent()),
-            const ChatOptionsCard(),
+            ChatOptionsCard(
+              chatListCubit: context.read<ChatListCubit>(),
+            ),
           ],
         ),
       ),
@@ -133,7 +136,11 @@ class _ChatScreenState extends State<ChatScreen>
               final chat = filteredChats[index];
               return ChatRoomItem(
                 chat: chat,
+                chatListCubit: context.read<ChatListCubit>(),
                 onTap: () {
+                  // Mark this chat as read when opened
+                  _markChatAsRead(chat);
+                  
                   Navigator.pushNamed(
                     context,
                     AppRoutes.chatConversationScreen,
@@ -173,6 +180,30 @@ class _ChatScreenState extends State<ChatScreen>
         ],
       ),
     );
+  }
+
+  /// 🔹 Mark Chat as Read
+  void _markChatAsRead(ChatData chat) {
+    if (chat.unreadCount > 0) {
+      print('[ChatScreen] Marking chat ${chat.id} as read');
+      
+      // Get current state
+      final currentState = context.read<ChatListCubit>().state;
+      if (currentState is ChatListLoaded) {
+        // Create updated chat list with this chat marked as read
+        final updatedChatList = currentState.chatList.copyWith(
+          data: currentState.chatList.data.map((c) {
+            if (c.id == chat.id) {
+              return c.copyWith(unreadCount: 0);
+            }
+            return c;
+          }).toList(),
+        );
+        
+        // Emit updated state
+        context.read<ChatListCubit>().emit(ChatListLoaded(updatedChatList));
+      }
+    }
   }
 
   /// 🔹 Show Chat Options

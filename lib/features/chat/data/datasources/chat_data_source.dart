@@ -41,4 +41,54 @@ class ChatDataSource {
 
     return SendMessageModel.fromJson(response.data);
   }
+
+  Future<Map<String, dynamic>> markAllMessagesAsRead() async {
+    final response = await _apiServices.post(
+      endpoint: ApiConstants.markAllMessagesAsRead,
+      requestBody: {},
+      requiresAuth: true,
+    );
+
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> reportChat(int chatId) async {
+    final response = await _apiServices.get(
+      endpoint: ApiConstants.reportChatSettings(chatId.toString()),
+      queryParameters: {'action': 'report'},
+      requiresAuth: true,
+    );
+
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> muteChat(int chatId) async {
+    final response = await _apiServices.get(
+      endpoint: ApiConstants.muteChatSettings(chatId.toString()),
+      queryParameters: {'action': 'toggle'},
+      requiresAuth: true,
+    );
+
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> deleteOneChat(int chatId) async {
+    final response = await _apiServices.delete(
+      endpoint: ApiConstants.deleteOneChatSettings(chatId.toString()),
+      requestBody: {},
+      requiresAuth: true,
+    );
+
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> deleteAllChats() async {
+    final response = await _apiServices.delete(
+      endpoint: ApiConstants.deleteAllChatSettings,
+      requestBody: {},
+      requiresAuth: true,
+    );
+
+    return response.data as Map<String, dynamic>;
+  }
 }
