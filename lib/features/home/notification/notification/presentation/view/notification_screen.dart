@@ -4,16 +4,16 @@ import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
-import 'package:elsadeken/features/home/notification/presentation/view/notification_settings_page.dart';
+import 'package:elsadeken/features/home/notification/notification_setting/presentation/view/notification_settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:elsadeken/features/home/notification/data/repo/notification_repo.dart';
-import 'package:elsadeken/features/home/notification/presentation/manager/notification_cubit.dart';
-import 'package:elsadeken/features/home/notification/presentation/view/widgets/empty_notification.dart';
-import 'package:elsadeken/features/home/notification/presentation/view/widgets/notification_list.dart';
+import 'package:elsadeken/features/home/notification/notification/data/repo/notification_repo.dart';
+import 'package:elsadeken/features/home/notification/notification/presentation/manager/notification_cubit.dart';
+import 'package:elsadeken/features/home/notification/notification/presentation/view/widgets/empty_notification.dart';
+import 'package:elsadeken/features/home/notification/notification/presentation/view/widgets/notification_list.dart';
 
-import '../../../../../core/di/injection_container.dart';
+import '../../../../../../core/di/injection_container.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});

@@ -6,7 +6,7 @@ import 'package:elsadeken/features/auth/new_password/presentation/view/new_passw
 import 'package:elsadeken/features/auth/signup/presentation/view/signup_screen.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/view/verification_email_screen.dart';
 import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart';
-import 'package:elsadeken/features/home/notification/presentation/view/notification_screen.dart';
+import 'package:elsadeken/features/home/notification/notification/presentation/view/notification_screen.dart';
 import 'package:elsadeken/features/home/person_details/view/person_details.dart';
 import 'package:elsadeken/features/on_boarding/presentation/view/on_boarding_screen.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/view/about_us_screen.dart';

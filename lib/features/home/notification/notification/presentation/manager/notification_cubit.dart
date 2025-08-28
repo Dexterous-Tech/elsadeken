@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:elsadeken/core/networking/api_error_model.dart';
-import 'package:elsadeken/features/home/notification/data/model/notification_model.dart';
-import 'package:elsadeken/features/home/notification/data/repo/notification_repo.dart';
+import 'package:elsadeken/features/home/notification/notification/data/model/notification_model.dart';
+import 'package:elsadeken/features/home/notification/notification/data/repo/notification_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'notification_state.dart';

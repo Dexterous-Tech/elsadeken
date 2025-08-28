@@ -54,6 +54,9 @@ class ApiConstants {
   static String getNotifications = '/user/get-notifications';
   static String countNotifications = '/user/get-count-unread-notifications';
   static String updateFcmToken = '/user/update-fcmtoken';
+  static String getNotificationSetting = '/user/get-notification-setting';
+  static String updateNotificationSetting(int id) =>
+      '/user/update-notification-setting/$id';
 
   static const String defaultProfileImage =
       'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';

@@ -24,10 +24,10 @@ import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cub
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/members/data/repositories/members_repository.dart';
-import 'package:elsadeken/features/home/notification/data/data_source/notification_data_source.dart';
-import 'package:elsadeken/features/home/notification/data/repo/notification_repo.dart';
-import 'package:elsadeken/features/home/notification/presentation/manager/notification_count_cubit.dart';
-import 'package:elsadeken/features/home/notification/presentation/manager/notification_cubit.dart';
+import 'package:elsadeken/features/home/notification/notification/data/data_source/notification_data_source.dart';
+import 'package:elsadeken/features/home/notification/notification/data/repo/notification_repo.dart';
+import 'package:elsadeken/features/home/notification/notification/presentation/manager/notification_count_cubit.dart';
+import 'package:elsadeken/features/home/notification/notification/presentation/manager/notification_cubit.dart';
 import 'package:elsadeken/features/profile/about_us/data/data_source/about_us_data_source.dart';
 import 'package:elsadeken/features/profile/about_us/data/repo/abouts_us_repo.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/manager/about_us_cubit.dart';
@@ -87,6 +87,10 @@ import 'package:dio/dio.dart';
 
 import '../../features/profile/members_profile/data/repo/members_profile_repo.dart';
 import '../../features/profile/profile/presentation/manager/notification_settings_cubit.dart';
+import '../../features/home/notification/notification_setting/data/data_source/notification_setting_data_source.dart';
+import '../../features/home/notification/notification_setting/data/repo/notification_setting_repo.dart';
+import '../../features/home/notification/notification_setting/presentation/manager/notification_settings_cubit.dart'
+    as home;
 import '../../features/search/logic/use_cases/search_use_cases.dart';
 import '../../features/search/presentation/cubit/search_cubit.dart';
 import '../networking/api_services.dart';
@@ -252,6 +256,14 @@ Future<void> initializeDependencies() async {
       () => NotificationCountCubit(sl()));
   sl.registerFactory<NotificationSettingsCubit>(
       () => NotificationSettingsCubit());
+
+  // notification settings
+  sl.registerLazySingleton<NotificationSettingDataSource>(
+      () => NotificationSettingDataSource(sl()));
+  sl.registerLazySingleton<NotificationSettingRepoInterface>(
+      () => NotificationSettingRepoImp(sl()));
+  sl.registerFactory<home.NotificationSettingsCubit>(
+      () => home.NotificationSettingsCubit(sl()));
 
   // Chat
   sl.registerLazySingleton<ChatDataSource>(() => ChatDataSource(sl()));
