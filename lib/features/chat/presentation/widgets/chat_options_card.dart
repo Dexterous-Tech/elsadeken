@@ -225,12 +225,13 @@ class ChatOptionsCard extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          alignment: Alignment.center,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
           ),
           title: Text(
             'تأكيد الحذف',
-            style: AppTextStyles.font40BlackSemiBoldPlexSans,
+            style: AppTextStyles.font23ChineseBlackBoldLamaSans,
             textAlign: TextAlign.center,
           ),
           content: Text(
@@ -253,7 +254,7 @@ class ChatOptionsCard extends StatelessWidget {
                 Navigator.of(context).pop();
                 // Call the cubit method to delete all chats
                 chatListCubit.deleteAllChats();
-                
+
                 // Show success snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

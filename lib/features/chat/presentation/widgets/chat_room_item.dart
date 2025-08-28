@@ -5,7 +5,6 @@ import 'package:elsadeken/core/theme/app_text_styles.dart';
 
 import 'package:elsadeken/features/chat/presentation/widgets/profile_image_widget.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/time_formatter.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_options_popup.dart';
 
@@ -143,7 +142,7 @@ class ChatRoomItem extends StatelessWidget {
         ),
         title: Text(
           'تأكيد الحذف',
-          style: AppTextStyles.font40BlackSemiBoldPlexSans,
+          style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
         content: Text(
@@ -197,7 +196,7 @@ class ChatRoomItem extends StatelessWidget {
         ),
         title: Text(
           'تأكيد الإبلاغ',
-          style: AppTextStyles.font40BlackSemiBoldPlexSans,
+          style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
         content: Text(
@@ -232,7 +231,7 @@ class ChatRoomItem extends StatelessWidget {
             child: Text(
               'تأكيد',
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                color: Colors.orange,
+                color: Colors.red,
               ),
             ),
           ),
@@ -251,7 +250,7 @@ class ChatRoomItem extends StatelessWidget {
         ),
         title: Text(
           'تأكيد كتم الصوت',
-          style: AppTextStyles.font40BlackSemiBoldPlexSans,
+          style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
         content: Text(
@@ -286,7 +285,7 @@ class ChatRoomItem extends StatelessWidget {
             child: Text(
               'تأكيد',
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                color: Colors.grey[600],
+                color: Colors.orangeAccent,
               ),
             ),
           ),
