@@ -6,6 +6,8 @@ import 'package:elsadeken/features/profile/excellence_package/data/models/packag
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 
 class PaymentMethodsBottomSheet extends StatefulWidget {
   final List<Data>? packages;
@@ -22,6 +24,7 @@ class PaymentMethodsBottomSheet extends StatefulWidget {
 
 class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
   int? selectedOption;
+  bool isProcessing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,31 +47,75 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                       final package = entry.value;
 
                       return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedOption = index;
-                          });
+                        onTap: isProcessing
+                            ? null
+                            : () async {
+                                setState(() {
+                                  selectedOption = index;
+                                  isProcessing = true;
+                                });
 
-                          // Show success message before closing
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'تم إضافة الباقة بنجاح!',
-                                textDirection: TextDirection.rtl,
-                                style: AppTextStyles.font16BlackSemiBoldLamaSans
-                                    .copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              backgroundColor: AppColors.green,
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
+                                try {
+                                  // TODO: Call API to assign package
+                                  // For now, we'll simulate API call
+                                  await Future.delayed(Duration(seconds: 2));
 
-                          Navigator.of(context).pop({
-                            "selectedPackage": package,
-                          });
-                        },
+                                  // Update isFeatured status in SharedPreferences
+                                  await SharedPreferencesHelper.setBool(
+                                      SharedPreferencesKey.isFeatured, true);
+
+                                  // Show success message
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'تم إضافة الباقة بنجاح!',
+                                          textDirection: TextDirection.rtl,
+                                          style: AppTextStyles
+                                              .font16BlackSemiBoldLamaSans
+                                              .copyWith(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        backgroundColor: AppColors.green,
+                                        duration: Duration(seconds: 2),
+                                      ),
+                                    );
+                                  }
+
+                                  // Close bottom sheet and return selected package
+                                  if (mounted) {
+                                    Navigator.of(context).pop({
+                                      "selectedPackage": package,
+                                    });
+                                  }
+                                } catch (e) {
+                                  // Show error message
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'حدث خطأ أثناء إضافة الباقة',
+                                          textDirection: TextDirection.rtl,
+                                          style: AppTextStyles
+                                              .font16BlackSemiBoldLamaSans
+                                              .copyWith(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        backgroundColor: Colors.red,
+                                        duration: Duration(seconds: 2),
+                                      ),
+                                    );
+                                  }
+                                } finally {
+                                  if (mounted) {
+                                    setState(() {
+                                      isProcessing = false;
+                                    });
+                                  }
+                                }
+                              },
                         child: Container(
                           color: selectedOption == index
                               ? AppColors.lightWhite
@@ -79,6 +126,11 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 verticalSpace(24),
+                                if (isProcessing &&
+                                    selectedOption == index) ...[
+                                  CircularProgressIndicator(),
+                                  verticalSpace(16),
+                                ],
                                 Text(
                                   '${package.name ?? ''} في ${package.countMonths ?? 0} أشهر - ${package.price ?? 0} بريال',
                                   style: AppTextStyles
@@ -123,9 +175,11 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
             ),
             child: Center(
               child: GestureDetector(
-                onTap: () {
-                  context.pop();
-                },
+                onTap: isProcessing
+                    ? null
+                    : () {
+                        context.pop();
+                      },
                 child: Text(
                   'الغاء',
                   style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(

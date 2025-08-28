@@ -10,6 +10,8 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/manager/m
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 
 class ProfileDataLogo extends StatefulWidget {
   const ProfileDataLogo({super.key});
@@ -38,6 +40,10 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
           );
         } else if (state is ManageProfileSuccess) {
           final isFeatured = state.myProfileResponseModel.data?.isFeatured == 1;
+
+          // Save isFeatured status in SharedPreferences
+          SharedPreferencesHelper.setBool(
+              SharedPreferencesKey.isFeatured, isFeatured);
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,

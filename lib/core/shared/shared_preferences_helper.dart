@@ -26,8 +26,25 @@ class SharedPreferencesHelper {
     await flutterSecureStorage.delete(key: key);
   }
 
-  static Future<void> deleteSharedPreferKeys() async{
-     await flutterSecureStorage.delete(key: SharedPreferencesKey.apiTokenKey);
-     await flutterSecureStorage.delete(key: SharedPreferencesKey.verificationTokenKey);
+  static Future<void> deleteSharedPreferKeys() async {
+    await flutterSecureStorage.delete(key: SharedPreferencesKey.apiTokenKey);
+    await flutterSecureStorage.delete(
+        key: SharedPreferencesKey.verificationTokenKey);
+    await flutterSecureStorage.delete(key: SharedPreferencesKey.isFeatured);
+  }
+
+  /// Saves a boolean [value] with a [key] in the FlutterSecureStorage.
+  static Future<void> setBool(String key, bool value) async {
+    debugPrint(
+      "FlutterSecureStorage : setBool with key : $key and value : $value",
+    );
+    await flutterSecureStorage.write(key: key, value: value.toString());
+  }
+
+  /// Gets a boolean value from FlutterSecureStorage with given [key].
+  static Future<bool> getBool(String key) async {
+    debugPrint('FlutterSecureStorage : getBool with key : $key');
+    final value = await flutterSecureStorage.read(key: key);
+    return value == 'true';
   }
 }
