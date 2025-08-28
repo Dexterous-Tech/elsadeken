@@ -29,7 +29,8 @@ class ChatConversationScreen extends StatefulWidget {
   State<ChatConversationScreen> createState() => _ChatConversationScreenState();
 }
 
-class _ChatConversationScreenState extends State<ChatConversationScreen> {
+class _ChatConversationScreenState extends State<ChatConversationScreen>
+    with WidgetsBindingObserver {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<ChatMessage> _messages = [];
@@ -40,9 +41,19 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadChatMessages();
     _loadCurrentUserProfile();
     _initializePusher();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // Re-initialize Pusher if the app is resumed
+      _initializePusher();
+    }
   }
 
   void _initializePusher() {
