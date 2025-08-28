@@ -39,6 +39,21 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+            // Enable R8 with proper configuration
+            isMinifyEnabled = true
+            isShrinkResources = false // Set to false to avoid resource shrinking issues
+            
+            // Use custom proguard rules
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        
+        debug {
+            // Disable minification for debug builds
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }
