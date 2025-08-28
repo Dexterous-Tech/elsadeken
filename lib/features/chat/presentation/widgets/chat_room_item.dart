@@ -47,6 +47,7 @@ class ChatRoomItem extends StatelessWidget {
               imageUrl: chat.otherUser.image,
               size: 50,
               showOnlineIndicator: false,
+              unreadCount: chat.unreadCount,
             ),
             SizedBox(width: 12.w),
             Expanded(

@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/theme/font_family_helper.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -527,6 +528,19 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         setState(() {
           _messages.add(chatMessage);
         });
+
+        // Update the chat list to reflect the new message
+        // This ensures the chat list shows updated unread count and last message
+        try {
+          final chatListCubit = context.read<ChatListCubit>();
+          if (chatListCubit != null) {
+            // Refresh the chat list to show the new message
+            chatListCubit.getChatList();
+            print('[ChatConversationScreen] Chat list refreshed after receiving Pusher message');
+          }
+        } catch (e) {
+          print('[ChatConversationScreen] Error refreshing chat list: $e');
+        }
 
         // Scroll to bottom
         Future.delayed(Duration(milliseconds: 100), () {

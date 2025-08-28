@@ -5,6 +5,7 @@ import 'package:elsadeken/features/auth/login/presentation/view/login_screen.dar
 import 'package:elsadeken/features/auth/new_password/presentation/view/new_password_screen.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/signup_screen.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/view/verification_email_screen.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/home/home/presentation/view/home_screen.dart';
 import 'package:elsadeken/features/home/notification/presentation/view/notification_screen.dart';
 import 'package:elsadeken/features/home/person_details/view/person_details.dart';
@@ -170,6 +171,7 @@ class AppRouting {
               BlocProvider(create: (context) => sl<ManageProfileCubit>()),
               BlocProvider(create: (context) => sl<SendMessageCubit>()),
               BlocProvider(create: (context) => sl<PusherCubit>()),
+              BlocProvider(create: (context) => sl<ChatListCubit>()),
             ],
             child: ChatConversationScreen(chatRoom: chatRoom),
           ),
