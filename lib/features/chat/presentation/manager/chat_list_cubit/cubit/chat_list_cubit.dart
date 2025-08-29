@@ -20,10 +20,14 @@ class ChatListCubit extends Cubit<ChatListState> {
     final Either<ApiErrorModel, ChatListModel> failureOrData =
         await chatListRepo.getAllChatList();
 
-    failureOrData.fold(
-      (failure) => emit(ChatListError(failure.message ?? failure.toString())),
-      (data) => emit(ChatListLoaded(data)),
-    );
+          failureOrData.fold(
+        (failure) => emit(ChatListError(failure.message ?? failure.toString())),
+        (data) {
+          // Sort the chat list by newest message timestamp
+          final sortedData = _sortChatListByNewestMessage(data);
+          emit(ChatListLoaded(sortedData));
+        },
+      );
   }
 
   /// Force refresh chat list and wait for it to be loaded
@@ -42,7 +46,9 @@ class ChatListCubit extends Cubit<ChatListState> {
         },
         (data) {
           print('✅ [ChatListCubit] Chat list refreshed successfully with ${data.data.length} chats');
-          emit(ChatListLoaded(data));
+          // Sort the chat list by newest message timestamp
+          final sortedData = _sortChatListByNewestMessage(data);
+          emit(ChatListLoaded(sortedData));
         },
       );
     } catch (e) {
@@ -64,7 +70,9 @@ class ChatListCubit extends Cubit<ChatListState> {
         },
         (data) {
           // Only emit loaded state - no loading indicator shown
-          emit(ChatListLoaded(data));
+          // Sort the chat list by newest message timestamp
+          final sortedData = _sortChatListByNewestMessage(data);
+          emit(ChatListLoaded(sortedData));
         },
       );
     } catch (e) {
@@ -86,8 +94,9 @@ class ChatListCubit extends Cubit<ChatListState> {
         }).toList(),
       );
       
-      // Emit updated state
-      emit(ChatListLoaded(updatedChatList));
+      // Sort and emit updated state
+      final sortedChatList = _sortChatListByNewestMessage(updatedChatList);
+      emit(ChatListLoaded(sortedChatList));
     }
   }
 
@@ -156,8 +165,9 @@ class ChatListCubit extends Cubit<ChatListState> {
               ).toList(),
             );
             
-            // Emit updated state
-            emit(ChatListLoaded(updatedChatList));
+            // Sort and emit updated state
+            final sortedChatList = _sortChatListByNewestMessage(updatedChatList);
+            emit(ChatListLoaded(sortedChatList));
           }
         },
       );
@@ -240,7 +250,9 @@ class ChatListCubit extends Cubit<ChatListState> {
             final updatedChatList = currentState.chatList.copyWith(
               data: currentState.chatList.data.where((chat) => chat.id != chatId).toList(),
             );
-            emit(ChatListLoaded(updatedChatList));
+            // Sort and emit updated state
+            final sortedChatList = _sortChatListByNewestMessage(updatedChatList);
+            emit(ChatListLoaded(sortedChatList));
           }
         },
       );
@@ -279,6 +291,79 @@ class ChatListCubit extends Cubit<ChatListState> {
     } catch (e) {
       print('[ChatListCubit] Exception in deleteAllChats: $e');
       emit(ChatListError('حدث خطأ أثناء حذف جميع المحادثات'));
+    }
+  }
+
+  /// Sort chat list by newest message timestamp
+  ChatListModel _sortChatListByNewestMessage(ChatListModel chatList) {
+    final sortedData = List<ChatData>.from(chatList.data);
+    
+    sortedData.sort((a, b) {
+      // If both have last messages, compare by timestamp
+      if (a.lastMessage != null && b.lastMessage != null) {
+        final aTime = DateTime.tryParse(a.lastMessage!.createdAt) ?? DateTime(1900);
+        final bTime = DateTime.tryParse(b.lastMessage!.createdAt) ?? DateTime(1900);
+        return bTime.compareTo(aTime); // Newest first (descending order)
+      }
+      
+      // If only one has last message, prioritize the one with message
+      if (a.lastMessage != null && b.lastMessage == null) {
+        return -1; // a comes first
+      }
+      if (a.lastMessage == null && b.lastMessage != null) {
+        return 1; // b comes first
+      }
+      
+      // If neither has last message, compare by chat creation time
+      final aCreated = DateTime.tryParse(a.createdAt) ?? DateTime(1900);
+      final bCreated = DateTime.tryParse(b.createdAt) ?? DateTime(1900);
+      return bCreated.compareTo(aCreated); // Newest first
+    });
+    
+    print('🔄 [ChatListCubit] Sorted ${sortedData.length} chats by newest message');
+    
+    return chatList.copyWith(data: sortedData);
+  }
+
+  /// Handle new message and update chat list accordingly
+  void handleNewMessage(int chatId, String messageBody, String timestamp, int senderId) {
+    final currentState = state;
+    if (currentState is ChatListLoaded) {
+      // Find the chat and update its last message
+      final updatedChatList = currentState.chatList.copyWith(
+        data: currentState.chatList.data.map((chat) {
+          if (chat.id == chatId) {
+            // Create a new last message
+            final newLastMessage = LastMessage(
+              id: chat.lastMessage?.id ?? 0,
+              chatId: chatId,
+              senderId: senderId,
+              receiverId: chat.otherUser.id,
+              body: messageBody,
+              isReported: 0,
+              isMuted: 0,
+              createdAt: timestamp,
+            );
+            
+            // Update unread count if message is from other user
+            final newUnreadCount = senderId != chat.otherUser.id 
+                ? chat.unreadCount + 1 
+                : chat.unreadCount;
+            
+            return chat.copyWith(
+              lastMessage: newLastMessage,
+              unreadCount: newUnreadCount,
+            );
+          }
+          return chat;
+        }).toList(),
+      );
+      
+      // Sort and emit updated state
+      final sortedChatList = _sortChatListByNewestMessage(updatedChatList);
+      emit(ChatListLoaded(sortedChatList));
+      
+      print('🔄 [ChatListCubit] Updated chat $chatId with new message and re-sorted list');
     }
   }
 

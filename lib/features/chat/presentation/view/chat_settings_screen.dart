@@ -282,10 +282,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                               ),
                             ),
                           ),
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                            child: _buildBody(state),
-                          ),
+                          child: _buildBody(state),
                         ),
                       ),
                     ],
@@ -422,21 +419,21 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildConnectionStatusSection(),
-                SizedBox(height: 24.h),
+                SizedBox(height: 50.h),
                 _buildDivider(),
-                SizedBox(height: 24.h),
+                SizedBox(height: 50.h),
                 _buildWhoCanSendSection(),
-                SizedBox(height: 24.h),
+                SizedBox(height: 50.h),
                 _buildDivider(),
-                SizedBox(height: 12.h),
-                _buildNotificationSettingsSection(),
+                SizedBox(height: 50.h),
+               // _buildNotificationSettingsSection(),
               ],
             ),
           ),
         ),
-        SizedBox(height: 40.h),
+        Spacer(),
         _buildSaveButton(),
-        SizedBox(height: 100.h),
+        SizedBox(height: 10.h),
       ],
     );
   }
@@ -640,16 +637,19 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         print('  hasChanges: $hasChanges');
         print('  Button enabled: ${!(isLoading || !hasSettings || !hasChanges)}');
         
-        return CustomElevatedButton(
-          onPressed: (isLoading || !hasSettings || !hasChanges) ? () {} : _saveSettings,
-          textButton: isLoading ? 'جاري الحفظ...' : 'حفظ',
-          height: 56.h,
-          radius: 28.r,
-          styleTextButton: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: CustomElevatedButton(
+            onPressed: (isLoading || !hasSettings || !hasChanges) ? () {} : _saveSettings,
+            textButton: isLoading ? 'جاري الحفظ...' : 'حفظ',
+            height: 56.h,
+            radius: 28.r,
+            styleTextButton: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+            ),
+            backgroundColor: (isLoading || !hasSettings || !hasChanges) ? Colors.grey : null,
           ),
-          backgroundColor: (isLoading || !hasSettings || !hasChanges) ? Colors.grey : null,
         );
       },
     );
@@ -791,7 +791,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         Navigator.pop(context);
                       }),
                       // Dynamic options from API
-                      ...currentState.nationalities.map((nationality) => 
+                      ...currentState.nationalities.map((nationality) =>
                         _buildDialogOption(
                           nationality.name,
                           () {
@@ -925,7 +925,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         Navigator.pop(context);
                       }),
                       // Dynamic options from API
-                      ...currentState.countries.map((country) => 
+                      ...currentState.countries.map((country) =>
                         _buildDialogOption(
                           country.name,
                           () {
