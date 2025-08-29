@@ -23,22 +23,66 @@ class ChatListCubit extends Cubit<ChatListState> {
     );
   }
 
+  /// Force refresh chat list and wait for it to be loaded
+  Future<void> forceRefreshChatList() async {
+    try {
+      print('🔄 [ChatListCubit] Force refreshing chat list...');
+      emit(const ChatListLoading());
+      
+      final Either<ApiErrorModel, ChatListModel> failureOrData =
+          await chatListRepo.getAllChatList();
+
+      failureOrData.fold(
+        (failure) {
+          print('❌ [ChatListCubit] Failed to refresh chat list: ${failure.message}');
+          emit(ChatListError(failure.message ?? failure.toString()));
+        },
+        (data) {
+          print('✅ [ChatListCubit] Chat list refreshed successfully with ${data.data.length} chats');
+          emit(ChatListLoaded(data));
+        },
+      );
+    } catch (e) {
+      print('❌ [ChatListCubit] Exception in forceRefreshChatList: $e');
+      emit(ChatListError('حدث خطأ أثناء تحديث قائمة المحادثات'));
+    }
+  }
+
   /// Find an existing chat room by receiver ID
   ChatRoomModel? findExistingChatRoom(int receiverId) {
     try {
+      print('🔍 [ChatListCubit] Looking for existing chat room for user ID: $receiverId');
+      print('🔍 [ChatListCubit] Current state: ${state.runtimeType}');
+      
       final currentState = state;
       if (currentState is ChatListLoaded) {
+        print('🔍 [ChatListCubit] Chat list is loaded, checking ${currentState.chatList.data.length} chats');
+        
+        // Debug: Print all chat data to understand the structure
+        for (int i = 0; i < currentState.chatList.data.length; i++) {
+          final chat = currentState.chatList.data[i];
+          print('🔍 [ChatListCubit] Chat $i: ID=${chat.id}, OtherUserID=${chat.otherUser.id}, OtherUserName=${chat.otherUser.name}');
+        }
+        
         final existingChats = currentState.chatList.data
-            .where((chat) => chat.otherUser.id == receiverId)
+            .where((chat) {
+              print('🔍 [ChatListCubit] Checking chat: ${chat.otherUser.id} vs $receiverId (${chat.otherUser.id == receiverId})');
+              return chat.otherUser.id == receiverId;
+            })
             .toList();
 
         if (existingChats.isNotEmpty) {
+          print('✅ [ChatListCubit] Found existing chat: ${existingChats.first.id}');
           return existingChats.first.toChatRoomModel();
+        } else {
+          print('❌ [ChatListCubit] No existing chat found for user $receiverId');
         }
+      } else {
+        print('⚠️ [ChatListCubit] Chat list not loaded yet. Current state: ${state.runtimeType}');
       }
       return null;
     } catch (e) {
-      print('⚠️ Error finding existing chat room: $e');
+      print('⚠️ [ChatListCubit] Error finding existing chat room: $e');
       return null;
     }
   }

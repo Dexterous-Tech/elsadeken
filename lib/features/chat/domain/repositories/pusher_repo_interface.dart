@@ -24,6 +24,9 @@ abstract class PusherRepoInterface {
   /// Set callback for connection errors
   void setErrorCallback(Function(String) callback);
 
+  /// Set authentication token for private channels
+  void setAuthToken(String token);
+
   /// Check if connected to Pusher
   bool get isConnected;
 

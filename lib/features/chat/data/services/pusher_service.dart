@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:elsadeken/features/chat/data/models/pusher_message_model.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
-import 'package:elsadeken/features/chat/data/models/pusher_message_model.dart';
 
 /// Pusher Configuration
 class PusherConfig {
@@ -16,296 +16,225 @@ class PusherConfig {
   static const bool encrypted = true;
 }
 
-/// Service for managing WebSocket connection with Pusher
+/// Service for managing Pusher connection with WebSocket (EU cluster only)
 class PusherService {
   static PusherService? _instance;
   static PusherService get instance => _instance ??= PusherService._internal();
 
   PusherService._internal();
 
-  WebSocketChannel? _channel;
+  WebSocketChannel? _webSocketChannel;
   bool _isConnected = false;
-  bool _isConnecting = false;
   String? _currentChannelName;
-  Timer? _reconnectTimer;
-  int _reconnectAttempts = 0;
-  static const int _maxReconnectAttempts = 3;
+  String? _authToken;
+
+  // Reconnection management
+  Timer? _reconnectionTimer;
+  int _reconnectionAttempts = 0;
+  static const int _maxReconnectionAttempts = 5;
+  static const int _baseReconnectionDelay = 3; // seconds
 
   // Callbacks
   Function(PusherMessageModel)? onMessageReceived;
   Function(String)? onConnectionEstablished;
   Function(String)? onConnectionError;
 
-  /// Connectivity check
-  Future<bool> _hasInternetConnection() async {
-    try {
-      final client = HttpClient()
-        ..connectionTimeout = const Duration(seconds: 3);
-      final request =
-          await client.getUrl(Uri.parse('https://httpbin.org/status/200'));
-      final response = await request.close();
-      client.close();
-      return response.statusCode == 200;
-    } catch (_) {
-      return true; // fallback, let Pusher handle actual connection
-    }
+  /// Set authentication token for private channels
+  void setAuthToken(String token) {
+    _authToken = token;
+    log('🔑 Auth token set for private channels');
   }
 
-  /// Initialize WebSocket connection
+  /// Initialize WebSocket connection to EU cluster only
   Future<void> initialize() async {
-    // Prevent multiple simultaneous connection attempts
-    if (_isConnecting || _isConnected) {
-      log('⚠️ Connection already in progress or established');
-      return;
-    }
-
     try {
-      _isConnecting = true;
-
-      if (!await _hasInternetConnection()) {
-        log('⚠️ No internet connection');
-        _isConnected = false;
-        _isConnecting = false;
-        onConnectionError?.call('No internet connection available');
+      // Prevent multiple simultaneous initialization attempts
+      if (_isConnected && _webSocketChannel != null) {
+        log('✅ WebSocket already connected, skipping initialization');
         return;
       }
 
-      // Close any existing connection first
-      if (_channel != null) {
+      // Clean up existing connection if any
+      if (_webSocketChannel != null) {
+        log('🔄 Cleaning up existing WebSocket connection...');
         try {
-          _channel!.sink.close();
-          _channel = null;
+          _webSocketChannel!.sink.close();
         } catch (e) {
-          log('⚠️ Error closing existing connection: $e');
+          log('⚠️ Error closing existing WebSocket: $e');
         }
-      }
-
-      // Try eu cluster first (as requested), then fallback options if it fails
-      final clusterOptions = [
-        'eu', // Primary - your preferred cluster
-        'us-east-1', // Fallback if eu fails
-        'ap1', // Asia Pacific fallback
-        'ap2', // Asia Pacific 2 fallback
-      ];
-
-      bool connectionSuccessful = false;
-      String lastError = '';
-
-      for (final cluster in clusterOptions) {
-        if (connectionSuccessful) break;
-
-        try {
-          final wsUrl =
-              'wss://ws-$cluster.pusherapp.com/app/${PusherConfig.appKey}?protocol=7&client=dart&version=1.0&flash=false';
-          log('🔄 Attempting connection to: $wsUrl');
-
-          // Create the WebSocket connection with error handling
-          try {
-            _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
-          } catch (e) {
-            log('⚠️ Failed to create WebSocket connection to $cluster: $e');
-            lastError = e.toString();
-            continue; // Try next cluster
-          }
-
-          // Wait for connection to establish with timeout
-          bool connectionEstablished = false;
-
-          try {
-            await Future.delayed(Duration(milliseconds: 3000));
-
-            // Check if connection is established and working
-            if (_channel != null && _channel!.sink != null) {
-              // Test the connection by sending a ping
-              try {
-                _channel!.sink.add(jsonEncode({'event': 'pusher:ping'}));
-                connectionEstablished = true;
-                connectionSuccessful = true;
-                _isConnected = true;
-                _isConnecting = false;
-                _reconnectAttempts = 0; // Reset reconnect attempts on success
-
-                onConnectionEstablished
-                    ?.call('Connected to Pusher via $cluster cluster');
-                log('✅ Pusher WebSocket service initialized successfully via $cluster cluster');
-                break;
-              } catch (pingError) {
-                log('⚠️ Connection test failed for $cluster: $pingError');
-                // Close failed connection and try next cluster
-                try {
-                  _channel!.sink.close();
-                  _channel = null;
-                } catch (closeError) {
-                  log('⚠️ Error closing failed connection: $closeError');
-                }
-                continue;
-              }
-            }
-          } catch (e) {
-            lastError = e.toString();
-            log('⚠️ Connection timeout or error for $cluster cluster: $e');
-
-            // Close failed connection
-            if (_channel != null) {
-              try {
-                _channel!.sink.close();
-                _channel = null;
-              } catch (closeError) {
-                log('⚠️ Error closing failed connection: $closeError');
-              }
-            }
-          }
-
-          // Wait before trying next cluster
-          await Future.delayed(Duration(milliseconds: 1000));
-        } catch (e) {
-          lastError = e.toString();
-          log('⚠️ Failed to connect to $cluster cluster: $e');
-
-          // Close any existing connection before trying next
-          if (_channel != null) {
-            try {
-              _channel!.sink.close();
-              _channel = null;
-            } catch (closeError) {
-              log('⚠️ Error closing connection: $closeError');
-            }
-          }
-
-          // Wait before trying next cluster
-          await Future.delayed(Duration(milliseconds: 1000));
-        }
-      }
-
-      if (!connectionSuccessful) {
-        log('❌ Failed to connect to any Pusher cluster');
+        _webSocketChannel = null;
         _isConnected = false;
-        _isConnecting = false;
-        onConnectionError
-            ?.call('Unable to connect to any Pusher cluster: $lastError');
+      }
 
-        // Schedule reconnection attempt
+      log('🔄 Initializing WebSocket connection to EU cluster...');
+
+      // Use only EU cluster as backend depends on it
+      final wsUrl =
+          'wss://ws-${PusherConfig.cluster}.pusherapp.com/app/${PusherConfig.appKey}?protocol=7&client=dart&version=1.0&flash=false';
+      log('🔗 Connecting to: $wsUrl');
+
+      _webSocketChannel = WebSocketChannel.connect(Uri.parse(wsUrl));
+
+      // Wait for connection
+      await Future.delayed(Duration(milliseconds: 2000));
+
+      if (_webSocketChannel != null) {
+        _isConnected = true;
+        _resetReconnectionAttempts(); // Reset reconnection attempts on successful connection
+        onConnectionEstablished?.call('Connected to Pusher via EU cluster');
+        log('✅ WebSocket connected successfully via EU cluster');
+
+        _webSocketChannel!.stream.listen(
+          (message) => _handleWebSocketMessage(message),
+          onDone: () {
+            log('❌ WebSocket closed');
+            _isConnected = false;
+            _webSocketChannel = null;
+            // Schedule reconnection
+            _scheduleReconnection();
+          },
+          onError: (error) {
+            log('❌ WebSocket error: $error');
+            _isConnected = false;
+            _webSocketChannel = null;
+            onConnectionError?.call(error.toString());
+            // Schedule reconnection
+            _scheduleReconnection();
+          },
+        );
+      } else {
+        log('❌ Failed to connect to EU cluster');
+        _isConnected = false;
+        onConnectionError?.call('Failed to connect to EU cluster');
+        // Schedule reconnection for connection failures
         _scheduleReconnection();
-        return;
       }
-
-      // Set up message handling
-      _channel!.stream.listen(
-        (message) => _handleWebSocketMessage(message),
-        onDone: () {
-          log('❌ WebSocket closed');
-          _isConnected = false;
-          _isConnecting = false;
-          _scheduleReconnection();
-        },
-        onError: (error) {
-          log('❌ WebSocket error: $error');
-          _isConnected = false;
-          _isConnecting = false;
-          onConnectionError?.call(error.toString());
-          _scheduleReconnection();
-        },
-        cancelOnError: false, // Don't cancel on error, let us handle it
-      );
     } catch (e) {
-      log('⚠️ Initialization error: $e');
+      log('❌ WebSocket initialization failed: $e');
       _isConnected = false;
-      _isConnecting = false;
-      onConnectionError?.call('Initialization failed: $e');
+      _webSocketChannel = null;
+      onConnectionError?.call('WebSocket failed: $e');
+      // Schedule reconnection for initialization failures
       _scheduleReconnection();
     }
   }
 
-  /// Schedule reconnection attempt
+  /// Reset reconnection attempts when connection is successful
+  void _resetReconnectionAttempts() {
+    _reconnectionAttempts = 0;
+    _reconnectionTimer?.cancel();
+    _reconnectionTimer = null;
+    log('✅ Reconnection attempts reset to 0');
+  }
+
+  /// Dispose of the WebSocket connection
+  void dispose() {
+    log('🔄 Disposing WebSocket connection...');
+
+    // Cancel any pending reconnection timer
+    _reconnectionTimer?.cancel();
+    _reconnectionTimer = null;
+
+    if (_webSocketChannel != null) {
+      try {
+        _webSocketChannel!.sink.close();
+      } catch (e) {
+        log('⚠️ Error closing WebSocket during dispose: $e');
+      }
+      _webSocketChannel = null;
+    }
+    _isConnected = false;
+    _currentChannelName = null;
+    _reconnectionAttempts = 0; // Reset reconnection attempts
+    log('✅ WebSocket connection disposed');
+  }
+
+  /// Schedule automatic reconnection
   void _scheduleReconnection() {
-    if (_reconnectAttempts >= _maxReconnectAttempts) {
-      log('⚠️ Max reconnection attempts reached');
+    if (_isConnected) return; // Already reconnecting or connected
+
+    // Check if we've exceeded maximum reconnection attempts
+    if (_reconnectionAttempts >= _maxReconnectionAttempts) {
+      log('❌ Maximum reconnection attempts ($_maxReconnectionAttempts) reached. Stopping reconnection.');
+      onConnectionError?.call(
+          'Failed to connect after $_maxReconnectionAttempts attempts. Please check your network connection.');
       return;
     }
 
-    if (_reconnectTimer != null) {
-      _reconnectTimer!.cancel();
-    }
+    // Cancel any existing reconnection timer
+    _reconnectionTimer?.cancel();
 
-    _reconnectAttempts++;
-    final delay =
-        Duration(seconds: _reconnectAttempts * 2); // Exponential backoff
+    // Calculate delay with exponential backoff
+    final delay = _baseReconnectionDelay *
+        (1 <<
+            _reconnectionAttempts); // Exponential backoff: 3, 6, 12, 24, 48 seconds
+    _reconnectionAttempts++;
 
-    log('🔄 Scheduling reconnection attempt $_reconnectAttempts in ${delay.inSeconds} seconds');
+    log('🔄 Scheduling reconnection attempt $_reconnectionAttempts in ${delay} seconds... (${_maxReconnectionAttempts - _reconnectionAttempts} attempts remaining)');
 
-    _reconnectTimer = Timer(delay, () {
-      if (!_isConnected && !_isConnecting) {
-        log('🔄 Attempting reconnection...');
-        initialize();
+    _reconnectionTimer = Timer(Duration(seconds: delay), () async {
+      if (!_isConnected) {
+        log('🔄 Attempting reconnection $_reconnectionAttempts...');
+        try {
+          await initialize();
+        } catch (e) {
+          log('❌ Reconnection attempt $_reconnectionAttempts failed: $e');
+          // Schedule next reconnection attempt if we haven't reached the limit
+          if (_reconnectionAttempts < _maxReconnectionAttempts) {
+            _scheduleReconnection();
+          }
+        }
       }
     });
   }
 
-  /// Check connection health and reconnect if needed
-  Future<bool> checkConnectionHealth() async {
-    try {
-      if (_channel == null || !_isConnected) {
-        log('🔄 Connection unhealthy, reconnecting...');
-        await initialize();
-        return _isConnected;
-      }
-
-      // Check if the sink is still valid
-      if (_channel!.sink == null) {
-        log('⚠️ WebSocket sink is null, reconnecting...');
-        await initialize();
-        return _isConnected;
-      }
-
-      // Try a ping
-      try {
-        _channel!.sink.add(jsonEncode({'event': 'pusher:ping'}));
-        return true;
-      } catch (e) {
-        log('⚠️ Ping failed, reconnecting...');
-        await initialize();
-        return _isConnected;
-      }
-    } catch (e) {
-      log('❌ Connection health check failed: $e');
-      return false;
-    }
-  }
-
   /// Subscribe to a private chat channel
   Future<void> subscribeToChatChannel(int chatRoomId) async {
-    if (_channel == null || !_isConnected) {
-      log('⚠️ No active connection, initializing first...');
+    // Only initialize if not connected and no WebSocket exists
+    if (!_isConnected || _webSocketChannel == null) {
+      log('🔄 WebSocket not connected, initializing first...');
       await initialize();
 
-      // Wait a bit for connection to establish
-      if (!_isConnected) {
-        log('⚠️ Still no connection after initialization');
-        return;
-      }
+      // Wait a bit for connection to stabilize
+      await Future.delayed(Duration(milliseconds: 500));
+    }
+
+    // Check if we're actually connected now
+    if (!_isConnected || _webSocketChannel == null) {
+      log('❌ Failed to establish WebSocket connection for subscription');
+      onConnectionError
+          ?.call('Failed to establish connection for subscription');
+      return;
     }
 
     final channelName = 'private-chat.$chatRoomId';
     _currentChannelName = channelName;
 
-    final subscribeMessage = {
-      'event': 'pusher:subscribe',
-      'data': {
-        'auth': '', // TODO: add backend auth if required
-        'channel': channelName,
-      }
-    };
+    log('🔗 Subscribing to private channel: $channelName');
 
-    log('🔗 Subscribing to $channelName');
-    try {
-      _channel!.sink.add(jsonEncode(subscribeMessage));
-    } catch (e) {
-      log('❌ Error sending subscription message: $e');
-      onConnectionError?.call('Subscription failed: $e');
+    if (_webSocketChannel != null) {
+      // WebSocket subscription for private channel
+      if (_authToken == null) {
+        log('⚠️ No auth token available for private channel subscription');
+        onConnectionError?.call('Authentication required for private channel');
+        return;
+      }
+
+      final subscribeMessage = {
+        'event': 'pusher:subscribe',
+        'data': {
+          'auth': _authToken, // Use the auth token for private channels
+          'channel': channelName,
+        }
+      };
+
+      log('🔐 Sending authenticated subscription with token: ${_authToken!.substring(0, 20)}...');
+      _webSocketChannel!.sink.add(jsonEncode(subscribeMessage));
+      log('✅ WebSocket authenticated subscription sent');
     }
   }
 
-  /// Handle incoming messages
+  /// Handle WebSocket messages
   void _handleWebSocketMessage(dynamic message) {
     try {
       if (message is! String) {
@@ -323,6 +252,9 @@ class PusherService {
         log('✅ Pusher connected');
       } else if (eventType == 'pusher:subscription_succeeded') {
         log('✅ Subscription succeeded for $_currentChannelName');
+      } else if (eventType == 'pusher:subscription_error') {
+        log('❌ Subscription failed: ${data['data']}');
+        onConnectionError?.call('Subscription failed: ${data['data']}');
       } else if (eventType == 'App\\Events\\MessageSent') {
         log('💬 Message event received');
         final messageData = data['data'];
@@ -343,7 +275,6 @@ class PusherService {
 
   void _processMessage(Map<String, dynamic> json) {
     try {
-      // Your backend wraps the actual payload inside `message`
       final messageJson = json['message'] as Map<String, dynamic>;
       final pusherMessage = PusherMessageModel.fromJson(messageJson);
       log('✅ Parsed PusherMessage: ${pusherMessage.body}');
@@ -353,30 +284,84 @@ class PusherService {
     }
   }
 
-  /// Unsubscribe
+  /// Unsubscribe from the current chat channel
   void unsubscribeFromChatChannel() {
-    if (_currentChannelName == null || _channel == null) return;
+    if (_currentChannelName == null || _webSocketChannel == null) return;
 
     final unsubscribeMessage = {
       'event': 'pusher:unsubscribe',
       'data': {'channel': _currentChannelName}
     };
 
-    _channel!.sink.add(jsonEncode(unsubscribeMessage));
-    log('🚪 Unsubscribed from $_currentChannelName');
+    _webSocketChannel!.sink.add(jsonEncode(unsubscribeMessage));
+    log('🚪 WebSocket unsubscribed from $_currentChannelName');
     _currentChannelName = null;
   }
 
   /// Disconnect
   void disconnect() {
-    unsubscribeFromChatChannel();
-    _channel?.sink.close(status.goingAway);
-    _channel = null;
-    _isConnected = false;
-    _isConnecting = false;
-    log('🔌 Disconnected');
+    try {
+      unsubscribeFromChatChannel();
+      _webSocketChannel?.sink.close(status.goingAway);
+      _webSocketChannel = null;
+      _isConnected = false;
+      log('🔌 Disconnected');
+    } catch (e) {
+      log('❌ Error disconnecting: $e');
+    }
   }
 
   bool get isConnected => _isConnected;
   String? get currentChannelName => _currentChannelName;
+
+  /// Check the health of the connection
+  Future<bool> checkConnectionHealth() async {
+    try {
+      if (_webSocketChannel == null || !_isConnected) {
+        log('🔄 Connection unhealthy, reconnecting...');
+        await initialize();
+        return _isConnected;
+      }
+
+      // Try a ping to test connection
+      try {
+        _webSocketChannel!.sink.add(jsonEncode({'event': 'pusher:ping'}));
+        log('✅ Connection health check passed');
+        return true;
+      } catch (e) {
+        log('⚠️ Ping failed, reconnecting...');
+        await initialize();
+        return _isConnected;
+      }
+    } catch (e) {
+      log('❌ Connection health check failed: $e');
+      return false;
+    }
+  }
+
+  /// Get connection status details for debugging
+  Map<String, dynamic> getConnectionStatus() {
+    return {
+      'isConnected': _isConnected,
+      'hasWebSocket': _webSocketChannel != null,
+      'currentChannel': _currentChannelName,
+      'hasAuthToken': _authToken != null,
+      'cluster': PusherConfig.cluster,
+    };
+  }
+
+  /// Force reconnection (useful for debugging)
+  Future<void> forceReconnect() async {
+    log('🔄 Force reconnection requested...');
+    _isConnected = false;
+    if (_webSocketChannel != null) {
+      try {
+        _webSocketChannel!.sink.close();
+      } catch (e) {
+        log('⚠️ Error closing connection during force reconnect: $e');
+      }
+      _webSocketChannel = null;
+    }
+    await initialize();
+  }
 }

@@ -65,6 +65,11 @@ class PusherRepoImpl implements PusherRepoInterface {
   }
 
   @override
+  void setAuthToken(String token) {
+    _pusherService.setAuthToken(token);
+  }
+
+  @override
   bool get isConnected => _pusherService.isConnected;
 
   @override
