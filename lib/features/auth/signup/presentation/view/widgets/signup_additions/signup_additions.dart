@@ -81,24 +81,14 @@ class _SignupAdditionsState extends State<SignupAdditions> {
 
                   verticalSpace(40),
 
-                  // Beard/Hijab selection based on gender
-                  SignupMultiChoice(
-                      height: 170.h,
-                      title: widget.gender == 'male' || widget.gender == 'ذكر'
-                          ? 'اللحية'
-                          : 'الحجاب ؟',
-                      options:
-                          (widget.gender == 'male' || widget.gender == 'ذكر'
-                                  ? beardOptions
-                                  : hijabOptions)
-                              .values
-                              .toList(),
-                      selected:
-                          (widget.gender == 'male' || widget.gender == 'ذكر'
-                              ? beardOptions[cubit.beardController.text]
-                              : hijabOptions[cubit.hijabController.text]),
-                      onChanged: (newStatus) {
-                        if (widget.gender == 'male' || widget.gender == 'ذكر') {
+                  // Beard selection for males
+                  if (widget.gender == 'male' || widget.gender == 'ذكر')
+                    SignupMultiChoice(
+                        height: 110.h,
+                        title: 'اللحية',
+                        options: beardOptions.values.toList(),
+                        selected: beardOptions[cubit.beardController.text],
+                        onChanged: (newStatus) {
                           // Handle beard selection
                           String? selectedKey = beardOptions.entries
                               .firstWhere((entry) => entry.value == newStatus,
@@ -109,17 +99,28 @@ class _SignupAdditionsState extends State<SignupAdditions> {
                             cubit.beardController.text = selectedKey;
                             setState(() {});
                           }
-                        } else {
-                          // Handle hijab selection
-                          String? selectedKey = hijabOptions.entries
-                              .firstWhere((entry) => entry.value == newStatus,
-                                  orElse: () => const MapEntry('', ''))
-                              .key;
+                        }),
 
-                          if (selectedKey.isNotEmpty) {
-                            cubit.hijabController.text = selectedKey;
-                            setState(() {});
-                          }
+                  verticalSpace(40),
+
+                  // Hijab selection for both males and females with different titles
+                  SignupMultiChoice(
+                      height: 170.h,
+                      title: (widget.gender == 'male' || widget.gender == 'ذكر')
+                          ? 'هل تريد شريك حياتك بحجاب ؟'
+                          : 'الحجاب ؟',
+                      options: hijabOptions.values.toList(),
+                      selected: hijabOptions[cubit.hijabController.text],
+                      onChanged: (newStatus) {
+                        // Handle hijab selection
+                        String? selectedKey = hijabOptions.entries
+                            .firstWhere((entry) => entry.value == newStatus,
+                                orElse: () => const MapEntry('', ''))
+                            .key;
+
+                        if (selectedKey.isNotEmpty) {
+                          cubit.hijabController.text = selectedKey;
+                          setState(() {});
                         }
                       }),
 
@@ -145,12 +146,17 @@ class _SignupAdditionsState extends State<SignupAdditions> {
     bool hasSmoking = cubit.smokingController.text.isNotEmpty &&
         smokingOptions.containsKey(cubit.smokingController.text);
 
-    // Must select beard for males or hijab for females
+    // Must select beard for males and hijab for both
     bool hasBeardOrHijab;
     if (widget.gender == 'male' || widget.gender == 'ذكر') {
-      hasBeardOrHijab = cubit.beardController.text.isNotEmpty &&
+      // For males: must have both beard and hijab
+      bool hasBeard = cubit.beardController.text.isNotEmpty &&
           beardOptions.containsKey(cubit.beardController.text);
+      bool hasHijab = cubit.hijabController.text.isNotEmpty &&
+          hijabOptions.containsKey(cubit.hijabController.text);
+      hasBeardOrHijab = hasBeard && hasHijab;
     } else {
+      // For females: must have hijab
       hasBeardOrHijab = cubit.hijabController.text.isNotEmpty &&
           hijabOptions.containsKey(cubit.hijabController.text);
     }

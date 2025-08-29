@@ -878,7 +878,9 @@ class _ManageProfileDialogContentState
             widget.controllers['الإلتزام الديني']?.text ?? '';
         final prayer = widget.controllers['الصلاة']?.text ?? '';
         final smokingStr = widget.controllers['التدخين']?.text ?? '';
-        final hijab = widget.controllers['الحجاب']?.text ?? '';
+        final hijab = widget.controllers['هل تريد شريك حياتك بحجاب ؟']?.text ??
+            widget.controllers['الحجاب']?.text ??
+            '';
         final beard = widget.controllers['اللحية']?.text ?? '';
 
         // Debug: Print collected values

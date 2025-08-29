@@ -49,7 +49,7 @@ class ManageProfileReligion extends StatelessWidget {
           ),
         ),
         ManageProfileCustomSeparator(),
-        // Show beard for males, hijab for females
+        // Show beard for males
         if (profileData?.gender == 'male' || profileData?.gender == 'ذكر')
           ManageProfileContentItem(
             title: 'اللحية',
@@ -57,15 +57,18 @@ class ManageProfileReligion extends StatelessWidget {
               text: profileData?.attribute?.beard ?? '',
               isLoading: isLoading,
             ),
-          )
-        else
-          ManageProfileContentItem(
-            title: 'الحجاب',
-            itemContent: ManageProfileContentText(
-              text: profileData?.attribute?.hijab ?? '',
-              isLoading: isLoading,
-            ),
           ),
+        ManageProfileCustomSeparator(),
+        // Show hijab for both males and females with different titles
+        ManageProfileContentItem(
+          title: (profileData?.gender == 'male' || profileData?.gender == 'ذكر')
+              ? 'هل تريد شريك حياتك بحجاب ؟'
+              : 'الحجاب',
+          itemContent: ManageProfileContentText(
+            text: profileData?.attribute?.hijab ?? '',
+            isLoading: isLoading,
+          ),
+        ),
         verticalSpace(20),
         ManageProfileEditButton(
           onPressed: isLoading ? null : () => _showReligionEditDialog(context),
@@ -116,7 +119,7 @@ class ManageProfileReligion extends StatelessWidget {
             'لا',
           ],
         ),
-        // Show beard for males, hijab for females
+        // Show beard for males
         if (profileData?.gender == 'male' || profileData?.gender == 'ذكر')
           ManageProfileField(
             label: 'اللحية',
@@ -124,15 +127,17 @@ class ManageProfileReligion extends StatelessWidget {
             currentValue: _mapBeardToDisplay(profileData?.attribute?.beard),
             type: ManageProfileFieldType.dropdown,
             options: beardOptions.values.toList(),
-          )
-        else
-          ManageProfileField(
-            label: 'الحجاب',
-            hint: 'اختر حالة الحجاب',
-            currentValue: _mapHijabToDisplay(profileData?.attribute?.hijab),
-            type: ManageProfileFieldType.dropdown,
-            options: scarfOptions.values.toList(),
           ),
+        // Show hijab for both males and females with different labels
+        ManageProfileField(
+          label: (profileData?.gender == 'male' || profileData?.gender == 'ذكر')
+              ? 'هل تريد شريك حياتك بحجاب ؟'
+              : 'الحجاب',
+          hint: 'اختر حالة الحجاب',
+          currentValue: _mapHijabToDisplay(profileData?.attribute?.hijab),
+          type: ManageProfileFieldType.dropdown,
+          options: scarfOptions.values.toList(),
+        ),
       ],
     );
 

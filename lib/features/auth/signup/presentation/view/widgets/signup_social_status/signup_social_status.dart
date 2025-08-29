@@ -51,7 +51,7 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
       };
     } else {
       return {
-        'only_one': 'الزوج الوحيد',
+        'only_one': 'الزوجة الوحيدة',
         'multi': 'لا مانع من تعدل الزوجات',
       };
     }
