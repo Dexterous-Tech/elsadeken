@@ -15,7 +15,6 @@ import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
 import 'package:elsadeken/features/chat/data/services/chat_message_service.dart';
-import 'package:elsadeken/core/services/firebase_notification_service.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -30,6 +29,9 @@ class _ChatScreenState extends State<ChatScreen>
   
   // Stream subscriptions for real-time updates
   StreamSubscription<void>? _refreshChatListSubscription;
+  
+  // Track if this is the first load
+  bool _hasLoadedInitially = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -43,19 +45,23 @@ class _ChatScreenState extends State<ChatScreen>
   }
 
   void _setupRealTimeListeners() {
-    // Listen for chat list refresh requests
+    // Listen for chat list refresh requests from Firebase notifications only
     _refreshChatListSubscription = ChatMessageService.instance.refreshChatListStream.listen((_) {
       if (mounted) {
-        print('[ChatScreen] Real-time refresh requested, updating chat list...');
-        context.read<ChatListCubit>().forceRefreshChatList();
+        print('🔔 [ChatScreen] Firebase notification triggered chat list refresh');
+        // Silent background refresh - no UI indicators
+        context.read<ChatListCubit>().silentRefreshChatList();
       }
     });
+    
+    print('🔔 [ChatScreen] Chat list now depends on Firebase notifications for updates');
   }
 
   @override
   void dispose() {
     // Cancel stream subscriptions
     _refreshChatListSubscription?.cancel();
+    
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -124,13 +130,33 @@ class _ChatScreenState extends State<ChatScreen>
 
   /// 🔹 Chat Content
   Widget _buildChatContent() {
-    return BlocBuilder<ChatListCubit, ChatListState>(
+    return BlocConsumer<ChatListCubit, ChatListState>(
+      listener: (context, state) {
+        // Mark that we've loaded initially when we get our first successful load
+        if (state is ChatListLoaded) {
+          _hasLoadedInitially = true;
+        }
+      },
+      buildWhen: (previous, current) {
+        // Prevent rebuilding with loading state after initial load
+        if (_hasLoadedInitially && current is ChatListLoading) {
+          return false; // Don't rebuild for subsequent loading states
+        }
+        return true;
+      },
       builder: (context, state) {
-        if (state is ChatListLoading) {
+        // Only show loading indicator for the very first load
+        if (state is ChatListLoading && !_hasLoadedInitially) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is ChatListError) {
+        }
+        
+        // Show error state only if we haven't loaded yet
+        if (state is ChatListError && !_hasLoadedInitially) {
           return _buildEmptyState();
-        } else if (state is ChatListLoaded) {
+        }
+        
+        // Show loaded state
+        if (state is ChatListLoaded) {
           final chats = state.chatList.data;
 
           final filteredChats = _selectedTabIndex == 1
@@ -168,6 +194,8 @@ class _ChatScreenState extends State<ChatScreen>
             },
           );
         }
+        
+        // Default fallback
         return _buildEmptyState();
       },
     );
@@ -199,24 +227,8 @@ class _ChatScreenState extends State<ChatScreen>
   /// 🔹 Mark Chat as Read
   void _markChatAsRead(ChatData chat) {
     if (chat.unreadCount > 0) {
-      print('[ChatScreen] Marking chat ${chat.id} as read');
-      
-      // Get current state
-      final currentState = context.read<ChatListCubit>().state;
-      if (currentState is ChatListLoaded) {
-        // Create updated chat list with this chat marked as read
-        final updatedChatList = currentState.chatList.copyWith(
-          data: currentState.chatList.data.map((c) {
-            if (c.id == chat.id) {
-              return c.copyWith(unreadCount: 0);
-            }
-            return c;
-          }).toList(),
-        );
-        
-        // Emit updated state
-        context.read<ChatListCubit>().emit(ChatListLoaded(updatedChatList));
-      }
+      // Mark chat as read using the cubit's method
+      context.read<ChatListCubit>().markChatAsRead(chat.id);
     }
   }
 

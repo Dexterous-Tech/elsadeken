@@ -12,7 +12,10 @@ class ChatListCubit extends Cubit<ChatListState> {
   ChatListCubit(this.chatListRepo) : super(const ChatListInitial());
 
   Future<void> getChatList() async {
-    emit(const ChatListLoading());
+    // Only show loading if this is a completely fresh start
+    if (state is ChatListInitial) {
+      emit(const ChatListLoading());
+    }
 
     final Either<ApiErrorModel, ChatListModel> failureOrData =
         await chatListRepo.getAllChatList();
@@ -45,6 +48,46 @@ class ChatListCubit extends Cubit<ChatListState> {
     } catch (e) {
       print('❌ [ChatListCubit] Exception in forceRefreshChatList: $e');
       emit(ChatListError('حدث خطأ أثناء تحديث قائمة المحادثات'));
+    }
+  }
+
+  /// Silently refresh chat list in background without showing loading indicator
+  Future<void> silentRefreshChatList() async {
+    try {
+      // Silent operation - minimal logging
+      final Either<ApiErrorModel, ChatListModel> failureOrData =
+          await chatListRepo.getAllChatList();
+
+      failureOrData.fold(
+        (failure) {
+          // Silent failure - don't emit error state to avoid UI disruption
+        },
+        (data) {
+          // Only emit loaded state - no loading indicator shown
+          emit(ChatListLoaded(data));
+        },
+      );
+    } catch (e) {
+      // Silent error handling - don't emit error state to avoid UI disruption
+    }
+  }
+
+  /// Mark a specific chat as read (silent operation)
+  void markChatAsRead(int chatId) {
+    final currentState = state;
+    if (currentState is ChatListLoaded) {
+      // Create updated chat list with this chat marked as read
+      final updatedChatList = currentState.chatList.copyWith(
+        data: currentState.chatList.data.map((chat) {
+          if (chat.id == chatId) {
+            return chat.copyWith(unreadCount: 0);
+          }
+          return chat;
+        }).toList(),
+      );
+      
+      // Emit updated state
+      emit(ChatListLoaded(updatedChatList));
     }
   }
 

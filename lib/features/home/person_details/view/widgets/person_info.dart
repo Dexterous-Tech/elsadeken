@@ -386,10 +386,10 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               // Check if there's an existing chat room first
               final chatListCubit = context.read<ChatListCubit>();
               
-              // Check if chat list is already loaded, if not, load it
+              // Check if chat list is already loaded, if not, load it silently
               if (chatListCubit.state is! ChatListLoaded) {
-                print('🔄 [PersonInfo] Chat list not loaded, loading now...');
-                await chatListCubit.forceRefreshChatList();
+                print('🔄 [PersonInfo] Chat list not loaded, loading silently...');
+                await chatListCubit.silentRefreshChatList();
               } else {
                 print('✅ [PersonInfo] Chat list already loaded');
               }
