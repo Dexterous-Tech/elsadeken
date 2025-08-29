@@ -1,4 +1,9 @@
+import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/widgets/custom_radio.dart';
+import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
+import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
+import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,129 +34,169 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<SignupCubit>();
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  // name
-                  Text('ما هي مواصفات شريكه حياتك التي ترغب الارتباط بها ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                  verticalSpace(16),
-
-                  CustomTextFormField(
-                    controller: cubit.aboutMeController,
-                    keyboardType: TextInputType.text,
-                    hintText: 'اكتب',
-                    maxLines: 5,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'هذا الحقل مطلوب';
-                      }
-
-                      final trimmedValue = value.trim();
-
-                      // Block numbers
-                      if (RegExp(r'\d').hasMatch(trimmedValue)) {
-                        return 'لا يمكن أن يحتوي النص على أرقام';
-                      }
-
-                      // Block anything that looks like a phone number (8–15 consecutive digits)
-                      if (RegExp(r'\d{8,15}').hasMatch(trimmedValue)) {
-                        return 'لا يمكن إدخال رقم هاتف هنا';
-                      }
-
-                      // Block links
-                      if (RegExp(r'(https?://|www\.|\.com|\.net|\.org)',
-                              caseSensitive: false)
-                          .hasMatch(trimmedValue)) {
-                        return 'لا يمكن أن يحتوي النص على روابط';
-                      }
-
-                      return null;
-                    },
-                  ),
-
-                  verticalSpace(40),
-
-                  // email
-                  Text('تحدث عن نفسك',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    controller: cubit.lifePartnerController,
-                    keyboardType: TextInputType.emailAddress,
-                    hintText: 'اكتب',
-                    maxLines: 5,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'هذا الحقل مطلوب';
-                      }
-
-                      final trimmedValue = value.trim();
-
-                      // Block numbers
-                      if (RegExp(r'\d').hasMatch(trimmedValue)) {
-                        return 'لا يمكن أن يحتوي النص على أرقام';
-                      }
-
-                      // Block anything that looks like a phone number (8–15 consecutive digits)
-                      if (RegExp(r'\d{8,15}').hasMatch(trimmedValue)) {
-                        return 'لا يمكن إدخال رقم هاتف هنا';
-                      }
-
-                      // Block links
-                      if (RegExp(r'(https?://|www\.|\.com|\.net|\.org)',
-                              caseSensitive: false)
-                          .hasMatch(trimmedValue)) {
-                        return 'لا يمكن أن يحتوي النص على روابط';
-                      }
-
-                      return null;
-                    },
-                  ),
-
-                  verticalSpace(50),
-
-                  Row(
-                    textDirection: TextDirection.rtl,
-                    children: [
-                      CustomRadio(
-                        value: agreedToTerms,
-                        onChanged: () {
-                          setState(() {
-                            agreedToTerms = !agreedToTerms;
-                          });
-                        },
-                      ),
-                      horizontalSpace(10),
-                      Text(
-                        'أوافق على الشروط والأحكام',
+    return BlocListener<SignupCubit, SignupState>(
+      listenWhen: (context, state) =>
+          state is SignupLoading ||
+          state is SignupFailure ||
+          state is RegisterInformationLoading ||
+          state is RegisterInformationFailure ||
+          state is RegisterInformationSuccess,
+      listener: (context, state) {
+        if (state is SignupLoading || state is RegisterInformationLoading) {
+          loadingDialog(context);
+        } else if (state is SignupFailure) {
+          context.pop();
+          errorDialog(context: context, error: state.error);
+        } else if (state is RegisterInformationSuccess) {
+          context.pop();
+          successDialog(
+              context: context,
+              message: state.registerInformationResponseModel.message,
+              onPressed: () {
+                context.pop();
+                context.pushReplacementNamed(AppRoutes.loginScreen);
+              });
+        } else if (state is RegisterInformationFailure) {
+          context.pop();
+          errorDialog(context: context, error: state.error);
+        }
+      },
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // name
+                    Text('ما هي مواصفات شريكه حياتك التي ترغب الارتباط بها ؟',
                         textDirection: TextDirection.rtl,
-                        style: AppTextStyles.font14PumpkinOrangeBoldLamaSans,
-                      ),
-                    ],
-                  ),
-                  verticalSpace(40),
-                  Spacer(),
-                  CustomNextAndPreviousButton(
-                    textButton: 'تسجيل الدخول',
-                    onNextPressed: widget.onNextPressed,
-                    onPreviousPressed: widget.onPreviousPressed,
-                    isNextEnabled: _canProceedToNext(cubit),
-                  ),
-                ],
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
+                    verticalSpace(16),
+
+                    CustomTextFormField(
+                      controller: cubit.aboutMeController,
+                      keyboardType: TextInputType.text,
+                      hintText: 'اكتب',
+                      maxLines: 5,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'هذا الحقل مطلوب';
+                        }
+
+                        final trimmedValue = value.trim();
+
+                        // Block numbers
+                        if (RegExp(r'\d').hasMatch(trimmedValue)) {
+                          return 'لا يمكن أن يحتوي النص على أرقام';
+                        }
+
+                        // Block anything that looks like a phone number (8–15 consecutive digits)
+                        if (RegExp(r'\d{8,15}').hasMatch(trimmedValue)) {
+                          return 'لا يمكن إدخال رقم هاتف هنا';
+                        }
+
+                        // Block links
+                        if (RegExp(r'(https?://|www\.|\.com|\.net|\.org)',
+                                caseSensitive: false)
+                            .hasMatch(trimmedValue)) {
+                          return 'لا يمكن أن يحتوي النص على روابط';
+                        }
+
+                        return null;
+                      },
+                    ),
+
+                    verticalSpace(40),
+
+                    // email
+                    Text('تحدث عن نفسك',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
+                    verticalSpace(16),
+                    CustomTextFormField(
+                      controller: cubit.lifePartnerController,
+                      keyboardType: TextInputType.emailAddress,
+                      hintText: 'اكتب',
+                      maxLines: 5,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'هذا الحقل مطلوب';
+                        }
+
+                        final trimmedValue = value.trim();
+
+                        // Block numbers
+                        if (RegExp(r'\d').hasMatch(trimmedValue)) {
+                          return 'لا يمكن أن يحتوي النص على أرقام';
+                        }
+
+                        // Block anything that looks like a phone number (8–15 consecutive digits)
+                        if (RegExp(r'\d{8,15}').hasMatch(trimmedValue)) {
+                          return 'لا يمكن إدخال رقم هاتف هنا';
+                        }
+
+                        // Block links
+                        if (RegExp(r'(https?://|www\.|\.com|\.net|\.org)',
+                                caseSensitive: false)
+                            .hasMatch(trimmedValue)) {
+                          return 'لا يمكن أن يحتوي النص على روابط';
+                        }
+
+                        return null;
+                      },
+                    ),
+
+                    verticalSpace(50),
+
+                    Row(
+                      textDirection: TextDirection.rtl,
+                      children: [
+                        CustomRadio(
+                          value: agreedToTerms,
+                          onChanged: () {
+                            setState(() {
+                              agreedToTerms = !agreedToTerms;
+                            });
+                          },
+                        ),
+                        horizontalSpace(10),
+                        Text(
+                          'أوافق على الشروط والأحكام',
+                          textDirection: TextDirection.rtl,
+                          style: AppTextStyles.font14PumpkinOrangeBoldLamaSans,
+                        ),
+                      ],
+                    ),
+                    verticalSpace(40),
+                    Spacer(),
+                    BlocBuilder<SignupCubit, SignupState>(
+                      builder: (context, state) {
+                        return CustomNextAndPreviousButton(
+                          textButton: 'تسجيل الدخول',
+                          onNextPressed: () {
+                            if (state is! SignupLoading &&
+                                state is! RegisterInformationLoading &&
+                                _canProceedToNext(cubit)) {
+                              cubit.completeSignupProcess();
+                            }
+                          },
+                          onPreviousPressed: widget.onPreviousPressed,
+                          isNextEnabled: state is! SignupLoading &&
+                              state is! RegisterInformationLoading &&
+                              _canProceedToNext(cubit),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

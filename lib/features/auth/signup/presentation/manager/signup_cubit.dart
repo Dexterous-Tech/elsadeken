@@ -82,6 +82,103 @@ class SignupCubit extends Cubit<SignupState> {
     );
   }
 
+  void completeSignupProcess() async {
+    emit(SignupLoading());
+
+    // First, call signup
+    var signupResponse = await signupRepo.signup(
+      SignupRequestBodyModel(
+        name: nameController.text,
+        email: emailController.text,
+        gender: genderController.text,
+        countryCode: countryCodeController.text,
+        phone: phoneController.text,
+        password: passwordController.text,
+        passwordConfirmation: passwordConfirmationController.text,
+      ),
+    );
+
+    signupResponse.fold(
+      (error) {
+        emit(SignupFailure(error.displayMessage));
+        return;
+      },
+      (signupResponseModel) async {
+        await saveUserToken(signupResponseModel.data!.token);
+
+        // After successful signup, call registerInformation
+        emit(RegisterInformationLoading());
+
+        // Add safety checks for required fields
+        if (nationalIdController.text.isEmpty ||
+            countryIdController.text.isEmpty ||
+            cityIdController.text.isEmpty ||
+            maritalStatusController.text.isEmpty ||
+            typeOfMarriageController.text.isEmpty ||
+            ageController.text.isEmpty ||
+            childrenNumberController.text.isEmpty ||
+            weightController.text.isEmpty ||
+            heightController.text.isEmpty ||
+            skinColorController.text.isEmpty ||
+            physiqueController.text.isEmpty ||
+            religiousCommitmentController.text.isEmpty ||
+            prayerController.text.isEmpty ||
+            smokingController.text.isEmpty ||
+            hijabController.text.isEmpty ||
+            educationalQualificationController.text.isEmpty ||
+            financialSituationController.text.isEmpty ||
+            jobController.text.isEmpty ||
+            incomeController.text.isEmpty ||
+            healthConditionController.text.isEmpty ||
+            aboutMeController.text.isEmpty ||
+            lifePartnerController.text.isEmpty) {
+          emit(RegisterInformationFailure("جميع الحقول مطلوبة"));
+          return;
+        }
+
+        var registerResponse = await signupRepo.registerInformation(
+          RegisterInformationRequestModel(
+            nationalId: int.parse(nationalIdController.text),
+            countryId: int.parse(countryIdController.text),
+            cityId: int.parse(cityIdController.text),
+            maritalStatus: maritalStatusController.text,
+            typeOfMarriage: typeOfMarriageController.text,
+            age: int.parse(ageController.text),
+            childrenNumber: int.parse(childrenNumberController.text),
+            weight: int.parse(weightController.text),
+            height: int.parse(heightController.text),
+            skinColor: int.parse(skinColorController.text),
+            physique: int.parse(physiqueController.text),
+            religiousCommitment: religiousCommitmentController.text,
+            prayer: prayerController.text,
+            smoking: int.parse(smokingController.text),
+            hijab: hijabController.text,
+            educationalQualification:
+                int.parse(educationalQualificationController.text),
+            financialSituation: int.parse(financialSituationController.text),
+            job: jobController.text,
+            income: int.parse(incomeController.text),
+            healthCondition: int.parse(healthConditionController.text),
+            aboutMe: aboutMeController.text,
+            lifePartner: lifePartnerController.text,
+          ),
+        );
+
+        registerResponse.fold(
+          (error) {
+            emit(RegisterInformationFailure(error.displayMessage));
+          },
+          (registerInformationResponseModel) async {
+            log("Complete signup process completed successfully");
+            emit(RegisterInformationSuccess(
+                registerInformationResponseModel:
+                    registerInformationResponseModel));
+          },
+        );
+      },
+    );
+  }
+
   void registerInformation() async {
     emit(RegisterInformationLoading());
 
