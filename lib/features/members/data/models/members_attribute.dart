@@ -37,23 +37,30 @@ class MemberAttribute {
     required this.aboutMe,
   });
 
-  factory MemberAttribute.fromJson(Map<String, dynamic> json) => MemberAttribute(
-    id: json['id'] ?? 0,
-    city: json['city'] ?? '',
-    country: json['country'] ?? '',
-    maritalStatus: json['marital_status'] ?? '',
-    typeOfMarriage: json['type_of_marriage'] ?? '',
-    age: json['age'] ?? 0,
-    children: json['children'] ?? 0,
-    weight: json['weight'] ?? 0,
-    height: json['height'] ?? 0,
-    religiousCommitment: json['religious_commitment'] ?? '',
-    prayer: json['prayer'] ?? '',
-    smoking: json['smoking'] ?? '',
-    hijab: json['hijab'] ?? '',
-    job: json['job'] ?? '',
-    income: json['income'] ?? 0,
-    lifePartner: json['life_partner'] ?? '',
-    aboutMe: json['about_me'] ?? '',
-  );
+  factory MemberAttribute.fromJson(Map<String, dynamic> json) {
+    // Debug: Print the attribute JSON being parsed
+    print('Parsing MemberAttribute from JSON: $json');
+    print('City from JSON: ${json['city']}');
+    print('Country from JSON: ${json['country']}');
+    
+    return MemberAttribute(
+      id: json['id'] ?? 0,
+      city: json['city'] ?? '',
+      country: json['country'] ?? '',
+      maritalStatus: json['marital_status'] ?? '',
+      typeOfMarriage: json['type_of_marriage'] ?? '',
+      age: json['age'] ?? 0,
+      children: json['children'] ?? 0,
+      weight: json['weight'] ?? 0,
+      height: json['height'] ?? 0,
+      religiousCommitment: json['religious_commitment'] ?? '',
+      prayer: json['prayer'] ?? '',
+      smoking: json['smoking'] ?? '',
+      hijab: json['hijab'] ?? '',
+      job: json['job'] ?? '',
+      income: json['income'] ?? 0,
+      lifePartner: json['life_partner'] ?? '',
+      aboutMe: json['about_me'] ?? '',
+    );
+  }
 }

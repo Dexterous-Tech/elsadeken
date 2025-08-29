@@ -2,7 +2,13 @@ import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/home/person_details/data/models/person_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../core/routes/app_routes.dart';
+import '../../../../chat/data/models/chat_room_model.dart';
+import '../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import '../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 
 class PersonInfoSheet extends StatefulWidget {
   final PersonModel person;
@@ -21,6 +27,59 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  /// Handle favorite button press
+  void _handleFavoritePress() {
+    // Add your favorite functionality here
+    // For example, you could:
+    // - Toggle favorite status
+    // - Show a snackbar
+    // - Navigate to a different screen
+    // - Call an API to update favorite status
+    print('Favorite button pressed for user: ${widget.person.name}');
+
+    // Example: Show a snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('تم إضافة ${widget.person.name} إلى المفضلة'),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  /// Format the createdAt date string to a readable format
+  String _formatCreatedAt(String createdAt) {
+    try {
+      if (createdAt.isEmpty) return 'غير محدد';
+
+      final date = DateTime.tryParse(createdAt);
+      if (date == null) return 'غير محدد';
+
+      final now = DateTime.now();
+      final difference = now.difference(date);
+
+      if (difference.inDays == 0) {
+        return 'اليوم';
+      } else if (difference.inDays == 1) {
+        return 'أمس';
+      } else if (difference.inDays < 7) {
+        return 'منذ ${difference.inDays} أيام';
+      } else if (difference.inDays < 30) {
+        final weeks = (difference.inDays / 7).floor();
+        return 'منذ $weeks أسابيع';
+      } else if (difference.inDays < 365) {
+        final months = (difference.inDays / 30).floor();
+        return 'منذ $months أشهر';
+      } else {
+        final years = (difference.inDays / 365).floor();
+        return 'منذ $years سنوات';
+      }
+    } catch (e) {
+      print('Error formatting createdAt: $e');
+      return 'غير محدد';
+    }
   }
 
   @override
@@ -96,17 +155,20 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          width: 40.w,
-          height: 40.h,
-          decoration: const BoxDecoration(
-            color: Colors.red,
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            Icons.favorite,
-            color: Colors.white,
-            size: 20,
+        GestureDetector(
+          onTap: () => _handleFavoritePress(),
+          child: Container(
+            width: 40.w,
+            height: 40.h,
+            decoration: const BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.favorite,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
         ),
         SizedBox(width: 12.w),
@@ -165,7 +227,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   Widget _buildLogTable() {
     final p = widget.person;
     final data = [
-      {'label': 'مسجل منذ', 'value': p.createdAt},
+      {'label': 'مسجل منذ', 'value': _formatCreatedAt(p.createdAt)},
       {'label': 'تاريخ آخر زيادة', 'value': 'متواجد حاليا'},
     ];
 
@@ -373,6 +435,66 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         ),
         horizontalSpace(21),
         GestureDetector(
+          onTap: () async {
+            try {
+              // Check if there's an existing chat room first
+              final chatListCubit = context.read<ChatListCubit>();
+              print(
+                  '🔍 Looking for existing chat room for user ID: ${widget.person.id}');
+
+              // Check if chat list is already loaded, if not, load it silently
+              if (chatListCubit.state is! ChatListLoaded) {
+                print('🔄 Chat list not loaded, loading silently...');
+                await chatListCubit.silentRefreshChatList();
+              } else {
+                print('✅ Chat list already loaded');
+              }
+
+              final existingChatRoom =
+                  chatListCubit.findExistingChatRoom(widget.person.id);
+
+              if (existingChatRoom != null) {
+                print('✅ Found existing chat room: ${existingChatRoom.id}');
+                // Navigate to existing chat room
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.chatConversationScreen,
+                  arguments: {
+                    "chatRoom": existingChatRoom,
+                  },
+                );
+              } else {
+                print(
+                    '🆕 No existing chat room found, creating new temporary chat');
+                // Create new temporary chat room
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.chatConversationScreen,
+                  arguments: {
+                    "chatRoom": ChatRoomModel.fromUser(
+                      userId: widget.person.id,
+                      userName: widget.person.name,
+                      userImage: widget.person.image,
+                    ),
+                  },
+                );
+              }
+            } catch (e) {
+              print('⚠️ Error in message button onTap: $e');
+              // Fallback to creating new temporary chat room
+              Navigator.pushNamed(
+                context,
+                AppRoutes.chatConversationScreen,
+                arguments: {
+                  "chatRoom": ChatRoomModel.fromUser(
+                    userId: widget.person.id,
+                    userName: widget.person.name,
+                    userImage: widget.person.image,
+                  ),
+                },
+              );
+            }
+          },
           child: Container(
             width: 50.w,
             height: 50.h,

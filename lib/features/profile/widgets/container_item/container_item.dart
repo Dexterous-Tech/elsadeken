@@ -31,8 +31,7 @@ class ContainerItem extends StatelessWidget {
     ].join(' , ');
     return GestureDetector(
       onTap: () {
-        context.pushNamed(AppRoutes.profileDetailsScreen,
-            arguments: favUser!.id);
+        context.pushNamed(AppRoutes.profileDetailsScreen, arguments: favUser);
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),

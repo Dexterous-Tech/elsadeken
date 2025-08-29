@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,8 @@ import 'package:elsadeken/features/chat/presentation/widgets/empty_chat_illustra
 import 'package:elsadeken/features/chat/presentation/widgets/chat_room_item.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
+import 'package:elsadeken/features/chat/data/services/chat_message_service.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -20,18 +23,66 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen>
+    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   int _selectedTabIndex = 0; // 0: All, 1: Favorites
+  
+  // Stream subscriptions for real-time updates
+  StreamSubscription<void>? _refreshChatListSubscription;
+  
+  // Track if this is the first load
+  bool _hasLoadedInitially = false;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-
+    WidgetsBinding.instance.addObserver(this);
     context.read<ChatListCubit>().getChatList();
+    _setupRealTimeListeners();
+  }
+
+  void _setupRealTimeListeners() {
+    // Listen for chat list refresh requests from Firebase notifications only
+    _refreshChatListSubscription = ChatMessageService.instance.refreshChatListStream.listen((_) {
+      if (mounted) {
+        print('🔔 [ChatScreen] Firebase notification triggered chat list refresh');
+        // Silent background refresh - no UI indicators
+        context.read<ChatListCubit>().silentRefreshChatList();
+      }
+    });
+    
+    print('🔔 [ChatScreen] Chat list now depends on Firebase notifications for updates');
+  }
+
+  @override
+  void dispose() {
+    // Cancel stream subscriptions
+    _refreshChatListSubscription?.cancel();
+    
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // Real-time updates handle everything automatically - no manual refresh needed
+  }
+
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // No manual refresh needed - real-time updates handle everything automatically
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: SafeArea(
@@ -39,7 +90,9 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             _buildTopBar(),
             Expanded(child: _buildChatContent()),
-            const ChatOptionsCard(),
+            ChatOptionsCard(
+              chatListCubit: context.read<ChatListCubit>(),
+            ),
           ],
         ),
       ),
@@ -60,7 +113,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       child: Column(
         children: [
-          ProfileHeader(title: 'الرسائل'),
+          ProfileHeader(title: 'الرسائل',showBackButton: false,),
           SizedBox(height: 16.h),
           ChatTabBar(
             selectedIndex: _selectedTabIndex,
@@ -77,13 +130,33 @@ class _ChatScreenState extends State<ChatScreen> {
 
   /// 🔹 Chat Content
   Widget _buildChatContent() {
-    return BlocBuilder<ChatListCubit, ChatListState>(
+    return BlocConsumer<ChatListCubit, ChatListState>(
+      listener: (context, state) {
+        // Mark that we've loaded initially when we get our first successful load
+        if (state is ChatListLoaded) {
+          _hasLoadedInitially = true;
+        }
+      },
+      buildWhen: (previous, current) {
+        // Prevent rebuilding with loading state after initial load
+        if (_hasLoadedInitially && current is ChatListLoading) {
+          return false; // Don't rebuild for subsequent loading states
+        }
+        return true;
+      },
       builder: (context, state) {
-        if (state is ChatListLoading) {
+        // Only show loading indicator for the very first load
+        if (state is ChatListLoading && !_hasLoadedInitially) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is ChatListError) {
+        }
+        
+        // Show error state only if we haven't loaded yet
+        if (state is ChatListError && !_hasLoadedInitially) {
           return _buildEmptyState();
-        } else if (state is ChatListLoaded) {
+        }
+        
+        // Show loaded state
+        if (state is ChatListLoaded) {
           final chats = state.chatList.data;
 
           final filteredChats = _selectedTabIndex == 1
@@ -103,7 +176,11 @@ class _ChatScreenState extends State<ChatScreen> {
               final chat = filteredChats[index];
               return ChatRoomItem(
                 chat: chat,
+                chatListCubit: context.read<ChatListCubit>(),
                 onTap: () {
+                  // Mark this chat as read when opened
+                  _markChatAsRead(chat);
+                  
                   Navigator.pushNamed(
                     context,
                     AppRoutes.chatConversationScreen,
@@ -117,6 +194,8 @@ class _ChatScreenState extends State<ChatScreen> {
             },
           );
         }
+        
+        // Default fallback
         return _buildEmptyState();
       },
     );
@@ -143,6 +222,14 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
     );
+  }
+
+  /// 🔹 Mark Chat as Read
+  void _markChatAsRead(ChatData chat) {
+    if (chat.unreadCount > 0) {
+      // Mark chat as read using the cubit's method
+      context.read<ChatListCubit>().markChatAsRead(chat.id);
+    }
   }
 
   /// 🔹 Show Chat Options

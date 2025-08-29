@@ -49,174 +49,144 @@ class _SignupPasswordsState extends State<SignupPasswords> {
     double progress = hasStartedTyping
         ? calculateProgress(result)
         : 0; // ✅ only show after typing
-    return BlocListener<SignupCubit, SignupState>(
-      listenWhen: (context, state) =>
-          state is SignupLoading ||
-          state is SignupFailure ||
-          state is SignupSuccess,
-      listener: (context, state) {
-        if (state is SignupLoading) {
-          loadingDialog(context);
-        } else if (state is SignupSuccess) {
-          context.pop();
-          successDialog(
-              context: context,
-              message:
-                  '${state.signupResponseModel.message}\n استمر في تسجيل البيانات',
-              onPressed: () {
-                context.pop();
-                widget.onNextPressed();
-              });
-        } else if (state is SignupFailure) {
-          context.pop();
-          errorDialog(context: context, error: state.error);
-        }
-      },
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: IntrinsicHeight(
-                child: Form(
-                  key: cubit.passwordsFormKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      // password
-                      Text('انشا كلمه المرور',
-                          textDirection: TextDirection.rtl,
-                          style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                      verticalSpace(16),
-                      CustomTextFormField(
-                        controller: cubit.passwordController,
-                        obscureText: obscurePassword,
-                        keyboardType: TextInputType.visiblePassword,
-                        hintText: '********',
-                        validator: (value) {
-                          if (value.isNullOrEmpty()) {
-                            return 'يجب عليك ادخال كلمة المرور';
-                          }
-                          if (value!.length < 6) {
-                            return 'كلمة المرور يجب أن تحتوي على 6 أرقام علي الاقل';
-                          }
-                          return null;
-                        },
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              obscurePassword = !obscurePassword;
-                            });
-                          },
-                          icon: Icon(
-                            obscurePassword
-                                ? CupertinoIcons.eye_slash_fill
-                                : CupertinoIcons.eye_fill,
-                            size: 16,
-                            color: AppColors.lightTaupe,
-                          ),
-                        ),
-                        onChanged: (value) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: IntrinsicHeight(
+              child: Form(
+                key: cubit.passwordsFormKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // password
+                    Text('انشا كلمه المرور',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
+                    verticalSpace(16),
+                    CustomTextFormField(
+                      controller: cubit.passwordController,
+                      obscureText: obscurePassword,
+                      keyboardType: TextInputType.visiblePassword,
+                      hintText: '********',
+                      validator: (value) {
+                        if (value.isNullOrEmpty()) {
+                          return 'يجب عليك ادخال كلمة المرور';
+                        }
+                        if (value!.length < 6) {
+                          return 'كلمة المرور يجب أن تحتوي على 6 أرقام علي الاقل';
+                        }
+                        return null;
+                      },
+                      suffixIcon: IconButton(
+                        onPressed: () {
                           setState(() {
-                            password = value;
-                            result = validatePasswordDisplay(password);
-                            hasStartedTyping = password.isNotEmpty;
+                            obscurePassword = !obscurePassword;
                           });
                         },
-                      ),
-                      verticalSpace(16),
-                      // Progress bar
-                      Padding(
-                        padding: EdgeInsets.only(left: 4.w, right: 4.w),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: LinearProgressIndicator(
-                            value: progress,
-                            backgroundColor: AppColors.gainsboro,
-                            // ✅ Wrap color in setState to update
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              progress >= 1.0
-                                  ? AppColors.yellowGreen
-                                  : AppColors.pumpkinOrange,
-                            ),
-                            minHeight: 6,
-                          ),
+                        icon: Icon(
+                          obscurePassword
+                              ? CupertinoIcons.eye_slash_fill
+                              : CupertinoIcons.eye_fill,
+                          size: 16,
+                          color: AppColors.lightTaupe,
                         ),
                       ),
-
-                      verticalSpace(12),
-                      buildValidationItem(result.hasMinLength, 'اقل من 6 أحرف'),
-                      buildValidationItem(
-                        result.hasNumberOrSymbol,
-                        'على الأقل رقم واحد (0-9) أو رمز',
-                      ),
-                      buildValidationItem(
-                        result.hasUpperAndLower,
-                        'بدون علامات او اشكال او حروف كبيرة',
-                      ),
-                      verticalSpace(40),
-
-                      // confirm password
-                      Text('تاكيد كلمه المرور',
-                          textDirection: TextDirection.rtl,
-                          style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                      verticalSpace(16),
-                      CustomTextFormField(
-                        controller: cubit.passwordConfirmationController,
-                        obscureText: obscureConfirmPassword,
-                        keyboardType: TextInputType.visiblePassword,
-                        hintText: '********',
-                        validator: (value) {
-                          if (value.isNullOrEmpty()) {
-                            return 'يجب عليك تأكيد كلمة المرور';
-                          }
-                          if (value != cubit.passwordController.text) {
-                            return 'كلمة المرور غير متطابقة';
-                          }
-                          return null;
-                        },
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              obscureConfirmPassword = !obscureConfirmPassword;
-                            });
-                          },
-                          icon: Icon(
-                            obscureConfirmPassword
-                                ? CupertinoIcons.eye_slash_fill
-                                : CupertinoIcons.eye_fill,
-                            size: 16,
-                            color: AppColors.lightTaupe,
+                      onChanged: (value) {
+                        setState(() {
+                          password = value;
+                          result = validatePasswordDisplay(password);
+                          hasStartedTyping = password.isNotEmpty;
+                        });
+                      },
+                    ),
+                    verticalSpace(16),
+                    // Progress bar
+                    Padding(
+                      padding: EdgeInsets.only(left: 4.w, right: 4.w),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: AppColors.gainsboro,
+                          // ✅ Wrap color in setState to update
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            progress >= 1.0
+                                ? AppColors.yellowGreen
+                                : AppColors.pumpkinOrange,
                           ),
+                          minHeight: 6,
                         ),
                       ),
+                    ),
 
-                      verticalSpace(50),
-                      Spacer(),
+                    verticalSpace(12),
+                    buildValidationItem(result.hasMinLength, 'اقل من 6 أحرف'),
+                    buildValidationItem(
+                      result.hasNumberOrSymbol,
+                      'على الأقل رقم واحد (0-9) أو رمز',
+                    ),
+                    buildValidationItem(
+                      result.hasUpperAndLower,
+                      'بدون علامات او اشكال او حروف كبيرة',
+                    ),
+                    verticalSpace(40),
 
-                      BlocBuilder<SignupCubit, SignupState>(
-                        builder: (context, state) {
-                          return CustomNextAndPreviousButton(
-                            onNextPressed: () {
-                              if (state is! SignupLoading &&
-                                  cubit.passwordsFormKey.currentState!
-                                      .validate()) {
-                                cubit.signup();
-                              }
-                            },
-                            onPreviousPressed: widget.onPreviousPressed,
-                            isNextEnabled: state is! SignupLoading,
-                          );
+                    // confirm password
+                    Text('تاكيد كلمه المرور',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
+                    verticalSpace(16),
+                    CustomTextFormField(
+                      controller: cubit.passwordConfirmationController,
+                      obscureText: obscureConfirmPassword,
+                      keyboardType: TextInputType.visiblePassword,
+                      hintText: '********',
+                      validator: (value) {
+                        if (value.isNullOrEmpty()) {
+                          return 'يجب عليك تأكيد كلمة المرور';
+                        }
+                        if (value != cubit.passwordController.text) {
+                          return 'كلمة المرور غير متطابقة';
+                        }
+                        return null;
+                      },
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            obscureConfirmPassword = !obscureConfirmPassword;
+                          });
                         },
+                        icon: Icon(
+                          obscureConfirmPassword
+                              ? CupertinoIcons.eye_slash_fill
+                              : CupertinoIcons.eye_fill,
+                          size: 16,
+                          color: AppColors.lightTaupe,
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+
+                    verticalSpace(50),
+                    Spacer(),
+
+                    CustomNextAndPreviousButton(
+                      onNextPressed: () {
+                        if (cubit.passwordsFormKey.currentState!.validate()) {
+                          widget.onNextPressed();
+                        }
+                      },
+                      onPreviousPressed: widget.onPreviousPressed,
+                      isNextEnabled: true,
+                    ),
+                  ],
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 

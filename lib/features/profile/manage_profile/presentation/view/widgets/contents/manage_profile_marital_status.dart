@@ -70,6 +70,10 @@ class ManageProfileMaritalStatus extends StatelessWidget {
     // Debug: Print gender value to understand what we're receiving
     print('DEBUG: Gender value: "${profileData?.gender}"');
     print('DEBUG: Is male: ${_isMale(profileData?.gender)}');
+    print(
+        'DEBUG: Current marital status: "${profileData?.attribute?.maritalStatus}"');
+    print(
+        'DEBUG: Current type of marriage: "${profileData?.attribute?.typeOfMarriage}"');
 
     final dialogData = ManageProfileDialogData(
       title: 'تعديل الحالة الاجتماعية',
@@ -80,7 +84,8 @@ class ManageProfileMaritalStatus extends StatelessWidget {
         ManageProfileField(
           label: 'الحالة الاجتماعية',
           hint: 'اختر الحالة الاجتماعية',
-          currentValue: profileData?.attribute?.maritalStatus ?? '',
+          currentValue:
+              _mapMaritalStatusToDisplay(profileData?.attribute?.maritalStatus),
           type: ManageProfileFieldType.dropdown,
           options: _isMale(profileData?.gender)
               ? [
@@ -99,7 +104,8 @@ class ManageProfileMaritalStatus extends StatelessWidget {
         ManageProfileField(
           label: 'نوع الزواج',
           hint: 'اختر نوع الزواج',
-          currentValue: profileData?.attribute?.typeOfMarriage ?? '',
+          currentValue: _mapTypeOfMarriageToDisplay(
+              profileData?.attribute?.typeOfMarriage),
           type: ManageProfileFieldType.dropdown,
           options: _isMale(profileData?.gender)
               ? [
@@ -149,5 +155,47 @@ class ManageProfileMaritalStatus extends StatelessWidget {
     }
 
     return false;
+  }
+
+  /// Helper method to map API marital status values to display values
+  String _mapMaritalStatusToDisplay(String? apiValue) {
+    if (apiValue == null || apiValue.isEmpty) return '';
+
+    final value = apiValue.trim();
+
+    // Map API values to display values
+    switch (value.toLowerCase()) {
+      case 'single':
+        return _isMale(profileData?.gender) ? 'عازب' : 'آنسة';
+      case 'married':
+        return _isMale(profileData?.gender) ? 'متزوج' : 'متزوجة';
+      case 'divorced':
+        return _isMale(profileData?.gender) ? 'مطلق' : 'مطلقة';
+      case 'widwed':
+        return _isMale(profileData?.gender) ? 'أرمل' : 'أرملة';
+      default:
+        // If it's already in Arabic, return as is
+        return value;
+    }
+  }
+
+  /// Helper method to map API type of marriage values to display values
+  String _mapTypeOfMarriageToDisplay(String? apiValue) {
+    if (apiValue == null || apiValue.isEmpty) return '';
+
+    final value = apiValue.trim();
+
+    // Map API values to display values
+    switch (value.toLowerCase()) {
+      case 'only_one':
+        return _isMale(profileData?.gender) ? 'زوجة اولي' : 'الزوج الوحيد';
+      case 'multi':
+        return _isMale(profileData?.gender)
+            ? 'زوجة ثانية'
+            : 'لا مانع من تعدل الزوجات';
+      default:
+        // If it's already in Arabic, return as is
+        return value;
+    }
   }
 }

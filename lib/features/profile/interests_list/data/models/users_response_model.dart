@@ -76,6 +76,7 @@ class UsersDataModel {
     this.image,
     this.fcmToken,
     this.token,
+    this.isFeatured,
     this.createdAt,
     this.attribute,
   });
@@ -90,6 +91,7 @@ class UsersDataModel {
     image = json['image'];
     fcmToken = json['fcm_token'];
     token = json['token'];
+    isFeatured = json['is_featured'];
     createdAt = json['created_at'];
     attribute = json['attribute'] != null
         ? UsersAttributeModel.fromJson(json['attribute'])
@@ -104,6 +106,7 @@ class UsersDataModel {
   String? image;
   dynamic fcmToken;
   dynamic token;
+  int? isFeatured;
   String? createdAt;
   UsersAttributeModel? attribute;
 
@@ -118,6 +121,7 @@ class UsersDataModel {
     map['image'] = image;
     map['fcm_token'] = fcmToken;
     map['token'] = token;
+    map['is_featured'] = isFeatured;
     map['created_at'] = createdAt;
     map['attribute'] = attribute;
     return map;

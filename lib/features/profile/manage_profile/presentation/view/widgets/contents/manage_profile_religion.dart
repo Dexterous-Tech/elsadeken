@@ -23,6 +23,7 @@ class ManageProfileReligion extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       textDirection: TextDirection.rtl,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ManageProfileContentItem(
           title: 'الإلتزام الديني',
@@ -82,24 +83,17 @@ class ManageProfileReligion extends StatelessWidget {
         ManageProfileField(
           label: 'الإلتزام الديني',
           hint: 'اختر مستوى الالتزام الديني',
-          currentValue: profileData?.attribute?.religiousCommitment ?? '',
+          currentValue: _mapReligionToDisplay(
+              profileData?.attribute?.religiousCommitment),
           type: ManageProfileFieldType.dropdown,
-          options: [
-            'غير متدين',
-            'متدين قليلا',
-            'متدين',
-          ],
+          options: religionOptions.values.toList(),
         ),
         ManageProfileField(
           label: 'الصلاة',
           hint: 'اختر حالة الصلاة',
-          currentValue: profileData?.attribute?.prayer ?? '',
+          currentValue: _mapPrayerToDisplay(profileData?.attribute?.prayer),
           type: ManageProfileFieldType.dropdown,
-          options: [
-            'اصلي دائما',
-            'اصلي اغلب الاوقات',
-            'لا اصلي',
-          ],
+          options: prayerOptions.values.toList(),
         ),
         ManageProfileField(
           label: 'التدخين',
@@ -115,13 +109,9 @@ class ManageProfileReligion extends StatelessWidget {
         ManageProfileField(
           label: 'الحجاب',
           hint: 'اختر حالة الحجاب',
-          currentValue: profileData?.attribute?.hijab ?? '',
+          currentValue: _mapHijabToDisplay(profileData?.attribute?.hijab),
           type: ManageProfileFieldType.dropdown,
-          options: [
-            'محجبه',
-            'محجبه (النقاب)',
-            'غير محجبه',
-          ],
+          options: scarfOptions.values.toList(),
         ),
       ],
     );
@@ -139,5 +129,83 @@ class ManageProfileReligion extends StatelessWidget {
 
     // Default case
     return '';
+  }
+
+  /// Religion options mapping
+  Map<String, String> get religionOptions {
+    return {
+      'irreligious': 'غير متدين',
+      'little_religious': 'متدين قليلا',
+      'religious': 'متدين',
+      'much_religious': 'متدين كثيرا',
+      'dont_say': 'أفضل الا اقول',
+    };
+  }
+
+  /// Prayer options mapping
+  Map<String, String> get prayerOptions {
+    return {
+      'always': 'اصلي دائما',
+      'most_times': 'اصلي اغلب الاوقات',
+      'sometimes': 'اصلي بعض الاحيان',
+      'no_pray': 'لا اصلي',
+      'dont_say': 'أفضل الا اقول',
+    };
+  }
+
+  /// Scarf/Hijab options mapping
+  Map<String, String> get scarfOptions {
+    return {
+      'not_hijab': 'غير محجبه',
+      'hijab': 'محجبه(كشف الوجه)',
+      'hijab_and_veil': 'محجبه (النقاب)',
+      'hijab_face': 'محجبه (غطاء الوجه)',
+      'dont_say': 'افضل الا اقول',
+    };
+  }
+
+  /// Helper method to map API religion values to display values
+  String _mapReligionToDisplay(String? apiValue) {
+    if (apiValue == null || apiValue.isEmpty) return '';
+
+    final value = apiValue.trim();
+
+    // Check if the value is already in Arabic (display format)
+    if (religionOptions.values.contains(value)) {
+      return value;
+    }
+
+    // Map API values to display values
+    return religionOptions[value] ?? value;
+  }
+
+  /// Helper method to map API prayer values to display values
+  String _mapPrayerToDisplay(String? apiValue) {
+    if (apiValue == null || apiValue.isEmpty) return '';
+
+    final value = apiValue.trim();
+
+    // Check if the value is already in Arabic (display format)
+    if (prayerOptions.values.contains(value)) {
+      return value;
+    }
+
+    // Map API values to display values
+    return prayerOptions[value] ?? value;
+  }
+
+  /// Helper method to map API hijab values to display values
+  String _mapHijabToDisplay(String? apiValue) {
+    if (apiValue == null || apiValue.isEmpty) return '';
+
+    final value = apiValue.trim();
+
+    // Check if the value is already in Arabic (display format)
+    if (scarfOptions.values.contains(value)) {
+      return value;
+    }
+
+    // Map API values to display values
+    return scarfOptions[value] ?? value;
   }
 }

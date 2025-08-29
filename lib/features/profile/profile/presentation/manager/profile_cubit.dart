@@ -24,4 +24,21 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(LogoutSuccess(logoutResponseModel));
     });
   }
+
+  void deleteImage() async {
+    print('🚀 ProfileCubit: deleteImage() called');
+    emit(DeleteImageLoading());
+
+    var response = await profileRepoInterface.deleteImage();
+
+    response.fold((error) {
+      print('❌ ProfileCubit: deleteImage failed - ${error.displayMessage}');
+      emit(DeleteImageFailure(error.displayMessage));
+    }, (deleteImageResponseModel) async {
+      print(
+          '✅ ProfileCubit: deleteImage success - ${deleteImageResponseModel.message}');
+      // await DioFactory.resetDio();
+      emit(DeleteImageSuccess(deleteImageResponseModel));
+    });
+  }
 }

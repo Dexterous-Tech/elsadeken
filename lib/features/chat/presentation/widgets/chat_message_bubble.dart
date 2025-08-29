@@ -19,10 +19,10 @@ class ChatMessageBubble extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 12.h),
       child: Row(
         mainAxisAlignment:
-            isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            isCurrentUser ? MainAxisAlignment.start : MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (!isCurrentUser) ...[
+          if (isCurrentUser) ...[
             // Profile image for received messages (left side)
             Container(
               width: 32.w,
@@ -132,7 +132,7 @@ class ChatMessageBubble extends StatelessWidget {
             ),
           ),
 
-          if (isCurrentUser) ...[
+          if (!isCurrentUser) ...[
             // Profile image for current user's messages (right side)
             Container(
               width: 32.w,

@@ -1,4 +1,5 @@
-import 'package:elsadeken/core/di/injection_container.dart';
+import 'dart:developer';
+
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
@@ -14,6 +15,8 @@ import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 
 class MyImageBody extends StatefulWidget {
   const MyImageBody({super.key});
@@ -25,221 +28,403 @@ class MyImageBody extends StatefulWidget {
 class _MyImageBodyState extends State<MyImageBody> {
   // Default selection: "لا احد" (No one)
   String selectedPrivacyOption = 'no_one';
+  String? userGender;
+  bool isLoadingGender = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserGender();
+    _loadPrivacySetting();
+  }
+
+  Future<void> _loadUserGender() async {
+    try {
+      final gender = await SharedPreferencesHelper.getSecuredString(
+          SharedPreferencesKey.gender);
+      log(gender);
+      setState(() {
+        userGender = gender;
+        isLoadingGender = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingGender = false;
+      });
+    }
+  }
+
+  Future<void> _loadPrivacySetting() async {
+    try {
+      final savedPrivacyOption = await SharedPreferencesHelper.getSecuredString(
+          SharedPreferencesKey.privacySetting);
+      log(savedPrivacyOption);
+      setState(() {
+        selectedPrivacyOption = savedPrivacyOption;
+      });
+    } catch (e) {
+      log('Error loading privacy setting: $e');
+    }
+  }
+
+  Future<void> _savePrivacySetting(String value) async {
+    try {
+      await SharedPreferencesHelper.setSecuredString(
+          SharedPreferencesKey.privacySetting, value);
+      log('Privacy setting saved: $value');
+    } catch (e) {
+      log('Error saving privacy setting: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => sl<MyImageCubit>(),
-        child: Builder(builder: (context) {
-          return BlocConsumer<MyImageCubit, MyImageState>(
-            listener: (context, state) {
-              if (state is MyImageLoading) {
-                loadingDialog(context);
-              } else if (state is MyImageFailure) {
-                Navigator.pop(context); // Close loading dialog
-                errorDialog(
-                  context: context,
-                  error: state.error,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                );
-              } else if (state is MyImageSuccess) {
-                Navigator.pop(context); // Close loading dialog
-                successDialog(
-                  context: context,
-                  message: state.profileActionResponseModel.message ??
-                      'تم رفع الصورة بنجاح',
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context, true);
-                  },
-                );
-              }
-            },
-            builder: (context, state) {
-              return CustomProfileBody(
-                contentBody: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    textDirection: TextDirection.rtl,
-                    children: [
-                      ProfileHeader(title: 'صورتي'),
-                      verticalSpace(30),
-                      Text(
-                        'معلومات هامة :',
-                        textDirection: TextDirection.rtl,
-                        style: AppTextStyles.font20LightOrangeMediumLamaSans
-                            .copyWith(
-                          color: Color(0xffF9F9F9),
-                        ),
-                      ),
-                      verticalSpace(30),
-                      informationItem(
-                          'يجب ان تكون الصورة محترمة ، ولائقة بطابع التطبيق الإسلامي'),
-                      informationItem(
-                          'أي إستخدام سيء لهذه الخدمة يؤدي إاى حظر إشتراكك بدون سابق إنذار'),
-                      verticalSpace(35),
-                      Center(
-                        child: GestureDetector(
-                          onTap: () => _showImageSourceDialog(
-                              context, context.read<MyImageCubit>()),
-                          child: state is MyImageImageSelected
-                              ? Stack(
-                                  alignment: Alignment.bottomRight,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.circular(100.r),
-                                      child: Image.file(
-                                        state.image,
-                                        width: 135.w,
-                                        height: 135.h,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 30.w,
-                                      height: 30.h,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.1),
-                                            spreadRadius: 1,
-                                            blurRadius: 3,
-                                            offset: const Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Center(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            context
-                                                .read<MyImageCubit>()
-                                                .deleteImage();
-                                          },
-                                          child: Icon(
-                                            Icons.delete_forever,
-                                            size: 22.sp,
-                                            color: AppColors.red,
-                                          ),
-                                        ),
-                                      ),
+    return CustomProfileBody(
+      contentBody: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          textDirection: TextDirection.rtl,
+          children: [
+            ProfileHeader(title: 'صورتي'),
+            verticalSpace(30),
+            Text(
+              'معلومات هامة :',
+              textDirection: TextDirection.rtl,
+              style: AppTextStyles.font20LightOrangeMediumLamaSans.copyWith(
+                color: Color(0xffF9F9F9),
+              ),
+            ),
+            verticalSpace(30),
+            informationItem(
+                'يجب ان تكون الصورة محترمة ، ولائقة بطابع التطبيق الإسلامي'),
+            informationItem(
+                'أي إستخدام سيء لهذه الخدمة يؤدي إاى حظر إشتراكك بدون سابق إنذار'),
+            verticalSpace(35),
+            BlocConsumer<MyImageCubit, MyImageState>(
+              buildWhen: (previous, current) =>
+                  current is MyImageLoading ||
+                  current is MyImageFailure ||
+                  current is MyImageSuccess ||
+                  current is MyImageImageSelected,
+              listenWhen: (previous, current) =>
+                  current is MyImageLoading ||
+                  current is MyImageFailure ||
+                  current is MyImageSuccess ||
+                  current is MyImageImageSelected,
+              listener: (context, state) {
+                if (state is MyImageLoading) {
+                  loadingDialog(context);
+                } else if (state is MyImageFailure) {
+                  Navigator.pop(context); // Close loading dialog
+                  errorDialog(
+                    context: context,
+                    error: state.error,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  );
+                } else if (state is MyImageSuccess) {
+                  Navigator.pop(context); // Close loading dialog
+                  successDialog(
+                    context: context,
+                    message: state.profileActionResponseModel.message ??
+                        'تم رفع الصورة بنجاح',
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context, true);
+                    },
+                  );
+                }
+              },
+              builder: (context, state) {
+                return Center(
+                  child: GestureDetector(
+                    onTap: () => _showImageSourceDialog(
+                        context, context.read<MyImageCubit>()),
+                    child: state is MyImageImageSelected
+                        ? Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(100.r),
+                                child: Image.file(
+                                  state.image,
+                                  width: 135.w,
+                                  height: 135.h,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Container(
+                                width: 30.w,
+                                height: 30.h,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.1),
+                                      spreadRadius: 1,
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
-                                )
-                              : Image.asset(
-                                  AppImages.cameraProfile,
-                                  width: 134.w,
-                                  height: 134.h,
                                 ),
-                        ),
-                      ),
-                      verticalSpace(30),
-                      ContainerSuccessWay(text: 'المسموح لهم بمشاهدة صوري'),
-                      verticalSpace(30),
-                      Row(
-                        textDirection: TextDirection.rtl,
-                        children: [
-                          Radio<String>(
-                            value: 'no_one',
-                            groupValue: selectedPrivacyOption,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedPrivacyOption = value!;
-                              });
-                            },
-                            activeColor: AppColors.primaryOrange,
-                          ),
-                          horizontalSpace(10),
-                          Expanded(
-                            // Text(
-                            //   '',
-                            //   textDirection: TextDirection.rtl,
-                            //   textAlign: TextAlign.right,
-                            //   style:
-                            //   AppTextStyles.font14PumpkinOrangeBoldLamaSans,
-                            // ),
-                            child: RichText(
-                              textAlign: TextAlign.right,
-                              textDirection: TextDirection.rtl,
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                      text: 'لا احد ',
-                                      style: AppTextStyles
-                                          .font14PumpkinOrangeBoldLamaSans
-                                          .copyWith(color: AppColors.black)),
-                                  TextSpan(
-                                    text: '(حجب صورتي)',
-                                    style: AppTextStyles
-                                        .font14PumpkinOrangeBoldLamaSans
-                                        .copyWith(color: AppColors.beer),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      verticalSpace(16),
-                      Row(
-                        textDirection: TextDirection.rtl,
-                        children: [
-                          Radio<String>(
-                            value: 'all_members',
-                            groupValue: selectedPrivacyOption,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedPrivacyOption = value!;
-                              });
-                            },
-                            activeColor: AppColors.primaryOrange,
-                          ),
-                          horizontalSpace(10),
-                          Expanded(
-                            child: RichText(
-                              textAlign: TextAlign.right,
-                              textDirection: TextDirection.rtl,
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'كل الاعضاء ',
-                                    style: AppTextStyles
-                                        .font14PumpkinOrangeBoldLamaSans
-                                        .copyWith(color: AppColors.black),
+                                child: Center(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context
+                                          .read<MyImageCubit>()
+                                          .deleteImage();
+                                    },
+                                    child: Icon(
+                                      Icons.delete_forever,
+                                      size: 22.sp,
+                                      color: AppColors.red,
+                                    ),
                                   ),
-                                  TextSpan(
-                                    text: '(خاصية للذكور فقط)',
-                                    style: AppTextStyles
-                                        .font14PumpkinOrangeBoldLamaSans
-                                        .copyWith(color: AppColors.beer),
-                                  )
-                                ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : Image.asset(
+                            AppImages.cameraProfile,
+                            width: 134.w,
+                            height: 134.h,
+                          ),
+                  ),
+                );
+              },
+            ),
+            verticalSpace(30),
+            // Show privacy settings only for males
+            if (!isLoadingGender &&
+                (userGender == 'ذكر' || userGender == 'male')) ...[
+              BlocListener<MyImageCubit, MyImageState>(
+                listenWhen: (previous, current) =>
+                    current is UpdateImageSettingLoading ||
+                    current is UpdateImageSettingFailure ||
+                    current is UpdateImageSettingSuccess,
+                listener: (context, state) {
+                  if (state is UpdateImageSettingLoading) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          textDirection: TextDirection.rtl,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'جاري تحديث إعدادات الخصوصية...',
+                                textDirection: TextDirection.rtl,
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles
+                                    .font14PumpkinOrangeBoldLamaSans
+                                    .copyWith(
+                                  color: AppColors.white,
+                                ),
                               ),
                             ),
+                            SizedBox(
+                              width: 20.w,
+                              height: 20.w,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppColors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                        backgroundColor: AppColors.primaryOrange,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        margin: EdgeInsets.all(16.w),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  } else if (state is UpdateImageSettingFailure) {
+                    // Show error snackbar without affecting the build
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          state.error,
+                          textDirection: TextDirection.rtl,
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.font14PumpkinOrangeBoldLamaSans
+                              .copyWith(
+                            color: AppColors.white,
                           ),
-                        ],
+                        ),
+                        backgroundColor: AppColors.red,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        margin: EdgeInsets.all(16.w),
+                        duration: Duration(seconds: 4),
                       ),
-                      verticalSpace(30),
-                      CustomElevatedButton(
-                        onPressed: state is MyImageImageSelected
-                            ? () => context.read<MyImageCubit>().updateImage()
-                            : () {},
-                        textButton: 'تحميل صوره',
+                    );
+                  } else if (state is UpdateImageSettingSuccess) {
+                    // Save current privacy setting to SharedPreferences
+                    _savePrivacySetting(selectedPrivacyOption);
+                    // Show snackbar with privacy setting message without affecting the build
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          selectedPrivacyOption == 'no_one'
+                              ? 'لا احد سوف يري صورتك'
+                              : 'سوف يري صورتك الجميع',
+                          textDirection: TextDirection.rtl,
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.font14PumpkinOrangeBoldLamaSans
+                              .copyWith(
+                            color: AppColors.white,
+                          ),
+                        ),
+                        backgroundColor: AppColors.primaryOrange,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        margin: EdgeInsets.all(16.w),
+                        duration: Duration(seconds: 3),
                       ),
-                      verticalSpace(20), // Add bottom padding for scroll safety
-                    ],
-                  ),
+                    );
+                  }
+                },
+                child: Column(
+                  textDirection: TextDirection.rtl,
+                  children: [
+                    ContainerSuccessWay(text: 'المسموح لهم بمشاهدة صورتي'),
+                    verticalSpace(30),
+                    Row(
+                      textDirection: TextDirection.rtl,
+                      children: [
+                        Radio<String>(
+                          value: 'no_one',
+                          groupValue: selectedPrivacyOption,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedPrivacyOption = value!;
+                            });
+                            // Call cubit method with 'deny'
+                            context
+                                .read<MyImageCubit>()
+                                .updateImageSetting('deny');
+                          },
+                          activeColor: AppColors.primaryOrange,
+                        ),
+                        horizontalSpace(10),
+                        Expanded(
+                          child: RichText(
+                            textAlign: TextAlign.right,
+                            textDirection: TextDirection.rtl,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                    text: 'لا احد ',
+                                    style: AppTextStyles
+                                        .font14PumpkinOrangeBoldLamaSans
+                                        .copyWith(color: AppColors.black)),
+                                TextSpan(
+                                  text: '(حجب صورتي)',
+                                  style: AppTextStyles
+                                      .font14PumpkinOrangeBoldLamaSans
+                                      .copyWith(color: AppColors.beer),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    verticalSpace(16),
+                    Row(
+                      textDirection: TextDirection.rtl,
+                      children: [
+                        Radio<String>(
+                          value: 'all_members',
+                          groupValue: selectedPrivacyOption,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedPrivacyOption = value!;
+                            });
+                            // Call cubit method with 'allow'
+                            context
+                                .read<MyImageCubit>()
+                                .updateImageSetting('allow');
+                          },
+                          activeColor: AppColors.primaryOrange,
+                        ),
+                        horizontalSpace(10),
+                        Expanded(
+                          child: RichText(
+                            textAlign: TextAlign.right,
+                            textDirection: TextDirection.rtl,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'كل الاعضاء ',
+                                  style: AppTextStyles
+                                      .font14PumpkinOrangeBoldLamaSans
+                                      .copyWith(color: AppColors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    verticalSpace(30),
+                  ],
                 ),
-              );
-            },
-          );
-        }));
+              ),
+            ],
+            // Show hint text for non-male users
+            if (!isLoadingGender &&
+                (userGender != 'ذكر' && userGender != 'male')) ...[
+              Column(
+                children: [
+                  ContainerSuccessWay(text: 'المسموح لهم بمشاهدة صورتي'),
+                  verticalSpace(30),
+                  Center(
+                    child: Text(
+                      'لا احد يسمح برؤية صورتك',
+                      textDirection: TextDirection.rtl,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.font14PumpkinOrangeBoldLamaSans
+                          .copyWith(
+                        color: AppColors.beer,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              verticalSpace(30),
+            ],
+            // Show current privacy status for males
+
+            BlocBuilder<MyImageCubit, MyImageState>(
+              buildWhen: (previous, current) =>
+                  current is MyImageImageSelected ||
+                  previous is MyImageImageSelected,
+              builder: (context, state) {
+                return CustomElevatedButton(
+                  onPressed: context.read<MyImageCubit>().image != null
+                      ? () => context.read<MyImageCubit>().updateImage()
+                      : () {},
+                  textButton: 'تحميل صوره',
+                );
+              },
+            ),
+            verticalSpace(20), // Add bottom padding for scroll safety
+          ],
+        ),
+      ),
+    );
   }
 
   void _showImageSourceDialog(BuildContext context, MyImageCubit cubit) {

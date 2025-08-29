@@ -44,6 +44,10 @@ class ApiConstants {
   static String updateProfileAboutMeData = '/user/update-profile/aboutme-info';
   static String updateProfileAboutPartnerData =
       '/user/update-profile/lifepartner-info';
+  static String getMembersProfile = '/user/members/images';
+  static String reportUser(int userId) => '/user/report-user-profile/$userId';
+  static String updateImageSetting = '/user/update-image-setting';
+  static String deleteImage = '/user/delete-image';
 
   //search-home
   static String matchesUsers = '/user/home/matches-users';
@@ -53,6 +57,9 @@ class ApiConstants {
   static String getNotifications = '/user/get-notifications';
   static String countNotifications = '/user/get-count-unread-notifications';
   static String updateFcmToken = '/user/update-fcmtoken';
+  static String getNotificationSetting = '/user/get-notification-setting';
+  static String updateNotificationSetting(int id) =>
+      '/user/update-notification-setting/$id';
 
   static const String defaultProfileImage =
       'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';
@@ -69,4 +76,29 @@ class ApiConstants {
   static String getChatsList = '/user/chats/list';
   static String userChat(String id) => '/user/chats/chat-messages/$id';
   static String sendMessage = '/user/chats/send-message';
+  static String markAllMessagesAsRead = '/user/mark-all-messages-as-read';
+
+  // chat settings
+static String getChatSettings = '/user/get-chat-setting';
+static String updateChatSettings(String id) => '/user/update-chat-setting/$id';
+static String reportChatSettings(String id) => '/user/report-user-chat/$id';
+static String muteChatSettings(String id) => '/user/mute-chat/$id';
+static String deleteOneChatSettings(String id) => '/user/delete-chat/$id';
+static String deleteAllChatSettings = '/user/delete-all-chats';
+
+
+
+
+// nationality and country lists
+static String getNationalities = '/user/list/nationalities';
+static String getCountries = '/user/list/countries';
+
+
+  // Features
+  static String getFeatures = '/user/my-features';
+
+  // Packages
+  static String getPackages = '/user/packages';
+  static String assignPackageToUser(String id) =>
+      '/user/assign-package-to-user/$id';
 }

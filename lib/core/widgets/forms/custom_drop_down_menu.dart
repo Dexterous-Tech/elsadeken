@@ -9,6 +9,7 @@ class CustomDropDownMenu extends StatefulWidget {
   final String hint;
   final List<String> items;
   final Function(String?) onChanged;
+  final String? initialValue;
 
   const CustomDropDownMenu({
     super.key,
@@ -16,6 +17,7 @@ class CustomDropDownMenu extends StatefulWidget {
     required this.hint,
     required this.items,
     required this.onChanged,
+    this.initialValue,
   });
 
   @override
@@ -24,6 +26,35 @@ class CustomDropDownMenu extends StatefulWidget {
 
 class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
   String? selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set selectedValue if initialValue is not null and not empty
+    // and if it exists in the items list
+    selectedValue = (widget.initialValue != null &&
+            widget.initialValue!.isNotEmpty &&
+            widget.items.contains(widget.initialValue))
+        ? widget.initialValue
+        : null;
+  }
+
+  @override
+  void didUpdateWidget(CustomDropDownMenu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialValue != widget.initialValue ||
+        oldWidget.items != widget.items) {
+      setState(() {
+        // Set selectedValue if initialValue is not null and not empty
+        // and if it exists in the items list
+        selectedValue = (widget.initialValue != null &&
+                widget.initialValue!.isNotEmpty &&
+                widget.items.contains(widget.initialValue))
+            ? widget.initialValue
+            : null;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

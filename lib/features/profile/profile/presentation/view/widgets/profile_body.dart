@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_data_logo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,35 +20,39 @@ class ProfileBody extends StatelessWidget {
     return SafeArea(
       child: Container(
         color: AppColors.darkSunray,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 34.5.h),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'الحساب الشخصي',
-                      style: AppTextStyles.font20WhiteBoldLamaSans,
-                    ),
-                    verticalSpace(19),
-                    BlocProvider(
-                      create: (context) => sl<ManageProfileCubit>(),
-                      child: ProfileDataLogo(),
-                    ),
-                  ],
+        child: BlocProvider(
+          create: (context) => sl<ProfileCubit>(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 34.5.h),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'الحساب الشخصي',
+                        style: AppTextStyles.font20WhiteBoldLamaSans,
+                      ),
+                      verticalSpace(19),
+                      BlocProvider(
+                        create: (context) => sl<ManageProfileCubit>(),
+                        child: ProfileDataLogo(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            verticalSpace(15),
-            Expanded(
+              verticalSpace(15),
+              Expanded(
                 child: BlocProvider(
-              create: (context) => sl<NotificationSettingsCubit>(),
-              child: ProfileContent(),
-            )),
-          ],
+                  create: (context) => sl<NotificationSettingsCubit>(),
+                  child: ProfileContent(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

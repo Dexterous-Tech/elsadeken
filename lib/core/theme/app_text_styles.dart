@@ -213,6 +213,13 @@ class AppTextStyles {
     fontFamily: FontFamilyHelper.lamaSansArabic,
   );
 
+    static TextStyle font20JetRegularLamaSans = TextStyle(
+    fontWeight: FontWeightHelper.semiBold,
+    fontSize: 20.sp,
+    color: AppColors.jet,
+    fontFamily: FontFamilyHelper.lamaSansArabic,
+  );
+
   static TextStyle font21PhilippineBronzeMediumLamaSans = TextStyle(
     fontWeight: FontWeightHelper.medium,
     fontSize: 21.sp,

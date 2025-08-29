@@ -44,12 +44,6 @@ class MembersScreen extends StatelessWidget {
       'avatarAsset': 'assets/images/members/menu_items/member_item5.png',
       'screen': 'health_status_screen',
     },
-    {
-      'title': 'الباحث الآلي',
-      'backgroundColor': AppColors.beige,
-      'avatarAsset': 'assets/images/members/menu_items/member_item6.png',
-      'screen': 'smart_search_screen',
-    },
   ];
 
   void _navigateToScreen(BuildContext context, String screenName) async {
@@ -135,7 +129,8 @@ class MembersScreen extends StatelessWidget {
                           title: item['title'],
                           backgroundColor: item['backgroundColor'],
                           avatarAsset: item['avatarAsset'],
-                          onTap: () => _navigateToScreen(context, item['screen']),
+                          onTap: () =>
+                              _navigateToScreen(context, item['screen']),
                         );
                       },
                     ),

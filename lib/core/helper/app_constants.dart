@@ -33,5 +33,4 @@ class PusherConfig {
   static const String appSecret = 'bb14accaa8c913fd988f';
   static const String cluster = 'eu';
   static const int port = 443;
-  static const bool encrypted = true;
 }

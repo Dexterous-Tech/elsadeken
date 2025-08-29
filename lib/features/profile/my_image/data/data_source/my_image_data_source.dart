@@ -17,4 +17,14 @@ class MyImageDataSource {
 
     return ProfileActionResponseModel.fromJson(response.data);
   }
+
+  Future<ProfileActionResponseModel> updateImageSetting(
+      UpdateImageSetting updateImageSetting) async {
+    final response = await _apiServices.patch(
+      endpoint: ApiConstants.updateImageSetting,
+      requestBody: updateImageSetting.toJson(),
+    );
+
+    return ProfileActionResponseModel.fromJson(response.data);
+  }
 }

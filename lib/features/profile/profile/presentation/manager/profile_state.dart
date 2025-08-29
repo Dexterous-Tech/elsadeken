@@ -18,3 +18,17 @@ final class LogoutSuccess extends ProfileState {
 
   LogoutSuccess(this.logoutResponseModel);
 }
+
+final class DeleteImageLoading extends ProfileState {}
+
+final class DeleteImageFailure extends ProfileState {
+  final String error;
+
+  DeleteImageFailure(this.error);
+}
+
+final class DeleteImageSuccess extends ProfileState {
+  final ProfileActionResponseModel logoutResponseModel;
+
+  DeleteImageSuccess(this.logoutResponseModel);
+}

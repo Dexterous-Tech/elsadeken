@@ -13,4 +13,11 @@ class ProfileDataSource {
 
     return ProfileActionResponseModel.fromJson(response.data);
   }
+
+  Future<ProfileActionResponseModel> deleteImage() async {
+    var response =
+        await _apiServices.delete(endpoint: ApiConstants.deleteImage);
+
+    return ProfileActionResponseModel.fromJson(response.data);
+  }
 }

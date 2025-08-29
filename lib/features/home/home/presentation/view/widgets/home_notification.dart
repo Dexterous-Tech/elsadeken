@@ -1,15 +1,14 @@
 import 'dart:developer';
-
 import 'package:elsadeken/core/services/firebase_notification_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
-import 'package:elsadeken/features/home/notification/presentation/manager/notification_count_cubit.dart';
-import 'package:elsadeken/features/home/notification/presentation/manager/notification_cubit.dart';
+import 'package:elsadeken/features/home/notification/notification/presentation/manager/notification_count_cubit.dart';
+import 'package:elsadeken/features/home/notification/notification/presentation/manager/notification_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../notification/presentation/view/notification_screen.dart';
+import '../../../../notification/notification/presentation/view/notification_screen.dart';
 
 class HomeNotification extends StatefulWidget {
   const HomeNotification({super.key});

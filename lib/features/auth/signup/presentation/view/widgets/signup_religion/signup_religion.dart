@@ -24,17 +24,21 @@ class SignupReligion extends StatefulWidget {
 class _SignupReligionState extends State<SignupReligion> {
   Map<String, String> get religionOptions {
     return {
-      'religious': 'غير متدين',
+      'irreligious': 'غير متدين',
       'little_religious': 'متدين قليلا',
-      'irreligious': 'متدين',
+      'religious': 'متدين',
+      'much_religious': 'متدين كثيرا',
+      'dont_say': 'أفضل الا اقول',
     };
   }
 
   Map<String, String> get prayerOptions {
     return {
       'always ': 'اصلي دائما',
-      'interittent ': 'اصلي اغلب الاوقات',
+      'most_times ': 'اصلي اغلب الاوقات',
+      'sometimes ': 'اصلي بعض الاحيان',
       'no_pray': 'لا اصلي',
+      'dont_say': 'أفضل الا اقول',
     };
   }
 

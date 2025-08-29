@@ -10,6 +10,8 @@ import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart
 abstract class MyImageRepoInterface {
   Future<Either<ApiErrorModel, ProfileActionResponseModel>> updateImage(
       MyImageModel myImageModel);
+  Future<Either<ApiErrorModel, ProfileActionResponseModel>> updateImageSetting(
+      UpdateImageSetting updateImageSetting);
 }
 
 class MyImageRepoImp extends MyImageRepoInterface {
@@ -26,6 +28,23 @@ class MyImageRepoImp extends MyImageRepoInterface {
       return Right(response);
     } catch (e) {
       log("error in image $e");
+      if (e is ApiErrorModel) {
+        return Left(e);
+      }
+      return Left(ApiErrorHandler.handle(e));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, ProfileActionResponseModel>> updateImageSetting(
+      UpdateImageSetting updateImageSetting) async {
+    try {
+      final response =
+          await _myImageDataSource.updateImageSetting(updateImageSetting);
+
+      return Right(response);
+    } catch (e) {
+      log("error in image update setting $e");
       if (e is ApiErrorModel) {
         return Left(e);
       }

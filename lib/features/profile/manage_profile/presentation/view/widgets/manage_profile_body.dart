@@ -37,7 +37,14 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
       listeners: [
         BlocListener<UpdateProfileCubit, UpdateProfileState>(
           listener: (context, state) {
-            if (state is UpdateProfileLoginDataSuccess) {
+            if (state is UpdateProfileLoginDataSuccess ||
+                state is UpdateProfileLocationDataSuccess ||
+                state is UpdateProfileMarriageDataSuccess ||
+                state is UpdateProfilePhysicalDataSuccess ||
+                state is UpdateProfileReligiousDataSuccess ||
+                state is UpdateProfileWorkDataSuccess ||
+                state is UpdateProfileAboutMeDataSuccess ||
+                state is UpdateProfileAboutPartnerDataSuccess) {
               // Refresh profile data after successful update
               context.read<ManageProfileCubit>().getProfile();
             }

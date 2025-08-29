@@ -11,14 +11,14 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => sl<ProfileCubit>()),
-        BlocProvider(create: (context) => NotificationSettingsCubit()),
-      ],
-      child: Scaffold(
-        backgroundColor: AppColors.darkSunray,
-        body: ProfileBody(),
+    return BlocProvider(
+      create: (context) => sl<ProfileCubit>(),
+      child: BlocProvider(
+        create: (context) => NotificationSettingsCubit(),
+        child: Scaffold(
+          backgroundColor: AppColors.darkSunray,
+          body: ProfileBody(),
+        ),
       ),
     );
   }

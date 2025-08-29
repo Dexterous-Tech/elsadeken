@@ -20,8 +20,6 @@ class MembersProfileBody extends StatelessWidget {
         children: [
           ProfileHeader(title: 'صور الأعضاء'),
           verticalSpace(42),
-          MembersProfileTabBar(),
-          verticalSpace(16),
           MembersProfileCountry(),
           verticalSpace(32),
           Expanded(child: MembersProfileItems()),

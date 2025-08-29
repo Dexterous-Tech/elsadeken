@@ -1,7 +1,10 @@
-
+import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/features/home/person_details/data/data_source/person_service.dart';
 import 'package:elsadeken/features/home/person_details/data/models/person_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/core/di/injection_container.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'widgets/person_image.dart';
 import 'widgets/person_info.dart';
 
@@ -75,44 +78,50 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[800],
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : errorMessage != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.error_outline,
-                          size: 80, color: Colors.red[300]),
-                      SizedBox(height: 16),
-                      Text(
-                        errorMessage!,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
+    return BlocProvider(
+      create: (context) => sl<ChatListCubit>(),
+      child: Scaffold(
+        // backgroundColor: Colors.grey[800],
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                color: AppColors.beer,
+              ))
+            : errorMessage != null
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.error_outline,
+                            size: 80, color: Colors.red[300]),
+                        SizedBox(height: 16),
+                        Text(
+                          errorMessage!,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: fetchData,
-                        child: Text('حاول مرة أخرى'),
-                      ),
-                    ],
-                  ),
-                )
-              : person == null
-                  ? const Center(child: Text("No data found"))
-                  : SafeArea(
-                      child: Stack(
-                        children: [
-                          PersonImageHeader(imageUrl: person!.image),
-                          PersonInfoSheet(person: person!),
-                        ],
-                      ),
+                        SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: fetchData,
+                          child: Text('حاول مرة أخرى'),
+                        ),
+                      ],
                     ),
+                  )
+                : person == null
+                    ? const Center(child: Text("No data found"))
+                    : SafeArea(
+                        child: Stack(
+                          children: [
+                            PersonImageHeader(imageUrl: person!.image),
+                            PersonInfoSheet(person: person!),
+                          ],
+                        ),
+                      ),
+      ),
     );
   }
 }

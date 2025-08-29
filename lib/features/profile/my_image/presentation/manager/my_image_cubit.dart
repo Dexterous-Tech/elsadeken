@@ -71,4 +71,18 @@ class MyImageCubit extends Cubit<MyImageState> {
     image = null;
     emit(MyImageInitial());
   }
+
+  void updateImageSetting(String photoVisibility) async {
+    emit(UpdateImageSettingLoading());
+
+    var response = await myImageRepoInterface.updateImageSetting(
+      UpdateImageSetting(photoVisibility: photoVisibility),
+    );
+
+    response.fold((l) {
+      emit(UpdateImageSettingFailure(l.displayMessage));
+    }, (r) {
+      emit(UpdateImageSettingSuccess(r));
+    });
+  }
 }
