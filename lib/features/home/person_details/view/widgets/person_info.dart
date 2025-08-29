@@ -29,6 +29,39 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
     super.dispose();
   }
 
+  /// Format the createdAt date string to a readable format
+  String _formatCreatedAt(String createdAt) {
+    try {
+      if (createdAt.isEmpty) return 'غير محدد';
+
+      final date = DateTime.tryParse(createdAt);
+      if (date == null) return 'غير محدد';
+
+      final now = DateTime.now();
+      final difference = now.difference(date);
+
+      if (difference.inDays == 0) {
+        return 'اليوم';
+      } else if (difference.inDays == 1) {
+        return 'أمس';
+      } else if (difference.inDays < 7) {
+        return 'منذ ${difference.inDays} أيام';
+      } else if (difference.inDays < 30) {
+        final weeks = (difference.inDays / 7).floor();
+        return 'منذ $weeks أسابيع';
+      } else if (difference.inDays < 365) {
+        final months = (difference.inDays / 30).floor();
+        return 'منذ $months أشهر';
+      } else {
+        final years = (difference.inDays / 365).floor();
+        return 'منذ $years سنوات';
+      }
+    } catch (e) {
+      print('Error formatting createdAt: $e');
+      return 'غير محدد';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
@@ -171,7 +204,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   Widget _buildLogTable() {
     final p = widget.person;
     final data = [
-      {'label': 'مسجل منذ', 'value': p.createdAt},
+      {'label': 'مسجل منذ', 'value': _formatCreatedAt(p.createdAt)},
       {'label': 'تاريخ آخر زيادة', 'value': 'متواجد حاليا'},
     ];
 
@@ -381,24 +414,24 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         GestureDetector(
           onTap: () async {
             try {
-              print('🔍 [PersonInfo] Message icon tapped for user ID: ${widget.person.id}');
-              
               // Check if there's an existing chat room first
               final chatListCubit = context.read<ChatListCubit>();
-              
+              print(
+                  '🔍 Looking for existing chat room for user ID: ${widget.person.id}');
+
               // Check if chat list is already loaded, if not, load it silently
               if (chatListCubit.state is! ChatListLoaded) {
-                print('🔄 [PersonInfo] Chat list not loaded, loading silently...');
+                print('🔄 Chat list not loaded, loading silently...');
                 await chatListCubit.silentRefreshChatList();
               } else {
-                print('✅ [PersonInfo] Chat list already loaded');
+                print('✅ Chat list already loaded');
               }
-              
-              // Find existing chat room between current user and this profile user
-              final existingChatRoom = chatListCubit.findExistingChatRoom(widget.person.id);
-              
+
+              final existingChatRoom =
+                  chatListCubit.findExistingChatRoom(widget.person.id);
+
               if (existingChatRoom != null) {
-                print('✅ [PersonInfo] Found existing chat room, navigating to it');
+                print('✅ Found existing chat room: ${existingChatRoom.id}');
                 // Navigate to existing chat room
                 Navigator.pushNamed(
                   context,
@@ -408,8 +441,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                   },
                 );
               } else {
-                print('🆕 [PersonInfo] No existing chat room found, creating new temporary chat');
-                // Create new temporary chat room for new conversation
+                print(
+                    '🆕 No existing chat room found, creating new temporary chat');
+                // Create new temporary chat room
                 Navigator.pushNamed(
                   context,
                   AppRoutes.chatConversationScreen,
@@ -423,8 +457,8 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                 );
               }
             } catch (e) {
-              print('❌ [PersonInfo] Error in message icon onTap: $e');
-              // Fallback to creating new chat
+              print('⚠️ Error in message button onTap: $e');
+              // Fallback to creating new temporary chat room
               Navigator.pushNamed(
                 context,
                 AppRoutes.chatConversationScreen,

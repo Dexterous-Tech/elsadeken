@@ -42,6 +42,38 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
       final repository = sl<MembersRepository>();
       final response = await repository.getOnlineMembers();
 
+      // Debug: Print response data
+      print('API Response received:');
+      print('Response data length: ${response.data.length}');
+      if (response.data.isNotEmpty) {
+        print('First member data: ${response.data.first}');
+        print('First member attribute: ${response.data.first.attribute}');
+
+        // Print raw JSON structure for debugging
+        print('=== RAW MEMBER DATA STRUCTURE ===');
+        print('Member ID: ${response.data.first.id}');
+        print('Member Name: ${response.data.first.name}');
+        print('Member Email: ${response.data.first.email}');
+        print('Member Gender: ${response.data.first.gender}');
+        print('Member Image: ${response.data.first.image}');
+        print('Member Country Code: ${response.data.first.countryCode}');
+        print('Member Phone: ${response.data.first.phone}');
+        print('Member Created At: ${response.data.first.createdAt}');
+
+        if (response.data.first.attribute != null) {
+          print('=== ATTRIBUTE DATA ===');
+          print('Attribute ID: ${response.data.first.attribute!.id}');
+          print('Attribute City: "${response.data.first.attribute!.city}"');
+          print(
+              'Attribute Country: "${response.data.first.attribute!.country}"');
+          print('Attribute Age: ${response.data.first.attribute!.age}');
+          print(
+              'Attribute Marital Status: ${response.data.first.attribute!.maritalStatus}');
+        } else {
+          print('=== NO ATTRIBUTE DATA ===');
+        }
+      }
+
       setState(() {
         _allMembers = response.data;
         _applyFilters();
@@ -131,24 +163,85 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
 
     // Debug logging
     print('Member ${member.name}: country="$country", city="$city"');
+    print('Member ${member.name}: attribute=${member.attribute}');
 
-    // Handle null or empty values
-    if (country == null ||
-        country.isEmpty ||
-        country == 'لا يوجد' ||
-        country == 'null') {
-      if (city == null || city.isEmpty || city == 'لا يوجد' || city == 'null') {
-        return 'غير محدد';
-      }
-      return city;
+    // Helper function to check if a string is valid
+    bool isValidString(String? str) {
+      return str != null &&
+          str.isNotEmpty &&
+          str != 'لا يوجد' &&
+          str != 'null' &&
+          str != 'undefined' &&
+          str.trim().isNotEmpty;
     }
 
-    if (city == null || city.isEmpty || city == 'لا يوجد' || city == 'null') {
-      return country;
+    final hasValidCountry = isValidString(country);
+    final hasValidCity = isValidString(city);
+
+    if (!hasValidCountry && !hasValidCity) {
+      return 'غير محدد';
     }
 
-    // Both country and city are valid
-    return '$country، $city';
+    if (hasValidCountry && hasValidCity) {
+      return '$country، $city';
+    }
+
+    if (hasValidCountry) {
+      return country!;
+    }
+
+    return city!;
+  }
+
+  void _showDebugInfo() {
+    if (_allMembers.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('لا توجد بيانات للعرض')),
+      );
+      return;
+    }
+
+    final firstMember = _allMembers.first;
+    final debugInfo = '''
+=== DEBUG INFO ===
+Total Members: ${_allMembers.length}
+First Member:
+- ID: ${firstMember.id}
+- Name: ${firstMember.name}
+- Email: ${firstMember.email}
+- Gender: ${firstMember.gender}
+- Image: ${firstMember.image}
+- Country Code: ${firstMember.countryCode}
+- Phone: ${firstMember.phone}
+- Created At: ${firstMember.createdAt}
+
+Attribute Data:
+- Has Attribute: ${firstMember.attribute != null}
+${firstMember.attribute != null ? '''
+- Attribute ID: ${firstMember.attribute!.id}
+- City: "${firstMember.attribute!.city}"
+- Country: "${firstMember.attribute!.country}"
+- Age: ${firstMember.attribute!.age}
+- Marital Status: ${firstMember.attribute!.maritalStatus}
+- Job: ${firstMember.attribute!.job}
+''' : '- No Attribute Data'}
+''';
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('معلومات التصحيح'),
+        content: SingleChildScrollView(
+          child: Text(debugInfo),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('إغلاق'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -207,31 +300,59 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                           style: TextStyle(fontSize: 18),
                         ),
                         SizedBox(width: 20),
-                        GestureDetector(
-                          onTap: () async {
-                            final result = await showModalBottomSheet<
-                                Map<String, dynamic>>(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) => const FilterBottomSheet(),
-                            );
-                            if (result != null) {
-                              _onCountryFilterChanged(result);
-                            }
-                          },
-                          child: Row(
-                            children: [
-                              Text(
-                                'فلترة',
-                                style: TextStyle(
-                                    color: Color(0xFFD4AF37), fontSize: 18),
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                final result = await showModalBottomSheet<
+                                    Map<String, dynamic>>(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) =>
+                                      const FilterBottomSheet(),
+                                );
+                                if (result != null) {
+                                  _onCountryFilterChanged(result);
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'فلترة',
+                                    style: TextStyle(
+                                        color: Color(0xFFD4AF37), fontSize: 18),
+                                  ),
+                                  SizedBox(width: 6),
+                                  Icon(Icons.arrow_forward_ios,
+                                      size: 16, color: Color(0xFFD4AF37)),
+                                ],
                               ),
-                              SizedBox(width: 6),
-                              Icon(Icons.arrow_forward_ios,
-                                  size: 16, color: Color(0xFFD4AF37)),
-                            ],
-                          ),
+                            ),
+                            SizedBox(width: 16),
+                            // Debug button
+                            GestureDetector(
+                              onTap: () {
+                                _showDebugInfo();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  'Debug',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -372,12 +493,36 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                               itemCount: _filteredMembers.length,
                               itemBuilder: (context, index) {
                                 final m = _filteredMembers[index];
+                                // Debug: Print member data to understand the structure
+                                print(
+                                    'Creating PersonData for member: ${m.name}');
+                                print('Member ID: ${m.id}');
+                                print('Member attribute: ${m.attribute}');
+                                print(
+                                    'Country from attribute: ${m.attribute?.country}');
+                                print(
+                                    'City from attribute: ${m.attribute?.city}');
+
+                                // Helper function to check if a string is valid
+                                bool isValidString(String? str) {
+                                  return str != null &&
+                                      str.isNotEmpty &&
+                                      str != 'لا يوجد' &&
+                                      str != 'null' &&
+                                      str != 'undefined' &&
+                                      str.trim().isNotEmpty;
+                                }
+
                                 final person = PersonData(
                                   id: m.id,
                                   name: m.name,
                                   age: m.attribute?.age ?? 0,
-                                  country: m.attribute?.country ?? 'لا يوجد',
-                                  city: m.attribute?.city ?? 'لا يوجد',
+                                  country: isValidString(m.attribute?.country)
+                                      ? m.attribute!.country
+                                      : 'غير محدد',
+                                  city: isValidString(m.attribute?.city)
+                                      ? m.attribute!.city
+                                      : 'غير محدد',
                                   location: _getLocationText(m),
                                   profileImageUrl: m.image,
                                   isOnline: true,

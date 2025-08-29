@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/models/user_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 
 class SwipeableCard extends StatefulWidget {
   final UserModel user;
@@ -432,16 +433,29 @@ class _SwipeableCardState extends State<SwipeableCard>
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 try {
                                   // Check if there's an existing chat room first
-                                  final chatListCubit = context.read<ChatListCubit>();
-                                  print('🔍 Looking for existing chat room for user ID: ${widget.user.id}');
-                                  
-                                  final existingChatRoom = chatListCubit.findExistingChatRoom(widget.user.id);
-                                  
+                                  final chatListCubit =
+                                      context.read<ChatListCubit>();
+                                  print(
+                                      '🔍 Looking for existing chat room for user ID: ${widget.user.id}');
+
+                                  // Check if chat list is already loaded, if not, load it silently
+                                  if (chatListCubit.state is! ChatListLoaded) {
+                                    print(
+                                        '🔄 Chat list not loaded, loading silently...');
+                                    await chatListCubit.silentRefreshChatList();
+                                  } else {
+                                    print('✅ Chat list already loaded');
+                                  }
+
+                                  final existingChatRoom = chatListCubit
+                                      .findExistingChatRoom(widget.user.id);
+
                                   if (existingChatRoom != null) {
-                                    print('✅ Found existing chat room: ${existingChatRoom.id}');
+                                    print(
+                                        '✅ Found existing chat room: ${existingChatRoom.id}');
                                     // Navigate to existing chat room
                                     Navigator.pushNamed(
                                       context,
@@ -451,7 +465,8 @@ class _SwipeableCardState extends State<SwipeableCard>
                                       },
                                     );
                                   } else {
-                                    print('🆕 No existing chat room found, creating new temporary chat');
+                                    print(
+                                        '🆕 No existing chat room found, creating new temporary chat');
                                     // Create new temporary chat room
                                     Navigator.pushNamed(
                                       context,

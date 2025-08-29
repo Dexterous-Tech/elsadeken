@@ -23,15 +23,23 @@ class Member {
     required this.attribute,
   });
 
-  factory Member.fromJson(Map<String, dynamic> json) => Member(
-    id: json['id'] ?? 0,
-    name: json['name'] ?? '',
-    email: json['email'] ?? '',
-    countryCode: json['country_code'] ?? '',
-    phone: json['phone'] ?? '',
-    gender: json['gender'] ?? '',
-    image: json['image'] ?? '',
-    createdAt: json['created_at'] ?? '',
-    attribute: json['attribute'] == null ? null : MemberAttribute.fromJson(json['attribute']),
-  );
+  factory Member.fromJson(Map<String, dynamic> json) {
+    // Debug: Print the JSON being parsed
+    print('Parsing Member from JSON: $json');
+    print('Attribute JSON: ${json['attribute']}');
+
+    return Member(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      countryCode: json['country_code'] ?? '',
+      phone: json['phone'] ?? '',
+      gender: json['gender'] ?? '',
+      image: json['image'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      attribute: json['attribute'] == null
+          ? null
+          : MemberAttribute.fromJson(json['attribute']),
+    );
+  }
 }
