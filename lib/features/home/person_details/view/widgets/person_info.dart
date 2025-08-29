@@ -29,6 +29,26 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
     super.dispose();
   }
 
+  /// Handle favorite button press
+  void _handleFavoritePress() {
+    // Add your favorite functionality here
+    // For example, you could:
+    // - Toggle favorite status
+    // - Show a snackbar
+    // - Navigate to a different screen
+    // - Call an API to update favorite status
+    print('Favorite button pressed for user: ${widget.person.name}');
+
+    // Example: Show a snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('تم إضافة ${widget.person.name} إلى المفضلة'),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
   /// Format the createdAt date string to a readable format
   String _formatCreatedAt(String createdAt) {
     try {
@@ -135,17 +155,20 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          width: 40.w,
-          height: 40.h,
-          decoration: const BoxDecoration(
-            color: Colors.red,
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            Icons.favorite,
-            color: Colors.white,
-            size: 20,
+        GestureDetector(
+          onTap: () => _handleFavoritePress(),
+          child: Container(
+            width: 40.w,
+            height: 40.h,
+            decoration: const BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.favorite,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
         ),
         SizedBox(width: 12.w),

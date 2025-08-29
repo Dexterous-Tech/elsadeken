@@ -329,31 +329,9 @@ ${firstMember.attribute != null ? '''
                                 ],
                               ),
                             ),
-                            SizedBox(width: 16),
-                            // Debug button
-                            GestureDetector(
-                              onTap: () {
-                                _showDebugInfo();
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: Colors.red.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  'Debug',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
+                        
                       ],
                     ),
                   ),

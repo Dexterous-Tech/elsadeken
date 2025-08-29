@@ -54,11 +54,11 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
               textDirection: TextDirection.rtl,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                CustomContainer(
-                  img: AppImages.share,
-                  color: AppColors.lightBlue.withValues(alpha: 0.07),
-                  text: 'مشاركة',
-                ),
+                // CustomContainer(
+                //   img: AppImages.share,
+                //   color: AppColors.lightBlue.withValues(alpha: 0.07),
+                //   text: 'مشاركة',
+                // ),
                 BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
                   listenWhen: (context, current) =>
                       current is LikeUserLoading ||
