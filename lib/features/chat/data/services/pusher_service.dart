@@ -89,6 +89,8 @@ class PusherService {
       // Use only EU cluster as backend depends on it
       final wsUrl = 'wss://ws-${PusherConfig.cluster}.pusher.com/app/${PusherConfig.appKey}?protocol=7&client=dart&version=1.0&flash=false';
       log('🔗 Connecting to: $wsUrl');
+      log('🔗 Using cluster: ${PusherConfig.cluster}');
+      log('🔗 App key: ${PusherConfig.appKey}');
 
       _webSocketChannel = WebSocketChannel.connect(Uri.parse(wsUrl));
       
@@ -97,6 +99,7 @@ class PusherService {
       
         if (_webSocketChannel != null) {
           _isConnected = true;
+          log('✅ WebSocket connected successfully');
           _resetReconnectionAttempts(); // Reset reconnection attempts on successful connection
           onConnectionEstablished?.call('Connected to Pusher via EU cluster');
           log('✅ WebSocket connected successfully via EU cluster');
@@ -229,6 +232,8 @@ class PusherService {
     _currentChannelName = channelName;
 
     log('🔗 Preparing subscription for channel: $channelName');
+    log('🔗 Chat room ID: $chatRoomId');
+    log('🔗 Bearer token available: ${bearerToken.isNotEmpty}');
 
     // Step 1: Wait until we have a socket_id from Pusher
     if (_lastSocketId == null) {
@@ -314,7 +319,11 @@ class PusherService {
       } else if (eventType == 'App\\Events\\MessageSent' || 
                  eventType == 'MessageSent' ||
                  eventType == 'message.sent' ||
-                 eventType == 'chat.message') {
+                 eventType == 'chat.message' ||
+                 eventType == 'message' ||
+                 eventType == 'new-message' ||
+                 eventType == 'chat-message' ||
+                 eventType.contains('Message')) {
         log('💬 Message event received: $eventType');
         final messageData = data['data'];
         log('📨 Message data: $messageData');
@@ -345,6 +354,28 @@ class PusherService {
         log('ℹ️ Other event: $eventType');
         // Log the full data for debugging
         log('📋 Full event data: $data');
+        
+        // Check if this might be a message event with a different name
+        if (data.containsKey('data')) {
+          final eventData = data['data'];
+          log('🔍 Unknown event data: $eventData');
+          
+          // Try to process it as a message if it looks like one
+          if (eventData is String) {
+            try {
+              final parsed = jsonDecode(eventData);
+              if (parsed is Map<String, dynamic> && (parsed.containsKey('id') && parsed.containsKey('chat_id') && parsed.containsKey('body'))) {
+                log('🔍 This looks like a message! Attempting to process...');
+                _processMessage(parsed);
+              }
+            } catch (e) {
+              log('🔍 Not a JSON message: $e');
+            }
+          } else if (eventData is Map<String, dynamic> && (eventData.containsKey('id') && eventData.containsKey('chat_id') && eventData.containsKey('body'))) {
+            log('🔍 This looks like a message! Attempting to process...');
+            _processMessage(eventData);
+          }
+        }
       }
     } catch (e) {
       log('❌ Error handling message: $e');
@@ -390,6 +421,29 @@ class PusherService {
       log('⚠️ Failed to parse PusherMessage: $e');
       log('🔍 Raw JSON that failed: $json');
       log('🔍 Error details: ${e.toString()}');
+    }
+  }
+
+  /// Test method to manually trigger message processing (for debugging)
+  void simulateMessageReceived(String messageText, int chatId) {
+    log('🧪 Simulating message: $messageText for chat: $chatId');
+    try {
+      final testMessage = PusherMessageModel.fromJson({
+        'id': DateTime.now().millisecondsSinceEpoch,
+        'chat_id': chatId,
+        'sender_id': 11, // From ahmed
+        'receiver_id': 5, // To current user
+        'body': messageText,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+      
+      // Manually trigger the pipeline
+      onMessageReceived?.call(testMessage);
+      ChatMessageService.instance.handleNewMessage(testMessage);
+      
+      log('🧪 Test message processed successfully');
+    } catch (e) {
+      log('🧪 Test message failed: $e');
     }
   }
 
@@ -459,6 +513,32 @@ class PusherService {
     };
   }
 
+  /// Test message handling (for debugging)
+  void testMessageHandling() {
+    log('🧪 Testing message handling...');
+    log('🧪 isConnected: $_isConnected');
+    log('🧪 currentChannel: $_currentChannelName');
+    log('🧪 hasAuthToken: ${_authToken != null}');
+    log('🧪 hasWebSocket: ${_webSocketChannel != null}');
+    log('🧪 lastSocketId: $_lastSocketId');
+  }
+
+  /// Test full message pipeline (for debugging)
+  void testFullMessagePipeline() {
+    log('🧪 Testing full message pipeline...');
+    final testMessage = PusherMessageModel.fromJson({
+      'id': 999,
+      'chat_id': 1,
+      'sender_id': 2,
+      'receiver_id': 1,
+      'body': 'Test message from debugging',
+      'created_at': DateTime.now().toIso8601String(),
+    });
+    
+    log('🧪 Test message created: ${testMessage.body}');
+    onMessageReceived?.call(testMessage);
+  }
+
   /// Get comprehensive network and connection diagnostics
   Future<Map<String, dynamic>> getDetailedDiagnostics() async {
     final diagnostics = await NetworkHelper.getNetworkDiagnostics();
@@ -486,58 +566,5 @@ class PusherService {
       _webSocketChannel = null;
     }
     await initialize();
-  }
-
-  /// Test message handling (for debugging)
-  void testMessageHandling() {
-    log('🧪 Testing message handling...');
-    final testMessage = {
-      'message': {
-        'id': 999,
-        'chat_id': 13,
-        'sender_id': 11,
-        'receiver_id': 34,
-        'body': 'Test message from Pusher',
-        'is_read': 0,
-        'created_at': DateTime.now().toIso8601String(),
-        'updated_at': DateTime.now().toIso8601String(),
-      }
-    };
-    
-    try {
-      _processMessage(testMessage);
-      log('✅ Test message processed successfully');
-    } catch (e) {
-      log('❌ Test message failed: $e');
-    }
-  }
-
-  /// Test the full message pipeline (for debugging)
-  void testFullMessagePipeline() {
-    log('🧪 Testing full message pipeline...');
-    
-    // Simulate a real Pusher message event
-    final testPusherEvent = {
-      'event': 'App\\Events\\MessageSent',
-      'data': {
-        'message': {
-          'id': 999,
-          'chat_id': 13,
-          'sender_id': 11,
-          'receiver_id': 34,
-          'body': 'Test message from Pusher',
-          'is_read': 0,
-          'created_at': DateTime.now().toIso8601String(),
-          'updated_at': DateTime.now().toIso8601String(),
-        }
-      }
-    };
-    
-    try {
-      _handleWebSocketMessage(jsonEncode(testPusherEvent));
-      log('✅ Full message pipeline test completed');
-    } catch (e) {
-      log('❌ Full message pipeline test failed: $e');
-    }
   }
 }
