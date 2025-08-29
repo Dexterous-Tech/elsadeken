@@ -128,18 +128,29 @@ class ChatListCubit extends Cubit<ChatListState> {
         }
 
         final existingChats = currentState.chatList.data.where((chat) {
+          final matches = chat.otherUser.id == receiverId;
           print(
-              '🔍 [ChatListCubit] Checking chat: ${chat.otherUser.id} vs $receiverId (${chat.otherUser.id == receiverId})');
-          return chat.otherUser.id == receiverId;
+              '🔍 [ChatListCubit] Checking chat: ${chat.otherUser.id} vs $receiverId (matches: $matches)');
+          return matches;
         }).toList();
 
         if (existingChats.isNotEmpty) {
+          final foundChat = existingChats.first;
           print(
-              '✅ [ChatListCubit] Found existing chat: ${existingChats.first.id}');
-          return existingChats.first.toChatRoomModel();
+              '✅ [ChatListCubit] Found existing chat: ID=${foundChat.id}, OtherUser=${foundChat.otherUser.name}');
+          
+          try {
+            final chatRoomModel = foundChat.toChatRoomModel();
+            print('✅ [ChatListCubit] Successfully converted to ChatRoomModel: ${chatRoomModel.id}');
+            return chatRoomModel;
+          } catch (e) {
+            print('❌ [ChatListCubit] Error converting to ChatRoomModel: $e');
+            return null;
+          }
         } else {
           print(
               '❌ [ChatListCubit] No existing chat found for user $receiverId');
+          print('🔍 [ChatListCubit] Available user IDs: ${currentState.chatList.data.map((c) => c.otherUser.id).toList()}');
         }
       } else {
         print(
@@ -426,7 +437,7 @@ class ChatListCubit extends Cubit<ChatListState> {
       print('[ChatListCubit] Adding chat $chatId to favorites...');
 
       final Either<ApiErrorModel, Map<String, dynamic>> result =
-          await chatListRepo.addChatToFavorite(chatId);
+          await chatListRepo.addChatToFavorite(chatId, favourite: 1);
 
       result.fold(
         (failure) {
@@ -437,6 +448,9 @@ class ChatListCubit extends Cubit<ChatListState> {
         },
         (success) {
           print('[ChatListCubit] Add to favorite successful: $success');
+          // Update the chat locally to show immediate feedback
+          _updateChatFavoriteStatus(chatId, true);
+          
           // Refresh the appropriate list based on current tab
           if (_currentTabIndex == 0) {
             // We're on "All" tab, refresh all chats list
@@ -450,6 +464,69 @@ class ChatListCubit extends Cubit<ChatListState> {
     } catch (e) {
       print('[ChatListCubit] Exception in addChatToFavorite: $e');
       emit(ChatListError('حدث خطأ أثناء إضافة المحادثة إلى المفضلة'));
+    }
+  }
+
+  /// Remove chat from favorites
+  Future<void> removeChatFromFavorite(int chatId) async {
+    try {
+      print('[ChatListCubit] Removing chat $chatId from favorites...');
+
+      final Either<ApiErrorModel, Map<String, dynamic>> result =
+          await chatListRepo.addChatToFavorite(chatId, favourite: 0);
+
+      result.fold(
+        (failure) {
+          print('[ChatListCubit] Remove from favorite failed: ${failure.message}');
+          // Show error message to user
+          emit(ChatListError(
+              failure.message ?? 'فشل في إزالة المحادثة من المفضلة'));
+        },
+        (success) {
+          print('[ChatListCubit] Remove from favorite successful: $success');
+          // Update the chat locally to show immediate feedback
+          _updateChatFavoriteStatus(chatId, false);
+          
+          // Refresh the appropriate list based on current tab
+          if (_currentTabIndex == 0) {
+            // We're on "All" tab, refresh all chats list
+            getChatList();
+          } else if (_currentTabIndex == 1) {
+            // We're on "Favorites" tab, refresh favorites list
+            getFavoriteChatList();
+          }
+        },
+      );
+    } catch (e) {
+      print('[ChatListCubit] Exception in removeChatFromFavorite: $e');
+      emit(ChatListError('حدث خطأ أثناء إزالة المحادثة من المفضلة'));
+    }
+  }
+
+  /// Toggle chat favorite status
+  Future<void> toggleChatFavorite(int chatId, bool currentlyFavorite) async {
+    if (currentlyFavorite) {
+      await removeChatFromFavorite(chatId);
+    } else {
+      await addChatToFavorite(chatId);
+    }
+  }
+
+  /// Update chat favorite status locally for immediate UI feedback
+  void _updateChatFavoriteStatus(int chatId, bool isFavorite) {
+    final currentState = state;
+    if (currentState is ChatListLoaded) {
+      final updatedChatList = currentState.chatList.copyWith(
+        data: currentState.chatList.data.map((chat) {
+          if (chat.id == chatId) {
+            return chat.copyWith(isFavorite: isFavorite);
+          }
+          return chat;
+        }).toList(),
+      );
+      // Sort and emit updated state
+      final sortedChatList = _sortChatListByNewestMessage(updatedChatList);
+      emit(ChatListLoaded(sortedChatList));
     }
   }
 

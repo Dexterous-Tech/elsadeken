@@ -12,6 +12,7 @@ class ChatDataSource {
   Future<ChatListModel> getAllChatList() async {
     var response = await _apiServices.get(
       endpoint: ApiConstants.getChatsList,
+      queryParameters: {'favorite': '0'}, // Only get non-favorite chats
       requiresAuth: true,
     );
 
@@ -43,9 +44,8 @@ class ChatDataSource {
   }
 
   Future<Map<String, dynamic>> markAllMessagesAsRead() async {
-    final response = await _apiServices.post(
+    final response = await _apiServices.get(
       endpoint: ApiConstants.markAllMessagesAsRead,
-      requestBody: {},
       requiresAuth: true,
     );
 
@@ -93,21 +93,29 @@ class ChatDataSource {
   }
 
   Future<ChatListModel> getFavoriteChatList() async {
+    // Get favorite chats using the main endpoint with favorite=1 parameter
     var response = await _apiServices.get(
       endpoint: ApiConstants.getChatsList,
-      queryParameters: {'favorite': '1'},
+      queryParameters: {'favorite': '1'}, // Correct parameter name
       requiresAuth: true,
     );
 
     return ChatListModel.fromJson(response.data);
   }
 
-  Future<Map<String, dynamic>> addChatToFavorite(int chatId) async {
+  Future<Map<String, dynamic>> addChatToFavorite(int chatId, {int favourite = 1}) async {
     final response = await _apiServices.get(
       endpoint: ApiConstants.addChatToFavorite(chatId),
+      queryParameters: {
+        'favourite': favourite, // 1 = add to favorite, 0 = remove from favorite
+      },
       requiresAuth: true,
     );
 
     return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> removeChatFromFavorite(int chatId) async {
+    return await addChatToFavorite(chatId, favourite: 0);
   }
 }
