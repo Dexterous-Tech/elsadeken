@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,8 @@ import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/shared/shared_preferences_key.dart';
+import 'package:elsadeken/features/chat/data/services/chat_message_service.dart';
+import 'package:elsadeken/core/services/firebase_notification_service.dart';
 
 class ChatConversationScreen extends StatefulWidget {
   final ChatRoomModel chatRoom;
@@ -39,6 +42,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   int? _currentUserId;
   String _currentUserName = '';
   String _currentUserImage = '';
+  
+  // Stream subscriptions for real-time updates
+  StreamSubscription<PusherMessageModel>? _messageSubscription;
+  StreamSubscription<int>? _chatUpdateSubscription;
+  
+  // Auto-scroll control
+  bool _shouldAutoScroll = true;
 
   @override
   void initState() {
@@ -47,6 +57,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     _loadChatMessages();
     _loadCurrentUserProfile();
     _initializePusher();
+    _setupRealTimeListeners();
+    _setupScrollListener();
   }
 
   @override
@@ -55,7 +67,127 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (state == AppLifecycleState.resumed) {
       // Re-initialize Pusher if the app is resumed
       _initializePusher();
+      
+      // Check if we need to refresh due to Firebase notifications
+      _checkAndHandleChatRefresh();
     }
+  }
+
+  /// Check if chat refresh is needed from Firebase notifications
+  Future<void> _checkAndHandleChatRefresh() async {
+    try {
+      // Check if we need to refresh due to Firebase notifications
+      final needsRefresh = await FirebaseNotificationService.instance.checkAndClearChatRefreshFlag();
+      
+      if (needsRefresh) {
+        print('[ChatConversationScreen] Firebase notification triggered chat refresh');
+        // Real-time updates will handle everything automatically - no manual refresh needed
+      }
+    } catch (e) {
+      print('[ChatConversationScreen] Error checking chat refresh: $e');
+    }
+  }
+
+  void _setupRealTimeListeners() {
+    print('[ChatConversationScreen] Setting up real-time listeners...');
+    
+    // Listen for new messages from the message service
+    _messageSubscription = ChatMessageService.instance.messageStream.listen((message) {
+      if (mounted) {
+        print('[ChatConversationScreen] Message stream received: ${message.body}');
+        _handleRealTimeMessage(message);
+      }
+    });
+
+    // Listen for chat updates
+    _chatUpdateSubscription = ChatMessageService.instance.chatUpdateStream.listen((chatId) {
+      if (mounted && chatId.toString() == widget.chatRoom.id) {
+        print('[ChatConversationScreen] Chat update stream received for chat: $chatId');
+        // Don't reload from API - real-time messages handle everything
+        // _loadChatMessages(); // Commented out to avoid API calls
+      }
+    });
+
+    print('[ChatConversationScreen] Real-time listeners set up successfully');
+  }
+
+
+
+  /// Setup scroll listener for auto-scroll behavior
+  void _setupScrollListener() {
+    _scrollController.addListener(() {
+      if (_scrollController.hasClients) {
+        final position = _scrollController.position;
+        final isNearBottom = position.pixels >= position.maxScrollExtent - 100;
+        
+        // If user is near bottom, enable auto-scroll for new messages
+        if (isNearBottom) {
+          _shouldAutoScroll = true;
+        } else {
+          _shouldAutoScroll = false;
+        }
+      }
+    });
+  }
+
+  void _handleRealTimeMessage(PusherMessageModel message) {
+    // Only handle messages for the current chat room
+    if (message.chatId.toString() == widget.chatRoom.id ||
+        (widget.chatRoom.id.startsWith('temp_') &&
+            message.receiverId == _currentUserId)) {
+      
+      print('[ChatConversationScreen] Real-time message received: ${message.body}');
+      print('[ChatConversationScreen] Message chat ID: ${message.chatId}, Current chat: ${widget.chatRoom.id}');
+      
+      // Convert Pusher message to ChatMessage
+      final chatMessage = message.toChatMessage(
+        _currentUserId.toString(),
+        widget.chatRoom.name,
+        widget.chatRoom.image,
+        _currentUserImage,
+      );
+
+      // Add message to the list if it doesn't already exist
+      if (!_messages.any((msg) => msg.id == chatMessage.id)) {
+        setState(() {
+          _messages.add(chatMessage);
+          print('[ChatConversationScreen] Message added to UI: ${chatMessage.message}');
+        });
+
+        // Real-time updates handle chat list updates automatically
+        print('[ChatConversationScreen] Real-time message received and processed');
+
+        // Auto-scroll to bottom with improved timing
+        _scrollToBottom();
+      } else {
+        print('[ChatConversationScreen] Message already exists, skipping: ${chatMessage.message}');
+      }
+    } else {
+      print('[ChatConversationScreen] Message not for current chat: ${message.chatId} vs ${widget.chatRoom.id}');
+    }
+  }
+
+  /// Improved auto-scroll to bottom method
+  void _scrollToBottom() {
+    // Only auto-scroll if user is near bottom or explicitly requested
+    if (!_shouldAutoScroll) {
+      print('[ChatConversationScreen] Auto-scroll disabled, user scrolled up');
+      return;
+    }
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients && mounted) {
+        try {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+          );
+        } catch (e) {
+          print('[ChatConversationScreen] Error scrolling to bottom: $e');
+        }
+      }
+    });
   }
 
   void _initializePusher() async {
@@ -87,7 +219,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     });
   }
 
-  void _subscribeToChatRoom() {
+  Future<void> _subscribeToChatRoom() async {
     if (_currentUserId != null && !widget.chatRoom.id.startsWith('temp_')) {
       print('🔗 Subscribing to chat room: ${widget.chatRoom.id}');
       print('👤 Current user ID: $_currentUserId');
@@ -99,7 +231,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       print('📡 Subscribing to chat room channel: $chatRoomId');
       
       // Try different channel naming conventions that the backend might be using
-      context.read<PusherCubit>().subscribeToChatChannel(int.parse(chatRoomId));
+      final token = await SharedPreferencesHelper.getSecuredString(SharedPreferencesKey.apiTokenKey);
+      context.read<PusherCubit>().subscribeToChatChannel(int.parse(chatRoomId), token);
     } else {
       print('⚠️ Cannot subscribe: userId=$_currentUserId, chatRoomId=${widget.chatRoom.id}');
     }
@@ -110,8 +243,26 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   void _loadChatMessages() {
     // Don't load messages for temporary chat rooms (new conversations)
     if (!widget.chatRoom.id.startsWith('temp_')) {
+      print('[ChatConversationScreen] Loading initial messages from API...');
       context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
     }
+  }
+
+  /// Scroll to bottom when messages are loaded
+  void _scrollToBottomAfterLoad() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients && mounted && _messages.isNotEmpty) {
+        try {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeOutCubic,
+          );
+        } catch (e) {
+          print('[ChatConversationScreen] Error scrolling after load: $e');
+        }
+      }
+    });
   }
 
   void _loadCurrentUserProfile() {
@@ -127,6 +278,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         appBar: _buildAppBar(),
         body: Column(
           children: [
+
             Expanded(
               child: _buildChatMessages(),
             ),
@@ -176,6 +328,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         BlocListener<ChatMessagesCubit, ChatMessagesState>(
           listener: (context, state) {
             if (state is ChatMessagesLoaded && _currentUserId != null) {
+              print('[ChatConversationScreen] API messages loaded: ${state.chatMessages.messages.length} messages');
+              
               setState(() {
                 _messages = state.chatMessages.toChatMessages(
                   _currentUserId.toString(),
@@ -185,20 +339,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 );
               });
 
-              Future.delayed(Duration(milliseconds: 100), () {
-                if (_scrollController.hasClients) {
-                  _scrollController.animateTo(
-                    _scrollController.position.maxScrollExtent,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                }
-              });
+              print('[ChatConversationScreen] API messages converted and set: ${_messages.length} messages');
+              _scrollToBottom();
             }
           },
         ),
         BlocListener<ManageProfileCubit, ManageProfileState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is ManageProfileSuccess) {
               setState(() {
                 _currentUserId = state.myProfileResponseModel.data?.id;
@@ -209,9 +356,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               });
               if (_currentUserId != null) {
                 // Subscribe to Pusher channel for real-time messages
-                context
+                final token = await SharedPreferencesHelper.getSecuredString(SharedPreferencesKey.apiTokenKey);
+               /* context
                     .read<PusherCubit>()
-                    .subscribeToChatChannel(_currentUserId!);
+                    .subscribeToChatChannel(_currentUserId!, token);*/
 
                 if (!widget.chatRoom.id.startsWith('temp_')) {
                   context
@@ -248,15 +396,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 });
 
                 // Scroll to bottom
-                Future.delayed(Duration(milliseconds: 100), () {
-                  if (_scrollController.hasClients) {
-                    _scrollController.animateTo(
-                      _scrollController.position.maxScrollExtent,
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeOut,
-                    );
-                  }
-                });
+                _scrollToBottom();
               }
             } else if (state is SendMessagesError) {
               // Show error message
@@ -538,10 +678,14 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   }
 
   void _handlePusherMessage(PusherMessageModel pusherMessage) {
+    print('[ChatConversationScreen] Pusher message received: ${pusherMessage.body}');
+    print('[ChatConversationScreen] Pusher message chat ID: ${pusherMessage.chatId}, Current chat: ${widget.chatRoom.id}');
+    
     // Only handle messages for the current chat room
     if (pusherMessage.chatId.toString() == widget.chatRoom.id ||
         (widget.chatRoom.id.startsWith('temp_') &&
             pusherMessage.receiverId == _currentUserId)) {
+      
       // Convert Pusher message to ChatMessage
       final chatMessage = pusherMessage.toChatMessage(
         _currentUserId.toString(),
@@ -554,20 +698,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       if (!_messages.any((msg) => msg.id == chatMessage.id)) {
         setState(() {
           _messages.add(chatMessage);
+          print('[ChatConversationScreen] Pusher message added to UI: ${chatMessage.message}');
         });
 
-        // Update the chat list to reflect the new message
-        // This ensures the chat list shows updated unread count and last message
-        try {
-          final chatListCubit = context.read<ChatListCubit>();
-          if (chatListCubit != null) {
-            // Refresh the chat list to show the new message
-            chatListCubit.getChatList();
-            print('[ChatConversationScreen] Chat list refreshed after receiving Pusher message');
-          }
-        } catch (e) {
-          print('[ChatConversationScreen] Error refreshing chat list: $e');
-        }
+        // Real-time updates handle chat list updates automatically
+        print('[ChatConversationScreen] Pusher message received and processed');
 
         // Scroll to bottom
         Future.delayed(Duration(milliseconds: 100), () {
@@ -579,7 +714,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
             );
           }
         });
+      } else {
+        print('[ChatConversationScreen] Pusher message already exists, skipping: ${chatMessage.message}');
       }
+    } else {
+      print('[ChatConversationScreen] Pusher message not for current chat: ${pusherMessage.chatId} vs ${widget.chatRoom.id}');
     }
   }
 
@@ -624,6 +763,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
+    
+    // Cancel stream subscriptions
+    _messageSubscription?.cancel();
+    _chatUpdateSubscription?.cancel();
+    
     // Unsubscribe from Pusher channel when leaving the screen
     try {
       context.read<PusherCubit>().unsubscribeFromChatChannel();

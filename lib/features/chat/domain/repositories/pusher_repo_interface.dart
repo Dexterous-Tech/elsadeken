@@ -7,7 +7,7 @@ abstract class PusherRepoInterface {
   Future<Either<Failure, void>> initialize();
   
   /// Subscribe to a chat channel for a specific user
-  Future<Either<Failure, void>> subscribeToChatChannel(int userId);
+  Future<Either<Failure, void>> subscribeToChatChannel(int userId, String bearerToken);
   
   /// Unsubscribe from the current chat channel
   Future<Either<Failure, void>> unsubscribeFromChatChannel();
@@ -32,4 +32,13 @@ abstract class PusherRepoInterface {
   
   /// Check connection health and reconnect if needed
   Future<bool> checkConnectionHealth();
+  
+  /// Get detailed diagnostics for debugging network and connection issues
+  Future<Map<String, dynamic>> getDetailedDiagnostics();
+  
+  /// Test message handling (for debugging)
+  void testMessageHandling();
+  
+  /// Test full message pipeline (for debugging)
+  void testFullMessagePipeline();
 }
