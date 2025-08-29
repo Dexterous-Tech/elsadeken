@@ -100,6 +100,7 @@ class UpdateProfileCubit extends Cubit<UpdateProfileState> {
     String? prayer,
     int? smoking,
     String? hijab,
+    String? beard,
   }) async {
     emit(UpdateProfileReligiousDataLoading());
 
@@ -108,7 +109,8 @@ class UpdateProfileCubit extends Cubit<UpdateProfileState> {
             religiousCommitment: religiousCommitment,
             prayer: prayer,
             smoking: smoking,
-            hijab: hijab));
+            hijab: hijab,
+            beard: beard));
 
     response.fold(
         (error) =>

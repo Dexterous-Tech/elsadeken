@@ -49,13 +49,23 @@ class ManageProfileReligion extends StatelessWidget {
           ),
         ),
         ManageProfileCustomSeparator(),
-        ManageProfileContentItem(
-          title: 'الحجاب',
-          itemContent: ManageProfileContentText(
-            text: profileData?.attribute?.hijab ?? '',
-            isLoading: isLoading,
+        // Show beard for males, hijab for females
+        if (profileData?.gender == 'male' || profileData?.gender == 'ذكر')
+          ManageProfileContentItem(
+            title: 'اللحية',
+            itemContent: ManageProfileContentText(
+              text: profileData?.attribute?.beard ?? '',
+              isLoading: isLoading,
+            ),
+          )
+        else
+          ManageProfileContentItem(
+            title: 'الحجاب',
+            itemContent: ManageProfileContentText(
+              text: profileData?.attribute?.hijab ?? '',
+              isLoading: isLoading,
+            ),
           ),
-        ),
         verticalSpace(20),
         ManageProfileEditButton(
           onPressed: isLoading ? null : () => _showReligionEditDialog(context),
@@ -106,13 +116,23 @@ class ManageProfileReligion extends StatelessWidget {
             'لا',
           ],
         ),
-        ManageProfileField(
-          label: 'الحجاب',
-          hint: 'اختر حالة الحجاب',
-          currentValue: _mapHijabToDisplay(profileData?.attribute?.hijab),
-          type: ManageProfileFieldType.dropdown,
-          options: scarfOptions.values.toList(),
-        ),
+        // Show beard for males, hijab for females
+        if (profileData?.gender == 'male' || profileData?.gender == 'ذكر')
+          ManageProfileField(
+            label: 'اللحية',
+            hint: 'اختر حالة اللحية',
+            currentValue: _mapBeardToDisplay(profileData?.attribute?.beard),
+            type: ManageProfileFieldType.dropdown,
+            options: beardOptions.values.toList(),
+          )
+        else
+          ManageProfileField(
+            label: 'الحجاب',
+            hint: 'اختر حالة الحجاب',
+            currentValue: _mapHijabToDisplay(profileData?.attribute?.hijab),
+            type: ManageProfileFieldType.dropdown,
+            options: scarfOptions.values.toList(),
+          ),
       ],
     );
 
@@ -150,6 +170,14 @@ class ManageProfileReligion extends StatelessWidget {
       'sometimes': 'اصلي بعض الاحيان',
       'no_pray': 'لا اصلي',
       'dont_say': 'أفضل الا اقول',
+    };
+  }
+
+  /// Beard options mapping
+  Map<String, String> get beardOptions {
+    return {
+      'beard': 'ملتحي',
+      'without_beard': 'بدون لحية',
     };
   }
 
@@ -192,6 +220,21 @@ class ManageProfileReligion extends StatelessWidget {
 
     // Map API values to display values
     return prayerOptions[value] ?? value;
+  }
+
+  /// Helper method to map API beard values to display values
+  String _mapBeardToDisplay(String? apiValue) {
+    if (apiValue == null || apiValue.isEmpty) return '';
+
+    final value = apiValue.trim();
+
+    // Check if the value is already in Arabic (display format)
+    if (beardOptions.values.contains(value)) {
+      return value;
+    }
+
+    // Map API values to display values
+    return beardOptions[value] ?? value;
   }
 
   /// Helper method to map API hijab values to display values

@@ -220,8 +220,60 @@ class ProfileDetailsData extends StatelessWidget {
   String _getLastVisit(ProfileDetailsState state) {
     if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
     if (state is GetProfileDetailsSuccess) {
-      // You might need to add last visit field to your model
-      return 'متواجد حاليا';
+      final lastSeen = state.profileDetailsResponseModel.data?.lastSeen;
+      if (lastSeen == null) return 'لا يوجد';
+
+      try {
+        // Parse the lastSeen date
+        final lastSeenDate = DateTime.parse(lastSeen);
+        final now = DateTime.now();
+        final difference = now.difference(lastSeenDate);
+        final minutes = difference.inMinutes;
+        final hours = difference.inHours;
+        final days = difference.inDays;
+
+        // If last seen is within 5 minutes, show "متواجد حاليا"
+        if (minutes < 5) {
+          return 'متواجد حاليا';
+        } else if (minutes < 60) {
+          return 'منذ $minutes دقيقة';
+        } else if (hours < 24) {
+          if (hours == 1) {
+            return 'منذ ساعة واحدة';
+          } else {
+            return 'منذ $hours ساعات';
+          }
+        } else if (days < 7) {
+          if (days == 1) {
+            return 'منذ يوم واحد';
+          } else {
+            return 'منذ $days أيام';
+          }
+        } else if (days < 30) {
+          final weeks = (days / 7).floor();
+          if (weeks == 1) {
+            return 'منذ أسبوع واحد';
+          } else {
+            return 'منذ $weeks أسابيع';
+          }
+        } else if (days < 365) {
+          final months = (days / 30).floor();
+          if (months == 1) {
+            return 'منذ شهر واحد';
+          } else {
+            return 'منذ $months أشهر';
+          }
+        } else {
+          final years = (days / 365).floor();
+          if (years == 1) {
+            return 'منذ سنة واحدة';
+          } else {
+            return 'منذ $years سنوات';
+          }
+        }
+      } catch (e) {
+        return 'لا يوجد';
+      }
     }
     return 'لا يوجد';
   }

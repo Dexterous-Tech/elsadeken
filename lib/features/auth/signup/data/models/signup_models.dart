@@ -46,7 +46,8 @@ class RegisterInformationRequestModel {
   final String religiousCommitment;
   final String prayer; //always , interittent ,no_pray
   final int smoking; //0=> no , 1 =>yes
-  final String hijab; //0=> no , 1=>yes
+  final String hijab;
+  final String beard; //beard for males
   final int educationalQualification; //
   final int financialSituation; //bad , good, very_good
   final String job;
@@ -71,6 +72,7 @@ class RegisterInformationRequestModel {
     required this.prayer,
     required this.smoking,
     required this.hijab,
+    required this.beard,
     required this.educationalQualification,
     required this.financialSituation,
     required this.job,
@@ -97,6 +99,7 @@ class RegisterInformationRequestModel {
       'prayer': prayer,
       'smoking': smoking,
       'hijab': hijab,
+      'beard': beard,
       'qualification_id': educationalQualification,
       'financial_situation_id': financialSituation,
       'job': job,

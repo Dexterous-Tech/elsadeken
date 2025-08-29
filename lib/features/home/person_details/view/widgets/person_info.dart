@@ -82,6 +82,65 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
     }
   }
 
+  /// Format the lastSeen date string to a readable format
+  String _formatLastSeen(String? lastSeen) {
+    if (lastSeen == null || lastSeen.isEmpty) return 'متواجد حاليا';
+
+    try {
+      final lastSeenDate = DateTime.tryParse(lastSeen);
+      if (lastSeenDate == null) return 'متواجد حاليا';
+
+      final now = DateTime.now();
+      final difference = now.difference(lastSeenDate);
+      final minutes = difference.inMinutes;
+      final hours = difference.inHours;
+      final days = difference.inDays;
+
+      // If last seen is within 5 minutes, show "متواجد حاليا"
+      if (minutes < 5) {
+        return 'متواجد حاليا';
+      } else if (minutes < 60) {
+        return 'منذ $minutes دقيقة';
+      } else if (hours < 24) {
+        if (hours == 1) {
+          return 'منذ ساعة واحدة';
+        } else {
+          return 'منذ $hours ساعات';
+        }
+      } else if (days < 7) {
+        if (days == 1) {
+          return 'منذ يوم واحد';
+        } else {
+          return 'منذ $days أيام';
+        }
+      } else if (days < 30) {
+        final weeks = (days / 7).floor();
+        if (weeks == 1) {
+          return 'منذ أسبوع واحد';
+        } else {
+          return 'منذ $weeks أسابيع';
+        }
+      } else if (days < 365) {
+        final months = (days / 30).floor();
+        if (months == 1) {
+          return 'منذ شهر واحد';
+        } else {
+          return 'منذ $months أشهر';
+        }
+      } else {
+        final years = (days / 365).floor();
+        if (years == 1) {
+          return 'منذ سنة واحدة';
+        } else {
+          return 'منذ $years سنوات';
+        }
+      }
+    } catch (e) {
+      print('Error formatting lastSeen: $e');
+      return 'متواجد حاليا';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
@@ -228,7 +287,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
     final p = widget.person;
     final data = [
       {'label': 'مسجل منذ', 'value': _formatCreatedAt(p.createdAt)},
-      {'label': 'تاريخ آخر زيادة', 'value': 'متواجد حاليا'},
+      {'label': 'تاريخ آخر زيادة', 'value': _formatLastSeen(p.lastSeen)},
     ];
 
     return Container(

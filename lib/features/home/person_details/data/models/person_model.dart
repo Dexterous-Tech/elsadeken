@@ -6,6 +6,7 @@ class PersonModel {
   final String gender;
   final String image;
   final String createdAt;
+  final String? lastSeen;
   final Attribute attribute;
 
   PersonModel({
@@ -16,6 +17,7 @@ class PersonModel {
     required this.gender,
     required this.image,
     required this.createdAt,
+    this.lastSeen,
     required this.attribute,
   });
 
@@ -42,6 +44,7 @@ class PersonModel {
         gender: json['gender']?.toString() ?? '',
         image: json['image']?.toString() ?? '',
         createdAt: json['created_at']?.toString() ?? '',
+        lastSeen: json['last_seen']?.toString(),
         attribute: Attribute.fromJson(json['attribute']),
       );
     } catch (e) {

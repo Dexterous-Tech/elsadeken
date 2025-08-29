@@ -55,6 +55,7 @@ class MyProfileAttributeModel {
     this.prayer,
     this.smoking,
     this.hijab,
+    this.beard,
     this.job,
     this.income,
     this.lifePartner,
@@ -81,6 +82,7 @@ class MyProfileAttributeModel {
     prayer = json['prayer'];
     smoking = json['smoking'];
     hijab = json['hijab'];
+    beard = json['beard'];
     job = json['job'];
     income = json['income'];
     lifePartner = json['life_partner'];
@@ -105,6 +107,7 @@ class MyProfileAttributeModel {
   String? prayer;
   String? smoking;
   String? hijab;
+  String? beard;
   String? job;
   int? income;
   String? lifePartner;
@@ -131,6 +134,7 @@ class MyProfileAttributeModel {
     map['prayer'] = prayer;
     map['smoking'] = smoking;
     map['hijab'] = hijab;
+    map['beard'] = beard;
     map['job'] = job;
     map['income'] = income;
     map['life_partner'] = lifePartner;

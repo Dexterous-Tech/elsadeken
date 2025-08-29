@@ -879,12 +879,14 @@ class _ManageProfileDialogContentState
         final prayer = widget.controllers['الصلاة']?.text ?? '';
         final smokingStr = widget.controllers['التدخين']?.text ?? '';
         final hijab = widget.controllers['الحجاب']?.text ?? '';
+        final beard = widget.controllers['اللحية']?.text ?? '';
 
         // Debug: Print collected values
         print('DEBUG: Collected Religious Commitment: "$religiousCommitment"');
         print('DEBUG: Collected Prayer: "$prayer"');
         print('DEBUG: Collected Smoking: "$smokingStr"');
         print('DEBUG: Collected Hijab: "$hijab"');
+        print('DEBUG: Collected Beard: "$beard"');
 
         // Convert Arabic text to API values
         String? religiousCommitmentValue;
@@ -956,18 +958,32 @@ class _ManageProfileDialogContentState
           }
         }
 
+        String? beardValue;
+        if (beard.isNotEmpty) {
+          switch (beard) {
+            case 'ملتحي':
+              beardValue = 'beard';
+              break;
+            case 'بدون لحية':
+              beardValue = 'without_beard';
+              break;
+          }
+        }
+
         // Debug: Print final API values
         print('DEBUG: Final API Values:');
         print('  - religiousCommitment: $religiousCommitmentValue');
         print('  - prayer: $prayerValue');
         print('  - smoking: $smoking');
         print('  - hijab: $hijabValue');
+        print('  - beard: $beardValue');
 
         widget.data.cubit!.updateProfileReligiousData(
           religiousCommitment: religiousCommitmentValue,
           prayer: prayerValue,
           smoking: smoking,
           hijab: hijabValue,
+          beard: beardValue,
         );
         break;
 

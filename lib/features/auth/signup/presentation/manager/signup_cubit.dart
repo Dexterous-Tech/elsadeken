@@ -48,6 +48,7 @@ class SignupCubit extends Cubit<SignupState> {
   TextEditingController prayerController = TextEditingController();
   TextEditingController smokingController = TextEditingController();
   TextEditingController hijabController = TextEditingController();
+  TextEditingController beardController = TextEditingController();
   TextEditingController educationalQualificationController =
       TextEditingController();
   TextEditingController financialSituationController = TextEditingController();
@@ -125,6 +126,7 @@ class SignupCubit extends Cubit<SignupState> {
             prayerController.text.isEmpty ||
             smokingController.text.isEmpty ||
             hijabController.text.isEmpty ||
+            beardController.text.isEmpty ||
             educationalQualificationController.text.isEmpty ||
             financialSituationController.text.isEmpty ||
             jobController.text.isEmpty ||
@@ -153,6 +155,7 @@ class SignupCubit extends Cubit<SignupState> {
             prayer: prayerController.text,
             smoking: int.parse(smokingController.text),
             hijab: hijabController.text,
+            beard: beardController.text,
             educationalQualification:
                 int.parse(educationalQualificationController.text),
             financialSituation: int.parse(financialSituationController.text),
@@ -198,6 +201,7 @@ class SignupCubit extends Cubit<SignupState> {
         prayerController.text.isEmpty ||
         smokingController.text.isEmpty ||
         hijabController.text.isEmpty ||
+        beardController.text.isEmpty ||
         educationalQualificationController.text.isEmpty ||
         financialSituationController.text.isEmpty ||
         jobController.text.isEmpty ||
@@ -226,6 +230,7 @@ class SignupCubit extends Cubit<SignupState> {
         prayer: prayerController.text,
         smoking: int.parse(smokingController.text),
         hijab: hijabController.text,
+        beard: beardController.text,
         educationalQualification:
             int.parse(educationalQualificationController.text),
         financialSituation: int.parse(financialSituationController.text),
@@ -275,6 +280,7 @@ class SignupCubit extends Cubit<SignupState> {
     prayerController.dispose();
     smokingController.dispose();
     hijabController.dispose();
+    beardController.dispose();
     educationalQualificationController.dispose();
     financialSituationController.dispose();
     jobController.dispose();
