@@ -34,6 +34,10 @@ class ChatConversationScreen extends StatefulWidget {
   State<ChatConversationScreen> createState() => _ChatConversationScreenState();
 }
 
+/// Chat Conversation Screen with optimal loading strategy:
+/// 1. Load chat messages FIRST (fast API call for instant user experience)
+/// 2. Setup WebSocket/Pusher connections SECOND (background real-time setup)
+/// This ensures users see content immediately while real-time connections establish
 class _ChatConversationScreenState extends State<ChatConversationScreen>
     with WidgetsBindingObserver {
   final TextEditingController _messageController = TextEditingController();
@@ -52,6 +56,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   // Simplified connection state
   bool _isPusherSetup = false;
 
+  // Store Cubit references to avoid context access in dispose
+  ChatMessagesCubit? _chatMessagesCubit;
+  ChatListCubit? _chatListCubit;
+  PusherCubit? _pusherCubit;
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +68,15 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     _loadCurrentUserProfile();
     _setupRealTimeListeners();
     _setupScrollListener();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Store references to Cubits when dependencies change
+    _chatMessagesCubit = context.read<ChatMessagesCubit>();
+    _chatListCubit = context.read<ChatListCubit>();
+    _pusherCubit = context.read<PusherCubit>();
   }
 
   @override
@@ -70,18 +88,22 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       
       // Resume auto-refresh when app is resumed
       if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null) {
-        context.read<ChatMessagesCubit>().startAutoRefresh(widget.chatRoom.id);
+        if (_chatMessagesCubit != null && !_chatMessagesCubit!.isClosed) {
+          _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id);
+        }
       }
     } else if (state == AppLifecycleState.paused) {
       // Stop auto-refresh when app is paused to save resources
-      context.read<ChatMessagesCubit>().stopAutoRefresh();
+      if (_chatMessagesCubit != null && !_chatMessagesCubit!.isClosed) {
+        _chatMessagesCubit!.stopAutoRefresh();
+      }
     }
   }
 
   Future<void> _checkPusherConnectionHealth() async {
-    if (_isPusherSetup && _currentUserId != null) {
-      final isHealthy = await context.read<PusherCubit>().checkConnectionHealth();
-      if (!isHealthy) {
+    if (_isPusherSetup && _currentUserId != null && _pusherCubit != null && !_pusherCubit!.isClosed) {
+      final isHealthy = await _pusherCubit!.checkConnectionHealth();
+      if (isHealthy == false) {
         print('Connection unhealthy, re-initializing...');
         await _initializeAndSubscribePusher();
       }
@@ -100,17 +122,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     });
   }
 
-  /// Setup scroll listener for auto-scroll behavior
-  void _setupScrollListener() {
-    _scrollController.addListener(() {
-      if (_scrollController.hasClients) {
-        final position = _scrollController.position;
-        final isNearBottom = position.pixels >= position.maxScrollExtent - 100;
-        _shouldAutoScroll = isNearBottom;
-      }
-    });
-  }
-
+  /// Streamed messages
   void _handleRealTimeMessage(PusherMessageModel message) {
     // Only handle messages for the current chat room
     if (message.chatId.toString() == widget.chatRoom.id ||
@@ -135,22 +147,38 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
         print('[ChatConversationScreen] Message added to UI successfully');
         _scrollToBottom();
-        
+
         // Update chat list to reflect new message and maintain sorting
         if (!widget.chatRoom.id.startsWith('temp_')) {
           final chatId = int.tryParse(widget.chatRoom.id);
           if (chatId != null) {
-            context.read<ChatListCubit>().handleNewMessage(
-              chatId,
-              message.body,
-              message.createdAt.toIso8601String(),
-              message.senderId,
-            );
+            if (_chatListCubit != null && !_chatListCubit!.isClosed) {
+              _chatListCubit!.handleNewMessage(
+                chatId,
+                message.body,
+                message.createdAt.toIso8601String(),
+                message.senderId,
+              );
+            }
           }
         }
       }
     }
   }
+
+
+
+  /// Setup scroll listener for auto-scroll behavior
+  void _setupScrollListener() {
+    _scrollController.addListener(() {
+      if (_scrollController.hasClients) {
+        final position = _scrollController.position;
+        final isNearBottom = position.pixels >= position.maxScrollExtent - 100;
+        _shouldAutoScroll = isNearBottom;
+      }
+    });
+  }
+
 
   /// Improved auto-scroll to bottom method
   void _scrollToBottom() {
@@ -171,7 +199,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     });
   }
 
-  /// Consolidated Pusher initialization and subscription
+  /// Setup WebSocket/Pusher connections in background (non-blocking)
+  /// This runs AFTER chat messages are loaded for optimal user experience
   Future<void> _initializeAndSubscribePusher() async {
     if (_currentUserId == null) {
       print('Cannot setup Pusher without user ID');
@@ -186,19 +215,21 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       }
 
       // Set auth token
-      context.read<PusherCubit>().setAuthToken(token);
+      if (_pusherCubit != null && !_pusherCubit!.isClosed) {
+        _pusherCubit!.setAuthToken(token);
 
-      // Initialize Pusher
-      await context.read<PusherCubit>().initialize();
+        // Initialize Pusher
+        await _pusherCubit!.initialize();
 
-      // Small delay to ensure initialization completes
-      await Future.delayed(Duration(milliseconds: 1000));
+        // Small delay to ensure initialization completes
+        await Future.delayed(Duration(milliseconds: 1000));
 
-      // Subscribe to chat channel if not temporary
-      if (!widget.chatRoom.id.startsWith('temp_')) {
-        final chatRoomId = int.tryParse(widget.chatRoom.id);
-        if (chatRoomId != null) {
-          await context.read<PusherCubit>().subscribeToChatChannel(chatRoomId, token);
+        // Subscribe to chat channel if not temporary
+        if (!widget.chatRoom.id.startsWith('temp_')) {
+          final chatRoomId = int.tryParse(widget.chatRoom.id);
+          if (chatRoomId != null) {
+            await _pusherCubit!.subscribeToChatChannel(chatRoomId, token);
+          }
         }
       }
 
@@ -213,11 +244,15 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     context.read<ManageProfileCubit>().getProfile();
   }
 
+  /// Load chat messages FIRST for instant user experience
+  /// This runs before WebSocket/Pusher setup to show content immediately
   void _loadChatMessages() {
     // Don't load messages for temporary chat rooms
     if (!widget.chatRoom.id.startsWith('temp_')) {
-      print('[ChatConversationScreen] Loading initial messages from API...');
-      context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
+      print('[ChatConversationScreen] 🚀 Loading initial messages from API (FAST PATH)...');
+      if (_chatMessagesCubit != null && !_chatMessagesCubit!.isClosed) {
+        _chatMessagesCubit!.getChatMessages(widget.chatRoom.id);
+      }
     }
   }
 
@@ -225,7 +260,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   Future<void> _refreshMessages() async {
     if (!widget.chatRoom.id.startsWith('temp_')) {
       print('[ChatConversationScreen] Manual refresh triggered');
-      await context.read<ChatMessagesCubit>().refreshChatMessages(widget.chatRoom.id);
+      if (_chatMessagesCubit != null && !_chatMessagesCubit!.isClosed) {
+        await _chatMessagesCubit!.refreshChatMessages(widget.chatRoom.id);
+      }
     }
   }
 
@@ -323,7 +360,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               
               // Start auto-refresh after initial messages are loaded
               if (!widget.chatRoom.id.startsWith('temp_')) {
-                context.read<ChatMessagesCubit>().startAutoRefresh(widget.chatRoom.id);
+                if (_chatMessagesCubit != null && !_chatMessagesCubit!.isClosed) {
+                  _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id);
+                }
               }
             }
           },
@@ -337,9 +376,14 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 _currentUserImage = state.myProfileResponseModel.data?.image ?? '';
               });
 
-              // Now setup Pusher and load messages
-              await _initializeAndSubscribePusher();
+              // OPTIMAL LOADING STRATEGY:
+              // 1. Load chat messages FIRST for instant user experience
+              print('[ChatConversationScreen] 🚀 Loading chat messages FIRST for instant user experience');
               _loadChatMessages();
+              
+              // 2. Setup Pusher connections SECOND in background (non-blocking)
+              print('[ChatConversationScreen] 🔌 Setting up Pusher connections in background');
+              _initializeAndSubscribePusher();
             }
           },
         ),
@@ -371,12 +415,14 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 if (!widget.chatRoom.id.startsWith('temp_')) {
                   final chatId = int.tryParse(widget.chatRoom.id);
                   if (chatId != null) {
-                    context.read<ChatListCubit>().handleNewMessage(
-                      chatId,
-                      state.sendMessageModel.data.body,
-                      state.sendMessageModel.data.createdAt.toIso8601String(),
-                      _currentUserId!,
-                    );
+                    if (_chatListCubit != null && !_chatListCubit!.isClosed) {
+                      _chatListCubit!.handleNewMessage(
+                        chatId,
+                        state.sendMessageModel.data.body,
+                        state.sendMessageModel.data.createdAt.toIso8601String(),
+                        _currentUserId!,
+                      );
+                    }
                   }
                 }
               }
@@ -652,19 +698,29 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
   @override
   void dispose() {
-    // Stop auto-refresh when disposing
-    if (!widget.chatRoom.id.startsWith('temp_')) {
-      context.read<ChatMessagesCubit>().stopAutoRefresh();
+    // Stop auto-refresh when disposing using stored reference
+    if (!widget.chatRoom.id.startsWith('temp_') && _chatMessagesCubit != null) {
+      try {
+        // Check if cubit is still active before calling methods
+        if (!_chatMessagesCubit!.isClosed) {
+          _chatMessagesCubit!.stopAutoRefresh();
+        }
+      } catch (e) {
+        print('Error stopping auto-refresh during dispose: $e');
+      }
     }
     
     _messageController.dispose();
     _scrollController.dispose();
     _messageSubscription?.cancel();
 
-    // Unsubscribe from Pusher channel when leaving
-    if (_isPusherSetup) {
+    // Safely unsubscribe from Pusher channel when leaving
+    if (_isPusherSetup && _pusherCubit != null) {
       try {
-        context.read<PusherCubit>().unsubscribeFromChatChannel();
+        // Check if cubit is still active before calling methods
+        if (!_pusherCubit!.isClosed) {
+          _pusherCubit!.unsubscribeFromChatChannel();
+        }
       } catch (e) {
         print('Error unsubscribing during dispose: $e');
       }

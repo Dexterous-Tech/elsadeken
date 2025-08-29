@@ -146,10 +146,40 @@ class ChatRoomItem extends StatelessWidget {
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
-        content: Text(
-          'هل أنت متأكد من حذف هذه المحادثة؟ لا يمكن التراجع عن هذا الإجراء.',
-          style: AppTextStyles.font16BlackSemiBoldLamaSans,
-          textAlign: TextAlign.center,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'هل أنت متأكد من حذف هذه المحادثة؟',
+              style: AppTextStyles.font16BlackSemiBoldLamaSans,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 8.h),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(color: Colors.red.withOpacity(0.3)),
+              ),
+              child: Text(
+                'المحادثة: "${chat.otherUser.name}"',
+                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                  color: Colors.red[700],
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              'لا يمكن التراجع عن هذا الإجراء.',
+              style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
+                color: Colors.grey[600],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -161,20 +191,31 @@ class ChatRoomItem extends StatelessWidget {
               ),
             ),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-                             // Call the cubit method to delete this chat
-               chatListCubit.deleteOneChat(chat.id);
+                      TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                
+                // Debug logging to verify which chat is being deleted
+                print('[ChatRoomItem] 🗑️ Delete button pressed for chat:');
+                print('[ChatRoomItem] 📋 Chat ID: ${chat.id} (type: ${chat.id.runtimeType})');
+                print('[ChatRoomItem] 👤 Chat Name: ${chat.otherUser.name}');
+                print('[ChatRoomItem] 📱 Chat Data: ${chat.toString()}');
+                
+                // Also debug the cubit state to see what's available
+                print('[ChatRoomItem] 🔍 Debugging cubit state before deletion...');
+                chatListCubit.debugFindChat(chat.id);
+                
+                // Call the cubit method to delete this chat
+                chatListCubit.deleteOneChat(chat.id);
               
-              // Show success snackbar
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('تم حذف المحادثة بنجاح'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            },
+                // Show success snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('تم حذف المحادثة بنجاح'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              },
             child: Text(
               'حذف',
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(

@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/models/user_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 
 class SwipeableCard extends StatefulWidget {
   final UserModel user;
@@ -432,16 +433,42 @@ class _SwipeableCardState extends State<SwipeableCard>
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 try {
-                                  // Check if there's an existing chat room first
+                                  print('🔍 [SwipeableCard] Message icon tapped for user: ${widget.user.name} (ID: ${widget.user.id})');
+                                  
+                                  // Get the chat list cubit
                                   final chatListCubit = context.read<ChatListCubit>();
-                                  print('🔍 Looking for existing chat room for user ID: ${widget.user.id}');
+                                  
+                                  // Check current state and ensure chat list is loaded
+                                  final currentState = chatListCubit.state;
+                                  print('🔍 [SwipeableCard] Current chat list state: ${currentState.runtimeType}');
+                                  
+                                  if (currentState is! ChatListLoaded) {
+                                    print('⏳ [SwipeableCard] Chat list not loaded yet, loading now...');
+                                    
+                                    // Show loading indicator
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('جاري تحميل قائمة المحادثات...'),
+                                        duration: Duration(seconds: 2),
+                                      ),
+                                    );
+                                    
+                                    // Load chat list first
+                                    await chatListCubit.getChatList();
+                                    
+                                    // Wait a bit for the state to update
+                                    await Future.delayed(Duration(milliseconds: 500));
+                                  }
+                                  
+                                  // Now try to find existing chat room
+                                  print('🔍 [SwipeableCard] Looking for existing chat room for user ID: ${widget.user.id}');
                                   
                                   final existingChatRoom = chatListCubit.findExistingChatRoom(widget.user.id);
                                   
                                   if (existingChatRoom != null) {
-                                    print('✅ Found existing chat room: ${existingChatRoom.id}');
+                                    print('✅ [SwipeableCard] Found existing chat room: ${existingChatRoom.id}');
                                     // Navigate to existing chat room
                                     Navigator.pushNamed(
                                       context,
@@ -451,7 +478,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                                       },
                                     );
                                   } else {
-                                    print('🆕 No existing chat room found, creating new temporary chat');
+                                    print('🆕 [SwipeableCard] No existing chat room found, creating new temporary chat');
                                     // Create new temporary chat room
                                     Navigator.pushNamed(
                                       context,
@@ -466,7 +493,16 @@ class _SwipeableCardState extends State<SwipeableCard>
                                     );
                                   }
                                 } catch (e) {
-                                  print('⚠️ Error in message button onTap: $e');
+                                  print('❌ [SwipeableCard] Error in message button onTap: $e');
+                                  
+                                  // Show error message
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('حدث خطأ أثناء فتح المحادثة: $e'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  
                                   // Fallback to creating new temporary chat room
                                   Navigator.pushNamed(
                                     context,

@@ -43,9 +43,8 @@ class ChatDataSource {
   }
 
   Future<Map<String, dynamic>> markAllMessagesAsRead() async {
-    final response = await _apiServices.post(
+    final response = await _apiServices.get(
       endpoint: ApiConstants.markAllMessagesAsRead,
-      requestBody: {},
       requiresAuth: true,
     );
 

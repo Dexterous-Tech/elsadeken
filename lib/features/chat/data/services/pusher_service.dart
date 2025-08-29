@@ -78,7 +78,7 @@ class PusherService {
       _webSocketChannel = WebSocketChannel.connect(Uri.parse(wsUrl));
 
       // Wait for connection with proper error handling
-      await Future.delayed(Duration(milliseconds: 2000));
+      await Future.delayed(Duration(milliseconds: 1500));
 
       if (_webSocketChannel != null) {
         _isConnected = true;
