@@ -91,4 +91,23 @@ class ChatDataSource {
 
     return response.data as Map<String, dynamic>;
   }
+
+  Future<ChatListModel> getFavoriteChatList() async {
+    var response = await _apiServices.get(
+      endpoint: ApiConstants.getChatsList,
+      queryParameters: {'favorite': '1'},
+      requiresAuth: true,
+    );
+
+    return ChatListModel.fromJson(response.data);
+  }
+
+  Future<Map<String, dynamic>> addChatToFavorite(int chatId) async {
+    final response = await _apiServices.get(
+      endpoint: ApiConstants.addChatToFavorite(chatId),
+      requiresAuth: true,
+    );
+
+    return response.data as Map<String, dynamic>;
+  }
 }

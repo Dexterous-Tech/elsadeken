@@ -26,10 +26,10 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen>
     with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   int _selectedTabIndex = 0; // 0: All, 1: Favorites
-  
+
   // Stream subscriptions for real-time updates
   StreamSubscription<void>? _refreshChatListSubscription;
-  
+
   // Track if this is the first load
   bool _hasLoadedInitially = false;
 
@@ -40,28 +40,36 @@ class _ChatScreenState extends State<ChatScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    context.read<ChatListCubit>().getChatList();
+
+    // Set initial tab index in cubit
+    final chatListCubit = context.read<ChatListCubit>();
+    chatListCubit.setCurrentTabIndex(_selectedTabIndex);
+
+    chatListCubit.getChatList();
     _setupRealTimeListeners();
   }
 
   void _setupRealTimeListeners() {
     // Listen for chat list refresh requests from Firebase notifications only
-    _refreshChatListSubscription = ChatMessageService.instance.refreshChatListStream.listen((_) {
+    _refreshChatListSubscription =
+        ChatMessageService.instance.refreshChatListStream.listen((_) {
       if (mounted) {
-        print('🔔 [ChatScreen] Firebase notification triggered chat list refresh');
+        print(
+            '🔔 [ChatScreen] Firebase notification triggered chat list refresh');
         // Silent background refresh - no UI indicators
         context.read<ChatListCubit>().silentRefreshChatList();
       }
     });
-    
-    print('🔔 [ChatScreen] Chat list now depends on Firebase notifications for updates');
+
+    print(
+        '🔔 [ChatScreen] Chat list now depends on Firebase notifications for updates');
   }
 
   @override
   void dispose() {
     // Cancel stream subscriptions
     _refreshChatListSubscription?.cancel();
-    
+
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -71,8 +79,6 @@ class _ChatScreenState extends State<ChatScreen>
     super.didChangeAppLifecycleState(state);
     // Real-time updates handle everything automatically - no manual refresh needed
   }
-
-
 
   @override
   void didChangeDependencies() {
@@ -113,7 +119,10 @@ class _ChatScreenState extends State<ChatScreen>
       ),
       child: Column(
         children: [
-          ProfileHeader(title: 'الرسائل',showBackButton: false,),
+          ProfileHeader(
+            title: 'الرسائل',
+            showBackButton: false,
+          ),
           SizedBox(height: 16.h),
           ChatTabBar(
             selectedIndex: _selectedTabIndex,
@@ -121,6 +130,19 @@ class _ChatScreenState extends State<ChatScreen>
               setState(() {
                 _selectedTabIndex = index;
               });
+
+              // Set the current tab index in the cubit
+              final chatListCubit = context.read<ChatListCubit>();
+              chatListCubit.setCurrentTabIndex(index);
+
+              // Load appropriate data based on selected tab
+              if (index == 0) {
+                // All chats tab
+                chatListCubit.getChatList();
+              } else if (index == 1) {
+                // Favorites tab
+                chatListCubit.getFavoriteChatList();
+              }
             },
           ),
         ],
@@ -138,30 +160,34 @@ class _ChatScreenState extends State<ChatScreen>
         }
       },
       buildWhen: (previous, current) {
-        // Prevent rebuilding with loading state after initial load
+        // Always rebuild for loading states when switching tabs
+        if (current is ChatListLoading) {
+          return true;
+        }
+        // Prevent rebuilding with loading state after initial load for silent refreshes
         if (_hasLoadedInitially && current is ChatListLoading) {
           return false; // Don't rebuild for subsequent loading states
         }
         return true;
       },
       builder: (context, state) {
-        // Only show loading indicator for the very first load
-        if (state is ChatListLoading && !_hasLoadedInitially) {
+        // Show loading indicator for the very first load or when switching tabs
+        if (state is ChatListLoading) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         // Show error state only if we haven't loaded yet
         if (state is ChatListError && !_hasLoadedInitially) {
           return _buildEmptyState();
         }
-        
+
         // Show loaded state
         if (state is ChatListLoaded) {
           final chats = state.chatList.data;
 
-          final filteredChats = _selectedTabIndex == 1
-              ? chats.where((c) => c.unreadCount > 0).toList()
-              : chats;
+          // No filtering needed since the API already returns the correct data
+          // based on the selected tab (all chats or favorites)
+          final filteredChats = chats;
 
           if (filteredChats.isEmpty) {
             return _buildEmptyState();
@@ -180,7 +206,7 @@ class _ChatScreenState extends State<ChatScreen>
                 onTap: () {
                   // Mark this chat as read when opened
                   _markChatAsRead(chat);
-                  
+
                   Navigator.pushNamed(
                     context,
                     AppRoutes.chatConversationScreen,
@@ -194,7 +220,7 @@ class _ChatScreenState extends State<ChatScreen>
             },
           );
         }
-        
+
         // Default fallback
         return _buildEmptyState();
       },

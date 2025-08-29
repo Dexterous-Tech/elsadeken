@@ -43,12 +43,18 @@ class ChatListModel {
     final dataObj = json['data'];
     return ChatListModel(
       currentPage: dataObj['current_page'] ?? 1,
-      data: (dataObj['data'] as List?)?.map((e) => ChatData.fromJson(e)).toList() ?? [],
+      data: (dataObj['data'] as List?)
+              ?.map((e) => ChatData.fromJson(e))
+              .toList() ??
+          [],
       firstPageUrl: dataObj['first_page_url'] ?? '',
       from: dataObj['from'] ?? 1,
       lastPage: dataObj['last_page'] ?? 1,
       lastPageUrl: dataObj['last_page_url'] ?? '',
-      links: (dataObj['links'] as List?)?.map((e) => PageLink.fromJson(e)).toList() ?? [],
+      links: (dataObj['links'] as List?)
+              ?.map((e) => PageLink.fromJson(e))
+              .toList() ??
+          [],
       nextPageUrl: dataObj['next_page_url'],
       path: dataObj['path'] ?? '',
       perPage: dataObj['per_page'] ?? 15,
@@ -110,6 +116,7 @@ class ChatData {
   final OtherUser otherUser;
   final String createdAt;
   final String updatedAt;
+  final bool isFavorite;
 
   ChatData({
     required this.id,
@@ -118,6 +125,7 @@ class ChatData {
     required this.otherUser,
     required this.createdAt,
     required this.updatedAt,
+    required this.isFavorite,
   });
 
   factory ChatData.fromJson(Map<String, dynamic> json) {
@@ -130,12 +138,13 @@ class ChatData {
       otherUser: OtherUser.fromJson(json['other_user']),
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
+      isFavorite: json['is_favorite'] == 1 || json['is_favorite'] == true,
     );
   }
 
   /// Get isMuted from last message if available
   bool get isMuted => lastMessage?.isMuted == 1;
-  
+
   /// Get isReported from last message if available
   bool get isReported => lastMessage?.isReported == 1;
 
@@ -146,12 +155,12 @@ class ChatData {
       name: otherUser.name,
       image: otherUser.image,
       lastMessage: lastMessage?.body ?? 'لا توجد رسائل',
-      lastMessageTime: lastMessage != null 
+      lastMessageTime: lastMessage != null
           ? DateTime.tryParse(lastMessage!.createdAt) ?? DateTime.now()
           : DateTime.now(),
       unreadCount: unreadCount,
       isOnline: false, // TODO: Get from API when available
-      isFavorite: false, // TODO: Get from API when available
+      isFavorite: isFavorite, // Use the isFavorite property from ChatData
       receiverId: otherUser.id, // Add receiver ID for sending messages
     );
   }
@@ -163,6 +172,7 @@ class ChatData {
     OtherUser? otherUser,
     String? createdAt,
     String? updatedAt,
+    bool? isFavorite,
   }) {
     return ChatData(
       id: id ?? this.id,
@@ -171,6 +181,7 @@ class ChatData {
       otherUser: otherUser ?? this.otherUser,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      isFavorite: isFavorite ?? this.isFavorite,
     );
   }
 }

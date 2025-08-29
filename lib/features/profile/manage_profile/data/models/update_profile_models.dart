@@ -124,6 +124,7 @@ class UpdateProfileReligiousDataModel {
     this.prayer,
     this.smoking,
     this.hijab,
+    this.beard,
   });
 
   UpdateProfileReligiousDataModel.fromJson(dynamic json) {
@@ -131,11 +132,13 @@ class UpdateProfileReligiousDataModel {
     prayer = json['prayer'];
     smoking = json['smoking'];
     hijab = json['hijab'];
+    beard = json['beard'];
   }
   String? religiousCommitment;
   String? prayer;
   int? smoking;
   String? hijab;
+  String? beard;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -145,6 +148,7 @@ class UpdateProfileReligiousDataModel {
     if (prayer != null && prayer!.isNotEmpty) map['prayer'] = prayer;
     if (smoking != null) map['smoking'] = smoking;
     if (hijab != null && hijab!.isNotEmpty) map['hijab'] = hijab;
+    if (beard != null && beard!.isNotEmpty) map['beard'] = beard;
     return map;
   }
 }

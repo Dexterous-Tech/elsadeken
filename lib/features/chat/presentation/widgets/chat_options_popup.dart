@@ -128,7 +128,7 @@ class ChatOptionsPopup extends StatelessWidget {
           children: [
             verticalSpace(24),
             Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 15.w),
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 textDirection: TextDirection.rtl,

@@ -78,6 +78,7 @@ class UsersDataModel {
     this.token,
     this.isFeatured,
     this.createdAt,
+    this.lastSeen,
     this.attribute,
   });
 
@@ -93,6 +94,7 @@ class UsersDataModel {
     token = json['token'];
     isFeatured = json['is_featured'];
     createdAt = json['created_at'];
+    lastSeen = json['last_seen'];
     attribute = json['attribute'] != null
         ? UsersAttributeModel.fromJson(json['attribute'])
         : null;
@@ -108,6 +110,7 @@ class UsersDataModel {
   dynamic token;
   int? isFeatured;
   String? createdAt;
+  String? lastSeen;
   UsersAttributeModel? attribute;
 
   Map<String, dynamic> toJson() {
@@ -123,6 +126,7 @@ class UsersDataModel {
     map['token'] = token;
     map['is_featured'] = isFeatured;
     map['created_at'] = createdAt;
+    map['last_seen'] = lastSeen;
     map['attribute'] = attribute;
     return map;
   }

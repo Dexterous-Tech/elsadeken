@@ -78,43 +78,55 @@ class ChatRoomItem extends StatelessWidget {
                 ],
               ),
             ),
-                         Row(
-                           mainAxisSize: MainAxisSize.min,
-                           children: [
-                             // Mute icon if chat is muted
-                             if (_isChatMuted())
-                               Container(
-                                 margin: EdgeInsets.only(right: 4.w),
-                                 child: Icon(
-                                   Icons.volume_off,
-                                   size: 16.sp,
-                                   color: Colors.grey[600],
-                                 ),
-                               ),
-                             SizedBox(width: 8.w,),
-                             // Time
-                             Text(
-                               TimeFormatter.formatChatTime(
-                                 DateTime.tryParse(chat.lastMessage?.createdAt ?? '') ??
-                                     DateTime.now(),
-                               ),
-                               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                                 fontSize: 12.sp,
-                                 color: Colors.grey[500],
-                               ),
-                             ),
-                           ],
-                         ),
-                         SizedBox(height: 6.h),
-                         if (chat.unreadCount > 0)
-                           Container(
-                             width: 12.w,
-                             height: 12.w,
-                             decoration: BoxDecoration(
-                               shape: BoxShape.circle,
-                               color: Colors.red,
-                             ),
-                           ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Mute icon if chat is muted
+                if (_isChatMuted())
+                  Container(
+                    margin: EdgeInsets.only(right: 4.w),
+                    child: Icon(
+                      Icons.volume_off,
+                      size: 16.sp,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                // Favorite icon if chat is in favorites
+                if (chat.isFavorite)
+                  Container(
+                    margin: EdgeInsets.only(right: 4.w),
+                    child: Icon(
+                      Icons.star,
+                      size: 16.sp,
+                      color: Colors.amber,
+                    ),
+                  ),
+                SizedBox(
+                  width: 8.w,
+                ),
+                // Time
+                Text(
+                  TimeFormatter.formatChatTime(
+                    DateTime.tryParse(chat.lastMessage?.createdAt ?? '') ??
+                        DateTime.now(),
+                  ),
+                  style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                    fontSize: 12.sp,
+                    color: Colors.grey[500],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 6.h),
+            if (chat.unreadCount > 0)
+              Container(
+                width: 12.w,
+                height: 12.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.red,
+                ),
+              ),
           ],
         ),
       ),
@@ -164,9 +176,9 @@ class ChatRoomItem extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-                             // Call the cubit method to delete this chat
-               chatListCubit.deleteOneChat(chat.id);
-              
+              // Call the cubit method to delete this chat
+              chatListCubit.deleteOneChat(chat.id);
+
               // Show success snackbar
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -218,9 +230,9 @@ class ChatRoomItem extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-                             // Call the cubit method to report this user
-               chatListCubit.reportUser(chat.id);
-              
+              // Call the cubit method to report this user
+              chatListCubit.reportUser(chat.id);
+
               // Show success snackbar
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -273,8 +285,8 @@ class ChatRoomItem extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop();
               // Call the cubit method to mute this user
-               chatListCubit.muteUser(chat.id);
-              
+              chatListCubit.muteUser(chat.id);
+
               // Show success snackbar
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -296,6 +308,10 @@ class ChatRoomItem extends StatelessWidget {
   }
 
   void _addToFavorites(BuildContext context) {
+    // Call the cubit method to add this chat to favorites
+    chatListCubit.addChatToFavorite(chat.id);
+
+    // Show success snackbar
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('تم الإضافة إلى المفضلة'),
