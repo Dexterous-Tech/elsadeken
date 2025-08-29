@@ -110,6 +110,10 @@ class PusherService {
             log('❌ WebSocket closed');
             _isConnected = false;
             _webSocketChannel = null;
+            
+            // Report disconnection to message service
+            ChatMessageService.instance.setPusherConnectionStatus(false);
+            
             // Schedule reconnection
             _scheduleReconnection();
           },
@@ -118,6 +122,10 @@ class PusherService {
             _isConnected = false;
             _webSocketChannel = null;
             onConnectionError?.call(error.toString());
+            
+            // Report disconnection to message service
+            ChatMessageService.instance.setPusherConnectionStatus(false);
+            
             // Schedule reconnection
             _scheduleReconnection();
           },
@@ -311,6 +319,9 @@ class PusherService {
         _lastSocketId = socketData['socket_id']; // <-- missing line
         onConnectionEstablished?.call('Connected');
         log('✅ Pusher connected');
+        
+        // Report connection status to message service
+        ChatMessageService.instance.setPusherConnectionStatus(true);
       } else if (eventType == 'pusher:subscription_succeeded') {
         log('✅ Subscription succeeded for $_currentChannelName');
       } else if (eventType == 'pusher:subscription_error') {

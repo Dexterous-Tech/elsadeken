@@ -16,9 +16,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   List<_Country> _countries = const [];
   int _selectedCountryIndex = 0;
   bool _isLoadingCountries = true;
-  
 
-  
   static const Color kMuted = Color(0xFF9E9E9E);
   static const Color kClearRed = Color(0xFFF04438);
 
@@ -40,14 +38,17 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   Future<void> _loadCountries() async {
     try {
       final api = sl<ApiServices>();
-      final res = await api.get(endpoint: ApiConstants.listCountries, requiresAuth: false);
+      final res = await api.get(
+          endpoint: ApiConstants.listCountries, requiresAuth: false);
       final raw = res.data;
       List list;
       if (raw is List) {
         list = raw;
       } else if (raw is Map && raw['data'] is List) {
         list = raw['data'] as List;
-      } else if (raw is Map && raw['data'] is Map && raw['data']['countries'] is List) {
+      } else if (raw is Map &&
+          raw['data'] is Map &&
+          raw['data']['countries'] is List) {
         list = raw['data']['countries'] as List;
       } else {
         list = const [];
@@ -56,7 +57,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           .map((e) {
             final map = e as Map<String, dynamic>;
             final id = (map['id'] ?? map['country_id']) as int?;
-            final name = (map['name_ar'] ?? map['name'] ?? map['title'] ?? map['country_name_ar'] ?? '').toString();
+            final name = (map['name_ar'] ??
+                    map['name'] ??
+                    map['title'] ??
+                    map['country_name_ar'] ??
+                    '')
+                .toString();
             if (id == null || name.isEmpty) return null;
             return _Country(id: id, name: name);
           })
@@ -97,8 +103,16 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 8, 12),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Text(
+                      'فلترة المتواجدين',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
                     IconButton(
                       onPressed: () => Navigator.of(context).maybePop(),
                       icon: const Icon(Icons.close, color: kMuted),
@@ -109,22 +123,24 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      
                       if (_isLoadingCountries)
-                        const Center(child: Padding(
+                        const Center(
+                            child: Padding(
                           padding: EdgeInsets.symmetric(vertical: 24),
                           child: CircularProgressIndicator(),
                         ))
                       else
                         _Section(
-                          title: 'فلتره بواسطه الدوله',
+                          title: 'فلترة بواسطة الدولة',
                           options: _countries.map((e) => e.name).toList(),
                           selectedIndex: _selectedCountryIndex,
-                          onSelect: (i) => setState(() => _selectedCountryIndex = i),
+                          onSelect: (i) =>
+                              setState(() => _selectedCountryIndex = i),
                         ),
                       const SizedBox(height: 20),
                     ],
@@ -137,12 +153,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   children: [
                     Expanded(
                       child: _GradientButton(
-                        label: 'فلتره',
+                        label: 'تطبيق الفلترة',
                         gradient: _applyGradient,
                         onTap: () {
-                          final selected = (_selectedCountryIndex >= 0 && _selectedCountryIndex < _countries.length)
+                          final selected = (_selectedCountryIndex >= 0 &&
+                                  _selectedCountryIndex < _countries.length)
                               ? _countries[_selectedCountryIndex]
                               : const _Country(id: 0, name: 'الكل');
+
+                          // Return the filter data to the parent screen
                           Navigator.of(context).maybePop({
                             'id': selected.id == 0 ? null : selected.id,
                             'name': selected.name,
@@ -258,9 +277,8 @@ class _SquareCheck extends StatelessWidget {
           width: 1.4,
         ),
       ),
-      child: value
-          ? const Icon(Icons.check, size: 16, color: Colors.white)
-          : null,
+      child:
+          value ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
     );
   }
 }

@@ -138,8 +138,13 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                       // Check if there's an existing chat room first
                       final chatListCubit = context.read<ChatListCubit>();
 
+                      // Check if chat list is already loaded, if not, load it silently
+
                       // Check if chat list is already loaded, if not, load it
                       if (chatListCubit.state is! ChatListLoaded) {
+                        print(
+                            '🔄 [ProfileDetails] Chat list not loaded, loading silently...');
+                        await chatListCubit.silentRefreshChatList();
                         print(
                             '🔄 [ProfileDetails] Chat list not loaded, loading now...');
                         await chatListCubit.forceRefreshChatList();

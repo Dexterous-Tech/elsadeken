@@ -325,20 +325,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           ),
         ],
       ),
-      actions: [
-        // Temporary testing button - remove after debugging
-        IconButton(
-          onPressed: () {
-            // Test if the message pipeline works
-            context.read<PusherCubit>().simulateMessageReceived(
-              'Test real-time message ${DateTime.now().millisecond}', 
-              int.parse(widget.chatRoom.id)
-            );
-          },
-          icon: Icon(Icons.send, color: Colors.green),
-          tooltip: 'Test Message',
-        ),
-      ],
+
     );
   }
 
