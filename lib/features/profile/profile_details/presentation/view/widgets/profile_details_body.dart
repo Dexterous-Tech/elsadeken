@@ -17,7 +17,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/routes/app_routes.dart';
 import '../../../../../chat/data/models/chat_room_model.dart';
-import '../../../../../chat/data/models/chat_list_model.dart';
 import '../../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import '../../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 
