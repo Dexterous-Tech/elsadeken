@@ -5,6 +5,7 @@ import 'pusher_state.dart';
 
 class PusherCubit extends Cubit<PusherState> {
   final PusherRepoInterface _pusherRepo;
+  bool _isInitializing = false;
 
   PusherCubit(this._pusherRepo) : super(PusherInitial()) {
     _setupCallbacks();
@@ -18,7 +19,16 @@ class PusherCubit extends Cubit<PusherState> {
 
   /// Initialize Pusher connection
   Future<void> initialize() async {
+    // Prevent multiple simultaneous initialization attempts
+    if (_isInitializing ||
+        state is PusherInitialized ||
+        state is PusherLoading) {
+      print('⚠️ Pusher initialization already in progress or completed');
+      return;
+    }
+
     try {
+      _isInitializing = true;
       emit(PusherLoading());
 
       // Add a small delay to ensure network is ready
@@ -41,6 +51,8 @@ class PusherCubit extends Cubit<PusherState> {
       print('⚠️ Pusher initialization exception (handled silently): $e');
       // Don't emit error - we'll retry silently
       emit(PusherInitialized()); // Emit initialized state anyway
+    } finally {
+      _isInitializing = false;
     }
   }
 
@@ -92,6 +104,12 @@ class PusherCubit extends Cubit<PusherState> {
       (failure) => emit(PusherError(failure.message)),
       (_) => emit(PusherDisconnected()),
     );
+  }
+
+  /// Reset initialization state (useful for reconnection attempts)
+  void resetInitializationState() {
+    _isInitializing = false;
+    emit(PusherInitial());
   }
 
   /// Callback when a new message is received

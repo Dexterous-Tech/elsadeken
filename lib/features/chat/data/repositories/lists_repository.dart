@@ -18,9 +18,3 @@ class ListsRepository {
     return await _service.getCountries();
   }
 }
-
-
-
-
-
-

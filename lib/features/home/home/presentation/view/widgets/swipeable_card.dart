@@ -432,16 +432,26 @@ class _SwipeableCardState extends State<SwipeableCard>
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 try {
-                                  // Check if there's an existing chat room first
-                                  final chatListCubit = context.read<ChatListCubit>();
-                                  print('🔍 Looking for existing chat room for user ID: ${widget.user.id}');
-                                  
-                                  final existingChatRoom = chatListCubit.findExistingChatRoom(widget.user.id);
-                                  
+                                  // First, try to find an existing chat room
+                                  final chatListCubit =
+                                      context.read<ChatListCubit>();
+                                  await chatListCubit.getChatList();
+
+                                  // Wait a bit for the chat list to load
+                                  await Future.delayed(
+                                      Duration(milliseconds: 500));
+
+                                  print(
+                                      '🔍 Looking for existing chat room for user ID: ${widget.user.id}');
+
+                                  final existingChatRoom = chatListCubit
+                                      .findExistingChatRoom(widget.user.id);
+
                                   if (existingChatRoom != null) {
-                                    print('✅ Found existing chat room: ${existingChatRoom.id}');
+                                    print(
+                                        '✅ Found existing chat room: ${existingChatRoom.id}');
                                     // Navigate to existing chat room
                                     Navigator.pushNamed(
                                       context,
@@ -451,7 +461,8 @@ class _SwipeableCardState extends State<SwipeableCard>
                                       },
                                     );
                                   } else {
-                                    print('🆕 No existing chat room found, creating new temporary chat');
+                                    print(
+                                        '🆕 No existing chat room found, creating new temporary chat');
                                     // Create new temporary chat room
                                     Navigator.pushNamed(
                                       context,
@@ -466,7 +477,8 @@ class _SwipeableCardState extends State<SwipeableCard>
                                     );
                                   }
                                 } catch (e) {
-                                  print('⚠️ Error in message button onTap: $e');
+                                  print(
+                                      '⚠️ Error checking for existing chat room: $e');
                                   // Fallback to creating new temporary chat room
                                   Navigator.pushNamed(
                                     context,

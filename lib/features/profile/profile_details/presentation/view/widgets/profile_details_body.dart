@@ -152,39 +152,44 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                       userImage = widget.user!.image ?? '';
                     }
 
-                    // First, try to find an existing chat room
-                    final chatListCubit = context.read<ChatListCubit>();
-                    await chatListCubit.getChatList();
+                    try {
+                      // First, try to find an existing chat room
+                      final chatListCubit = context.read<ChatListCubit>();
+                      await chatListCubit.getChatList();
 
-                    // Wait a bit for the chat list to load
-                    await Future.delayed(Duration(milliseconds: 500));
+                      // Wait a bit for the chat list to load
+                      await Future.delayed(Duration(milliseconds: 500));
 
-                    // Check if a chat room already exists with this user
-                    ChatData? existingChatRoom;
-                    if (chatListCubit.state is ChatListLoaded) {
-                      final chatList =
-                          (chatListCubit.state as ChatListLoaded).chatList;
-                      try {
-                        existingChatRoom = chatList.data.firstWhere(
-                          (chat) => chat.otherUser.id == widget.userId,
+                      // Check if a chat room already exists with this user
+                      final existingChatRoom =
+                          chatListCubit.findExistingChatRoom(widget.userId);
+
+                      if (existingChatRoom != null) {
+                        // Navigate to existing chat room
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.chatConversationScreen,
+                          arguments: {
+                            "chatRoom": existingChatRoom,
+                          },
                         );
-                      } catch (e) {
-                        // No existing chat room found
-                        existingChatRoom = null;
+                      } else {
+                        // Create new temporary chat room
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.chatConversationScreen,
+                          arguments: {
+                            "chatRoom": ChatRoomModel.fromUser(
+                              userId: widget.userId,
+                              userName: userName,
+                              userImage: userImage,
+                            ),
+                          },
+                        );
                       }
-                    }
-
-                    if (existingChatRoom != null) {
-                      // Navigate to existing chat room
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.chatConversationScreen,
-                        arguments: {
-                          "chatRoom": existingChatRoom,
-                        },
-                      );
-                    } else {
-                      // Create new chat room
+                    } catch (e) {
+                      print('⚠️ Error checking for existing chat room: $e');
+                      // Fallback to creating new temporary chat room
                       Navigator.pushNamed(
                         context,
                         AppRoutes.chatConversationScreen,

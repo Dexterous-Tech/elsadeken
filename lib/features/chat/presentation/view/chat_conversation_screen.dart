@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:async';
+
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +40,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   int? _currentUserId;
   String _currentUserName = '';
   String _currentUserImage = '';
+  bool _pusherInitialized = false;
+  Timer? _connectionHealthTimer;
 
   @override
   void initState() {
@@ -45,25 +50,68 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     _loadChatMessages();
     _loadCurrentUserProfile();
     _initializePusher();
+    _startConnectionHealthCheck();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Add a post-frame callback to handle when returning to this screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Always try to load messages when returning to existing chat rooms
+      if (!widget.chatRoom.id.startsWith('temp_')) {
+        log('🔄 Returning to existing chat room, loading messages...');
+        _loadChatMessages();
+      }
+    });
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      // Re-initialize Pusher if the app is resumed
+      // Reset Pusher state and re-initialize if the app is resumed
+      _pusherInitialized = false;
+      context.read<PusherCubit>().resetInitializationState();
       _initializePusher();
+
+      // Always reload messages when returning to existing chat rooms
+      // This ensures we have the latest messages
+      if (!widget.chatRoom.id.startsWith('temp_')) {
+        log('🔄 App resumed, reloading messages for existing chat room');
+        _loadChatMessages();
+      }
+
+      // Restart connection health check
+      _startConnectionHealthCheck();
+    } else if (state == AppLifecycleState.paused) {
+      // Pause connection health check when app goes to background
+      _connectionHealthTimer?.cancel();
+    } else if (state == AppLifecycleState.inactive) {
+      // Disconnect Pusher when app becomes inactive
+      try {
+        context.read<PusherCubit>().disconnect();
+      } catch (e) {
+        log('⚠️ Error disconnecting Pusher: $e');
+      }
     }
   }
 
   void _initializePusher() {
+    // Prevent multiple initialization attempts
+    if (_pusherInitialized) {
+      log('⚠️ Pusher already initialized, skipping...');
+      return;
+    }
+
     // Initialize Pusher after the widget is fully built with additional delay for network readiness
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
+      if (mounted && !_pusherInitialized) {
         // Give the network stack more time to initialize
         Future.delayed(Duration(milliseconds: 1500), () {
-          if (mounted) {
-            print('🔄 Initializing Pusher...');
+          if (mounted && !_pusherInitialized) {
+            log('🔄 Initializing Pusher...');
+            _pusherInitialized = true;
             context.read<PusherCubit>().initialize();
           }
         });
@@ -71,29 +119,59 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     });
   }
 
+  /// Retry Pusher connection when network issues occur
+  void _retryPusherConnection() {
+    log('🔄 Retrying Pusher connection...');
+    _pusherInitialized = false;
+    context.read<PusherCubit>().resetInitializationState();
+    _initializePusher();
+  }
+
+  /// Start periodic connection health check
+  void _startConnectionHealthCheck() {
+    _connectionHealthTimer?.cancel();
+    _connectionHealthTimer = Timer.periodic(Duration(seconds: 30), (timer) {
+      if (mounted && _pusherInitialized) {
+        final pusherCubit = context.read<PusherCubit>();
+        if (pusherCubit.isConnected == false) {
+          log('⚠️ Pusher connection lost, attempting to reconnect...');
+          _retryPusherConnection();
+        }
+      }
+    });
+  }
+
   void _subscribeToChatRoom() {
     if (_currentUserId != null && !widget.chatRoom.id.startsWith('temp_')) {
-      print('🔗 Subscribing to chat room: ${widget.chatRoom.id}');
-      print('👤 Current user ID: $_currentUserId');
-      print('👥 Chat room receiver ID: ${widget.chatRoom.receiverId}');
-      
+      log('🔗 Subscribing to chat room: ${widget.chatRoom.id}');
+      log('👤 Current user ID: $_currentUserId');
+      log('👥 Chat room receiver ID: ${widget.chatRoom.receiverId}');
+
       // Subscribe to the specific chat room channel
       // The channel name should match what the backend is using
       final chatRoomId = widget.chatRoom.id;
-      print('📡 Subscribing to chat room channel: $chatRoomId');
-      
+      log('📡 Subscribing to chat room channel: $chatRoomId');
+
       // Try different channel naming conventions that the backend might be using
       context.read<PusherCubit>().subscribeToChatChannel(int.parse(chatRoomId));
     } else {
-      print('⚠️ Cannot subscribe: userId=$_currentUserId, chatRoomId=${widget.chatRoom.id}');
+      log('⚠️ Cannot subscribe: userId=$_currentUserId, chatRoomId=${widget.chatRoom.id}');
     }
   }
-
-
 
   void _loadChatMessages() {
     // Don't load messages for temporary chat rooms (new conversations)
     if (!widget.chatRoom.id.startsWith('temp_')) {
+      // Always load messages for existing chat rooms to ensure we have the latest
+      log('🔄 Loading chat messages for room: ${widget.chatRoom.id}');
+
+      // Clear any existing messages to show loading state
+      if (_messages.isNotEmpty) {
+        setState(() {
+          _messages = [];
+        });
+      }
+
       context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
     }
   }
@@ -150,7 +228,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           ),
         ],
       ),
-
     );
   }
 
@@ -160,24 +237,35 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         BlocListener<ChatMessagesCubit, ChatMessagesState>(
           listener: (context, state) {
             if (state is ChatMessagesLoaded && _currentUserId != null) {
+              log('📨 Chat messages loaded: ${state.chatMessages.messages.length} messages');
+
+              final newMessages = state.chatMessages.toChatMessages(
+                _currentUserId.toString(),
+                widget.chatRoom.name,
+                widget.chatRoom.image,
+                _currentUserImage,
+              );
+
+              // Always update messages when they're loaded from the server
               setState(() {
-                _messages = state.chatMessages.toChatMessages(
-                  _currentUserId.toString(),
-                  widget.chatRoom.name,
-                  widget.chatRoom.image,
-                  _currentUserImage,
-                );
+                _messages = newMessages;
               });
 
-              Future.delayed(Duration(milliseconds: 100), () {
-                if (_scrollController.hasClients) {
-                  _scrollController.animateTo(
-                    _scrollController.position.maxScrollExtent,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                }
-              });
+              // Scroll to bottom only if we have messages
+              if (newMessages.isNotEmpty) {
+                Future.delayed(Duration(milliseconds: 100), () {
+                  if (_scrollController.hasClients) {
+                    _scrollController.animateTo(
+                      _scrollController.position.maxScrollExtent,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    );
+                  }
+                });
+              }
+            } else if (state is ChatMessagesError) {
+              log('❌ Error loading chat messages: ${state.message}');
+              // Show error state but don't clear existing messages
             }
           },
         ),
@@ -197,7 +285,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                     .read<PusherCubit>()
                     .subscribeToChatChannel(_currentUserId!);
 
+                // Always load messages for existing chat rooms when profile is loaded
                 if (!widget.chatRoom.id.startsWith('temp_')) {
+                  log('🔄 Profile loaded, loading chat messages...');
                   context
                       .read<ChatMessagesCubit>()
                       .getChatMessages(widget.chatRoom.id);
@@ -211,8 +301,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
             if (state is SendMessagesLoaded) {
               // Don't reload all messages, just add the new message locally
               // The message will be added when the user types and sends it
-              print(
-                  'Message sent successfully: ${state.sendMessageModel.message}');
+              log('Message sent successfully: ${state.sendMessageModel.message}');
 
               // Add the sent message to the local list for immediate display
               if (_currentUserId != null) {
@@ -257,25 +346,27 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           listener: (context, state) {
             if (state is PusherMessageReceived) {
               // Handle real-time message from Pusher
-              print('🟢 PUSHER: Message received: ${state.message.body}');
-              print('🟢 PUSHER: Message chat ID: ${state.message.chatId}');
-              print('🟢 PUSHER: Current chat room ID: ${widget.chatRoom.id}');
-              print('🟢 PUSHER: Message sender ID: ${state.message.senderId}');
-              print('🟢 PUSHER: Current user ID: $_currentUserId');
-              
+              log('🟢 PUSHER: Message received: ${state.message.body}');
+              log('🟢 PUSHER: Message chat ID: ${state.message.chatId}');
+              log('🟢 PUSHER: Current chat room ID: ${widget.chatRoom.id}');
+              log('🟢 PUSHER: Message sender ID: ${state.message.senderId}');
+              log('🟢 PUSHER: Current user ID: $_currentUserId');
+
               _handlePusherMessage(state.message);
             } else if (state is PusherConnectionEstablished) {
-              print('🟢 PUSHER: Connection established: ${state.message}');
+              log('🟢 PUSHER: Connection established: ${state.message}');
               // Connection established silently - no user notification
             } else if (state is PusherConnectionError) {
               // Handle errors silently - don't show to user
-              print('⚠️ PUSHER: Connection issue (handled silently): ${state.error}');
+              log('⚠️ PUSHER: Connection issue (handled silently): ${state.error}');
+              // Reset initialization state to allow retry
+              _pusherInitialized = false;
               // No SnackBar - we're handling this silently
             } else if (state is PusherSubscribed) {
-              print('🟢 PUSHER: Subscribed to channel successfully');
+              log('🟢 PUSHER: Subscribed to channel successfully');
               // Subscription successful silently - no user notification
             } else if (state is PusherInitialized) {
-              print('🟢 PUSHER: Initialized successfully');
+              log('🟢 PUSHER: Initialized successfully');
               // Now subscribe to the chat room
               _subscribeToChatRoom();
             }
@@ -321,6 +412,48 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           }
 
           if (_messages.isEmpty) {
+            // Check if we're still loading messages
+            final chatMessagesState = context.read<ChatMessagesCubit>().state;
+            if (chatMessagesState is ChatMessagesLoading) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text(
+                      'جاري تحميل الرسائل...',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            // For existing chat rooms, show loading indicator while waiting for messages
+            if (!widget.chatRoom.id.startsWith('temp_')) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text(
+                      'جاري تحميل الرسائل...',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            // For new temporary chat rooms, show the welcome message
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -521,6 +654,21 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     );
   }
 
+  /// Check if two message lists are equal
+  bool _areMessagesEqual(
+      List<ChatMessage> messages1, List<ChatMessage> messages2) {
+    if (messages1.length != messages2.length) return false;
+
+    for (int i = 0; i < messages1.length; i++) {
+      if (messages1[i].id != messages2[i].id ||
+          messages1[i].message != messages2[i].message ||
+          messages1[i].timestamp != messages2[i].timestamp) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   void _handlePusherMessage(PusherMessageModel pusherMessage) {
     // Only handle messages for the current chat room
     if (pusherMessage.chatId.toString() == widget.chatRoom.id ||
@@ -547,10 +695,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           if (chatListCubit != null) {
             // Refresh the chat list to show the new message
             chatListCubit.getChatList();
-            print('[ChatConversationScreen] Chat list refreshed after receiving Pusher message');
+            log('[ChatConversationScreen] Chat list refreshed after receiving Pusher message');
           }
         } catch (e) {
-          print('[ChatConversationScreen] Error refreshing chat list: $e');
+          log('[ChatConversationScreen] Error refreshing chat list: $e');
         }
 
         // Scroll to bottom
@@ -566,8 +714,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       }
     }
   }
-
-
 
   void _sendMessage() {
     if (_messageController.text.trim().isEmpty) return;
@@ -608,8 +754,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
+    _connectionHealthTimer?.cancel();
     // Unsubscribe from Pusher channel when leaving the screen
-    context.read<PusherCubit>().unsubscribeFromChatChannel();
+    try {
+      context.read<PusherCubit>().unsubscribeFromChatChannel();
+    } catch (e) {
+      log('[ChatConversationScreen] Error during dispose: $e');
+    }
     super.dispose();
   }
 }

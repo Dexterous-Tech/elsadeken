@@ -16,7 +16,7 @@ abstract class ChatRepoInterface {
     int receiverId,
     String message,
   );
-  
+
   Future<Either<ApiErrorModel, Map<String, dynamic>>> markAllMessagesAsRead();
   Future<Either<ApiErrorModel, Map<String, dynamic>>> reportChat(int chatId);
   Future<Either<ApiErrorModel, Map<String, dynamic>>> muteChat(int chatId);
@@ -57,11 +57,11 @@ class ChatRepoImpl extends ChatRepoInterface {
     }
   }
 
-
   @override
   Future<Either<ApiErrorModel, SendMessageModel>> sendMessage(
-      int receiverId,
-    String message,) async {
+    int receiverId,
+    String message,
+  ) async {
     try {
       final response = await chatDataSource.sendMessage(receiverId, message);
       return Right(response);
@@ -75,7 +75,8 @@ class ChatRepoImpl extends ChatRepoInterface {
   }
 
   @override
-  Future<Either<ApiErrorModel, Map<String, dynamic>>> markAllMessagesAsRead() async {
+  Future<Either<ApiErrorModel, Map<String, dynamic>>>
+      markAllMessagesAsRead() async {
     try {
       final response = await chatDataSource.markAllMessagesAsRead();
       return Right(response);
@@ -89,7 +90,8 @@ class ChatRepoImpl extends ChatRepoInterface {
   }
 
   @override
-  Future<Either<ApiErrorModel, Map<String, dynamic>>> reportChat(int chatId) async {
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> reportChat(
+      int chatId) async {
     try {
       final response = await chatDataSource.reportChat(chatId);
       return Right(response);
@@ -103,7 +105,8 @@ class ChatRepoImpl extends ChatRepoInterface {
   }
 
   @override
-  Future<Either<ApiErrorModel, Map<String, dynamic>>> muteChat(int chatId) async {
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> muteChat(
+      int chatId) async {
     try {
       final response = await chatDataSource.muteChat(chatId);
       return Right(response);
@@ -117,7 +120,8 @@ class ChatRepoImpl extends ChatRepoInterface {
   }
 
   @override
-  Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteOneChat(int chatId) async {
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteOneChat(
+      int chatId) async {
     try {
       final response = await chatDataSource.deleteOneChat(chatId);
       return Right(response);
@@ -143,5 +147,4 @@ class ChatRepoImpl extends ChatRepoInterface {
       return Left(ApiErrorHandler.handle(error));
     }
   }
-
 }
