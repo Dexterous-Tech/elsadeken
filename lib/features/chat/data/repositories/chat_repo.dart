@@ -16,12 +16,15 @@ abstract class ChatRepoInterface {
     int receiverId,
     String message,
   );
-  
+
   Future<Either<ApiErrorModel, Map<String, dynamic>>> markAllMessagesAsRead();
   Future<Either<ApiErrorModel, Map<String, dynamic>>> reportChat(int chatId);
   Future<Either<ApiErrorModel, Map<String, dynamic>>> muteChat(int chatId);
   Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteOneChat(int chatId);
   Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteAllChats();
+  Future<Either<ApiErrorModel, ChatListModel>> getFavoriteChatList();
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> addChatToFavorite(
+      int chatId);
 }
 
 class ChatRepoImpl extends ChatRepoInterface {
@@ -57,11 +60,11 @@ class ChatRepoImpl extends ChatRepoInterface {
     }
   }
 
-
   @override
   Future<Either<ApiErrorModel, SendMessageModel>> sendMessage(
-      int receiverId,
-    String message,) async {
+    int receiverId,
+    String message,
+  ) async {
     try {
       final response = await chatDataSource.sendMessage(receiverId, message);
       return Right(response);
@@ -75,7 +78,8 @@ class ChatRepoImpl extends ChatRepoInterface {
   }
 
   @override
-  Future<Either<ApiErrorModel, Map<String, dynamic>>> markAllMessagesAsRead() async {
+  Future<Either<ApiErrorModel, Map<String, dynamic>>>
+      markAllMessagesAsRead() async {
     try {
       final response = await chatDataSource.markAllMessagesAsRead();
       return Right(response);
@@ -89,7 +93,8 @@ class ChatRepoImpl extends ChatRepoInterface {
   }
 
   @override
-  Future<Either<ApiErrorModel, Map<String, dynamic>>> reportChat(int chatId) async {
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> reportChat(
+      int chatId) async {
     try {
       final response = await chatDataSource.reportChat(chatId);
       return Right(response);
@@ -103,7 +108,8 @@ class ChatRepoImpl extends ChatRepoInterface {
   }
 
   @override
-  Future<Either<ApiErrorModel, Map<String, dynamic>>> muteChat(int chatId) async {
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> muteChat(
+      int chatId) async {
     try {
       final response = await chatDataSource.muteChat(chatId);
       return Right(response);
@@ -117,7 +123,8 @@ class ChatRepoImpl extends ChatRepoInterface {
   }
 
   @override
-  Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteOneChat(int chatId) async {
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteOneChat(
+      int chatId) async {
     try {
       final response = await chatDataSource.deleteOneChat(chatId);
       return Right(response);
@@ -144,4 +151,32 @@ class ChatRepoImpl extends ChatRepoInterface {
     }
   }
 
+  @override
+  Future<Either<ApiErrorModel, ChatListModel>> getFavoriteChatList() async {
+    try {
+      final response = await chatDataSource.getFavoriteChatList();
+      return Right(response);
+    } catch (error) {
+      log("error in getFavoriteChatList: $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> addChatToFavorite(
+      int chatId) async {
+    try {
+      final response = await chatDataSource.addChatToFavorite(chatId);
+      return Right(response);
+    } catch (error) {
+      log("error in addChatToFavorite: $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
 }

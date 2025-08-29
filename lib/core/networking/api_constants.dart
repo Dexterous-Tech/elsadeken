@@ -77,22 +77,21 @@ class ApiConstants {
   static String userChat(String id) => '/user/chats/chat-messages/$id';
   static String sendMessage = '/user/chats/send-message';
   static String markAllMessagesAsRead = '/user/mark-all-messages-as-read';
+  static String addChatToFavorite(int chatId) =>
+      '/user/add-chat-to-favorite/$chatId';
 
   // chat settings
-static String getChatSettings = '/user/get-chat-setting';
-static String updateChatSettings(String id) => '/user/update-chat-setting/$id';
-static String reportChatSettings(String id) => '/user/report-user-chat/$id';
-static String muteChatSettings(String id) => '/user/mute-chat/$id';
-static String deleteOneChatSettings(String id) => '/user/delete-chat/$id';
-static String deleteAllChatSettings = '/user/delete-all-chats';
-
-
-
+  static String getChatSettings = '/user/get-chat-setting';
+  static String updateChatSettings(String id) =>
+      '/user/update-chat-setting/$id';
+  static String reportChatSettings(String id) => '/user/report-user-chat/$id';
+  static String muteChatSettings(String id) => '/user/mute-chat/$id';
+  static String deleteOneChatSettings(String id) => '/user/delete-chat/$id';
+  static String deleteAllChatSettings = '/user/delete-all-chats';
 
 // nationality and country lists
-static String getNationalities = '/user/list/nationalities';
-static String getCountries = '/user/list/countries';
-
+  static String getNationalities = '/user/list/nationalities';
+  static String getCountries = '/user/list/countries';
 
   // Features
   static String getFeatures = '/user/my-features';
