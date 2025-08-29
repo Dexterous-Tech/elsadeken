@@ -11,6 +11,7 @@ import 'package:elsadeken/features/chat/domain/entities/chat_message.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_message_bubble.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_state.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_state.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
@@ -134,6 +135,19 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
         print('[ChatConversationScreen] Message added to UI successfully');
         _scrollToBottom();
+        
+        // Update chat list to reflect new message and maintain sorting
+        if (!widget.chatRoom.id.startsWith('temp_')) {
+          final chatId = int.tryParse(widget.chatRoom.id);
+          if (chatId != null) {
+            context.read<ChatListCubit>().handleNewMessage(
+              chatId,
+              message.body,
+              message.createdAt.toIso8601String(),
+              message.senderId,
+            );
+          }
+        }
       }
     }
   }
@@ -351,6 +365,19 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                     _messages.add(newMessage);
                   });
                   _scrollToBottom();
+                }
+                
+                // Update chat list to reflect new message and maintain sorting
+                if (!widget.chatRoom.id.startsWith('temp_')) {
+                  final chatId = int.tryParse(widget.chatRoom.id);
+                  if (chatId != null) {
+                    context.read<ChatListCubit>().handleNewMessage(
+                      chatId,
+                      state.sendMessageModel.data.body,
+                      state.sendMessageModel.data.createdAt.toIso8601String(),
+                      _currentUserId!,
+                    );
+                  }
                 }
               }
             } else if (state is SendMessagesError) {
