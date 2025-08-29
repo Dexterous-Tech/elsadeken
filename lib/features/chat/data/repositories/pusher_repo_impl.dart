@@ -20,9 +20,9 @@ class PusherRepoImpl implements PusherRepoInterface {
   }
 
   @override
-  Future<Either<Failure, void>> subscribeToChatChannel(int userId) async {
+  Future<Either<Failure, void>> subscribeToChatChannel(int userId, String bearerToken) async {
     try {
-      await _pusherService.subscribeToChatChannel(userId);
+      await _pusherService.subscribeToChatChannel(userId, bearerToken);
       return const Right(null);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -65,6 +65,11 @@ class PusherRepoImpl implements PusherRepoInterface {
   }
 
   @override
+  void setAuthToken(String token) {
+    _pusherService.setAuthToken(token);
+  }
+
+  @override
   bool get isConnected => _pusherService.isConnected;
 
   @override
@@ -75,5 +80,25 @@ class PusherRepoImpl implements PusherRepoInterface {
       print('⚠️ Connection health check failed: $e');
       return false;
     }
+  }
+
+  @override
+  Future<Map<String, dynamic>> getDetailedDiagnostics() async {
+    try {
+      return await _pusherService.getDetailedDiagnostics();
+    } catch (e) {
+      print('⚠️ Failed to get detailed diagnostics: $e');
+      return {'error': e.toString()};
+    }
+  }
+
+  /// Test message handling (for debugging)
+  void testMessageHandling() {
+    _pusherService.testMessageHandling();
+  }
+
+  /// Test full message pipeline (for debugging)
+  void testFullMessagePipeline() {
+    _pusherService.testFullMessagePipeline();
   }
 }

@@ -15,21 +15,20 @@ class ListsService {
   Future<ApiResponseModel<List<NationalityModel>>> getNationalities() async {
     try {
       print('[ListsService] Getting nationalities...');
-
+      
       // Try to get from cache first
       final cachedData = await SharedPreferencesHelper.getCachedData(
         SharedPreferencesKey.nationalitiesCacheKey,
         SharedPreferencesKey.nationalitiesCacheTimestampKey,
         maxAge: const Duration(hours: 24), // Cache for 24 hours
       );
-
+      
       if (cachedData != null) {
         print('[ListsService] Using cached nationalities data');
         final nationalitiesList = (cachedData as List)
-            .map((item) =>
-                NationalityModel.fromJson(item as Map<String, dynamic>))
+            .map((item) => NationalityModel.fromJson(item as Map<String, dynamic>))
             .toList();
-
+        
         return ApiResponseModel<List<NationalityModel>>(
           data: nationalitiesList,
           message: 'Success (Cached)',
@@ -38,35 +37,32 @@ class ListsService {
           showToast: false,
         );
       }
-
+      
       print('[ListsService] Cache miss, fetching from API...');
-
+      
       // Fetch from API if cache miss or expired
       final response = await _apiServices.get<List<dynamic>>(
         endpoint: ApiConstants.getNationalities,
       );
 
       print('[ListsService] Get nationalities response: ${response.data}');
-      print(
-          '[ListsService] Get nationalities response type: ${response.data.runtimeType}');
-
+      print('[ListsService] Get nationalities response type: ${response.data.runtimeType}');
+      
       // The API returns a list directly, so we need to handle it differently
       if (response.data is List) {
         final nationalitiesList = (response.data as List)
-            .map((item) =>
-                NationalityModel.fromJson(item as Map<String, dynamic>))
+            .map((item) => NationalityModel.fromJson(item as Map<String, dynamic>))
             .toList();
-
-        print(
-            '[ListsService] Parsed ${nationalitiesList.length} nationalities');
-
+        
+        print('[ListsService] Parsed ${nationalitiesList.length} nationalities');
+        
         // Cache the raw API response for future use
         await SharedPreferencesHelper.cacheData(
           SharedPreferencesKey.nationalitiesCacheKey,
           SharedPreferencesKey.nationalitiesCacheTimestampKey,
           response.data,
         );
-
+        
         // Create a response model with the parsed data
         return ApiResponseModel<List<NationalityModel>>(
           data: nationalitiesList,
@@ -76,8 +72,7 @@ class ListsService {
           showToast: false,
         );
       } else {
-        throw Exception(
-            'Expected list response but got: ${response.data.runtimeType}');
+        throw Exception('Expected list response but got: ${response.data.runtimeType}');
       }
     } catch (e) {
       print('[ListsService] Get nationalities failed: $e');
@@ -89,20 +84,20 @@ class ListsService {
   Future<ApiResponseModel<List<CountryModel>>> getCountries() async {
     try {
       print('[ListsService] Getting countries...');
-
+      
       // Try to get from cache first
       final cachedData = await SharedPreferencesHelper.getCachedData(
         SharedPreferencesKey.countriesCacheKey,
         SharedPreferencesKey.countriesCacheTimestampKey,
         maxAge: const Duration(hours: 24), // Cache for 24 hours
       );
-
+      
       if (cachedData != null) {
         print('[ListsService] Using cached countries data');
         final countriesList = (cachedData as List)
             .map((item) => CountryModel.fromJson(item as Map<String, dynamic>))
             .toList();
-
+        
         return ApiResponseModel<List<CountryModel>>(
           data: countriesList,
           message: 'Success (Cached)',
@@ -111,33 +106,32 @@ class ListsService {
           showToast: false,
         );
       }
-
+      
       print('[ListsService] Cache miss, fetching from API...');
-
+      
       // Fetch from API if cache miss or expired
       final response = await _apiServices.get<List<dynamic>>(
         endpoint: ApiConstants.getCountries,
       );
 
       print('[ListsService] Get countries response: ${response.data}');
-      print(
-          '[ListsService] Get countries response type: ${response.data.runtimeType}');
-
+      print('[ListsService] Get countries response type: ${response.data.runtimeType}');
+      
       // The API returns a list directly, so we need to handle it differently
       if (response.data is List) {
         final countriesList = (response.data as List)
             .map((item) => CountryModel.fromJson(item as Map<String, dynamic>))
             .toList();
-
+        
         print('[ListsService] Parsed ${countriesList.length} countries');
-
+        
         // Cache the raw API response for future use
         await SharedPreferencesHelper.cacheData(
           SharedPreferencesKey.countriesCacheKey,
           SharedPreferencesKey.countriesCacheTimestampKey,
           response.data,
         );
-
+        
         // Create a response model with the parsed data
         return ApiResponseModel<List<CountryModel>>(
           data: countriesList,
@@ -147,8 +141,7 @@ class ListsService {
           showToast: false,
         );
       } else {
-        throw Exception(
-            'Expected list response but got: ${response.data.runtimeType}');
+        throw Exception('Expected list response but got: ${response.data.runtimeType}');
       }
     } catch (e) {
       print('[ListsService] Get countries failed: $e');

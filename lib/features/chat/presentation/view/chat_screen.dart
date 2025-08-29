@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ import 'package:elsadeken/features/chat/presentation/widgets/chat_room_item.dart
 import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
+import 'package:elsadeken/features/chat/data/services/chat_message_service.dart';
+import 'package:elsadeken/core/services/firebase_notification_service.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -24,6 +27,9 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen>
     with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   int _selectedTabIndex = 0; // 0: All, 1: Favorites
+  
+  // Stream subscriptions for real-time updates
+  StreamSubscription<void>? _refreshChatListSubscription;
 
   @override
   bool get wantKeepAlive => true;
@@ -33,10 +39,23 @@ class _ChatScreenState extends State<ChatScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     context.read<ChatListCubit>().getChatList();
+    _setupRealTimeListeners();
+  }
+
+  void _setupRealTimeListeners() {
+    // Listen for chat list refresh requests
+    _refreshChatListSubscription = ChatMessageService.instance.refreshChatListStream.listen((_) {
+      if (mounted) {
+        print('[ChatScreen] Real-time refresh requested, updating chat list...');
+        context.read<ChatListCubit>().forceRefreshChatList();
+      }
+    });
   }
 
   @override
   void dispose() {
+    // Cancel stream subscriptions
+    _refreshChatListSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -44,20 +63,15 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-
-    // Refresh chat list when app is resumed to ensure unread counts are up to date
-    if (state == AppLifecycleState.resumed) {
-      context.read<ChatListCubit>().getChatList();
-    }
+    // Real-time updates handle everything automatically - no manual refresh needed
   }
+
+
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    // Refresh chat list when dependencies change (e.g., when screen becomes focused)
-    // This ensures unread counts are updated when returning from a conversation
-    context.read<ChatListCubit>().getChatList();
+    // No manual refresh needed - real-time updates handle everything automatically
   }
 
   @override

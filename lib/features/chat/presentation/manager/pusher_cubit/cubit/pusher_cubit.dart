@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/chat/domain/repositories/pusher_repo_interface.dart';
 import 'package:elsadeken/features/chat/data/models/pusher_message_model.dart';
+import 'package:elsadeken/features/chat/data/services/pusher_service.dart';
 import 'pusher_state.dart';
 
 class PusherCubit extends Cubit<PusherState> {
@@ -17,13 +18,17 @@ class PusherCubit extends Cubit<PusherState> {
     _pusherRepo.setErrorCallback(_onConnectionError);
   }
 
+  /// Set authentication token for private channels
+  void setAuthToken(String token) {
+    // Set the auth token in the repository
+    _pusherRepo.setAuthToken(token);
+  }
+
   /// Initialize Pusher connection
   Future<void> initialize() async {
     // Prevent multiple simultaneous initialization attempts
-    if (_isInitializing ||
-        state is PusherInitialized ||
-        state is PusherLoading) {
-      print('⚠️ Pusher initialization already in progress or completed');
+    if (_isInitializing) {
+      print('⚠️ Pusher initialization already in progress, skipping...');
       return;
     }
 
@@ -56,29 +61,43 @@ class PusherCubit extends Cubit<PusherState> {
     }
   }
 
-  /// Subscribe to a chat channel for a specific user
-  Future<void> subscribeToChatChannel(int userId) async {
+  /// Subscribe to a chat channel for a specific chat room
+  Future<void> subscribeToChatChannel(int chatRoomId, String authToken) async {
     try {
       if (state is! PusherInitialized) {
         await initialize();
       }
 
-      emit(PusherSubscribing());
+      // Don't emit subscribing state if already subscribed
+      if (state is! PusherSubscribing) {
+        emit(PusherSubscribing());
+      }
 
-      final result = await _pusherRepo.subscribeToChatChannel(userId);
+      final result = await _pusherRepo.subscribeToChatChannel(chatRoomId, authToken);
 
       result.fold(
         (failure) {
           // Handle failures gracefully - emit error but don't crash
           print('⚠️ Pusher subscription failed: ${failure.message}');
-          emit(PusherSubscribed()); // Emit subscribed state anyway
+          // Only emit if not already subscribed
+          if (state is! PusherSubscribed) {
+            emit(PusherSubscribed());
+          }
         },
-        (_) => emit(PusherSubscribed()),
+        (_) {
+          // Only emit if not already subscribed
+          if (state is! PusherSubscribed) {
+            emit(PusherSubscribed());
+          }
+        },
       );
     } catch (e) {
       // Handle exceptions gracefully - emit error but don't crash
       print('⚠️ Pusher subscription exception: $e');
-      emit(PusherSubscribed()); // Emit subscribed state anyway
+      // Only emit if not already subscribed
+      if (state is! PusherSubscribed) {
+        emit(PusherSubscribed());
+      }
     }
   }
 
@@ -106,12 +125,6 @@ class PusherCubit extends Cubit<PusherState> {
     );
   }
 
-  /// Reset initialization state (useful for reconnection attempts)
-  void resetInitializationState() {
-    _isInitializing = false;
-    emit(PusherInitial());
-  }
-
   /// Callback when a new message is received
   void _onMessageReceived(PusherMessageModel message) {
     emit(PusherMessageReceived(message));
@@ -137,6 +150,34 @@ class PusherCubit extends Cubit<PusherState> {
     } catch (e) {
       print('⚠️ Connection health check failed: $e');
       return false;
+    }
+  }
+
+  /// Test message handling (for debugging)
+  void testMessageHandling() {
+    try {
+      _pusherRepo.testMessageHandling();
+    } catch (e) {
+      print('⚠️ Test message handling failed: $e');
+    }
+  }
+
+  /// Test full message pipeline (for debugging)
+  void testFullMessagePipeline() {
+    try {
+      _pusherRepo.testFullMessagePipeline();
+    } catch (e) {
+      print('⚠️ Test message pipeline failed: $e');
+    }
+  }
+
+  /// Simulate receiving a message (for debugging)
+  void simulateMessageReceived(String messageText, int chatId) {
+    try {
+      // Access the pusher service through singleton instance
+      PusherService.instance.simulateMessageReceived(messageText, chatId);
+    } catch (e) {
+      print('⚠️ Simulate message failed: $e');
     }
   }
 }
