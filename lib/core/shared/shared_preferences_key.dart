@@ -9,6 +9,10 @@ class SharedPreferencesKey {
   static const String gender = 'GENDER';
   static const String privacySetting = 'PRIVACY_SETTING';
 
+  // App state management keys
+  static const String isOnboardingCompleted = 'IS_ONBOARDING_COMPLETED';
+  static const String isLoggedIn = 'IS_LOGGED_IN';
+
   // Cache keys for static data
   static const String nationalitiesCacheKey = 'NATIONALITIES_CACHE';
   static const String countriesCacheKey = 'COUNTRIES_CACHE';

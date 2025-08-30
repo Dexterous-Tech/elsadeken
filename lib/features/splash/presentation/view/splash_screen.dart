@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -34,7 +35,29 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _navigateAfterDelay() async {
     await Future.delayed(splashDelay);
     if (!mounted) return;
-    context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);
+
+    // Check if user is logged in
+    final isLoggedIn = await SharedPreferencesHelper.getIsLoggedIn();
+    final hasValidToken = await SharedPreferencesHelper.getSecuredString(
+      'API_TOKEN_KEY',
+    ).then((token) => token.isNotEmpty);
+
+    if (isLoggedIn && hasValidToken) {
+      // User is logged in, navigate to home
+      context.pushNamedAndRemoveUntil(AppRoutes.homeScreen);
+    } else {
+      // Check if onboarding is completed
+      final isOnboardingCompleted =
+          await SharedPreferencesHelper.getIsOnboardingCompleted();
+
+      if (isOnboardingCompleted) {
+        // Onboarding completed but not logged in, go to login
+        context.pushNamedAndRemoveUntil(AppRoutes.loginScreen);
+      } else {
+        // First time user, show onboarding
+        context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);
+      }
+    }
   }
 
   @override

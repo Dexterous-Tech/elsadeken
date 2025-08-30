@@ -48,6 +48,9 @@ class LoginCubit extends Cubit<LoginState> {
         // After successful login, save FCM token silently
         await saveFcmTokenSilently();
 
+        // Mark user as logged in
+        await SharedPreferencesHelper.setIsLoggedIn(true);
+
         emit(LoginSuccess(loginResponseModel: loginResponseModel));
       },
     );

@@ -73,7 +73,7 @@ class ManageProfileCubit extends Cubit<ManageProfileState> {
     response.fold((l) {
       emit(DeleteProfileFailure(l.displayMessage));
     }, (deleteProfile) async {
-      await SharedPreferencesHelper.deleteSharedPreferKeys();
+      await SharedPreferencesHelper.clearAllAppState();
       // await DioFactory.resetDio();
       emit(DeleteProfileSuccess(deleteProfile));
     });

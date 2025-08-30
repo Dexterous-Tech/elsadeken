@@ -78,6 +78,8 @@ class SignupCubit extends Cubit<SignupState> {
       },
       (signupResponseModel) async {
         await saveUserToken(signupResponseModel.data!.token);
+        // Mark user as logged in
+        await SharedPreferencesHelper.setIsLoggedIn(true);
         emit(SignupSuccess(signupResponseModel: signupResponseModel));
       },
     );
@@ -106,6 +108,8 @@ class SignupCubit extends Cubit<SignupState> {
       },
       (signupResponseModel) async {
         await saveUserToken(signupResponseModel.data!.token);
+        // Mark user as logged in
+        await SharedPreferencesHelper.setIsLoggedIn(true);
 
         // After successful signup, call registerInformation
         emit(RegisterInformationLoading());

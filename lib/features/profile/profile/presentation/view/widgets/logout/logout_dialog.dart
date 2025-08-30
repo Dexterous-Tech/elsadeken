@@ -3,6 +3,7 @@ import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/app_lottie.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
@@ -33,10 +34,13 @@ Future<void> logoutDialog(BuildContext context) async {
               // Show error message
               return _errorLogout(context, state.error);
             } else if (state is LogoutSuccess) {
-              // Navigate to login screen
-              Future.delayed(Duration(milliseconds: 500), () {
+              // Clear all app state and navigate to login screen
+              Future.delayed(Duration(milliseconds: 500), () async {
                 if (context.mounted) context.pop(); // Close dialog
                 if (context.mounted) {
+                  // Clear all app state data
+                  await SharedPreferencesHelper.clearAllAppState();
+                  // Navigate to login screen
                   context.pushNamedAndRemoveUntil(AppRoutes.loginScreen);
                 }
               });
