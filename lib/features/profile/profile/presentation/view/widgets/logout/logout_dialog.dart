@@ -40,8 +40,9 @@ Future<void> logoutDialog(BuildContext context) async {
                 if (context.mounted) {
                   // Clear all app state data
                   await SharedPreferencesHelper.clearAllAppState();
-                  // Navigate to login screen
-                  context.pushNamedAndRemoveUntil(AppRoutes.loginScreen);
+                  // Navigate to login screen with parameter indicating logout
+                  context.pushNamedAndRemoveUntil(AppRoutes.loginScreen,
+                      arguments: 'from_logout');
                 }
               });
               // Show success message briefly

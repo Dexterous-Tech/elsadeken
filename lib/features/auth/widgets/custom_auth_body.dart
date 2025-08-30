@@ -8,9 +8,11 @@ import '../../../core/theme/spacing.dart';
 import 'custom_auth_card.dart';
 
 class CustomAuthBody extends StatelessWidget {
-  const CustomAuthBody({super.key, required this.cardContent});
+  const CustomAuthBody(
+      {super.key, required this.cardContent, this.isFromLogout = false});
 
   final Widget cardContent;
+  final bool isFromLogout;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -25,17 +27,19 @@ class CustomAuthBody extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          context.pop();
-                        },
-                        child: Image.asset(
-                          AppImages.authArrowBack,
-                          width: 14.w,
-                          height: 14.h,
+                      if (!isFromLogout) ...[
+                        GestureDetector(
+                          onTap: () {
+                            context.pop();
+                          },
+                          child: Image.asset(
+                            AppImages.authArrowBack,
+                            width: 14.w,
+                            height: 14.h,
+                          ),
                         ),
-                      ),
-                      verticalSpace(33.74.h),
+                        verticalSpace(33.74.h),
+                      ],
                       Image.asset(
                         AppImages.authElsadekenMarriageImage,
                         width: 170.w,

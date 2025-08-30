@@ -175,7 +175,9 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
   }
 
   bool _canProceedToNext(SignupCubit cubit) {
-    // Check if all controllers have non-empty values
+    // Ensure formState is not null
+    final formState = cubit.generalInfoKey.currentState;
+
     bool hasAge = cubit.ageController.text.trim().isNotEmpty &&
         int.tryParse(cubit.ageController.text) != null;
     bool hasChildrenNumber =
@@ -186,7 +188,8 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
     bool hasHeight = cubit.heightController.text.trim().isNotEmpty &&
         int.tryParse(cubit.heightController.text) != null;
 
-    return cubit.generalInfoKey.currentState!.validate() &&
+    return formState != null &&
+        formState.validate() &&
         hasAge &&
         hasChildrenNumber &&
         hasWeight &&
