@@ -53,6 +53,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   // Simplified connection state
   bool _isPusherSetup = false;
 
+  // Cubit references for safe disposal
+  ChatMessagesCubit? _chatMessagesCubit;
+  PusherCubit? _pusherCubit;
+
   @override
   void initState() {
     super.initState();
@@ -65,32 +69,86 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     _loadCurrentUserProfile();
     _setupRealTimeListeners();
     _setupScrollListener();
+    
+    // Mark messages as read when entering the chat
+    _markMessagesAsReadOnEnter();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // Store cubit references safely for disposal
+    try {
+      _chatMessagesCubit ??= context.read<ChatMessagesCubit>();
+      _pusherCubit ??= context.read<PusherCubit>();
+      print('🔗 Cubit references stored safely');
+    } catch (e) {
+      print('⚠️ Error storing cubit references: $e');
+    }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      // Check connection health on resume
+      // Check connection health on resume and re-establish if needed
       _checkPusherConnectionHealth();
-
-      // Resume auto-refresh when app is resumed
+      
+      // Minimal refresh - only if Pusher is not working
       if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null) {
-        context.read<ChatMessagesCubit>().startAutoRefresh(widget.chatRoom.id);
+        _checkAndStartMinimalRefresh();
       }
     } else if (state == AppLifecycleState.paused) {
-      // Stop auto-refresh when app is paused to save resources
-      context.read<ChatMessagesCubit>().stopAutoRefresh();
+      // Stop any backup refresh when app is paused to save resources using stored cubit reference
+      if (_chatMessagesCubit != null) {
+        try {
+          _chatMessagesCubit!.stopAutoRefresh();
+          print('✅ Auto-refresh stopped on app pause');
+        } catch (e) {
+          print('⚠️ Error stopping auto-refresh on pause: $e');
+        }
+      }
     }
   }
 
   Future<void> _checkPusherConnectionHealth() async {
-    if (_isPusherSetup && _currentUserId != null) {
-      final isHealthy =
-          await context.read<PusherCubit>().checkConnectionHealth();
-      if (!isHealthy) {
-        print('Connection unhealthy, re-initializing...');
-        await _initializeAndSubscribePusher();
+    if (_isPusherSetup && _currentUserId != null && _pusherCubit != null) {
+      try {
+        final isHealthy = await _pusherCubit!.checkConnectionHealth();
+        if (!isHealthy) {
+          print('Connection unhealthy, re-initializing...');
+          await _initializeAndSubscribePusher();
+        }
+      } catch (e) {
+        print('⚠️ Error checking Pusher connection health: $e');
+      }
+    }
+  }
+
+  /// Check Pusher status and start minimal refresh only if needed
+  Future<void> _checkAndStartMinimalRefresh() async {
+    if (_pusherCubit == null || _chatMessagesCubit == null) {
+      print('⚠️ Cubit references not available for minimal refresh check');
+      return;
+    }
+    
+    try {
+      final isConnected = await _pusherCubit!.checkConnectionHealth();
+      if (!isConnected) {
+        // Only start auto-refresh as backup if Pusher is not working
+        print('🔄 Pusher not available, starting minimal backup refresh (60s interval)');
+        _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id, interval: Duration(seconds: 60));
+      } else {
+        print('✅ Pusher is working, no backup refresh needed');
+        _chatMessagesCubit!.stopAutoRefresh();
+      }
+    } catch (e) {
+      print('⚠️ Error checking Pusher status, starting backup refresh: $e');
+      try {
+        _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id, interval: Duration(seconds: 60));
+      } catch (refreshError) {
+        print('⚠️ Error starting backup refresh: $refreshError');
       }
     }
   }
@@ -144,6 +202,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
         print('[ChatConversationScreen] Message added to UI successfully');
         _scrollToBottom();
+
+        // Mark the new message as read immediately if it's from another user
+        if (message.senderId != _currentUserId) {
+          _markNewMessageAsRead(message);
+        }
 
         // Update chat list to reflect new message and maintain sorting
         if (!widget.chatRoom.id.startsWith('temp_')) {
@@ -275,6 +338,99 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     }
   }
 
+  /// Mark messages as read when entering the chat conversation
+  Future<void> _markMessagesAsReadOnEnter() async {
+    // Don't mark as read for temporary chats
+    if (widget.chatRoom.id.startsWith('temp_')) {
+      print('[ChatConversationScreen] Skipping mark as read for temporary chat');
+      return;
+    }
+
+    // Skip if there are no unread messages
+    if (widget.chatRoom.unreadCount <= 0) {
+      print('[ChatConversationScreen] No unread messages to mark as read');
+      return;
+    }
+
+    print('[ChatConversationScreen] Marking messages as read for chat ${widget.chatRoom.id}...');
+    
+    try {
+      // Mark all messages as read via API (since there's no specific chat endpoint)
+      final chatListCubit = context.read<ChatListCubit>();
+      await chatListCubit.markAllMessagesAsRead();
+      
+      print('✅ Messages marked as read successfully');
+      
+      // Update local message read status immediately
+      _updateLocalMessagesReadStatus();
+      
+      // Refresh chat list to update unread counts
+      chatListCubit.silentRefreshChatList();
+      
+    } catch (e) {
+      print('⚠️ Error marking messages as read: $e');
+    }
+  }
+
+  /// Update local messages to show as read for better UX
+  void _updateLocalMessagesReadStatus() {
+    if (_messages.isNotEmpty && _currentUserId != null) {
+      setState(() {
+        _messages = _messages.map((message) {
+          // Only mark messages from other users as read
+          if (message.senderId != _currentUserId.toString()) {
+            return ChatMessage(
+              id: message.id,
+              roomId: message.roomId,
+              senderId: message.senderId,
+              senderName: message.senderName,
+              senderImage: message.senderImage,
+              message: message.message,
+              timestamp: message.timestamp,
+              isRead: true, // Mark as read
+            );
+          }
+          return message;
+        }).toList();
+      });
+      print('✅ Local messages updated to show as read');
+    }
+  }
+
+  /// Mark a newly received message as read immediately
+  Future<void> _markNewMessageAsRead(PusherMessageModel message) async {
+    print('[ChatConversationScreen] Marking new message as read: ${message.body}');
+    
+    try {
+      // Call the mark all messages as read API
+      // (since there's no specific endpoint for individual messages)
+      final chatListCubit = context.read<ChatListCubit>();
+      await chatListCubit.markAllMessagesAsRead();
+      
+      // Update the specific message in the local list to show as read
+      setState(() {
+        final messageIndex = _messages.indexWhere((msg) => msg.id == message.id.toString());
+        if (messageIndex != -1) {
+          _messages[messageIndex] = ChatMessage(
+            id: _messages[messageIndex].id,
+            roomId: _messages[messageIndex].roomId,
+            senderId: _messages[messageIndex].senderId,
+            senderName: _messages[messageIndex].senderName,
+            senderImage: _messages[messageIndex].senderImage,
+            message: _messages[messageIndex].message,
+            timestamp: _messages[messageIndex].timestamp,
+            isRead: true, // Mark as read
+          );
+        }
+      });
+      
+      print('✅ New message marked as read successfully');
+      
+    } catch (e) {
+      print('⚠️ Error marking new message as read: $e');
+    }
+  }
+
   /// Manual refresh method for pull-to-refresh
   Future<void> _refreshMessages() async {
     if (!widget.chatRoom.id.startsWith('temp_')) {
@@ -296,9 +452,14 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           chatRoomName: widget.chatRoom.name,
           chatRoomImage: widget.chatRoom.image,
           onBack: () {
-            // Stop auto-refresh when navigating back
-            if (!widget.chatRoom.id.startsWith('temp_')) {
-              context.read<ChatMessagesCubit>().stopAutoRefresh();
+            // Stop auto-refresh when navigating back using stored cubit reference
+            if (!widget.chatRoom.id.startsWith('temp_') && _chatMessagesCubit != null) {
+              try {
+                _chatMessagesCubit!.stopAutoRefresh();
+                print('✅ Auto-refresh stopped on navigation back');
+              } catch (e) {
+                print('⚠️ Error stopping auto-refresh on back: $e');
+              }
             }
             Navigator.of(context).pop();
           },
@@ -340,13 +501,20 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
               _scrollToBottom();
 
-              // Start auto-refresh after initial messages are loaded (only if messages exist)
+              // Mark messages as read after loading if there are unread messages
+              if (!widget.chatRoom.id.startsWith('temp_') &&
+                  _currentUserId != null &&
+                  _messages.isNotEmpty &&
+                  widget.chatRoom.unreadCount > 0) {
+                // Update local read status immediately
+                _updateLocalMessagesReadStatus();
+              }
+
+              // Check if Pusher is working and only use minimal backup refresh if needed
               if (!widget.chatRoom.id.startsWith('temp_') &&
                   _currentUserId != null &&
                   _messages.isNotEmpty) {
-                context
-                    .read<ChatMessagesCubit>()
-                    .startAutoRefresh(widget.chatRoom.id);
+                _checkAndStartMinimalRefresh();
               }
             } else if (state is ChatMessagesError) {
               // If the chat was deleted, clear messages to show empty state immediately
@@ -723,25 +891,40 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
   @override
   void dispose() {
-    // Stop auto-refresh when disposing
-    if (!widget.chatRoom.id.startsWith('temp_')) {
-      context.read<ChatMessagesCubit>().stopAutoRefresh();
-    }
-
-    _messageController.dispose();
-    _scrollController.dispose();
-    _messageSubscription?.cancel();
-
-    // Unsubscribe from Pusher channel when leaving
-    if (_isPusherSetup) {
+    print('🗑️ Disposing ChatConversationScreen...');
+    
+    // Stop auto-refresh when disposing using stored cubit reference
+    if (!widget.chatRoom.id.startsWith('temp_') && _chatMessagesCubit != null) {
       try {
-        context.read<PusherCubit>().unsubscribeFromChatChannel();
+        _chatMessagesCubit!.stopAutoRefresh();
+        print('✅ Auto-refresh stopped successfully');
       } catch (e) {
-        print('Error unsubscribing during dispose: $e');
+        print('⚠️ Error stopping auto-refresh: $e');
       }
     }
 
+    // Dispose controllers and cancel subscriptions
+    _messageController.dispose();
+    _scrollController.dispose();
+    _messageSubscription?.cancel();
+    print('✅ Controllers and subscriptions disposed');
+
+    // Unsubscribe from Pusher channel when leaving using stored cubit reference
+    if (_isPusherSetup && _pusherCubit != null) {
+      try {
+        _pusherCubit!.unsubscribeFromChatChannel();
+        print('✅ Pusher channel unsubscribed successfully');
+      } catch (e) {
+        print('⚠️ Error unsubscribing during dispose: $e');
+      }
+    }
+
+    // Clean up cubit references
+    _chatMessagesCubit = null;
+    _pusherCubit = null;
+
     WidgetsBinding.instance.removeObserver(this);
+    print('✅ ChatConversationScreen disposed successfully');
     super.dispose();
   }
 }

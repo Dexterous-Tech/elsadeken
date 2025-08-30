@@ -148,6 +148,15 @@ class ChatRoomItem extends StatelessWidget {
   }
 
   void _showDeleteConfirmation(BuildContext context) {
+    // Log detailed information for debugging
+    print('🗑️ === DELETE CONFIRMATION ===');
+    print('Chat ID: ${chat.id}');
+    print('Chat Name: ${chat.otherUser.name}');
+    print('Other User ID: ${chat.otherUser.id}');
+    print('Last Message: ${chat.lastMessage?.body ?? 'No messages'}');
+    print('Unread Count: ${chat.unreadCount}');
+    print('===========================');
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -155,18 +164,108 @@ class ChatRoomItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
         ),
         title: Text(
-          'تأكيد الحذف',
+          'تأكيد حذف المحادثة',
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
-        content: Text(
-          'هل أنت متأكد من حذف هذه المحادثة؟ لا يمكن التراجع عن هذا الإجراء.',
-          style: AppTextStyles.font16BlackSemiBoldLamaSans,
-          textAlign: TextAlign.center,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'هل أنت متأكد من حذف هذه المحادثة؟',
+              style: AppTextStyles.font16BlackSemiBoldLamaSans,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 16.h),
+            Container(
+              padding: EdgeInsets.all(12.w),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.person, size: 16.sp, color: Colors.grey[600]),
+                      SizedBox(width: 8.w),
+                      Expanded(
+                        child: Text(
+                          'اسم المحادثة: ${chat.otherUser.name}',
+                          style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8.h),
+                  Row(
+                    children: [
+                      Icon(Icons.tag, size: 16.sp, color: Colors.grey[600]),
+                      SizedBox(width: 8.w),
+                      Text(
+                        'معرف المحادثة: ${chat.id}',
+                        style: AppTextStyles.font14BlackSemiBoldLamaSans,
+                      ),
+                    ],
+                  ),
+                  if (chat.lastMessage != null) ...[
+                    SizedBox(height: 8.h),
+                    Row(
+                      children: [
+                        Icon(Icons.message, size: 16.sp, color: Colors.grey[600]),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            'آخر رسالة: ${chat.lastMessage!.body}',
+                            style: AppTextStyles.font14BlackSemiBoldLamaSans,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (chat.unreadCount > 0) ...[
+                    SizedBox(height: 8.h),
+                    Row(
+                      children: [
+                        Icon(Icons.mark_email_unread, size: 16.sp, color: Colors.orange),
+                        SizedBox(width: 8.w),
+                        Text(
+                          'رسائل غير مقروءة: ${chat.unreadCount}',
+                          style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
+                            color: Colors.orange,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              '⚠️ لا يمكن التراجع عن هذا الإجراء.',
+              style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
+                color: Colors.red[600],
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              print('❌ Delete cancelled by user');
+              Navigator.of(context).pop();
+            },
             child: Text(
               'إلغاء',
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
@@ -176,22 +275,27 @@ class ChatRoomItem extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
+              print('✅ Delete confirmed by user');
+              print('🗑️ Deleting chat ID: ${chat.id} (${chat.otherUser.name})');
               Navigator.of(context).pop();
-              // Call the cubit method to delete this chat
+              
+              // Call the cubit method to delete this specific chat
               chatListCubit.deleteOneChat(chat.id);
 
-              // Show success snackbar
+              // Show success snackbar with chat details
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('تم حذف المحادثة بنجاح'),
+                SnackBar(
+                  content: Text('تم حذف محادثة "${chat.otherUser.name}" بنجاح'),
                   backgroundColor: Colors.red,
+                  duration: Duration(seconds: 3),
                 ),
               );
             },
             child: Text(
-              'حذف',
+              'حذف المحادثة',
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                 color: Colors.red,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),

@@ -73,12 +73,16 @@ class ChatDataSource {
   }
 
   Future<Map<String, dynamic>> deleteOneChat(int chatId) async {
+    print('🌐 [ChatDataSource] Calling delete API for chat ID: $chatId');
+    print('🌐 [ChatDataSource] Endpoint: ${ApiConstants.deleteOneChatSettings(chatId.toString())}');
+    
     final response = await _apiServices.delete(
       endpoint: ApiConstants.deleteOneChatSettings(chatId.toString()),
       requestBody: {},
       requiresAuth: true,
     );
 
+    print('🌐 [ChatDataSource] Delete API response: ${response.data}');
     return response.data as Map<String, dynamic>;
   }
 

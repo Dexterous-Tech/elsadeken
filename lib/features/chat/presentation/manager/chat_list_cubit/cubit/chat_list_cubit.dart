@@ -256,36 +256,61 @@ class ChatListCubit extends Cubit<ChatListState> {
   /// Delete one chat
   Future<void> deleteOneChat(int chatId) async {
     try {
-      print('[ChatListCubit] Deleting chat $chatId...');
+      print('🗑️ === DELETING CHAT ===');
+      print('[ChatListCubit] Received delete request for chat ID: $chatId');
+      
+      // Find and log the chat being deleted for verification
+      final currentState = state;
+      if (currentState is ChatListLoaded) {
+        final chatToDelete = currentState.chatList.data.firstWhere(
+          (chat) => chat.id == chatId,
+          orElse: () => throw Exception('Chat not found in current list'),
+        );
+        print('[ChatListCubit] Chat to delete: ${chatToDelete.otherUser.name} (ID: ${chatToDelete.id})');
+        print('[ChatListCubit] Total chats before deletion: ${currentState.chatList.data.length}');
+      }
 
       final Either<ApiErrorModel, Map<String, dynamic>> result =
           await chatListRepo.deleteOneChat(chatId);
 
       result.fold(
         (failure) {
-          print('[ChatListCubit] Delete chat failed: ${failure.message}');
+          print('❌ [ChatListCubit] Delete chat failed: ${failure.message}');
           // Show error message to user
           emit(ChatListError(failure.message ?? 'فشل في حذف المحادثة'));
         },
         (success) {
-          print('[ChatListCubit] Delete chat successful: $success');
+          print('✅ [ChatListCubit] Delete chat API successful: $success');
+          
           // Remove the deleted chat from the current state
           final currentState = state;
           if (currentState is ChatListLoaded) {
+            print('[ChatListCubit] Removing chat ID $chatId from local state...');
+            
+            final chatsBefore = currentState.chatList.data.length;
             final updatedChatList = currentState.chatList.copyWith(
               data: currentState.chatList.data
                   .where((chat) => chat.id != chatId)
                   .toList(),
             );
+            
+            print('[ChatListCubit] Chats before: $chatsBefore, after: ${updatedChatList.data.length}');
+            
+            // Verify the chat was actually removed
+            final removedChat = currentState.chatList.data.any((chat) => chat.id == chatId);
+            final stillExists = updatedChatList.data.any((chat) => chat.id == chatId);
+            print('[ChatListCubit] Chat $chatId existed before: $removedChat, still exists: $stillExists');
+            
             // Sort and emit updated state
-            final sortedChatList =
-                _sortChatListByNewestMessage(updatedChatList);
+            final sortedChatList = _sortChatListByNewestMessage(updatedChatList);
             emit(ChatListLoaded(sortedChatList));
+            
+            print('✅ [ChatListCubit] Chat list updated and emitted');
           }
         },
       );
     } catch (e) {
-      print('[ChatListCubit] Exception in deleteOneChat: $e');
+      print('💥 [ChatListCubit] Exception in deleteOneChat: $e');
       emit(ChatListError('حدث خطأ أثناء حذف المحادثة'));
     }
   }
