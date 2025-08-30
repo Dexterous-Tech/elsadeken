@@ -45,7 +45,7 @@ class CustomPinCodeField extends StatelessWidget {
         activeFillColor: AppColors.white,
         inactiveFillColor: AppColors.white,
         selectedFillColor: AppColors.white,
-        errorBorderColor: AppColors.brown,
+        errorBorderColor: AppColors.red,
         borderRadius: BorderRadius.circular(31.5).r,
         shape: PinCodeFieldShape.circle,
         fieldHeight: 63.h,

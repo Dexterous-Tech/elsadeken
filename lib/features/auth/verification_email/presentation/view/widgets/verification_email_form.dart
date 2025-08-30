@@ -1,11 +1,16 @@
+import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/core/widgets/forms/custom_pin_code_field.dart';
+import 'package:elsadeken/features/auth/forget_password/presentation/manager/forget_cubit.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/manager/verification_cubit.dart';
 import 'package:elsadeken/features/auth/verification_email/presentation/view/widgets/resend_verification_code.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../../core/di/injection_container.dart';
 
 class VerificationEmailForm extends StatelessWidget {
   const VerificationEmailForm({super.key, required this.email});
@@ -35,13 +40,20 @@ class VerificationEmailForm extends StatelessWidget {
           CustomPinCodeField(
             controller: cubit.otpController,
             validator: (value) {
-              if (value == null || value.length < 4) {
-                return 'يجب ادخال رمز التحقق علي بريدك الالكتروني';
+              if (value == null || value.isEmpty || value.length < 4) {
+                return ' '; // No visible text, but triggers errorBorderColor (red)
               }
+              return null; // Valid
             },
           ),
           verticalSpace(58),
-          Center(child: ResendVerificationCode()),
+          BlocProvider(
+            create: (context) => sl<ForgetCubit>(),
+            child: Center(
+                child: ResendVerificationCode(
+              email: email,
+            )),
+          ),
           Expanded(
             child: Container(), // This will take up remaining space
           ),
