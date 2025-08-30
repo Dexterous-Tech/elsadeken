@@ -5,23 +5,56 @@ import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
-import 'package:elsadeken/core/widgets/dialog/custom_dialog.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/core/widgets/custom_radio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/gestures.dart';
+import 'dart:ui';
 
 Future<void> oathDialog({
   required BuildContext context,
   bool value = false,
 }) async {
-  await customDialog(
+  await showDialog(
+    barrierColor: Color(0xFF120B03).withValues(alpha: 0.7),
     context: context,
-    padding: EdgeInsetsGeometry.symmetric(vertical: 70.h, horizontal: 30.w),
-    dialogContent: StatefulBuilder(
-      builder: (context, setStateDialog) {
-        return Column(
+    barrierDismissible: false,
+    builder: (context) => PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          // Navigate to login screen when back button is pressed
+          Navigator.of(context).pop(); // Close dialog first
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AppRoutes.loginScreen,
+            (route) => false,
+          );
+        }
+      },
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20).r,
+          ),
+          backgroundColor: Colors.transparent,
+          child: FittedBox(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20).r,
+              child: Container(
+                width: 370.w,
+                padding: EdgeInsetsGeometry.symmetric(vertical: 70.h, horizontal: 30.w),
+                decoration: ShapeDecoration(
+                  color: Color(0xFFFFF9F2).withValues(alpha: 0.721),
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.transparent),
+                    borderRadius: BorderRadius.circular(20).r,
+                  ),
+                ),
+                child: StatefulBuilder(
+                  builder: (context, setStateDialog) {
+                    return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -141,6 +174,12 @@ Future<void> oathDialog({
           ],
         );
       },
+    ),
+              ),
+            ),
+          ),
+        ),
+      ),
     ),
   );
 }
