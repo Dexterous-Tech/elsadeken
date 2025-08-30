@@ -8,13 +8,12 @@ import 'package:elsadeken/core/widgets/toggle_switch/custom_advanced_toggle_swit
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/features/profile/profile/presentation/manager/notification_settings_profile_cubit.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/logout/logout_dialog.dart';
+import 'package:elsadeken/features/profile/profile/presentation/view/widgets/delete_image/delete_image_dialog.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_content_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
-import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
-import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 
 import '../../../../../../core/di/injection_container.dart';
 
@@ -316,9 +315,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                         verticalSpace(21),
                                         GestureDetector(
                                           onTap: () {
-                                            context
-                                                .read<ProfileCubit>()
-                                                .deleteImage();
+                                            deleteImageDialog(context);
                                           },
                                           child: Row(
                                             textDirection: TextDirection.rtl,
