@@ -1,9 +1,9 @@
+import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/chat_settings_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/lists_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/view/screen/chat_settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/di/injection_container.dart';
-import 'chat_settings_screen.dart';
-import '../cubit/chat_settings_cubit.dart';
-import '../cubit/lists_cubit.dart';
 
 class ChatSettingsScreenWrapper extends StatelessWidget {
   const ChatSettingsScreenWrapper({super.key});
