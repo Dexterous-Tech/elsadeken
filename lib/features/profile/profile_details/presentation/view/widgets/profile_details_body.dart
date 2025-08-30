@@ -143,11 +143,11 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                       // Check if chat list is already loaded, if not, load it
                       if (chatListCubit.state is! ChatListLoaded) {
                         print(
-                            '🔄 [ProfileDetails] Chat list not loaded, loading silently...');
-                        await chatListCubit.silentRefreshChatList();
-                        print(
                             '🔄 [ProfileDetails] Chat list not loaded, loading now...');
                         await chatListCubit.forceRefreshChatList();
+                        
+                        // Wait a bit for the state to update
+                        await Future.delayed(const Duration(milliseconds: 500));
                       } else {
                         print('✅ [ProfileDetails] Chat list already loaded');
                       }
@@ -158,15 +158,17 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
 
                       if (existingChatRoom != null) {
                         print(
-                            '✅ [ProfileDetails] Found existing chat room, navigating to it');
+                            '✅ [ProfileDetails] Found existing chat room: ${existingChatRoom.id}, navigating to it');
                         // Navigate to existing chat room
-                        Navigator.pushNamed(
-                          context,
-                          AppRoutes.chatConversationScreen,
-                          arguments: {
-                            "chatRoom": existingChatRoom,
-                          },
-                        );
+                        if (context.mounted) {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.chatConversationScreen,
+                            arguments: {
+                              "chatRoom": existingChatRoom,
+                            },
+                          );
+                        }
                       } else {
                         print(
                             '🆕 [ProfileDetails] No existing chat room found, creating new temporary chat');

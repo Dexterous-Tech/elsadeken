@@ -56,6 +56,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    
+    // Load chat messages immediately for faster UI
+    _loadChatMessagesEarly();
+    
+    // Load user profile and setup real-time connections in parallel
     _loadCurrentUserProfile();
     _setupRealTimeListeners();
     _setupScrollListener();
@@ -213,11 +218,47 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     context.read<ManageProfileCubit>().getProfile();
   }
 
+  /// Load chat messages early for faster UI response
+  void _loadChatMessagesEarly() {
+    // Don't load messages for temporary chat rooms
+    if (!widget.chatRoom.id.startsWith('temp_')) {
+      print('[ChatConversationScreen] Early loading of messages for faster UI...');
+      
+      // Try to load messages, but handle 404 gracefully for deleted chats
+      context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
+    }
+  }
+
   void _loadChatMessages() {
     // Don't load messages for temporary chat rooms
     if (!widget.chatRoom.id.startsWith('temp_')) {
       print('[ChatConversationScreen] Loading initial messages from API...');
       context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
+    }
+  }
+
+  /// Update existing messages with correct user info when profile loads
+  void _updateMessagesWithUserInfo() {
+    if (_messages.isNotEmpty && _currentUserId != null) {
+      print('[ChatConversationScreen] Updating messages with correct user info...');
+      setState(() {
+        _messages = _messages.map((message) {
+          // Update message with correct user info if it was using temporary values
+          if (message.senderId == 'temp_user' || message.senderImage.isEmpty) {
+            return ChatMessage(
+              id: message.id,
+              roomId: message.roomId,
+              senderId: message.senderId == 'temp_user' ? _currentUserId.toString() : message.senderId,
+              senderName: message.senderName,
+              senderImage: message.senderId == _currentUserId.toString() ? _currentUserImage : message.senderImage,
+              message: message.message,
+              timestamp: message.timestamp,
+              isRead: message.isRead,
+            );
+          }
+          return message;
+        }).toList();
+      });
     }
   }
 
@@ -252,7 +293,15 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     return AppBar(
       backgroundColor: Color(0xfffef6ee),
       elevation: 0,
-      leading: const CustomArrowBack(),
+      leading: CustomArrowBack(
+        onPressed: () {
+          // Stop auto-refresh when navigating back
+          if (!widget.chatRoom.id.startsWith('temp_')) {
+            context.read<ChatMessagesCubit>().stopAutoRefresh();
+          }
+          Navigator.of(context).pop();
+        },
+      ),
       title: Row(
         children: [
           CircleAvatar(
@@ -307,23 +356,46 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       listeners: [
         BlocListener<ChatMessagesCubit, ChatMessagesState>(
           listener: (context, state) {
-            if (state is ChatMessagesLoaded && _currentUserId != null) {
+            if (state is ChatMessagesLoaded) {
               print('[ChatConversationScreen] API messages loaded: ${state.chatMessages.messages.length} messages');
+
+              // Use current user info if available, otherwise use temporary values
+              final currentUserId = _currentUserId?.toString() ?? 'temp_user';
+              final currentUserImage = _currentUserImage.isNotEmpty ? _currentUserImage : '';
 
               setState(() {
                 _messages = state.chatMessages.toChatMessages(
-                  _currentUserId.toString(),
+                  currentUserId,
                   widget.chatRoom.name,
                   widget.chatRoom.image,
-                  _currentUserImage,
+                  currentUserImage,
                 );
               });
 
               _scrollToBottom();
               
-              // Start auto-refresh after initial messages are loaded
-              if (!widget.chatRoom.id.startsWith('temp_')) {
+              // Start auto-refresh after initial messages are loaded (only if messages exist)
+              if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null && _messages.isNotEmpty) {
                 context.read<ChatMessagesCubit>().startAutoRefresh(widget.chatRoom.id);
+              }
+            } else if (state is ChatMessagesError) {
+              // If the chat was deleted, clear messages to show empty state immediately
+              if (state.message == "هذه المحادثة لم تعد موجودة") {
+                setState(() {
+                  _messages = []; // Clear messages to show empty chat state
+                });
+                
+                // Show brief notification that chat was deleted
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('المحادثة محذوفة - يمكنك بدء محادثة جديدة'),
+                    backgroundColor: Colors.orange,
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+                
+                // Don't start auto-refresh for deleted chats
+                print('[ChatConversationScreen] Chat deleted - will not start auto-refresh until new message sent');
               }
             }
           },
@@ -337,9 +409,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 _currentUserImage = state.myProfileResponseModel.data?.image ?? '';
               });
 
-              // Now setup Pusher and load messages
-              await _initializeAndSubscribePusher();
-              _loadChatMessages();
+              // Update existing messages with correct user info if already loaded
+              _updateMessagesWithUserInfo();
+
+              // Setup Pusher in background - messages are already loading
+              _initializeAndSubscribePusher();
             }
           },
         ),
@@ -378,6 +452,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                       _currentUserId!,
                     );
                   }
+                  
+                  // Restart auto-refresh in case it was stopped due to chat deletion
+                  context.read<ChatMessagesCubit>().startAutoRefresh(widget.chatRoom.id);
                 }
               }
             } else if (state is SendMessagesError) {

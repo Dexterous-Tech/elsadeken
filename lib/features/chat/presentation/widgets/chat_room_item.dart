@@ -141,7 +141,8 @@ class ChatRoomItem extends StatelessWidget {
         onDelete: () => _showDeleteConfirmation(context),
         onMute: () => _muteChat(context),
         onBlock: () => _reportUser(context),
-        onAddToFavorites: () => _addToFavorites(context),
+        onAddToFavorites: () => _toggleFavorite(context),
+        isChatFavorite: chat.isFavorite, // Pass the current favorite status
       ),
     );
   }
@@ -303,6 +304,19 @@ class ChatRoomItem extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _toggleFavorite(BuildContext context) {
+    // Toggle the favorite status
+    chatListCubit.toggleChatFavorite(chat.id, chat.isFavorite);
+
+    // Show appropriate snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(chat.isFavorite ? 'تم إزالة من المفضلة' : 'تم الإضافة إلى المفضلة'),
+        backgroundColor: chat.isFavorite ? Colors.grey : Colors.pink,
       ),
     );
   }

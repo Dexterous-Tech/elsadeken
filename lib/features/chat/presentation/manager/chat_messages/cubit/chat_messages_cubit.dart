@@ -15,7 +15,15 @@ class ChatMessagesCubit extends Cubit<ChatMessagesState> {
     final result = await repo.getChatMessages(chatId);
 
     result.fold(
-      (error) => emit(ChatMessagesError(error.message ?? "حدث خطأ ما")),
+      (error) {
+        // If chat is deleted (404 error), show appropriate message
+        if (error.statusCode == 404) {
+          print('[ChatMessagesCubit] Chat not found (404) during initial load');
+          emit(ChatMessagesError("هذه المحادثة لم تعد موجودة"));
+        } else {
+          emit(ChatMessagesError(error.message ?? "حدث خطأ ما"));
+        }
+      },
       (chatMessages) => emit(ChatMessagesLoaded(chatMessages)),
     );
   }
@@ -29,7 +37,15 @@ class ChatMessagesCubit extends Cubit<ChatMessagesState> {
     result.fold(
       (error) {
         print('[ChatMessagesCubit] Error refreshing messages: ${error.message}');
-        emit(ChatMessagesError(error.message ?? "حدث خطأ ما"));
+        
+        // If chat is deleted (404 error), stop auto-refresh to prevent spam
+        if (error.statusCode == 404) {
+          print('[ChatMessagesCubit] Chat not found (404) - stopping auto-refresh');
+          stopAutoRefresh();
+          emit(ChatMessagesError("هذه المحادثة لم تعد موجودة"));
+        } else {
+          emit(ChatMessagesError(error.message ?? "حدث خطأ ما"));
+        }
       },
       (chatMessages) {
         print('[ChatMessagesCubit] Successfully refreshed ${chatMessages.messages.length} messages');

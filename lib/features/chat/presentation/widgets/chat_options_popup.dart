@@ -10,6 +10,7 @@ class ChatOptionsPopup extends StatelessWidget {
   final VoidCallback onMute;
   final VoidCallback onBlock;
   final VoidCallback onAddToFavorites;
+  final bool isChatFavorite;
 
   const ChatOptionsPopup({
     Key? key,
@@ -17,6 +18,7 @@ class ChatOptionsPopup extends StatelessWidget {
     required this.onMute,
     required this.onBlock,
     required this.onAddToFavorites,
+    this.isChatFavorite = false,
   }) : super(key: key);
 
   @override
@@ -81,15 +83,16 @@ class ChatOptionsPopup extends StatelessWidget {
                   height: 0.5,
                   color: AppColors.grey,
                 ),
-                // Add to Favorites
+                // Add to Favorites / Remove from Favorites
                 _buildOptionItem(
                   context,
                   imagePath: 'assets/images/icons/heart.png',
-                  text: 'إضافة إلى المفضلة',
+                  text: isChatFavorite ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة',
                   onTap: () {
                     Navigator.pop(context);
                     onAddToFavorites();
                   },
+                  iconColor: isChatFavorite ? Colors.red : null,
                 ),
               ],
             ),
@@ -118,6 +121,7 @@ class ChatOptionsPopup extends StatelessWidget {
     required String imagePath,
     required String text,
     required VoidCallback onTap,
+    Color? iconColor,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -143,6 +147,7 @@ class ChatOptionsPopup extends StatelessWidget {
                     imagePath,
                     width: 24.w,
                     height: 24.w,
+                    color: iconColor,
                     fit: BoxFit.contain,
                   ),
                 ],
