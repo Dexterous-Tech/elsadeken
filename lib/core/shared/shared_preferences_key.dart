@@ -19,4 +19,10 @@ class SharedPreferencesKey {
   static const String nationalitiesCacheTimestampKey =
       'NATIONALITIES_CACHE_TIMESTAMP';
   static const String countriesCacheTimestampKey = 'COUNTRIES_CACHE_TIMESTAMP';
+
+  // Signup form data keys
+  static const String signupFormDataKey = 'SIGNUP_FORM_DATA';
+  static const String signupCurrentStepKey = 'SIGNUP_CURRENT_STEP';
+  static const String signupGenderKey = 'SIGNUP_GENDER';
+  static const String signupTimestampKey = 'SIGNUP_TIMESTAMP';
 }

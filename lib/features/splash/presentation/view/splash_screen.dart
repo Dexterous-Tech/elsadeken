@@ -42,8 +42,13 @@ class _SplashScreenState extends State<SplashScreen>
       'API_TOKEN_KEY',
     ).then((token) => token.isNotEmpty);
 
-    if (isLoggedIn && hasValidToken) {
-      // User is logged in, navigate to home
+    // Check if there's recent signup data (indicating incomplete signup process)
+    final hasRecentSignupData =
+        await SharedPreferencesHelper.hasRecentSignupData();
+
+    if (isLoggedIn && hasValidToken && !hasRecentSignupData) {
+      // User is logged in, has valid token, and no recent signup data (completed signup)
+      // Navigate to home
       context.pushNamedAndRemoveUntil(AppRoutes.homeScreen);
     } else {
       // Check if onboarding is completed
@@ -51,7 +56,8 @@ class _SplashScreenState extends State<SplashScreen>
           await SharedPreferencesHelper.getIsOnboardingCompleted();
 
       if (isOnboardingCompleted) {
-        // Onboarding completed but not logged in, go to login
+        // Onboarding completed but not logged in or has incomplete signup
+        // Go to login
         context.pushNamedAndRemoveUntil(AppRoutes.loginScreen);
       } else {
         // First time user, show onboarding

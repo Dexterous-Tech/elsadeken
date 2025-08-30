@@ -40,6 +40,78 @@ class _HomeHeaderState extends State<HomeHeader> {
               final city = profileData?.attribute?.city ?? 'لا يوجد';
               final image = profileData?.image ?? '';
 
+              // Debug prints
+              print('🔍 HomeHeader Debug:');
+              print('🔍 Name: $name');
+              print('🔍 Country: $country');
+              print('🔍 City: $city');
+              print('🔍 Image: $image');
+              print('🔍 ProfileData: $profileData');
+              print('🔍 Attribute: ${profileData?.attribute}');
+
+              // Determine location text
+              String locationText;
+              if ((country == 'لا يوجد' || country.isEmpty) &&
+                  (city == 'لا يوجد' || city.isEmpty)) {
+                locationText = 'Location not available';
+              } else {
+                locationText = '$country, $city';
+              }
+
+              return SizedBox(
+                child: Row(
+                  textDirection: TextDirection.rtl,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: CustomImageNetwork(
+                        width: 64.w,
+                        height: 64.h,
+                        image: image.isNotEmpty
+                            ? image
+                            : 'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          name,
+                          style: AppTextStyles.font16BlackSemiBoldLamaSans,
+                        ),
+                        Row(
+                          textDirection: TextDirection.rtl,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              'assets/images/home/home_location.png',
+                              width: 15.w,
+                              height: 18.h,
+                            ),
+                            SizedBox(width: 13.w),
+                            Flexible(
+                              child: Text(locationText,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  textDirection: TextDirection.rtl,
+                                  textAlign: TextAlign.right,
+                                  style: AppTextStyles
+                                      .font15BistreSemiBoldLamaSans
+                                      .copyWith(
+                                          color: AppColors.black.withValues(
+                                            alpha: 0.87,
+                                          ),
+                                          fontWeight: FontWeightHelper.medium)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            } else if (state is ManageProfileFailure) {
               return Row(
                 textDirection: TextDirection.rtl,
                 children: [
@@ -48,48 +120,11 @@ class _HomeHeaderState extends State<HomeHeader> {
                     child: CustomImageNetwork(
                       width: 64.w,
                       height: 64.h,
-                      image: image.isNotEmpty
-                          ? image
-                          : 'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
+                      image:
+                          'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
                     ),
                   ),
                   SizedBox(width: 12.w),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        name,
-                        style: AppTextStyles.font16BlackSemiBoldLamaSans,
-                      ),
-                      Row(
-                        textDirection: TextDirection.rtl,
-                        children: [
-                          Image.asset(
-                            'assets/images/home/home_location.png',
-                            width: 15.w,
-                            height: 18.h,
-                          ),
-                          SizedBox(width: 13.w),
-                          Text('$country, $city',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textDirection: TextDirection.rtl,
-                              textAlign: TextAlign.right,
-                              style: AppTextStyles.font15BistreSemiBoldLamaSans
-                                  .copyWith(
-                                      color: AppColors.black.withValues(
-                                        alpha: 0.87,
-                                      ),
-                                      fontWeight: FontWeightHelper.medium)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            } else if (state is ManageProfileFailure) {
-              return Row(
-                children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -103,38 +138,51 @@ class _HomeHeaderState extends State<HomeHeader> {
                       ),
                       Row(
                         textDirection: TextDirection.rtl,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Image.asset(
                             'assets/images/home/home_location.png',
                             width: 15.w,
                             height: 18.h,
                           ),
-                          SizedBox(width: 13),
-                          Text(
-                            'Location not available',
-                            style: TextStyle(
-                                color:
-                                    Color(0xff000000).withValues(alpha: 0.87),
-                                fontSize: 15.sp,
-                                fontWeight: FontWeightHelper.medium),
+                          SizedBox(width: 13.w),
+                          Expanded(
+                            child: Text(
+                              'Location not available',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textDirection: TextDirection.rtl,
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                  color:
+                                      Color(0xff000000).withValues(alpha: 0.87),
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeightHelper.medium),
+                            ),
                           ),
                         ],
                       ),
                     ],
-                  ),
-                  SizedBox(width: 12.w),
-                  CircleAvatar(
-                    radius: 20.r,
-                    backgroundImage: NetworkImage(
-                      'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
-                    ),
                   ),
                 ],
               );
             } else {
               // Loading state
               return Row(
+                textDirection: TextDirection.rtl,
                 children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Container(
+                      width: 64.w,
+                      height: 64.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -149,13 +197,14 @@ class _HomeHeaderState extends State<HomeHeader> {
                       SizedBox(height: 8.h),
                       Row(
                         textDirection: TextDirection.rtl,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Image.asset(
                             'assets/images/home/home_location.png',
                             width: 15.w,
                             height: 18.h,
                           ),
-                          SizedBox(width: 13),
+                          SizedBox(width: 13.w),
                           Container(
                             width: 80.w,
                             height: 15.h,
@@ -167,11 +216,6 @@ class _HomeHeaderState extends State<HomeHeader> {
                         ],
                       ),
                     ],
-                  ),
-                  SizedBox(width: 12.w),
-                  CircleAvatar(
-                    radius: 20.r,
-                    backgroundColor: Colors.grey[300],
                   ),
                 ],
               );

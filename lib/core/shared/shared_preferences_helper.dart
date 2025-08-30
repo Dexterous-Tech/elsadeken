@@ -93,6 +93,94 @@ class SharedPreferencesHelper {
     await setBool(SharedPreferencesKey.isLoggedIn, value);
   }
 
+  // Signup form data methods
+
+  /// Save signup form data to shared preferences
+  static Future<void> saveSignupFormData(Map<String, dynamic> formData) async {
+    try {
+      final jsonData = jsonEncode(formData);
+      await setSecuredString(SharedPreferencesKey.signupFormDataKey, jsonData);
+      await setSecuredString(
+        SharedPreferencesKey.signupTimestampKey,
+        DateTime.now().millisecondsSinceEpoch.toString(),
+      );
+      debugPrint('Signup form data saved successfully');
+    } catch (e) {
+      debugPrint('Error saving signup form data: $e');
+    }
+  }
+
+  /// Load signup form data from shared preferences
+  static Future<Map<String, dynamic>?> loadSignupFormData() async {
+    try {
+      final jsonData =
+          await getSecuredString(SharedPreferencesKey.signupFormDataKey);
+      if (jsonData.isEmpty) return null;
+
+      final decodedData = jsonDecode(jsonData);
+      debugPrint('Signup form data loaded successfully');
+      return decodedData;
+    } catch (e) {
+      debugPrint('Error loading signup form data: $e');
+      return null;
+    }
+  }
+
+  /// Save current signup step
+  static Future<void> saveSignupCurrentStep(int step) async {
+    await setSecuredString(
+        SharedPreferencesKey.signupCurrentStepKey, step.toString());
+  }
+
+  /// Load current signup step
+  static Future<int> loadSignupCurrentStep() async {
+    final stepStr =
+        await getSecuredString(SharedPreferencesKey.signupCurrentStepKey);
+    return int.tryParse(stepStr) ?? 0;
+  }
+
+  /// Save signup gender
+  static Future<void> saveSignupGender(String gender) async {
+    await setSecuredString(SharedPreferencesKey.signupGenderKey, gender);
+  }
+
+  /// Load signup gender
+  static Future<String> loadSignupGender() async {
+    return await getSecuredString(SharedPreferencesKey.signupGenderKey);
+  }
+
+  /// Check if signup data exists and is recent (within 24 hours)
+  static Future<bool> hasRecentSignupData(
+      {Duration maxAge = const Duration(hours: 24)}) async {
+    try {
+      final timestampStr =
+          await getSecuredString(SharedPreferencesKey.signupTimestampKey);
+      if (timestampStr.isEmpty) return false;
+
+      final timestamp = int.tryParse(timestampStr);
+      if (timestamp == null) return false;
+
+      final dataAge = DateTime.now().millisecondsSinceEpoch - timestamp;
+      return dataAge <= maxAge.inMilliseconds;
+    } catch (e) {
+      debugPrint('Error checking signup data age: $e');
+      return false;
+    }
+  }
+
+  /// Clear all signup data
+  static Future<void> clearSignupData() async {
+    try {
+      await deleteSecuredString(SharedPreferencesKey.signupFormDataKey);
+      await deleteSecuredString(SharedPreferencesKey.signupCurrentStepKey);
+      await deleteSecuredString(SharedPreferencesKey.signupGenderKey);
+      await deleteSecuredString(SharedPreferencesKey.signupTimestampKey);
+      debugPrint('Signup data cleared successfully');
+    } catch (e) {
+      debugPrint('Error clearing signup data: $e');
+    }
+  }
+
   // Cache helper methods for static data
 
   /// Cache data with timestamp for expiration checking
