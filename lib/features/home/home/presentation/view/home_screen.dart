@@ -241,19 +241,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Future<void> _loadUserData() async {
-  //   // final user = await LoginCubit.getUserData();
-  //   if (user != null) {
-  //     setState(() {
-  //       // city = user.city;
-  //       // country = user.country;
-  //       name = user.name;
-  //     });
-  //     print("Loaded user: ${user.name}, ${user.email}");
-  //   } else {
-  //     print("No user data found");
-  //   }
-  // }
 
   Widget buildHomeContent() {
     return SafeArea(
