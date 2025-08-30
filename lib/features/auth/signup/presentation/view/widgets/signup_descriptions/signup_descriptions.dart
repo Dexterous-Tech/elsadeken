@@ -183,10 +183,17 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                           },
                         ),
                         horizontalSpace(10),
-                        Text(
-                          'أوافق على الشروط والأحكام',
-                          textDirection: TextDirection.rtl,
-                          style: AppTextStyles.font14PumpkinOrangeBoldLamaSans,
+                        GestureDetector(
+                          onTap: () {
+                            context
+                                .pushNamed(AppRoutes.termsAndConditionsScreen);
+                          },
+                          child: Text(
+                            'أوافق على الشروط والأحكام',
+                            textDirection: TextDirection.rtl,
+                            style:
+                                AppTextStyles.font14PumpkinOrangeBoldLamaSans,
+                          ),
                         ),
                       ],
                     ),

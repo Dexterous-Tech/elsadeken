@@ -24,7 +24,7 @@ class SignupCubit extends Cubit<SignupState> {
   // Form keys
   GlobalKey<FormState> personalInfoFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> passwordsFormKey = GlobalKey<FormState>();
-  GlobalKey<FormState> registerInformationFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> generalInfoKey = GlobalKey<FormState>();
 
   // Signup form controllers
   TextEditingController nameController = TextEditingController();

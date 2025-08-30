@@ -112,7 +112,7 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       // password
-                      Text('انشا كلمه المرور',
+                      Text('إنشاء كلمه المرور',
                           textDirection: TextDirection.rtl,
                           style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                       verticalSpace(16),
@@ -125,17 +125,20 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                           if (value.isNullOrEmpty()) {
                             return 'يجب عليك ادخال كلمة المرور';
                           }
-                          if (value!.length < 6) {
+
+                          final result = validatePasswordDisplay(value!);
+
+                          if (!result.hasMinLength) {
                             return 'كلمة المرور يجب أن تحتوي على 6 أحرف على الأقل';
                           }
-                          if (!RegExp(r'[0-9!@#$%^&*(),.?":{}|<>]')
-                              .hasMatch(value)) {
+                          if (!result.hasNumberOrSymbol) {
                             return 'كلمة المرور يجب أن تحتوي على رقم واحد (0-9) أو رمز على الأقل';
                           }
-                          if (RegExp(r'[A-Z]').hasMatch(value)) {
-                            return 'كلمة المرور يجب ألا تحتوي على حروف كبيرة';
+                          if (!result.hasUpperAndLower) {
+                            return 'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير على الأقل';
                           }
-                          return null;
+
+                          return null; // ✅ كل الشروط متحققة
                         },
                         suffixIcon: IconButton(
                           onPressed: () {
@@ -183,11 +186,11 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                       buildValidationItem(result.hasMinLength, 'اقل من 6 أحرف'),
                       buildValidationItem(
                         result.hasNumberOrSymbol,
-                        'على الأقل رقم واحد (0-9) أو رمز',
+                        'يجب استخدام علي الاقل رقم واحد(0-9) و رمز(@#\$&..)',
                       ),
                       buildValidationItem(
                         result.hasUpperAndLower,
-                        'بدون حروف كبيرة',
+                        'يجب استخدام حرف كبير وحرف صغير علي الاقل',
                       ),
                       verticalSpace(40),
 
@@ -234,7 +237,10 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                           return CustomNextAndPreviousButton(
                             onNextPressed: () {
                               if (cubit.passwordsFormKey.currentState!
-                                  .validate()) {
+                                      .validate() &&
+                                  result.hasMinLength &&
+                                  result.hasNumberOrSymbol &&
+                                  result.hasUpperAndLower) {
                                 // Call signup method instead of just moving to next step
                                 cubit.signup();
                               }
@@ -311,12 +317,13 @@ PasswordValidationResult validatePasswordDisplay(String password) {
       RegExp(r'[0-9!@#$%^&*(),.?":{}|<>]').hasMatch(password);
 
   // true only if contains no symbols or uppercase
-  final hasNoSymbolsOrUppercase =
-      !RegExp(r'[A-Z!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+  final hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
+  final hasLowercase = RegExp(r'[a-z]').hasMatch(password);
+  final hasUpperAndLower = hasUppercase && hasLowercase;
 
   return PasswordValidationResult(
     hasMinLength: hasMinLength,
     hasNumberOrSymbol: hasNumberOrSymbol,
-    hasUpperAndLower: hasNoSymbolsOrUppercase,
+    hasUpperAndLower: hasUpperAndLower,
   );
 }

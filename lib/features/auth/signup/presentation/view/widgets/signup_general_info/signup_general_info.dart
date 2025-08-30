@@ -32,133 +32,140 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text('كم عمرك ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    controller: cubit.ageController,
-                    keyboardType: TextInputType.number,
-                    hintText: '25',
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'العمر مطلوب';
-                      }
-                      final age = int.tryParse(value);
-                      if (age == null) {
-                        return 'يرجى إدخال رقم صحيح';
-                      }
-                      if (age > 100) {
-                        return 'العمر لا يمكن أن يتجاوز 100';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      setState(() {}); // Trigger rebuild for validation
-                    },
-                  ),
-                  verticalSpace(40),
-                  Text('كم عدد الاطفال ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    controller: cubit.childrenNumberController,
-                    keyboardType: TextInputType.number,
-                    hintText: '0',
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'عدد الأطفال مطلوب';
-                      }
-                      final children = int.tryParse(value);
+              child: Form(
+                key: cubit.generalInfoKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text('كم عمرك ؟',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
+                    verticalSpace(16),
+                    CustomTextFormField(
+                      controller: cubit.ageController,
+                      keyboardType: TextInputType.number,
+                      hintText: '25',
+                      inputFormatters: [
+                        FilteringTextInputFormatter
+                            .digitsOnly, // ✅ Only numbers
+                      ],
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'العمر مطلوب';
+                        }
+                        final age = int.tryParse(value);
+                        if (age == null) {
+                          return 'يرجى إدخال رقم صحيح';
+                        }
+                        if (age > 99 || age < 18) {
+                          return 'العمر يجب ان يتراوح بين 18 - 99';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {}); // Trigger rebuild for validation
+                      },
+                    ),
+                    verticalSpace(40),
+                    Text('كم عدد الاطفال ؟',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
+                    verticalSpace(16),
+                    CustomTextFormField(
+                      controller: cubit.childrenNumberController,
+                      keyboardType: TextInputType.number,
+                      hintText: '0',
+                      inputFormatters: [
+                        FilteringTextInputFormatter
+                            .digitsOnly, // ✅ Only numbers
+                      ],
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'عدد الأطفال مطلوب';
+                        }
+                        final children = int.tryParse(value);
 
-                      if (children == null) {
-                        return 'يرجى إدخال رقم صحيح';
-                      }
-                      if (children > 100) {
-                        return 'عدد الاطفال لا يمكن أن يتجاوز 100';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      setState(() {}); // Trigger rebuild for validation
-                    },
-                  ),
-                  verticalSpace(40),
-                  Text('كم وزنك (كجم) ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    controller: cubit.weightController,
-                    keyboardType: TextInputType.number,
-                    hintText: '70',
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'الوزن مطلوب';
-                      }
-                      final weight = int.tryParse(value);
-                      if (weight == null) {
-                        return 'يرجى إدخال رقم صحيح';
-                      }
-                      if (weight > 200) {
-                        return 'الوزن لا يمكن أن يتجاوز 200';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      setState(() {}); // Trigger rebuild for validation
-                    },
-                  ),
-                  verticalSpace(40),
-                  Text('كم طولك (سم) ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    controller: cubit.heightController,
-                    keyboardType: TextInputType.number,
-                    hintText: '180',
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'الطول مطلوب';
-                      }
-                      final height = int.tryParse(value);
-                      if (height == null) {
-                        return 'يرجى إدخال رقم صحيح';
-                      }
-                      if (height > 500) {
-                        return 'لا يمكن ان يصل الطول الي هذا الحد';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      setState(() {}); // Trigger rebuild for validation
-                    },
-                  ),
-                  verticalSpace(50),
-                  Spacer(),
-                  CustomNextAndPreviousButton(
-                    onNextPressed: widget.onNextPressed,
-                    onPreviousPressed: widget.onPreviousPressed,
-                    isNextEnabled: _canProceedToNext(cubit),
-                  ),
-                ],
+                        if (children == null) {
+                          return 'يرجى إدخال رقم صحيح';
+                        }
+                        if (children > 100) {
+                          return 'عدد الاطفال لا يمكن أن يتجاوز 100';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {}); // Trigger rebuild for validation
+                      },
+                    ),
+                    verticalSpace(40),
+                    Text('كم وزنك (كجم) ؟',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
+                    verticalSpace(16),
+                    CustomTextFormField(
+                      controller: cubit.weightController,
+                      keyboardType: TextInputType.number,
+                      hintText: '70',
+                      inputFormatters: [
+                        FilteringTextInputFormatter
+                            .digitsOnly, // ✅ Only numbers
+                      ],
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'الوزن مطلوب';
+                        }
+                        final weight = int.tryParse(value);
+                        if (weight == null) {
+                          return 'يرجى إدخال رقم صحيح';
+                        }
+                        if (weight > 200) {
+                          return 'الوزن لا يمكن أن يتجاوز 200';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {}); // Trigger rebuild for validation
+                      },
+                    ),
+                    verticalSpace(40),
+                    Text('كم طولك (سم) ؟',
+                        textDirection: TextDirection.rtl,
+                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
+                    verticalSpace(16),
+                    CustomTextFormField(
+                      controller: cubit.heightController,
+                      keyboardType: TextInputType.number,
+                      hintText: '180',
+                      inputFormatters: [
+                        FilteringTextInputFormatter
+                            .digitsOnly, // ✅ Only numbers
+                      ],
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'الطول مطلوب';
+                        }
+                        final height = int.tryParse(value);
+                        if (height == null) {
+                          return 'يرجى إدخال رقم صحيح';
+                        }
+                        if (height > 500) {
+                          return 'لا يمكن ان يصل الطول الي هذا الحد';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {}); // Trigger rebuild for validation
+                      },
+                    ),
+                    verticalSpace(50),
+                    Spacer(),
+                    CustomNextAndPreviousButton(
+                      onNextPressed: widget.onNextPressed,
+                      onPreviousPressed: widget.onPreviousPressed,
+                      isNextEnabled: _canProceedToNext(cubit),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -179,6 +186,10 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
     bool hasHeight = cubit.heightController.text.trim().isNotEmpty &&
         int.tryParse(cubit.heightController.text) != null;
 
-    return hasAge && hasChildrenNumber && hasWeight && hasHeight;
+    return cubit.generalInfoKey.currentState!.validate() &&
+        hasAge &&
+        hasChildrenNumber &&
+        hasWeight &&
+        hasHeight;
   }
 }
