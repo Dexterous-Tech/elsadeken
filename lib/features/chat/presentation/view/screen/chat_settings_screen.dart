@@ -1,4 +1,9 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/features/chat/data/models/chat_settings_model.dart';
+import 'package:elsadeken/features/chat/data/models/chat_settings_request_model.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/chat_settings_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/lists_cubit.dart';
+
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,10 +11,6 @@ import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../cubit/chat_settings_cubit.dart';
-import '../cubit/lists_cubit.dart';
-import '../../data/models/chat_settings_model.dart';
-import '../../data/models/chat_settings_request_model.dart';
 
 class ChatSettingsScreen extends StatefulWidget {
   const ChatSettingsScreen({super.key});
@@ -88,7 +89,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     if (_nationalityId == 0) {
       _selectedNationalities = 'كل الجنسيات';
     } else {
-      // Get nationality name from lists cubit
+      // Get nationality name from lists chat_settings_cubit
       final listsCubit = context.read<ListsCubit>();
       _selectedNationalities = listsCubit.getNationalityName(_nationalityId);
     }
@@ -98,7 +99,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     if (_countryId == 0) {
       _selectedCountries = 'كل الدول';
     } else {
-      // Get country name from lists cubit
+      // Get country name from lists chat_settings_cubit
       final listsCubit = context.read<ListsCubit>();
       _selectedCountries = listsCubit.getCountryName(_countryId);
     }
@@ -686,9 +687,9 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     );
 
     print('[ChatSettingsScreen] Request model: ${request.toJson()}');
-    print('[ChatSettingsScreen] Calling updateChatSettings via cubit');
+    print('[ChatSettingsScreen] Calling updateChatSettings via chat_settings_cubit');
 
-    // Get current cubit state for debugging
+    // Get current chat_settings_cubit state for debugging
     final currentState = context.read<ChatSettingsCubit>().state;
     print('[ChatSettingsScreen] Current ChatSettingsCubit state: ${currentState.runtimeType}');
 

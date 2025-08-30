@@ -1,9 +1,9 @@
+import 'package:elsadeken/features/chat/data/models/api_response_model.dart';
+import 'package:elsadeken/features/chat/data/models/country_model.dart';
+import 'package:elsadeken/features/chat/data/models/nationality_model.dart';
+import 'package:elsadeken/features/chat/domain/repositories/lists_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../../data/models/nationality_model.dart';
-import '../../data/models/country_model.dart';
-import '../../data/models/api_response_model.dart';
-import '../../data/repositories/lists_repository.dart';
 
 // States
 abstract class ListsState extends Equatable {

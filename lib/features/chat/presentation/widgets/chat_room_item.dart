@@ -322,7 +322,7 @@ class ChatRoomItem extends StatelessWidget {
   }
 
   void _addToFavorites(BuildContext context) {
-    // Call the cubit method to add this chat to favorites
+    // Call the chat_settings_cubit method to add this chat to favorites
     chatListCubit.addChatToFavorite(chat.id);
 
     // Show success snackbar

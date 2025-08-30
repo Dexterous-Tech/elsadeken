@@ -3,7 +3,7 @@ import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
-import 'package:elsadeken/features/chat/data/repositories/chat_repo.dart';
+import 'package:elsadeken/features/chat/domain/repositories/chat_repo.dart';
 import 'chat_list_state.dart';
 
 class ChatListCubit extends Cubit<ChatListState> {

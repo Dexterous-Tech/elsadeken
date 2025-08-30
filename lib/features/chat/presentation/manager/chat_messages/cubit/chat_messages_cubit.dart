@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:elsadeken/features/chat/data/repositories/chat_repo.dart';
+import 'package:elsadeken/features/chat/domain/repositories/chat_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'chat_messages_state.dart';
 

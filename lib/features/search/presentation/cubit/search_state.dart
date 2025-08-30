@@ -1,4 +1,4 @@
-// File: lib/presentation/cubit/search_state.dart
+// File: lib/presentation/chat_settings_cubit/search_state.dart
 part of 'search_cubit.dart';
 
 abstract class SearchState extends Equatable {

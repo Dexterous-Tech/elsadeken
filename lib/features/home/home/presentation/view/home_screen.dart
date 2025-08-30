@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget buildHomeContent() {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 16.h),
+        padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -356,39 +356,42 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   height: 600.h,
                   margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Stack(
-                    children: currentUsers
-                        .asMap()
-                        .entries
-                        .map((entry) {
-                          final index = entry.key;
-                          final user = entry.value;
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Stack(
+                      children: currentUsers
+                          .asMap()
+                          .entries
+                          .map((entry) {
+                            final index = entry.key;
+                            final user = entry.value;
 
-                          final isTopCard = index == 0;
-                          final isSecondCard = index == 1;
+                            final isTopCard = index == 0;
+                            final isSecondCard = index == 1;
 
-                          double scale = 1.0;
-                          double verticalOffset = 0.0.h;
+                            double scale = 1.0;
+                            double verticalOffset = 0.0.h;
 
-                          if (isSecondCard) {
-                            scale = 0.95;
-                            verticalOffset = 20.h;
-                          } else if (!isTopCard) {
-                            scale = 0.9;
-                            verticalOffset = 40.h;
-                          }
+                            if (isSecondCard) {
+                              scale = 0.95;
+                              verticalOffset = 20.h;
+                            } else if (!isTopCard) {
+                              scale = 0.9;
+                              verticalOffset = 40.h;
+                            }
 
-                          return SwipeableCard(
-                            user: user,
-                            onSwipe: isTopCard ? _onSwipe : null,
-                            isTop: isTopCard,
-                            scale: scale,
-                            verticalOffset: verticalOffset,
-                          );
-                        })
-                        .toList()
-                        .reversed
-                        .toList(),
+                            return SwipeableCard(
+                              user: user,
+                              onSwipe: isTopCard ? _onSwipe : null,
+                              isTop: isTopCard,
+                              scale: scale,
+                              verticalOffset: verticalOffset,
+                            );
+                          })
+                          .toList()
+                          .reversed
+                          .toList(),
+                    ),
                   ),
                 )
             ],

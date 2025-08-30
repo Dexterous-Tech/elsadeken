@@ -36,7 +36,7 @@ class _SignupCityState extends State<SignupCity> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the selected country ID from the signup cubit
+    // Get the selected country ID from the signup chat_settings_cubit
     final countryId = context.read<SignupCubit>().countryIdController.text;
 
     return Column(
