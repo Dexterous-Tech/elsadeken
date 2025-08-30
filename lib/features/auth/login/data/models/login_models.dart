@@ -46,6 +46,7 @@ class LoginDataModel {
   String? fcmToken;
   final String token;
   final String createdAt;
+  final int? isBlocked;
 
   LoginDataModel({
     required this.id,
@@ -58,6 +59,7 @@ class LoginDataModel {
     this.fcmToken,
     required this.token,
     required this.createdAt,
+    this.isBlocked,
   });
 
   factory LoginDataModel.fromJson(dynamic json) {
@@ -72,6 +74,7 @@ class LoginDataModel {
       fcmToken: json['fcm_token'],
       token: json['token'],
       createdAt: json['created_at'],
+      isBlocked: json['is_blocked'],
     );
   }
 
@@ -91,6 +94,7 @@ class LoginDataModel {
     map['fcm_token'] = fcmToken;
     map['token'] = token;
     map['created_at'] = createdAt;
+    map['is_blocked'] = isBlocked;
     return map;
   }
 }

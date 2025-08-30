@@ -41,326 +41,342 @@ class _ProfileContentState extends State<ProfileContent> {
         create: (context) => sl<ProfileCubit>(),
         child: BlocProvider(
           create: (context) => sl<NotificationSettingsProfileCubit>(),
-          child: BlocListener<ProfileCubit, ProfileState>(
+          child: BlocListener<ManageProfileCubit, ManageProfileState>(
             listener: (context, state) {
-              if (state is DeleteImageLoading) {
-                // Show loading indicator if needed
-              } else if (state is DeleteImageFailure) {
-                // Show error message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      state.error,
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.center,
-                    ),
-                    backgroundColor: AppColors.coralRed,
-                  ),
-                );
-              } else if (state is DeleteImageSuccess) {
-                // Show success message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      state.logoutResponseModel.message ??
-                          'تم حذف الصورة بنجاح',
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.center,
-                    ),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+              if (state is ManageProfileSuccess) {
+                // Check if user is blocked (isBlocked = 0 means not blocked, 1 means blocked)
+                final isBlocked = state.myProfileResponseModel.data?.isBlocked;
+                if (isBlocked == 1) {
+                  // User is not blocked, navigate to login
+                  print(
+                      '🚫 User is not blocked (isBlocked: $isBlocked), navigating to login');
+                  context.pushNamedAndRemoveUntil(AppRoutes.loginScreen);
+                }
               }
             },
-            child: BlocListener<NotificationSettingsProfileCubit,
-                NotificationSettingsProfileState>(
+            child: BlocListener<ProfileCubit, ProfileState>(
               listener: (context, state) {
-                if (state is NotificationSettingsToggleSuccess) {
-                  // Show success message
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        state.message,
-                        textDirection: TextDirection.rtl,
-                        textAlign: TextAlign.center,
-                      ),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                } else if (state is NotificationSettingsError) {
+                if (state is DeleteImageLoading) {
+                  // Show loading indicator if needed
+                } else if (state is DeleteImageFailure) {
                   // Show error message
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        state.message,
+                        state.error,
                         textDirection: TextDirection.rtl,
                         textAlign: TextAlign.center,
                       ),
                       backgroundColor: AppColors.coralRed,
                     ),
                   );
+                } else if (state is DeleteImageSuccess) {
+                  // Show success message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        state.logoutResponseModel.message ??
+                            'تم حذف الصورة بنجاح',
+                        textDirection: TextDirection.rtl,
+                        textAlign: TextAlign.center,
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
                 }
               },
-              child: BlocBuilder<ManageProfileCubit, ManageProfileState>(
-                builder: (context, profileState) {
-                  return BlocBuilder<NotificationSettingsProfileCubit,
-                      NotificationSettingsProfileState>(
-                    builder: (context, notificationState) {
-                      // Load notification settings immediately on first build
-                      if (notificationState
-                          is NotificationSettingsProfileInitial) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          context
-                              .read<NotificationSettingsProfileCubit>()
-                              .loadNotificationFromPrefs();
-                        });
-                      }
+              child: BlocListener<NotificationSettingsProfileCubit,
+                  NotificationSettingsProfileState>(
+                listener: (context, state) {
+                  if (state is NotificationSettingsToggleSuccess) {
+                    // Show success message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          state.message,
+                          textDirection: TextDirection.rtl,
+                          textAlign: TextAlign.center,
+                        ),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  } else if (state is NotificationSettingsError) {
+                    // Show error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          state.message,
+                          textDirection: TextDirection.rtl,
+                          textAlign: TextAlign.center,
+                        ),
+                        backgroundColor: AppColors.coralRed,
+                      ),
+                    );
+                  }
+                },
+                child: BlocBuilder<ManageProfileCubit, ManageProfileState>(
+                  builder: (context, profileState) {
+                    return BlocBuilder<NotificationSettingsProfileCubit,
+                        NotificationSettingsProfileState>(
+                      builder: (context, notificationState) {
+                        // Load notification settings immediately on first build
+                        if (notificationState
+                            is NotificationSettingsProfileInitial) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            context
+                                .read<NotificationSettingsProfileCubit>()
+                                .loadNotificationFromPrefs();
+                          });
+                        }
 
-                      // Load profile data if not already loaded
-                      if (profileState is ManageProfileInitial) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          context.read<ManageProfileCubit>().getProfile();
-                        });
-                      }
+                        // Load profile data if not already loaded
+                        if (profileState is ManageProfileInitial) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            context.read<ManageProfileCubit>().getProfile();
+                          });
+                        }
 
-                      // Set profile data to notification cubit when profile is loaded
-                      if (profileState is ManageProfileSuccess &&
-                          !_hasLoadedSettings) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          print(
-                              '🔔 Setting profile data to notification cubit - isNotifable: ${profileState.myProfileResponseModel.data?.isNotifable}');
-                          context
-                              .read<NotificationSettingsProfileCubit>()
-                              .setProfileData(
-                                  profileState.myProfileResponseModel);
-                          _hasLoadedSettings = true;
-                        });
-                      }
+                        // Set profile data to notification cubit when profile is loaded
+                        if (profileState is ManageProfileSuccess &&
+                            !_hasLoadedSettings) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            print(
+                                '🔔 Setting profile data to notification cubit - isNotifable: ${profileState.myProfileResponseModel.data?.isNotifable}');
+                            context
+                                .read<NotificationSettingsProfileCubit>()
+                                .setProfileData(
+                                    profileState.myProfileResponseModel);
+                            _hasLoadedSettings = true;
+                          });
+                        }
 
-                      // Load notification settings on first build if no profile data
-                      if (!_hasLoadedSettings &&
-                          profileState is! ManageProfileSuccess) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          context
-                              .read<NotificationSettingsProfileCubit>()
-                              .loadNotificationFromPrefs();
-                          _hasLoadedSettings = true;
-                        });
-                      }
+                        // Load notification settings on first build if no profile data
+                        if (!_hasLoadedSettings &&
+                            profileState is! ManageProfileSuccess) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            context
+                                .read<NotificationSettingsProfileCubit>()
+                                .loadNotificationFromPrefs();
+                            _hasLoadedSettings = true;
+                          });
+                        }
 
-                      final List<ProfileContentItemModel> personalInformation =
-                          [
-                        ProfileContentItemModel(
-                          image: AppImages.myProfileIcon,
-                          title: 'ادارة حسابي',
-                          onPressed: () {
-                            context.pushNamed(AppRoutes.manageProfileScreen);
-                          },
-                        ),
-                        ProfileContentItemModel(
-                          image: AppImages.interestsListIcon,
-                          title: 'قائمه الاهتمام',
-                          onPressed: () {
-                            context.pushNamed(
-                                AppRoutes.profileInterestsListScreen);
-                          },
-                        ),
-                        ProfileContentItemModel(
-                          image: AppImages.ignoringListIcon,
-                          title: 'قائمه التجاهل',
-                          onPressed: () {
-                            context.pushNamed(
-                                AppRoutes.profileMyIgnoringListScreen);
-                          },
-                        ),
-                        ProfileContentItemModel(
-                          image: AppImages.interestingMeIcon,
-                          title: 'من يهتم بي',
-                          onPressed: () {
-                            context.pushNamed(
-                                AppRoutes.profileMyInterestingListScreen);
-                          },
-                        ),
-                        ProfileContentItemModel(
-                          image: AppImages.searchAdvancedIcon,
-                          title: 'بحث متقدم',
-                          onPressed: () {
-                            context.pushNamed(AppRoutes.searchScreen);
-                          },
-                        ),
-                        ProfileContentItemModel(
-                          image: AppImages.membersProfileImagesIcon,
-                          title: 'صور الاعضاء',
-                          onPressed: () {
-                            context.pushNamed(
-                                AppRoutes.profileMembersProfileScreen);
-                          },
-                        ),
-                        ProfileContentItemModel(
-                          image: AppImages.excellencePackageIcon,
-                          title: 'باقه التميز',
-                          onPressed: () {
-                            context.pushNamed(
-                                AppRoutes.profileExcellencePackageScreen);
-                          },
-                        ),
-                        ProfileContentItemModel(
-                          image: AppImages.successStoryIcon,
-                          title: 'قصص نجاح',
-                          onPressed: () {
-                            context.pushNamed(AppRoutes.successStoriesScreen);
-                          },
-                        ),
-                        ProfileContentItemModel(
-                          image: AppImages.elsadekenNotesIcon,
-                          title: 'مدونه الصادقين والصادقات',
-                          onPressed: () {
-                            context.pushNamed(AppRoutes.blogScreen);
-                          },
-                        ),
-                      ];
-
-                      final List<ProfileContentItemModel> appSettings = [
-                        ProfileContentItemModel(
-                          image: AppImages.aboutUsIcon,
-                          title: 'نبذه عننا',
-                          onPressed: () {
-                            context.pushNamed(AppRoutes.profileAboutUsScreen);
-                          },
-                        ),
-                        ProfileContentItemModel(
-                          image: AppImages.appShareIcon,
-                          title: 'مشاركه التطبيق',
-                          onPressed: () {},
-                        ),
-                        ProfileContentItemModel(
-                          image: AppImages.contactUsIcon,
-                          title: 'اتصل بنا',
-                          onPressed: () {
-                            context.pushNamed(AppRoutes.profileContactUsScreen);
-                          },
-                        ),
-                      ];
-
-                      return Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.only(
-                          top: 21.h,
-                          right: 46.5.w,
-                          left: 66.5,
-                          bottom: 19.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(40),
-                            topRight: Radius.circular(40),
+                        final List<ProfileContentItemModel>
+                            personalInformation = [
+                          ProfileContentItemModel(
+                            image: AppImages.myProfileIcon,
+                            title: 'ادارة حسابي',
+                            onPressed: () {
+                              context.pushNamed(AppRoutes.manageProfileScreen);
+                            },
                           ),
-                        ),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return SingleChildScrollView(
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                    minHeight: constraints.maxHeight),
-                                child: IntrinsicHeight(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        'معلومات شخصية',
-                                        style: AppTextStyles
-                                            .font12GrayMediumLamaSans,
-                                      ),
-                                      verticalSpace(16),
-                                      ...listGenerationContentItems(
-                                          items: personalInformation),
-                                      verticalSpace(24),
-                                      Text(
-                                        'إعدادات التطبيق',
-                                        style: AppTextStyles
-                                            .font12GrayMediumLamaSans,
-                                      ),
-                                      verticalSpace(16),
-                                      // Notification toggle widget above the notification item
-                                      // Notification item
-                                      ProfileContentItem(
-                                        image: AppImages.notificationIcon,
-                                        title: 'الاشعارات',
-                                        onPressed: () {
-                                          // Navigate to notification screen
-                                          // context.pushNamed(AppRoutes.notificationScreen);
-                                        },
-                                        leading: _buildNotificationToggle(
-                                            notificationState),
-                                      ),
-                                      verticalSpace(16),
+                          ProfileContentItemModel(
+                            image: AppImages.interestsListIcon,
+                            title: 'قائمه الاهتمام',
+                            onPressed: () {
+                              context.pushNamed(
+                                  AppRoutes.profileInterestsListScreen);
+                            },
+                          ),
+                          ProfileContentItemModel(
+                            image: AppImages.ignoringListIcon,
+                            title: 'قائمه التجاهل',
+                            onPressed: () {
+                              context.pushNamed(
+                                  AppRoutes.profileMyIgnoringListScreen);
+                            },
+                          ),
+                          ProfileContentItemModel(
+                            image: AppImages.interestingMeIcon,
+                            title: 'من يهتم بي',
+                            onPressed: () {
+                              context.pushNamed(
+                                  AppRoutes.profileMyInterestingListScreen);
+                            },
+                          ),
+                          ProfileContentItemModel(
+                            image: AppImages.searchAdvancedIcon,
+                            title: 'بحث متقدم',
+                            onPressed: () {
+                              context.pushNamed(AppRoutes.searchScreen);
+                            },
+                          ),
+                          ProfileContentItemModel(
+                            image: AppImages.membersProfileImagesIcon,
+                            title: 'صور الاعضاء',
+                            onPressed: () {
+                              context.pushNamed(
+                                  AppRoutes.profileMembersProfileScreen);
+                            },
+                          ),
+                          ProfileContentItemModel(
+                            image: AppImages.excellencePackageIcon,
+                            title: 'باقه التميز',
+                            onPressed: () {
+                              context.pushNamed(
+                                  AppRoutes.profileExcellencePackageScreen);
+                            },
+                          ),
+                          ProfileContentItemModel(
+                            image: AppImages.successStoryIcon,
+                            title: 'قصص نجاح',
+                            onPressed: () {
+                              context.pushNamed(AppRoutes.successStoriesScreen);
+                            },
+                          ),
+                          ProfileContentItemModel(
+                            image: AppImages.elsadekenNotesIcon,
+                            title: 'مدونه الصادقين والصادقات',
+                            onPressed: () {
+                              context.pushNamed(AppRoutes.blogScreen);
+                            },
+                          ),
+                        ];
 
-                                      ...listGenerationContentItems(
-                                          items: appSettings),
-                                      verticalSpace(21),
-                                      GestureDetector(
-                                        onTap: () {
-                                          context
-                                              .read<ProfileCubit>()
-                                              .deleteImage();
-                                        },
-                                        child: Row(
-                                          textDirection: TextDirection.rtl,
-                                          children: [
-                                            Icon(
-                                              Icons.delete_forever,
-                                              size: 40,
-                                              color: AppColors.coralRed,
-                                            ),
-                                            horizontalSpace(16),
-                                            Text(
-                                              'مسح صورتي',
-                                              style: AppTextStyles
-                                                  .font14CharlestonGreenMediumLamaSans
-                                                  .copyWith(
-                                                      color:
-                                                          AppColors.coralRed),
-                                            ),
-                                          ],
+                        final List<ProfileContentItemModel> appSettings = [
+                          ProfileContentItemModel(
+                            image: AppImages.aboutUsIcon,
+                            title: 'نبذه عننا',
+                            onPressed: () {
+                              context.pushNamed(AppRoutes.profileAboutUsScreen);
+                            },
+                          ),
+                          ProfileContentItemModel(
+                            image: AppImages.appShareIcon,
+                            title: 'مشاركه التطبيق',
+                            onPressed: () {},
+                          ),
+                          ProfileContentItemModel(
+                            image: AppImages.contactUsIcon,
+                            title: 'اتصل بنا',
+                            onPressed: () {
+                              context
+                                  .pushNamed(AppRoutes.profileContactUsScreen);
+                            },
+                          ),
+                        ];
+
+                        return Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.only(
+                            top: 21.h,
+                            right: 46.5.w,
+                            left: 66.5,
+                            bottom: 19.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(40),
+                              topRight: Radius.circular(40),
+                            ),
+                          ),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return SingleChildScrollView(
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                      minHeight: constraints.maxHeight),
+                                  child: IntrinsicHeight(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          'معلومات شخصية',
+                                          style: AppTextStyles
+                                              .font12GrayMediumLamaSans,
                                         ),
-                                      ),
-                                      verticalSpace(21),
-                                      GestureDetector(
-                                        onTap: () {
-                                          logoutDialog(context);
-                                        },
-                                        child: Row(
-                                          textDirection: TextDirection.rtl,
-                                          children: [
-                                            Image.asset(
-                                              AppImages.logoutIcon,
-                                              width: 44.w,
-                                              height: 44.h,
-                                            ),
-                                            horizontalSpace(16),
-                                            Text(
-                                              'تسجيل الخروج',
-                                              style: AppTextStyles
-                                                  .font14CharlestonGreenMediumLamaSans
-                                                  .copyWith(
-                                                      color:
-                                                          AppColors.coralRed),
-                                            ),
-                                          ],
+                                        verticalSpace(16),
+                                        ...listGenerationContentItems(
+                                            items: personalInformation),
+                                        verticalSpace(24),
+                                        Text(
+                                          'إعدادات التطبيق',
+                                          style: AppTextStyles
+                                              .font12GrayMediumLamaSans,
                                         ),
-                                      ),
-                                    ],
+                                        verticalSpace(16),
+                                        // Notification toggle widget above the notification item
+                                        // Notification item
+                                        ProfileContentItem(
+                                          image: AppImages.notificationIcon,
+                                          title: 'الاشعارات',
+                                          onPressed: () {
+                                            // Navigate to notification screen
+                                            // context.pushNamed(AppRoutes.notificationScreen);
+                                          },
+                                          leading: _buildNotificationToggle(
+                                              notificationState),
+                                        ),
+                                        verticalSpace(16),
+
+                                        ...listGenerationContentItems(
+                                            items: appSettings),
+                                        verticalSpace(21),
+                                        GestureDetector(
+                                          onTap: () {
+                                            context
+                                                .read<ProfileCubit>()
+                                                .deleteImage();
+                                          },
+                                          child: Row(
+                                            textDirection: TextDirection.rtl,
+                                            children: [
+                                              Icon(
+                                                Icons.delete_forever,
+                                                size: 40,
+                                                color: AppColors.coralRed,
+                                              ),
+                                              horizontalSpace(16),
+                                              Text(
+                                                'مسح صورتي',
+                                                style: AppTextStyles
+                                                    .font14CharlestonGreenMediumLamaSans
+                                                    .copyWith(
+                                                        color:
+                                                            AppColors.coralRed),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        verticalSpace(21),
+                                        GestureDetector(
+                                          onTap: () {
+                                            logoutDialog(context);
+                                          },
+                                          child: Row(
+                                            textDirection: TextDirection.rtl,
+                                            children: [
+                                              Image.asset(
+                                                AppImages.logoutIcon,
+                                                width: 44.w,
+                                                height: 44.h,
+                                              ),
+                                              horizontalSpace(16),
+                                              Text(
+                                                'تسجيل الخروج',
+                                                style: AppTextStyles
+                                                    .font14CharlestonGreenMediumLamaSans
+                                                    .copyWith(
+                                                        color:
+                                                            AppColors.coralRed),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  );
-                },
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),
