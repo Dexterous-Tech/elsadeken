@@ -129,8 +129,6 @@ class SignupCubit extends Cubit<SignupState> {
             religiousCommitmentController.text.isEmpty ||
             prayerController.text.isEmpty ||
             smokingController.text.isEmpty ||
-            hijabController.text.isEmpty ||
-            beardController.text.isEmpty ||
             educationalQualificationController.text.isEmpty ||
             financialSituationController.text.isEmpty ||
             jobController.text.isEmpty ||
@@ -139,6 +137,22 @@ class SignupCubit extends Cubit<SignupState> {
             aboutMeController.text.isEmpty ||
             lifePartnerController.text.isEmpty) {
           emit(RegisterInformationFailure("جميع الحقول مطلوبة"));
+          return;
+        }
+
+        // Conditional validation for beard and hijab based on gender
+        bool isMale =
+            genderController.text == 'male' || genderController.text == 'ذكر';
+        bool isFemale = genderController.text == 'female' ||
+            genderController.text == 'أنثى';
+
+        if (isMale && beardController.text.isEmpty) {
+          emit(RegisterInformationFailure("الرجاء اختيار حالة اللحية"));
+          return;
+        }
+
+        if (isFemale && hijabController.text.isEmpty) {
+          emit(RegisterInformationFailure("الرجاء اختيار حالة الحجاب"));
           return;
         }
 
@@ -204,8 +218,6 @@ class SignupCubit extends Cubit<SignupState> {
         religiousCommitmentController.text.isEmpty ||
         prayerController.text.isEmpty ||
         smokingController.text.isEmpty ||
-        hijabController.text.isEmpty ||
-        beardController.text.isEmpty ||
         educationalQualificationController.text.isEmpty ||
         financialSituationController.text.isEmpty ||
         jobController.text.isEmpty ||
@@ -214,6 +226,22 @@ class SignupCubit extends Cubit<SignupState> {
         aboutMeController.text.isEmpty ||
         lifePartnerController.text.isEmpty) {
       emit(RegisterInformationFailure("جميع الحقول مطلوبة"));
+      return;
+    }
+
+    // Conditional validation for beard and hijab based on gender
+    bool isMale =
+        genderController.text == 'male' || genderController.text == 'ذكر';
+    bool isFemale =
+        genderController.text == 'female' || genderController.text == 'أنثى';
+
+    if (isMale && beardController.text.isEmpty) {
+      emit(RegisterInformationFailure("الرجاء اختيار حالة اللحية"));
+      return;
+    }
+
+    if (isFemale && hijabController.text.isEmpty) {
+      emit(RegisterInformationFailure("الرجاء اختيار حالة الحجاب"));
       return;
     }
 

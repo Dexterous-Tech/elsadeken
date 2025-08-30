@@ -103,26 +103,25 @@ class _SignupAdditionsState extends State<SignupAdditions> {
 
                   verticalSpace(40),
 
-                  // Hijab selection for both males and females with different titles
-                  SignupMultiChoice(
-                      height: 170.h,
-                      title: (widget.gender == 'male' || widget.gender == 'ذكر')
-                          ? 'هل تريد شريك حياتك بحجاب ؟'
-                          : 'الحجاب ؟',
-                      options: hijabOptions.values.toList(),
-                      selected: hijabOptions[cubit.hijabController.text],
-                      onChanged: (newStatus) {
-                        // Handle hijab selection
-                        String? selectedKey = hijabOptions.entries
-                            .firstWhere((entry) => entry.value == newStatus,
-                                orElse: () => const MapEntry('', ''))
-                            .key;
+                  // Hijab selection for females only
+                  if (widget.gender == 'female' || widget.gender == 'أنثى')
+                    SignupMultiChoice(
+                        height: 170.h,
+                        title: 'الحجاب ؟',
+                        options: hijabOptions.values.toList(),
+                        selected: hijabOptions[cubit.hijabController.text],
+                        onChanged: (newStatus) {
+                          // Handle hijab selection
+                          String? selectedKey = hijabOptions.entries
+                              .firstWhere((entry) => entry.value == newStatus,
+                                  orElse: () => const MapEntry('', ''))
+                              .key;
 
-                        if (selectedKey.isNotEmpty) {
-                          cubit.hijabController.text = selectedKey;
-                          setState(() {});
-                        }
-                      }),
+                          if (selectedKey.isNotEmpty) {
+                            cubit.hijabController.text = selectedKey;
+                            setState(() {});
+                          }
+                        }),
 
                   verticalSpace(50),
                   Spacer(),
@@ -146,21 +145,19 @@ class _SignupAdditionsState extends State<SignupAdditions> {
     bool hasSmoking = cubit.smokingController.text.isNotEmpty &&
         smokingOptions.containsKey(cubit.smokingController.text);
 
-    // Must select beard for males and hijab for both
-    bool hasBeardOrHijab;
-    if (widget.gender == 'male' || widget.gender == 'ذكر') {
-      // For males: must have both beard and hijab
-      bool hasBeard = cubit.beardController.text.isNotEmpty &&
+    // Conditional validation for beard and hijab based on gender
+    bool isMale = widget.gender == 'male' || widget.gender == 'ذكر';
+    bool isFemale = widget.gender == 'female' || widget.gender == 'أنثى';
+
+    bool hasRequiredGenderField = true;
+    if (isMale) {
+      hasRequiredGenderField = cubit.beardController.text.isNotEmpty &&
           beardOptions.containsKey(cubit.beardController.text);
-      bool hasHijab = cubit.hijabController.text.isNotEmpty &&
-          hijabOptions.containsKey(cubit.hijabController.text);
-      hasBeardOrHijab = hasBeard && hasHijab;
-    } else {
-      // For females: must have hijab
-      hasBeardOrHijab = cubit.hijabController.text.isNotEmpty &&
+    } else if (isFemale) {
+      hasRequiredGenderField = cubit.hijabController.text.isNotEmpty &&
           hijabOptions.containsKey(cubit.hijabController.text);
     }
 
-    return hasSmoking && hasBeardOrHijab;
+    return hasSmoking && hasRequiredGenderField;
   }
 }
