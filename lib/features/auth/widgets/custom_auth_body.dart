@@ -3,16 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/helper/app_images.dart';
-import '../../../core/theme/app_color.dart';
 import '../../../core/theme/spacing.dart';
 import 'custom_auth_card.dart';
 
 class CustomAuthBody extends StatelessWidget {
-  const CustomAuthBody(
-      {super.key, required this.cardContent, this.isFromLogout = false});
+  const CustomAuthBody({super.key, required this.cardContent});
 
   final Widget cardContent;
-  final bool isFromLogout;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -27,19 +24,17 @@ class CustomAuthBody extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      if (!isFromLogout) ...[
-                        GestureDetector(
-                          onTap: () {
-                            context.pop();
-                          },
-                          child: Image.asset(
-                            AppImages.authArrowBack,
-                            width: 14.w,
-                            height: 14.h,
-                          ),
+                      GestureDetector(
+                        onTap: () {
+                          context.pop();
+                        },
+                        child: Image.asset(
+                          AppImages.authArrowBack,
+                          width: 14.w,
+                          height: 14.h,
                         ),
-                        verticalSpace(33.74.h),
-                      ],
+                      ),
+                      verticalSpace(33.74.h),
                       Image.asset(
                         AppImages.authElsadekenMarriageImage,
                         width: 170.w,

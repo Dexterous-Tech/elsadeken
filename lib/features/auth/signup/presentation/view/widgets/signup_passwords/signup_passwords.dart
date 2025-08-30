@@ -30,8 +30,8 @@ class SignupPasswords extends StatefulWidget {
 }
 
 class _SignupPasswordsState extends State<SignupPasswords> {
-  bool obscurePassword = false;
-  bool obscureConfirmPassword = false;
+  bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
 
   String password = '';
   late PasswordValidationResult result;
@@ -313,8 +313,10 @@ PasswordValidationResult validatePasswordDisplay(String password) {
   }
 
   final hasMinLength = password.length >= 6;
-  final hasNumberOrSymbol =
-      RegExp(r'[0-9!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+  final hasNumber = RegExp(r'[0-9]').hasMatch(password);
+  final hasSymbol = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+
+  final hasNumberAndSymbol = hasNumber && hasSymbol;
 
   // true only if contains no symbols or uppercase
   final hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
@@ -323,7 +325,7 @@ PasswordValidationResult validatePasswordDisplay(String password) {
 
   return PasswordValidationResult(
     hasMinLength: hasMinLength,
-    hasNumberOrSymbol: hasNumberOrSymbol,
+    hasNumberOrSymbol: hasNumberAndSymbol,
     hasUpperAndLower: hasUpperAndLower,
   );
 }

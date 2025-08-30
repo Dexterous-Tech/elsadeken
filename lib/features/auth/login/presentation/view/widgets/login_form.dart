@@ -20,7 +20,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  bool obscurePassword = false;
+  bool obscurePassword = true;
   @override
   Widget build(BuildContext context) {
     var cubit = LoginCubit.get(context);

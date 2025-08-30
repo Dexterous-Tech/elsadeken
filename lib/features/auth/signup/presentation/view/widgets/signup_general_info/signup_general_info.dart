@@ -88,8 +88,8 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                         if (children == null) {
                           return 'يرجى إدخال رقم صحيح';
                         }
-                        if (children > 100) {
-                          return 'عدد الاطفال لا يمكن أن يتجاوز 100';
+                        if (children > 99 || children < 0) {
+                          return 'عدد الاطفال يجب ان يتراوح بين 0 - 99';
                         }
                         return null;
                       },
@@ -118,9 +118,10 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                         if (weight == null) {
                           return 'يرجى إدخال رقم صحيح';
                         }
-                        if (weight > 200) {
-                          return 'الوزن لا يمكن أن يتجاوز 200';
+                        if (weight > 300 || weight < 30) {
+                          return 'الوزن لا يمكن أن يتجاوز 300 ولا يقل عن 30';
                         }
+
                         return null;
                       },
                       onChanged: (value) {
@@ -148,8 +149,8 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                         if (height == null) {
                           return 'يرجى إدخال رقم صحيح';
                         }
-                        if (height > 500) {
-                          return 'لا يمكن ان يصل الطول الي هذا الحد';
+                        if (height > 250 || height < 50) {
+                          return 'لا يمكن ان يصل الطول الي اكثر من 250 او اقل من 50';
                         }
                         return null;
                       },
@@ -160,7 +161,12 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                     verticalSpace(50),
                     Spacer(),
                     CustomNextAndPreviousButton(
-                      onNextPressed: widget.onNextPressed,
+                      onNextPressed: () {
+                        final formState = cubit.generalInfoKey.currentState;
+                        if (formState != null && formState.validate()) {
+                          widget.onNextPressed();
+                        }
+                      },
                       onPreviousPressed: widget.onPreviousPressed,
                       isNextEnabled: _canProceedToNext(cubit),
                     ),
@@ -175,9 +181,6 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
   }
 
   bool _canProceedToNext(SignupCubit cubit) {
-    // Ensure formState is not null
-    final formState = cubit.generalInfoKey.currentState;
-
     bool hasAge = cubit.ageController.text.trim().isNotEmpty &&
         int.tryParse(cubit.ageController.text) != null;
     bool hasChildrenNumber =
@@ -188,11 +191,6 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
     bool hasHeight = cubit.heightController.text.trim().isNotEmpty &&
         int.tryParse(cubit.heightController.text) != null;
 
-    return formState != null &&
-        formState.validate() &&
-        hasAge &&
-        hasChildrenNumber &&
-        hasWeight &&
-        hasHeight;
+    return hasAge && hasChildrenNumber && hasWeight && hasHeight;
   }
 }

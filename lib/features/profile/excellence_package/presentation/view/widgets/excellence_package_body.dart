@@ -247,35 +247,34 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                   }),
                 ),
                 verticalSpace(32),
-                Container(
-                  width: double.infinity,
-                  padding:
-                      EdgeInsets.only(top: 10.5.h, bottom: 10.5.h, left: 8.w),
-                  decoration: BoxDecoration(color: AppColors.lightWhite),
-                  child: Row(
-                    textDirection: TextDirection.rtl,
-                    children: [
-                      Image.asset(AppImages.boldStar,
-                          width: 32.w, height: 32.h),
-                      SizedBox(width: 18),
-                      Text(
-                        'إمتيازاتـــي الحاليـــة',
-                        style:
-                            AppTextStyles.font21PhilippineBronzeMediumLamaSans,
-                      ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          context
-                              .pushNamed(AppRoutes.profileMyExcellenceScreen);
-                        },
-                        child: Image.asset(
+                GestureDetector(
+                  onTap: () {
+                    context.pushNamed(AppRoutes.profileMyExcellenceScreen);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding:
+                        EdgeInsets.only(top: 10.5.h, bottom: 10.5.h, left: 8.w),
+                    decoration: BoxDecoration(color: AppColors.lightWhite),
+                    child: Row(
+                      textDirection: TextDirection.rtl,
+                      children: [
+                        Image.asset(AppImages.boldStar,
+                            width: 32.w, height: 32.h),
+                        SizedBox(width: 18),
+                        Text(
+                          'إمتيازاتـــي الحاليـــة',
+                          style: AppTextStyles
+                              .font21PhilippineBronzeMediumLamaSans,
+                        ),
+                        Spacer(),
+                        Image.asset(
                           AppImages.leftArrow,
                           width: 24.w,
                           height: 24.h,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 verticalSpace(32),

@@ -15,11 +15,12 @@ import '../../../../widgets/custom_auth_card.dart';
 import 'package:flutter/material.dart';
 
 class LoginBody extends StatelessWidget {
-  const LoginBody(
-      {super.key, this.isFromLogout = false, this.isFromSplash = false});
+  const LoginBody({
+    super.key,
+    this.isFromLogout = false,
+  });
 
   final bool isFromLogout;
-  final bool isFromSplash;
 
   @override
   Widget build(BuildContext context) {
@@ -36,20 +37,19 @@ class LoginBody extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       // Show back arrow only when NOT coming from logout or splash
-                      if (!isFromLogout && !isFromSplash) ...[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, AppRoutes.onBoardingScreen);
-                          },
-                          child: Image.asset(
-                            AppImages.authArrowBack,
-                            width: 14.w,
-                            height: 14.h,
-                          ),
+                      GestureDetector(
+                        onTap: () {
+                          context
+                              .pushReplacementNamed(AppRoutes.onBoardingScreen);
+                        },
+                        child: Image.asset(
+                          AppImages.authArrowBack,
+                          width: 14.w,
+                          height: 14.h,
                         ),
-                        verticalSpace(33.74.h),
-                      ],
+                      ),
+                      verticalSpace(33.74.h),
+                      verticalSpace(14),
                       Image.asset(
                         AppImages.authElsadekenMarriageImage,
                         width: 170.w,

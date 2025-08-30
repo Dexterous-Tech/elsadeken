@@ -12,14 +12,12 @@ class LoginScreen extends StatelessWidget {
     // Get the arguments to check if coming from logout or splash
     final arguments = ModalRoute.of(context)?.settings.arguments as String?;
     final isFromLogout = arguments == 'from_logout';
-    final isFromSplash = arguments == 'from_splash';
 
     return BlocProvider(
       create: (context) => sl<LoginCubit>(),
       child: Scaffold(
           body: LoginBody(
         isFromLogout: isFromLogout,
-        isFromSplash: isFromSplash,
       )),
     );
   }
