@@ -41,6 +41,28 @@ class ManageProfileCubit extends Cubit<ManageProfileState> {
             SharedPreferencesKey.isFeatured, isFeatured);
       }
 
+      // Delete existing isNotifable value before saving new one
+      await SharedPreferencesHelper.deleteSecuredString(
+          SharedPreferencesKey.isNotifable);
+
+      // Save isNotifable from profile response (convert 1/0 to bool)
+      if (r.data?.isNotifable != null) {
+        bool isNotifable = r.data!.isNotifable == 1;
+        await SharedPreferencesHelper.setBool(
+            SharedPreferencesKey.isNotifable, isNotifable);
+      }
+
+      // Delete existing isBlocked value before saving new one
+      await SharedPreferencesHelper.deleteSecuredString(
+          SharedPreferencesKey.isBlocked);
+
+      // Save isBlocked from profile response (convert 1/0 to bool)
+      if (r.data?.isBlocked != null) {
+        bool isBlocked = r.data!.isBlocked == 1;
+        await SharedPreferencesHelper.setBool(
+            SharedPreferencesKey.isBlocked, isBlocked);
+      }
+
       emit(ManageProfileSuccess(r));
     });
   }

@@ -19,6 +19,11 @@ void main() {
     await sl.allReady();
   });
 
+  tearDownAll(() async {
+    // Clean up GetIt after tests
+    await sl.reset();
+  });
+
   testWidgets('Test Elsadeken main', (WidgetTester tester) async {
     // Build our app
     await tester.pumpWidget(Elsadeken(appRouting: AppRouting()));

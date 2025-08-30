@@ -9,22 +9,19 @@ import 'core/routes/app_routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize dependencies first
+  await initializeDependencies();
+  await sl.allReady();
+
   try {
     // Initialize Firebase and notification services
     await FirebaseNotificationService.instance.initialize();
-
-    // Initialize other dependencies
-    await initializeDependencies();
-    await sl.allReady();
-
-    runApp(Elsadeken(appRouting: AppRouting()));
   } catch (e) {
-    log("Error initializing app: $e");
-    // Still run the app even if Firebase fails
-    await initializeDependencies();
-    await sl.allReady();
-    runApp(Elsadeken(appRouting: AppRouting()));
+    log("Error initializing Firebase: $e");
+    // Continue without Firebase if it fails
   }
+
+  runApp(Elsadeken(appRouting: AppRouting()));
 }
 
 class Elsadeken extends StatelessWidget {

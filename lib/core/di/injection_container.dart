@@ -91,8 +91,9 @@ import 'package:elsadeken/features/search/logic/repository/search_repository_imp
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 
+import '../../features/home/notification/notification_setting/presentation/manager/notification_settings_cubit.dart';
 import '../../features/profile/members_profile/data/repo/members_profile_repo.dart';
-import '../../features/profile/profile/presentation/manager/notification_settings_cubit.dart';
+import '../../features/profile/profile/presentation/manager/notification_settings_profile_cubit.dart';
 import '../../features/home/notification/notification_setting/data/data_source/notification_setting_data_source.dart';
 import '../../features/home/notification/notification_setting/data/repo/notification_setting_repo.dart';
 import '../../features/home/notification/notification_setting/presentation/manager/notification_settings_cubit.dart'
@@ -192,6 +193,8 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ProfileDataSource>(() => ProfileDataSource(sl()));
   sl.registerLazySingleton<ProfileRepoInterface>(() => ProfileRepoImp(sl()));
   sl.registerFactory<ProfileCubit>(() => ProfileCubit(sl()));
+  sl.registerFactory<NotificationSettingsProfileCubit>(
+      () => NotificationSettingsProfileCubit(sl()));
 
   // manage profile
   sl.registerLazySingleton<ManageProfileDataSource>(
@@ -261,15 +264,15 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<NotificationCountCubit>(
       () => NotificationCountCubit(sl()));
   sl.registerFactory<NotificationSettingsCubit>(
-      () => NotificationSettingsCubit());
+      () => NotificationSettingsCubit(sl()));
 
   // notification settings
   sl.registerLazySingleton<NotificationSettingDataSource>(
       () => NotificationSettingDataSource(sl()));
   sl.registerLazySingleton<NotificationSettingRepoInterface>(
       () => NotificationSettingRepoImp(sl()));
-  sl.registerFactory<home.NotificationSettingsCubit>(
-      () => home.NotificationSettingsCubit(sl()));
+  // sl.registerFactory<NotificationSettingsCubit>(
+  //     () => NotificationSettingsCubit(sl()));
 
   // Chat
   sl.registerLazySingleton<ChatDataSource>(() => ChatDataSource(sl()));
@@ -277,14 +280,16 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<ChatListCubit>(() => ChatListCubit(sl()));
 
   // Chat Settings
-sl.registerLazySingleton<ChatSettingsService>(() => ChatSettingsService(sl()));
-sl.registerLazySingleton<ChatSettingsRepository>(() => ChatSettingsRepository(sl()));
-sl.registerFactory<ChatSettingsCubit>(() => ChatSettingsCubit(sl()));
+  sl.registerLazySingleton<ChatSettingsService>(
+      () => ChatSettingsService(sl()));
+  sl.registerLazySingleton<ChatSettingsRepository>(
+      () => ChatSettingsRepository(sl()));
+  sl.registerFactory<ChatSettingsCubit>(() => ChatSettingsCubit(sl()));
 
 // Lists (Nationalities & Countries)
-sl.registerLazySingleton<ListsService>(() => ListsService(sl()));
-sl.registerLazySingleton<ListsRepository>(() => ListsRepository(sl()));
-sl.registerFactory<ListsCubit>(() => ListsCubit(sl()));
+  sl.registerLazySingleton<ListsService>(() => ListsService(sl()));
+  sl.registerLazySingleton<ListsRepository>(() => ListsRepository(sl()));
+  sl.registerFactory<ListsCubit>(() => ListsCubit(sl()));
 
   // Chat Conversation
   sl.registerFactory<ChatMessagesCubit>(() => ChatMessagesCubit(sl()));

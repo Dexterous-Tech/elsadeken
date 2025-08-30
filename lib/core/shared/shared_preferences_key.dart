@@ -4,6 +4,8 @@ class SharedPreferencesKey {
   static const String userDataKey = 'USER_DATA_KEY';
   static const String deviceToken = 'DEVICE_TOKEN';
   static const String isFeatured = 'IS_FEATURED';
+  static const String isNotifable = 'IS_NOTIFABLE';
+  static const String isBlocked = 'IS_BLOCKED';
   static const String gender = 'GENDER';
   static const String privacySetting = 'PRIVACY_SETTING';
 

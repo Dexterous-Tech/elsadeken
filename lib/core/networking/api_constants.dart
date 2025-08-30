@@ -60,6 +60,7 @@ class ApiConstants {
   static String getNotificationSetting = '/user/get-notification-setting';
   static String updateNotificationSetting(int id) =>
       '/user/update-notification-setting/$id';
+  static String toggleNotify = '/user/notify';
 
   static const String defaultProfileImage =
       'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';

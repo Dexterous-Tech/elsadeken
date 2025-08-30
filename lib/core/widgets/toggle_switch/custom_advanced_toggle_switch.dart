@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:elsadeken/core/services/firebase_notification_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +20,6 @@ class CustomAdvancedToggleSwitch extends StatefulWidget {
 
 class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
     with SingleTickerProviderStateMixin {
-  final _notificationService = FirebaseNotificationService.instance;
   bool _isEnabled = false;
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -36,25 +34,31 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
-    _loadNotificationState();
+    _loadInitialState();
   }
 
-  Future<void> _loadNotificationState() async {
-    try {
-      final isEnabled = await _notificationService.isNotificationEnabled();
-      _isEnabled = isEnabled;
-      if (isEnabled) {
-        _animationController.value = 1.0;
-      } else {
-        _animationController.value = 0.0;
-      }
-      log('Notification state loaded: $isEnabled');
-    } catch (e) {
-      log('Error loading notification state: $e');
-      _isEnabled = widget.initialValue ?? true;
+  void _loadInitialState() {
+    _isEnabled = widget.initialValue ?? false;
+    if (_isEnabled) {
+      _animationController.value = 1.0;
+    } else {
+      _animationController.value = 0.0;
+    }
+    log('Toggle initial state loaded: $_isEnabled');
+  }
+
+  @override
+  void didUpdateWidget(CustomAdvancedToggleSwitch oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialValue != widget.initialValue) {
+      log('Toggle initialValue changed from ${oldWidget.initialValue} to ${widget.initialValue}');
+      _isEnabled = widget.initialValue ?? false;
       if (_isEnabled) {
-        _animationController.value = 1.0;
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
       }
+      log('Toggle state updated to: $_isEnabled');
     }
   }
 
@@ -74,35 +78,9 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
       // Call the onChanged callback if provided
       widget.onChanged?.call(newValue);
 
-      // Handle the notification service based on the new state
-      if (newValue) {
-        // Enable notifications
-        await _notificationService.toggleNotifications(true);
-        log('Notifications enabled via toggle');
-      } else {
-        // Disable notifications
-        await _notificationService.toggleNotifications(false);
-        await _notificationService.forceRefreshNotificationSettings();
-        log('Notifications disabled via toggle');
-      }
-
       log('Toggle updated to: $_isEnabled');
-
-      // Show feedback to user
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              newValue ? 'تم تفعيل الإشعارات' : 'تم إيقاف الإشعارات',
-              textAlign: TextAlign.center,
-            ),
-            duration: Duration(seconds: 2),
-            backgroundColor: newValue ? Colors.green : Colors.orange,
-          ),
-        );
-      }
     } catch (e) {
-      log('Error toggling notifications: $e');
+      log('Error toggling: $e');
       // Revert the toggle if there was an error
       if (_isEnabled) {
         _animationController.forward();
@@ -110,20 +88,6 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
         _animationController.reverse();
       }
       _isEnabled = !_isEnabled;
-
-      // Show error feedback
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'حدث خطأ في تغيير إعدادات الإشعارات',
-              textAlign: TextAlign.center,
-            ),
-            duration: Duration(seconds: 3),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
     }
   }
 
