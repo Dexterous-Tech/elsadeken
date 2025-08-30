@@ -20,4 +20,11 @@ class ProfileDataSource {
 
     return ProfileActionResponseModel.fromJson(response.data);
   }
+
+  Future<ProfileActionResponseModel> toggleNotify() async {
+    var response = await _apiServices.post(
+        endpoint: ApiConstants.toggleNotify, requestBody: null);
+
+    return ProfileActionResponseModel.fromJson(response.data);
+  }
 }

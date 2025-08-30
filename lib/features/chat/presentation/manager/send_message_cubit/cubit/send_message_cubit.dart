@@ -1,4 +1,4 @@
-import 'package:elsadeken/features/chat/data/repositories/chat_repo.dart';
+import 'package:elsadeken/features/chat/domain/repositories/chat_repo.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

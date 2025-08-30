@@ -16,6 +16,7 @@ import 'package:elsadeken/features/profile/profile/presentation/view/widgets/pro
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -79,11 +80,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadMatchesUsers();
+    
     // Load chat list so SwipeableCard can access existing chat rooms
-    context.read<ChatListCubit>().getChatList();
-    // _loadUserData();
-    // _loadUserData();
-
+    print('🏠 [HomeScreen] Initializing and loading chat list...');
+    _loadChatList();
+    
     _focusNode.addListener(() {
       setState(() {
         showHistory = _focusNode.hasFocus && _searchController.text.isEmpty;
@@ -91,6 +92,38 @@ class _HomeScreenState extends State<HomeScreen> {
         if (_searchController.text.isNotEmpty) {}
       });
     });
+  }
+
+  /// Load chat list with proper error handling and logging
+  Future<void> _loadChatList() async {
+    try {
+      print('🏠 [HomeScreen] Loading chat list...');
+      final chatListCubit = context.read<ChatListCubit>();
+      
+      // Check current state
+      final currentState = chatListCubit.state;
+      print('🏠 [HomeScreen] Current chat list state: ${currentState.runtimeType}');
+      
+      if (currentState is! ChatListLoaded) {
+        print('🏠 [HomeScreen] Chat list not loaded, calling getChatList()...');
+        await chatListCubit.getChatList();
+        
+        // Wait a bit and check the state again
+        await Future.delayed(Duration(milliseconds: 1000));
+        final newState = chatListCubit.state;
+        print('🏠 [HomeScreen] Chat list state after loading: ${newState.runtimeType}');
+        
+        if (newState is ChatListLoaded) {
+          print('🏠 [HomeScreen] ✅ Chat list loaded successfully with ${newState.chatList.data.length} chats');
+        } else if (newState is ChatListError) {
+          print('🏠 [HomeScreen] ❌ Chat list failed to load: ${newState.message}');
+        }
+      } else {
+        print('🏠 [HomeScreen] ✅ Chat list already loaded with ${currentState.chatList.data.length} chats');
+      }
+    } catch (e) {
+      print('🏠 [HomeScreen] ❌ Error loading chat list: $e');
+    }
   }
 
   Future<void> _loadMatchesUsers({bool loadMore = false}) async {
@@ -208,24 +241,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Future<void> _loadUserData() async {
-  //   // final user = await LoginCubit.getUserData();
-  //   if (user != null) {
-  //     setState(() {
-  //       // city = user.city;
-  //       // country = user.country;
-  //       name = user.name;
-  //     });
-  //     print("Loaded user: ${user.name}, ${user.email}");
-  //   } else {
-  //     print("No user data found");
-  //   }
-  // }
 
   Widget buildHomeContent() {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 16.h),
+        padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,39 +343,42 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   height: 600.h,
                   margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Stack(
-                    children: currentUsers
-                        .asMap()
-                        .entries
-                        .map((entry) {
-                          final index = entry.key;
-                          final user = entry.value;
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Stack(
+                      children: currentUsers
+                          .asMap()
+                          .entries
+                          .map((entry) {
+                            final index = entry.key;
+                            final user = entry.value;
 
-                          final isTopCard = index == 0;
-                          final isSecondCard = index == 1;
+                            final isTopCard = index == 0;
+                            final isSecondCard = index == 1;
 
-                          double scale = 1.0;
-                          double verticalOffset = 0.0.h;
+                            double scale = 1.0;
+                            double verticalOffset = 0.0.h;
 
-                          if (isSecondCard) {
-                            scale = 0.95;
-                            verticalOffset = 20.h;
-                          } else if (!isTopCard) {
-                            scale = 0.9;
-                            verticalOffset = 40.h;
-                          }
+                            if (isSecondCard) {
+                              scale = 0.95;
+                              verticalOffset = 20.h;
+                            } else if (!isTopCard) {
+                              scale = 0.9;
+                              verticalOffset = 40.h;
+                            }
 
-                          return SwipeableCard(
-                            user: user,
-                            onSwipe: isTopCard ? _onSwipe : null,
-                            isTop: isTopCard,
-                            scale: scale,
-                            verticalOffset: verticalOffset,
-                          );
-                        })
-                        .toList()
-                        .reversed
-                        .toList(),
+                            return SwipeableCard(
+                              user: user,
+                              onSwipe: isTopCard ? _onSwipe : null,
+                              isTop: isTopCard,
+                              scale: scale,
+                              verticalOffset: verticalOffset,
+                            );
+                          })
+                          .toList()
+                          .reversed
+                          .toList(),
+                    ),
                   ),
                 )
             ],

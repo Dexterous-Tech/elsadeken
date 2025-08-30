@@ -32,6 +32,20 @@ class SharedPreferencesHelper {
     await flutterSecureStorage.delete(
         key: SharedPreferencesKey.verificationTokenKey);
     await flutterSecureStorage.delete(key: SharedPreferencesKey.isFeatured);
+    await flutterSecureStorage.delete(key: SharedPreferencesKey.isNotifable);
+    await flutterSecureStorage.delete(key: SharedPreferencesKey.isBlocked);
+    await flutterSecureStorage.delete(key: SharedPreferencesKey.gender);
+    await flutterSecureStorage.delete(key: SharedPreferencesKey.privacySetting);
+    await flutterSecureStorage.delete(key: SharedPreferencesKey.deviceToken);
+    await flutterSecureStorage.delete(key: SharedPreferencesKey.userDataKey);
+  }
+
+  /// Clear all app state data (for logout)
+  static Future<void> clearAllAppState() async {
+    await deleteSharedPreferKeys();
+    await flutterSecureStorage.delete(key: SharedPreferencesKey.isLoggedIn);
+    await flutterSecureStorage.delete(
+        key: SharedPreferencesKey.isOnboardingCompleted);
   }
 
   /// Saves a boolean [value] with a [key] in the FlutterSecureStorage.
@@ -59,14 +73,124 @@ class SharedPreferencesHelper {
     await setBool(SharedPreferencesKey.isFeatured, value);
   }
 
+  /// Gets the isOnboardingCompleted value from FlutterSecureStorage.
+  static Future<bool> getIsOnboardingCompleted() async {
+    return await getBool(SharedPreferencesKey.isOnboardingCompleted);
+  }
+
+  /// Sets the isOnboardingCompleted value in FlutterSecureStorage.
+  static Future<void> setIsOnboardingCompleted(bool value) async {
+    await setBool(SharedPreferencesKey.isOnboardingCompleted, value);
+  }
+
+  /// Gets the isLoggedIn value from FlutterSecureStorage.
+  static Future<bool> getIsLoggedIn() async {
+    return await getBool(SharedPreferencesKey.isLoggedIn);
+  }
+
+  /// Sets the isLoggedIn value in FlutterSecureStorage.
+  static Future<void> setIsLoggedIn(bool value) async {
+    await setBool(SharedPreferencesKey.isLoggedIn, value);
+  }
+
+  // Signup form data methods
+
+  /// Save signup form data to shared preferences
+  static Future<void> saveSignupFormData(Map<String, dynamic> formData) async {
+    try {
+      final jsonData = jsonEncode(formData);
+      await setSecuredString(SharedPreferencesKey.signupFormDataKey, jsonData);
+      await setSecuredString(
+        SharedPreferencesKey.signupTimestampKey,
+        DateTime.now().millisecondsSinceEpoch.toString(),
+      );
+      debugPrint('Signup form data saved successfully');
+    } catch (e) {
+      debugPrint('Error saving signup form data: $e');
+    }
+  }
+
+  /// Load signup form data from shared preferences
+  static Future<Map<String, dynamic>?> loadSignupFormData() async {
+    try {
+      final jsonData =
+          await getSecuredString(SharedPreferencesKey.signupFormDataKey);
+      if (jsonData.isEmpty) return null;
+
+      final decodedData = jsonDecode(jsonData);
+      debugPrint('Signup form data loaded successfully');
+      return decodedData;
+    } catch (e) {
+      debugPrint('Error loading signup form data: $e');
+      return null;
+    }
+  }
+
+  /// Save current signup step
+  static Future<void> saveSignupCurrentStep(int step) async {
+    await setSecuredString(
+        SharedPreferencesKey.signupCurrentStepKey, step.toString());
+  }
+
+  /// Load current signup step
+  static Future<int> loadSignupCurrentStep() async {
+    final stepStr =
+        await getSecuredString(SharedPreferencesKey.signupCurrentStepKey);
+    return int.tryParse(stepStr) ?? 0;
+  }
+
+  /// Save signup gender
+  static Future<void> saveSignupGender(String gender) async {
+    await setSecuredString(SharedPreferencesKey.signupGenderKey, gender);
+  }
+
+  /// Load signup gender
+  static Future<String> loadSignupGender() async {
+    return await getSecuredString(SharedPreferencesKey.signupGenderKey);
+  }
+
+  /// Check if signup data exists and is recent (within 24 hours)
+  static Future<bool> hasRecentSignupData(
+      {Duration maxAge = const Duration(hours: 24)}) async {
+    try {
+      final timestampStr =
+          await getSecuredString(SharedPreferencesKey.signupTimestampKey);
+      if (timestampStr.isEmpty) return false;
+
+      final timestamp = int.tryParse(timestampStr);
+      if (timestamp == null) return false;
+
+      final dataAge = DateTime.now().millisecondsSinceEpoch - timestamp;
+      return dataAge <= maxAge.inMilliseconds;
+    } catch (e) {
+      debugPrint('Error checking signup data age: $e');
+      return false;
+    }
+  }
+
+  /// Clear all signup data
+  static Future<void> clearSignupData() async {
+    try {
+      await deleteSecuredString(SharedPreferencesKey.signupFormDataKey);
+      await deleteSecuredString(SharedPreferencesKey.signupCurrentStepKey);
+      await deleteSecuredString(SharedPreferencesKey.signupGenderKey);
+      await deleteSecuredString(SharedPreferencesKey.signupTimestampKey);
+      debugPrint('Signup data cleared successfully');
+    } catch (e) {
+      debugPrint('Error clearing signup data: $e');
+    }
+  }
+
   // Cache helper methods for static data
-  
+
   /// Cache data with timestamp for expiration checking
-  static Future<void> cacheData(String dataKey, String timestampKey, dynamic data) async {
+  static Future<void> cacheData(
+      String dataKey, String timestampKey, dynamic data) async {
     try {
       final jsonData = jsonEncode(data);
       await setSecuredString(dataKey, jsonData);
-      await setSecuredString(timestampKey, DateTime.now().millisecondsSinceEpoch.toString());
+      await setSecuredString(
+          timestampKey, DateTime.now().millisecondsSinceEpoch.toString());
       debugPrint('Cached data for key: $dataKey');
     } catch (e) {
       debugPrint('Error caching data for key $dataKey: $e');
@@ -74,7 +198,8 @@ class SharedPreferencesHelper {
   }
 
   /// Retrieve cached data if it's still valid
-  static Future<dynamic> getCachedData(String dataKey, String timestampKey, {Duration maxAge = const Duration(hours: 24)}) async {
+  static Future<dynamic> getCachedData(String dataKey, String timestampKey,
+      {Duration maxAge = const Duration(hours: 24)}) async {
     try {
       final timestampStr = await getSecuredString(timestampKey);
       if (timestampStr.isEmpty) return null;
@@ -92,7 +217,8 @@ class SharedPreferencesHelper {
       if (cachedData.isEmpty) return null;
 
       final decodedData = jsonDecode(cachedData);
-      debugPrint('Retrieved cached data for key: $dataKey (age: ${cacheAge}ms)');
+      debugPrint(
+          'Retrieved cached data for key: $dataKey (age: ${cacheAge}ms)');
       return decodedData;
     } catch (e) {
       debugPrint('Error retrieving cached data for key $dataKey: $e');
@@ -116,8 +242,10 @@ class SharedPreferencesHelper {
     try {
       await deleteSecuredString(SharedPreferencesKey.nationalitiesCacheKey);
       await deleteSecuredString(SharedPreferencesKey.countriesCacheKey);
-      await deleteSecuredString(SharedPreferencesKey.nationalitiesCacheTimestampKey);
-      await deleteSecuredString(SharedPreferencesKey.countriesCacheTimestampKey);
+      await deleteSecuredString(
+          SharedPreferencesKey.nationalitiesCacheTimestampKey);
+      await deleteSecuredString(
+          SharedPreferencesKey.countriesCacheTimestampKey);
       debugPrint('Cleared all caches');
     } catch (e) {
       debugPrint('Error clearing all caches: $e');

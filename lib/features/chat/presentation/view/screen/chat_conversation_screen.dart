@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
+import 'package:elsadeken/features/chat/presentation/widgets/chat_appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
-import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
 import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 import 'package:elsadeken/features/chat/data/models/pusher_message_model.dart';
 import 'package:elsadeken/features/chat/domain/entities/chat_message.dart';
@@ -20,7 +20,6 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/manager/m
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/chat/data/services/chat_message_service.dart';
-import 'package:elsadeken/core/services/firebase_notification_service.dart';
 
 class ChatConversationScreen extends StatefulWidget {
   final ChatRoomModel chatRoom;
@@ -36,6 +35,8 @@ class ChatConversationScreen extends StatefulWidget {
 
 class _ChatConversationScreenState extends State<ChatConversationScreen>
     with WidgetsBindingObserver {
+
+
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<ChatMessage> _messages = [];
@@ -56,6 +57,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // Load chat messages immediately for faster UI
+    _loadChatMessagesEarly();
+
+    // Load user profile and setup real-time connections in parallel
     _loadCurrentUserProfile();
     _setupRealTimeListeners();
     _setupScrollListener();
@@ -67,7 +73,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (state == AppLifecycleState.resumed) {
       // Check connection health on resume
       _checkPusherConnectionHealth();
-      
+
       // Resume auto-refresh when app is resumed
       if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null) {
         context.read<ChatMessagesCubit>().startAutoRefresh(widget.chatRoom.id);
@@ -80,7 +86,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
   Future<void> _checkPusherConnectionHealth() async {
     if (_isPusherSetup && _currentUserId != null) {
-      final isHealthy = await context.read<PusherCubit>().checkConnectionHealth();
+      final isHealthy =
+          await context.read<PusherCubit>().checkConnectionHealth();
       if (!isHealthy) {
         print('Connection unhealthy, re-initializing...');
         await _initializeAndSubscribePusher();
@@ -92,9 +99,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     print('[ChatConversationScreen] Setting up real-time listeners...');
 
     // Single message stream listener
-    _messageSubscription = ChatMessageService.instance.messageStream.listen((message) {
+    _messageSubscription =
+        ChatMessageService.instance.messageStream.listen((message) {
       if (mounted) {
-        print('[ChatConversationScreen] Message stream received: ${message.body}');
+        print(
+            '[ChatConversationScreen] Message stream received: ${message.body}');
         _handleRealTimeMessage(message);
       }
     });
@@ -116,8 +125,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (message.chatId.toString() == widget.chatRoom.id ||
         (widget.chatRoom.id.startsWith('temp_') &&
             message.receiverId == _currentUserId)) {
-
-      print('[ChatConversationScreen] Processing real-time message: ${message.body}');
+      print(
+          '[ChatConversationScreen] Processing real-time message: ${message.body}');
 
       // Convert Pusher message to ChatMessage
       final chatMessage = message.toChatMessage(
@@ -135,17 +144,17 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
         print('[ChatConversationScreen] Message added to UI successfully');
         _scrollToBottom();
-        
+
         // Update chat list to reflect new message and maintain sorting
         if (!widget.chatRoom.id.startsWith('temp_')) {
           final chatId = int.tryParse(widget.chatRoom.id);
           if (chatId != null) {
             context.read<ChatListCubit>().handleNewMessage(
-              chatId,
-              message.body,
-              message.createdAt.toIso8601String(),
-              message.senderId,
-            );
+                  chatId,
+                  message.body,
+                  message.createdAt.toIso8601String(),
+                  message.senderId,
+                );
           }
         }
       }
@@ -179,7 +188,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     }
 
     try {
-      final token = await SharedPreferencesHelper.getSecuredString(SharedPreferencesKey.apiTokenKey);
+      final token = await SharedPreferencesHelper.getSecuredString(
+          SharedPreferencesKey.apiTokenKey);
       if (token.isEmpty) {
         print('No auth token available for Pusher');
         return;
@@ -198,7 +208,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       if (!widget.chatRoom.id.startsWith('temp_')) {
         final chatRoomId = int.tryParse(widget.chatRoom.id);
         if (chatRoomId != null) {
-          await context.read<PusherCubit>().subscribeToChatChannel(chatRoomId, token);
+          await context
+              .read<PusherCubit>()
+              .subscribeToChatChannel(chatRoomId, token);
         }
       }
 
@@ -213,6 +225,18 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     context.read<ManageProfileCubit>().getProfile();
   }
 
+  /// Load chat messages early for faster UI response
+  void _loadChatMessagesEarly() {
+    // Don't load messages for temporary chat rooms
+    if (!widget.chatRoom.id.startsWith('temp_')) {
+      print(
+          '[ChatConversationScreen] Early loading of messages for faster UI...');
+
+      // Try to load messages, but handle 404 gracefully for deleted chats
+      context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
+    }
+  }
+
   void _loadChatMessages() {
     // Don't load messages for temporary chat rooms
     if (!widget.chatRoom.id.startsWith('temp_')) {
@@ -221,11 +245,43 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     }
   }
 
+  /// Update existing messages with correct user info when profile loads
+  void _updateMessagesWithUserInfo() {
+    if (_messages.isNotEmpty && _currentUserId != null) {
+      print(
+          '[ChatConversationScreen] Updating messages with correct user info...');
+      setState(() {
+        _messages = _messages.map((message) {
+          // Update message with correct user info if it was using temporary values
+          if (message.senderId == 'temp_user' || message.senderImage.isEmpty) {
+            return ChatMessage(
+              id: message.id,
+              roomId: message.roomId,
+              senderId: message.senderId == 'temp_user'
+                  ? _currentUserId.toString()
+                  : message.senderId,
+              senderName: message.senderName,
+              senderImage: message.senderId == _currentUserId.toString()
+                  ? _currentUserImage
+                  : message.senderImage,
+              message: message.message,
+              timestamp: message.timestamp,
+              isRead: message.isRead,
+            );
+          }
+          return message;
+        }).toList();
+      });
+    }
+  }
+
   /// Manual refresh method for pull-to-refresh
   Future<void> _refreshMessages() async {
     if (!widget.chatRoom.id.startsWith('temp_')) {
       print('[ChatConversationScreen] Manual refresh triggered');
-      await context.read<ChatMessagesCubit>().refreshChatMessages(widget.chatRoom.id);
+      await context
+          .read<ChatMessagesCubit>()
+          .refreshChatMessages(widget.chatRoom.id);
     }
   }
 
@@ -235,7 +291,18 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: _buildAppBar(),
+        appBar: ChatAppBar(
+          chatRoomId: widget.chatRoom.id,
+          chatRoomName: widget.chatRoom.name,
+          chatRoomImage: widget.chatRoom.image,
+          onBack: () {
+            // Stop auto-refresh when navigating back
+            if (!widget.chatRoom.id.startsWith('temp_')) {
+              context.read<ChatMessagesCubit>().stopAutoRefresh();
+            }
+            Navigator.of(context).pop();
+          },
+        ),
         body: Column(
           children: [
             Expanded(
@@ -248,82 +315,58 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Color(0xfffef6ee),
-      elevation: 0,
-      leading: const CustomArrowBack(),
-      title: Row(
-        children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundImage: NetworkImage(widget.chatRoom.image),
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.chatRoom.name,
-                  style: TextStyle(
-                    color: AppColors.darkerBlue,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                if (!widget.chatRoom.id.startsWith('temp_'))
-                  Row(
-                    children: [
-                      Text(
-                        'متصل الآن',
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      SizedBox(width: 4),
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryOrange,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildChatMessages() {
     return MultiBlocListener(
       listeners: [
         BlocListener<ChatMessagesCubit, ChatMessagesState>(
           listener: (context, state) {
-            if (state is ChatMessagesLoaded && _currentUserId != null) {
-              print('[ChatConversationScreen] API messages loaded: ${state.chatMessages.messages.length} messages');
+            if (state is ChatMessagesLoaded) {
+              print(
+                  '[ChatConversationScreen] API messages loaded: ${state.chatMessages.messages.length} messages');
+
+              // Use current user info if available, otherwise use temporary values
+              final currentUserId = _currentUserId?.toString() ?? 'temp_user';
+              final currentUserImage =
+                  _currentUserImage.isNotEmpty ? _currentUserImage : '';
 
               setState(() {
                 _messages = state.chatMessages.toChatMessages(
-                  _currentUserId.toString(),
+                  currentUserId,
                   widget.chatRoom.name,
                   widget.chatRoom.image,
-                  _currentUserImage,
+                  currentUserImage,
                 );
               });
 
               _scrollToBottom();
-              
-              // Start auto-refresh after initial messages are loaded
-              if (!widget.chatRoom.id.startsWith('temp_')) {
-                context.read<ChatMessagesCubit>().startAutoRefresh(widget.chatRoom.id);
+
+              // Start auto-refresh after initial messages are loaded (only if messages exist)
+              if (!widget.chatRoom.id.startsWith('temp_') &&
+                  _currentUserId != null &&
+                  _messages.isNotEmpty) {
+                context
+                    .read<ChatMessagesCubit>()
+                    .startAutoRefresh(widget.chatRoom.id);
+              }
+            } else if (state is ChatMessagesError) {
+              // If the chat was deleted, clear messages to show empty state immediately
+              if (state.message == "هذه المحادثة لم تعد موجودة") {
+                setState(() {
+                  _messages = []; // Clear messages to show empty chat state
+                });
+
+                // Show brief notification that chat was deleted
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('المحادثة محذوفة - يمكنك بدء محادثة جديدة'),
+                    backgroundColor: Colors.orange,
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+
+                // Don't start auto-refresh for deleted chats
+                print(
+                    '[ChatConversationScreen] Chat deleted - will not start auto-refresh until new message sent');
               }
             }
           },
@@ -333,13 +376,17 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
             if (state is ManageProfileSuccess && _currentUserId == null) {
               setState(() {
                 _currentUserId = state.myProfileResponseModel.data?.id;
-                _currentUserName = state.myProfileResponseModel.data?.name ?? '';
-                _currentUserImage = state.myProfileResponseModel.data?.image ?? '';
+                _currentUserName =
+                    state.myProfileResponseModel.data?.name ?? '';
+                _currentUserImage =
+                    state.myProfileResponseModel.data?.image ?? '';
               });
 
-              // Now setup Pusher and load messages
-              await _initializeAndSubscribePusher();
-              _loadChatMessages();
+              // Update existing messages with correct user info if already loaded
+              _updateMessagesWithUserInfo();
+
+              // Setup Pusher in background - messages are already loading
+              _initializeAndSubscribePusher();
             }
           },
         ),
@@ -366,18 +413,24 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   });
                   _scrollToBottom();
                 }
-                
+
                 // Update chat list to reflect new message and maintain sorting
                 if (!widget.chatRoom.id.startsWith('temp_')) {
                   final chatId = int.tryParse(widget.chatRoom.id);
                   if (chatId != null) {
                     context.read<ChatListCubit>().handleNewMessage(
-                      chatId,
-                      state.sendMessageModel.data.body,
-                      state.sendMessageModel.data.createdAt.toIso8601String(),
-                      _currentUserId!,
-                    );
+                          chatId,
+                          state.sendMessageModel.data.body,
+                          state.sendMessageModel.data.createdAt
+                              .toIso8601String(),
+                          _currentUserId!,
+                        );
                   }
+
+                  // Restart auto-refresh in case it was stopped due to chat deletion
+                  context
+                      .read<ChatMessagesCubit>()
+                      .startAutoRefresh(widget.chatRoom.id);
                 }
               }
             } else if (state is SendMessagesError) {
@@ -396,7 +449,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               print('PUSHER: Direct message received: ${state.message.body}');
               _handleRealTimeMessage(state.message);
             } else if (state is PusherConnectionError) {
-              print('PUSHER: Connection error (handled silently): ${state.error}');
+              print(
+                  'PUSHER: Connection error (handled silently): ${state.error}');
             } else if (state is PusherInitialized) {
               print('PUSHER: Initialized successfully');
             } else if (state is PusherSubscribed) {
@@ -448,7 +502,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.chat_bubble_outline, size: 64, color: Colors.grey[400]),
+                  Icon(Icons.chat_bubble_outline,
+                      size: 64, color: Colors.grey[400]),
                   SizedBox(height: 16),
                   Text(
                     'لا توجد رسائل حتى الآن',
@@ -484,7 +539,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
                 final messageIndex = index - 1;
                 final message = _messages[messageIndex];
-                final isCurrentUser = message.senderId == _currentUserId.toString();
+                final isCurrentUser =
+                    message.senderId == _currentUserId.toString();
 
                 return ChatMessageBubble(
                   message: message,
@@ -543,14 +599,28 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     final today = DateTime.now();
     final yesterday = today.subtract(const Duration(days: 1));
 
-    if (now.year == today.year && now.month == today.month && now.day == today.day) {
+    if (now.year == today.year &&
+        now.month == today.month &&
+        now.day == today.day) {
       return 'اليوم';
-    } else if (now.year == yesterday.year && now.month == yesterday.month && now.day == yesterday.day) {
+    } else if (now.year == yesterday.year &&
+        now.month == yesterday.month &&
+        now.day == yesterday.day) {
       return 'أمس';
     } else {
       final months = [
-        'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+        'يناير',
+        'فبراير',
+        'مارس',
+        'أبريل',
+        'مايو',
+        'يونيو',
+        'يوليو',
+        'أغسطس',
+        'سبتمبر',
+        'أكتوبر',
+        'نوفمبر',
+        'ديسمبر'
       ];
       return '${now.day} ${months[now.month - 1]}';
     }
@@ -605,7 +675,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                       ),
                       onPressed: _sendMessage,
                       style: IconButton.styleFrom(
-                        backgroundColor: AppColors.primaryOrange.withOpacity(0.1),
+                        backgroundColor:
+                            AppColors.primaryOrange.withOpacity(0.1),
                         shape: CircleBorder(),
                         padding: EdgeInsets.all(8.w),
                       ),
@@ -645,9 +716,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
     // Send message through API
     context.read<SendMessageCubit>().sendMessages(
-      widget.chatRoom.receiverId,
-      message,
-    );
+          widget.chatRoom.receiverId,
+          message,
+        );
   }
 
   @override
@@ -656,7 +727,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (!widget.chatRoom.id.startsWith('temp_')) {
       context.read<ChatMessagesCubit>().stopAutoRefresh();
     }
-    
+
     _messageController.dispose();
     _scrollController.dispose();
     _messageSubscription?.cancel();

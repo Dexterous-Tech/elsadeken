@@ -1,7 +1,7 @@
-import '../services/lists_service.dart';
-import '../models/nationality_model.dart';
-import '../models/country_model.dart';
-import '../models/api_response_model.dart';
+import '../../data/services/lists_service.dart';
+import '../../data/models/nationality_model.dart';
+import '../../data/models/country_model.dart';
+import '../../data/models/api_response_model.dart';
 
 class ListsRepository {
   final ListsService _service;
@@ -18,6 +18,8 @@ class ListsRepository {
     return await _service.getCountries();
   }
 }
+
+
 
 
 

@@ -1,4 +1,4 @@
-// File: lib/presentation/cubit/search_cubit.dart
+// File: lib/presentation/chat_settings_cubit/search_cubit.dart
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

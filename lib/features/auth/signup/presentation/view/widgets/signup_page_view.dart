@@ -75,6 +75,10 @@ class _SignupPageViewState extends State<SignupPageView>
     if (_tabController.indexIsChanging) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         widget.onStepChanged(_tabController.index);
+
+        // Save form data when step changes
+        var cubit = SignupCubit.get(context);
+        cubit.saveFormData();
       });
     }
   }
@@ -178,7 +182,7 @@ class _SignupPageViewState extends State<SignupPageView>
           key: const ValueKey(12),
           onPreviousPressed: () => widget.onStepChanged(11),
           onNextPressed: () {
-            cubit.registerInformation();
+            // This is handled inside the SignupDescriptions widget
           },
         );
       default:

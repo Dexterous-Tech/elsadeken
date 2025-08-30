@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/features/on_boarding/presentation/view/widgets/oath_dialog/oath_dialog.dart';
 import 'package:flutter/gestures.dart';
@@ -25,7 +26,9 @@ class LoginCreateNewAccount extends StatelessWidget {
             style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans
                 .copyWith(color: AppColors.red),
             recognizer: TapGestureRecognizer()
-              ..onTap = () {
+              ..onTap = () async {
+                // Mark onboarding as completed
+                await SharedPreferencesHelper.setIsOnboardingCompleted(true);
                 context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);
                 oathDialog(context: context);
               },

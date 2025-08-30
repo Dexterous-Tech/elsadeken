@@ -9,6 +9,7 @@ import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart
 abstract class ProfileRepoInterface {
   Future<Either<ApiErrorModel, ProfileActionResponseModel>> logout();
   Future<Either<ApiErrorModel, ProfileActionResponseModel>> deleteImage();
+  Future<Either<ApiErrorModel, ProfileActionResponseModel>> toggleNotify();
 }
 
 class ProfileRepoImp implements ProfileRepoInterface {
@@ -39,6 +40,22 @@ class ProfileRepoImp implements ProfileRepoInterface {
       return Right(response);
     } catch (error) {
       log("error in delete image $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, ProfileActionResponseModel>>
+      toggleNotify() async {
+    try {
+      var response = await _profileDataSource.toggleNotify();
+
+      return Right(response);
+    } catch (error) {
+      log("error in notify $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

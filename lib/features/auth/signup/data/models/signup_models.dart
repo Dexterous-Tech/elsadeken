@@ -46,8 +46,8 @@ class RegisterInformationRequestModel {
   final String religiousCommitment;
   final String prayer; //always , interittent ,no_pray
   final int smoking; //0=> no , 1 =>yes
-  final String hijab;
-  final String beard; //beard for males
+  final String? hijab; // Optional - only for females
+  final String? beard; // Optional - only for males
   final int educationalQualification; //
   final int financialSituation; //bad , good, very_good
   final String job;
@@ -71,8 +71,8 @@ class RegisterInformationRequestModel {
     required this.religiousCommitment,
     required this.prayer,
     required this.smoking,
-    required this.hijab,
-    required this.beard,
+    this.hijab,
+    this.beard,
     required this.educationalQualification,
     required this.financialSituation,
     required this.job,
@@ -83,7 +83,7 @@ class RegisterInformationRequestModel {
   });
 
   FormData toFormData() {
-    return FormData.fromMap({
+    Map<String, dynamic> formDataMap = {
       'nationality_id': nationalId,
       'country_id': countryId,
       'city_id': cityId,
@@ -98,8 +98,6 @@ class RegisterInformationRequestModel {
       'religious_commitment': religiousCommitment,
       'prayer': prayer,
       'smoking': smoking,
-      'hijab': hijab,
-      'beard': beard,
       'qualification_id': educationalQualification,
       'financial_situation_id': financialSituation,
       'job': job,
@@ -107,7 +105,19 @@ class RegisterInformationRequestModel {
       'health_condition_id': healthCondition,
       'about_me': aboutMe,
       'life_partner': lifePartner,
-    });
+    };
+
+    // Only include hijab if it's not null and not empty
+    if (hijab != null && hijab!.isNotEmpty) {
+      formDataMap['hijab'] = hijab;
+    }
+
+    // Only include beard if it's not null and not empty
+    if (beard != null && beard!.isNotEmpty) {
+      formDataMap['beard'] = beard;
+    }
+
+    return FormData.fromMap(formDataMap);
   }
 }
 

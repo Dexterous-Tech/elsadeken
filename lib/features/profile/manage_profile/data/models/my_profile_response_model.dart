@@ -155,6 +155,8 @@ class MyProfileDataModel {
     this.isFeatured,
     this.createdAt,
     this.attribute,
+    this.isNotifable,
+    this.isBlocked,
   });
 
   MyProfileDataModel.fromJson(dynamic json) {
@@ -167,6 +169,8 @@ class MyProfileDataModel {
     image = json['image'];
     isFeatured = json['is_featured'];
     createdAt = json['created_at'];
+    isNotifable = json['is_notifable'];
+    isBlocked = json['is_blocked'];
     attribute = json['attribute'] != null
         ? MyProfileAttributeModel.fromJson(json['attribute'])
         : null;
@@ -180,6 +184,8 @@ class MyProfileDataModel {
   String? image;
   int? isFeatured;
   String? createdAt;
+  int? isNotifable;
+  int? isBlocked;
   MyProfileAttributeModel? attribute;
 
   Map<String, dynamic> toJson() {
@@ -193,6 +199,8 @@ class MyProfileDataModel {
     map['image'] = image;
     map['is_featured'] = isFeatured;
     map['created_at'] = createdAt;
+    map['is_notifable'] = isNotifable;
+    map['is_blocked'] = isBlocked;
     if (attribute != null) {
       map['attribute'] = attribute?.toJson();
     }

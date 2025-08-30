@@ -15,12 +15,9 @@ class ChatListLoading extends ChatListState {
 class ChatListLoaded extends ChatListState {
   final ChatListModel chatList;
   const ChatListLoaded(this.chatList);
-
-
 }
 
 class ChatListError extends ChatListState {
   final String message;
   const ChatListError(this.message);
-
 }

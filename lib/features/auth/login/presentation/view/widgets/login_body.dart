@@ -24,6 +24,9 @@ class LoginBody extends StatelessWidget {
         } else if (state is LoginFailure) {
           context.pop();
           errorDialog(context: context, error: state.errorMessage);
+        } else if (state is LoginBlocked) {
+          context.pop();
+          errorDialog(context: context, error: state.message);
         } else if (state is LoginSuccess) {
           context.pop();
           // Show success dialog and navigate to home

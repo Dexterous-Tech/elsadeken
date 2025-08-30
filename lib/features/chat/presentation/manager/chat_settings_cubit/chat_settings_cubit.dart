@@ -1,10 +1,10 @@
+import 'package:elsadeken/features/chat/data/models/chat_settings_model.dart';
+import 'package:elsadeken/features/chat/data/models/chat_settings_request_model.dart';
+import 'package:elsadeken/features/chat/data/repositories/chat_settings_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'dart:async';
-import '../../data/models/chat_settings_model.dart';
-import '../../data/models/chat_settings_request_model.dart';
-import '../../data/repositories/chat_settings_repository.dart';
-import '../../data/models/api_response_model.dart';
+
 
 // Events
 abstract class ChatSettingsEvent extends Equatable {

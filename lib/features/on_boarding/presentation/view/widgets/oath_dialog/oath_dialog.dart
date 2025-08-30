@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
@@ -108,7 +109,10 @@ Future<void> oathDialog({
             CustomElevatedButton(
               height: 45.63711166381836.h,
               onPressed: value
-                  ? () {
+                  ? () async {
+                      // Mark onboarding as completed
+                      await SharedPreferencesHelper.setIsOnboardingCompleted(
+                          true);
                       context.pushNamed(AppRoutes.signupScreen,
                           arguments: 'male');
                     }
@@ -121,7 +125,10 @@ Future<void> oathDialog({
             CustomElevatedButton(
               height: 45.63711166381836.h,
               onPressed: value
-                  ? () {
+                  ? () async {
+                      // Mark onboarding as completed
+                      await SharedPreferencesHelper.setIsOnboardingCompleted(
+                          true);
                       context.pushNamed(AppRoutes.signupScreen,
                           arguments: 'female');
                     }

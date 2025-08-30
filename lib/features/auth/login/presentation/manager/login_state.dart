@@ -14,6 +14,12 @@ class LoginSuccess extends LoginState {
   LoginSuccess({required this.loginResponseModel});
 }
 
+class LoginBlocked extends LoginState {
+  final String message;
+
+  LoginBlocked({required this.message});
+}
+
 class LoginFailure extends LoginState {
   final String errorMessage;
   LoginFailure(this.errorMessage);

@@ -43,22 +43,42 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
           state is RegisterInformationSuccess,
       listener: (context, state) {
         if (state is SignupLoading || state is RegisterInformationLoading) {
+          // Close any existing dialogs first, then show loading
+          // Navigator.of(context).popUntil((route) => route.isFirst);
           loadingDialog(context);
-        } else if (state is SignupFailure) {
+        } else if (state is SignupFailure ||
+            state is RegisterInformationFailure) {
+          // Close loading dialog first, then show error with retry option
           context.pop();
-          errorDialog(context: context, error: state.error);
+          String errorMessage = '';
+          if (state is SignupFailure) {
+            errorMessage = state.error;
+          } else if (state is RegisterInformationFailure) {
+            errorMessage = state.error;
+          }
+          errorDialog(
+            context: context,
+            error: errorMessage,
+            onPressed: () {
+              // Close error dialog and retry
+              Navigator.pop(context);
+              // if (_canProceedToNext(cubit)) {
+              //   // For register information errors, just retry the same method
+              //   cubit.registerInformation();
+              // }
+            },
+          );
         } else if (state is RegisterInformationSuccess) {
+          // Close loading dialog first, then show success and navigate to login
           context.pop();
           successDialog(
               context: context,
               message: state.registerInformationResponseModel.message,
               onPressed: () {
-                context.pop();
+                Navigator.pop(context);
+                // Navigate to login (data is already cleared in cubit)
                 context.pushReplacementNamed(AppRoutes.loginScreen);
               });
-        } else if (state is RegisterInformationFailure) {
-          context.pop();
-          errorDialog(context: context, error: state.error);
         }
       },
       child: LayoutBuilder(
@@ -180,7 +200,8 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                             if (state is! SignupLoading &&
                                 state is! RegisterInformationLoading &&
                                 _canProceedToNext(cubit)) {
-                              cubit.completeSignupProcess();
+                              // Call registerInformation method
+                              cubit.registerInformation();
                             }
                           },
                           onPreviousPressed: widget.onPreviousPressed,

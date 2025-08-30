@@ -22,7 +22,6 @@ import 'package:elsadeken/features/profile/members_profile/presentation/view/mem
 import 'package:elsadeken/features/profile/my_excellence/presentation/view/my_excellence_screen.dart';
 import 'package:elsadeken/features/profile/my_image/presentation/view/my_image_screen.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/my_interesting_list_screen.dart';
-import 'package:elsadeken/features/profile/profile/presentation/view/profile_screen.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/profile_details_screen.dart';
 import 'package:elsadeken/features/profile/success_stories/presentation/cubit/success_story_cubit.dart';
 import 'package:elsadeken/features/profile/success_stories/presentation/view/success_story_screen.dart';
@@ -34,10 +33,9 @@ import 'package:elsadeken/features/search/presentation/view/search_page.dart';
 import 'package:elsadeken/features/splash/presentation/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:elsadeken/features/chat/presentation/view/chat_conversation_screen.dart';
+import 'package:elsadeken/features/chat/presentation/view/screen/chat_conversation_screen.dart';
 import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
-import 'package:elsadeken/features/chat/presentation/view/chat_settings_screen.dart';
-import 'package:elsadeken/features/chat/presentation/view/chat_settings_screen_example.dart';
+import 'package:elsadeken/features/chat/presentation/view/screen/chat_settings_screen_example.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
@@ -74,8 +72,8 @@ class AppRouting {
             builder: (_) => NewPasswordScreen(
                   email: arguments as String,
                 ));
-      case AppRoutes.profileScreen:
-        return MaterialPageRoute(builder: (_) => ProfileScreen());
+      // case AppRoutes.profileScreen:
+      //   return MaterialPageRoute(builder: (_) => ProfileScreen());
       case AppRoutes.manageProfileScreen:
         return MaterialPageRoute(builder: (_) => ManageProfileScreen());
       case AppRoutes.searchScreen:

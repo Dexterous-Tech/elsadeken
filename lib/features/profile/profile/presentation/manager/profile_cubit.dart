@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
 import 'package:elsadeken/features/profile/profile/data/repo/profile_repo.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     response.fold((error) {
       emit(LogoutFailure(error.displayMessage));
     }, (logoutResponseModel) async {
+      // Clear all app state data
+      await SharedPreferencesHelper.clearAllAppState();
       // await DioFactory.resetDio();
       emit(LogoutSuccess(logoutResponseModel));
     });

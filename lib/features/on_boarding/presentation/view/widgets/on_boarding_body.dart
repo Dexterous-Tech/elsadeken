@@ -1,6 +1,7 @@
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -63,8 +64,11 @@ class OnBoardingBody extends StatelessWidget {
                       width: 219.w,
                       child: CustomElevatedButton(
                         height: 50.25.h,
-                        onPressed: () {
-                          // oathDialog(context: context);
+                        onPressed: () async {
+                          // Mark onboarding as completed
+                          await SharedPreferencesHelper
+                              .setIsOnboardingCompleted(true);
+                          // Navigate to login screen
                           context.pushNamed(AppRoutes.loginScreen);
                         },
                         // verticalPadding: 17.h,

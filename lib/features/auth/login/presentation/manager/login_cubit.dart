@@ -36,11 +36,20 @@ class LoginCubit extends Cubit<LoginState> {
         emit(LoginFailure(error.displayMessage));
       },
       (loginResponseModel) async {
+        // Check if user is blocked
+        if (loginResponseModel.data?.isBlocked == 1) {
+          emit(LoginBlocked(message: 'انت محظور لا يمكن تسجيل الدخول'));
+          return;
+        }
+
         await saveUserToken(loginResponseModel.data!.token);
         log("save token ");
 
         // After successful login, save FCM token silently
         await saveFcmTokenSilently();
+
+        // Mark user as logged in
+        await SharedPreferencesHelper.setIsLoggedIn(true);
 
         emit(LoginSuccess(loginResponseModel: loginResponseModel));
       },

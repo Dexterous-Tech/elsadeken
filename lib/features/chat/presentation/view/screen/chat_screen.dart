@@ -41,7 +41,7 @@ class _ChatScreenState extends State<ChatScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // Set initial tab index in cubit
+    // Set initial tab index in chat_settings_cubit
     final chatListCubit = context.read<ChatListCubit>();
     chatListCubit.setCurrentTabIndex(_selectedTabIndex);
 
@@ -253,7 +253,7 @@ class _ChatScreenState extends State<ChatScreen>
   /// 🔹 Mark Chat as Read
   void _markChatAsRead(ChatData chat) {
     if (chat.unreadCount > 0) {
-      // Mark chat as read using the cubit's method
+      // Mark chat as read using the chat_settings_cubit's method
       context.read<ChatListCubit>().markChatAsRead(chat.id);
     }
   }
