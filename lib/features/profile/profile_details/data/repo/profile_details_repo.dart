@@ -16,6 +16,8 @@ abstract class ProfileDetailsRepoInterface {
       int userId);
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> reportUser(
       int userId);
+  Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> shareUser(
+      int userId);
 }
 
 class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
@@ -75,6 +77,21 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
       return Right(response);
     } catch (error) {
       log("error in report user $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> shareUser(
+      int userId) async {
+    try {
+      var response = await profileDetailsDataSource.shareUser(userId);
+      return Right(response);
+    } catch (error) {
+      log("error in share user $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

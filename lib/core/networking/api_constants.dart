@@ -20,6 +20,8 @@ class ApiConstants {
   static String registerInformation = '/user/attributes';
   static String logout = '/user/logout';
   static String deleteUser = '/user/delete-account';
+  static String getOnline = '/user/get-online';
+  static String setOnline = '/user/set-online';
 
   // profile
   static String aboutUs = '/user/aboutUs';
@@ -46,6 +48,7 @@ class ApiConstants {
       '/user/update-profile/lifepartner-info';
   static String getMembersProfile = '/user/members/images';
   static String reportUser(int userId) => '/user/report-user-profile/$userId';
+  static String shareUser(int userId) => '/user/share/profile/$userId';
   static String updateImageSetting = '/user/update-image-setting';
   static String deleteImage = '/user/delete-image';
 

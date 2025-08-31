@@ -100,7 +100,6 @@ class _SignupPageViewState extends State<SignupPageView>
   }
 
   Widget buildPages(index) {
-    var cubit = SignupCubit.get(context);
     switch (index) {
       case 0:
         return SignupPersonalInfo(

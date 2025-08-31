@@ -22,6 +22,7 @@ import 'package:elsadeken/features/chat/data/services/pusher_service.dart';
 import 'package:elsadeken/features/chat/domain/repositories/pusher_repo_interface.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_online_setting_cubit/chat_online_setting_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/chat_settings_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/lists_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
@@ -279,6 +280,8 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ChatDataSource>(() => ChatDataSource(sl()));
   sl.registerLazySingleton<ChatRepoInterface>(() => ChatRepoImpl(sl()));
   sl.registerFactory<ChatListCubit>(() => ChatListCubit(sl()));
+  sl.registerFactory<ChatOnlineSettingCubit>(
+      () => ChatOnlineSettingCubit(sl()));
 
   // Chat Settings
   sl.registerLazySingleton<ChatSettingsService>(

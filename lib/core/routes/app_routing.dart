@@ -54,10 +54,31 @@ class AppRouting {
       case AppRoutes.onBoardingScreen:
         return MaterialPageRoute(builder: (_) => OnBoardingScreen());
       case AppRoutes.signupScreen:
-        return MaterialPageRoute(
-            builder: (_) => SignupScreen(
-                  gender: arguments as String,
-                ));
+        if (arguments is Map<String, dynamic>) {
+          // Handle case when coming from login with initialStep
+          final gender =
+              arguments['gender'] as String? ?? 'male'; // Default gender
+          final initialStep = arguments['initialStep'] as int? ?? 0;
+          return MaterialPageRoute(
+              builder: (_) => SignupScreen(
+                    gender: gender,
+                    initialStep: initialStep,
+                  ));
+        } else if (arguments is String) {
+          // Handle case when coming from other places with just gender
+          return MaterialPageRoute(
+              builder: (_) => SignupScreen(
+                    gender: arguments,
+                    initialStep: 0,
+                  ));
+        } else {
+          // Fallback with default values
+          return MaterialPageRoute(
+              builder: (_) => SignupScreen(
+                    gender: 'male',
+                    initialStep: 0,
+                  ));
+        }
       case AppRoutes.loginScreen:
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case AppRoutes.forgetPasswordScreen:

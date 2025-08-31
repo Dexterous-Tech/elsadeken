@@ -59,4 +59,16 @@ class ProfileDetailsCubit extends Cubit<ProfileDetailsState> {
       emit(ReportUserSuccess(likeUserResponseModel));
     });
   }
+
+  void shareUser(int userId) async {
+    emit(ShareUserLoading());
+
+    var response = await profileDetailsRepoInterface.shareUser(userId);
+
+    response.fold((error) {
+      emit(ShareUserFailure(error.displayMessage));
+    }, (shareUserResponseModel) {
+      emit(ShareUserSuccess(shareUserResponseModel));
+    });
+  }
 }

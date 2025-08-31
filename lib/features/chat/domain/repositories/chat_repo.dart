@@ -5,6 +5,7 @@ import 'package:elsadeken/core/networking/api_error_model.dart';
 import 'package:elsadeken/features/chat/data/datasources/chat_data_source.dart';
 import 'package:elsadeken/features/chat/data/models/chat_conversation_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
+import 'package:elsadeken/features/chat/data/models/chat_online_setting_model.dart';
 import 'package:elsadeken/features/chat/data/models/send_message_model.dart';
 
 abstract class ChatRepoInterface {
@@ -24,8 +25,11 @@ abstract class ChatRepoInterface {
   Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteAllChats();
   Future<Either<ApiErrorModel, ChatListModel>> getFavoriteChatList();
   Future<Either<ApiErrorModel, Map<String, dynamic>>> addChatToFavorite(
-      int chatId, {int favourite = 1});
+      int chatId,
+      {int favourite = 1});
   Future<Either<ApiErrorModel, Map<String, dynamic>>> removeChatFromFavorite(
       int chatId);
-}
 
+  Future<Either<ApiErrorModel, ChatOnlineSettingModel>> getOnline();
+  Future<Either<ApiErrorModel, ChatOnlineSettingModel>> setOnline();
+}

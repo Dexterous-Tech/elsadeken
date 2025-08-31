@@ -6,9 +6,10 @@ import 'widgets/signup_body.dart';
 import 'package:flutter/material.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key, required this.gender});
+  const SignupScreen({super.key, required this.gender, this.initialStep = 0});
 
   final String gender;
+  final int initialStep;
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -27,7 +28,17 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Future<void> _initializeSignup() async {
-    // Check if there's recent signup data
+    // If initialStep is explicitly provided (not 0), prioritize it over saved data
+    if (widget.initialStep > 0) {
+      setState(() {
+        _currentGender = widget.gender;
+        _currentStep = widget.initialStep;
+      });
+      await _signupCubit.initialize(widget.gender);
+      return;
+    }
+
+    // Check if there's recent signup data (only when initialStep is 0)
     final hasRecentData = await _signupCubit.hasRecentSignupData();
 
     if (hasRecentData) {
@@ -46,7 +57,7 @@ class _SignupScreenState extends State<SignupScreen> {
       // Start fresh signup
       setState(() {
         _currentGender = widget.gender;
-        _currentStep = 0;
+        _currentStep = widget.initialStep;
       });
 
       await _signupCubit.initialize(widget.gender);

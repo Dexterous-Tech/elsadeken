@@ -6,6 +6,7 @@ import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
 import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
+import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/custom_container.dart';
@@ -13,6 +14,8 @@ import 'package:elsadeken/features/profile/profile_details/presentation/view/wid
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_logo.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/routes/app_routes.dart';
@@ -54,11 +57,40 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
               textDirection: TextDirection.rtl,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                // CustomContainer(
-                //   img: AppImages.share,
-                //   color: AppColors.lightBlue.withValues(alpha: 0.07),
-                //   text: 'مشاركة',
-                // ),
+                BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
+                  listenWhen: (context, current) =>
+                      current is ShareUserLoading ||
+                      current is ShareUserFailure ||
+                      current is ShareUserSuccess,
+                  listener: (context, state) {
+                    if (state is ShareUserLoading) {
+                      loadingDialog(context);
+                    } else if (state is ShareUserFailure) {
+                      context.pop();
+                      errorDialog(context: context, error: state.error);
+                    } else if (state is ShareUserSuccess) {
+                      context.pop();
+                      _showShareSuccessDialog(
+                        context: context,
+                        message:
+                            state.profileDetailsActionResponseModel.message ??
+                                'تم انشاء رابط مشاركة',
+                        shareUrl: state
+                            .profileDetailsActionResponseModel.data?.shareUrl,
+                      );
+                    }
+                  },
+                  child: CustomContainer(
+                    img: AppImages.share,
+                    color: AppColors.lightBlue.withValues(alpha: 0.07),
+                    text: 'مشاركة',
+                    onTap: () {
+                      context
+                          .read<ProfileDetailsCubit>()
+                          .shareUser(widget.userId);
+                    },
+                  ),
+                ),
                 BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
                   listenWhen: (context, current) =>
                       current is LikeUserLoading ||
@@ -145,7 +177,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                         print(
                             '🔄 [ProfileDetails] Chat list not loaded, loading now...');
                         await chatListCubit.forceRefreshChatList();
-                        
+
                         // Wait a bit for the state to update
                         await Future.delayed(const Duration(milliseconds: 500));
                       } else {
@@ -269,6 +301,147 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
             ProfileDetailsData(),
             verticalSpace(20),
           ],
+        ),
+      ),
+    );
+  }
+
+  void _showShareSuccessDialog({
+    required BuildContext context,
+    required String message,
+    String? shareUrl,
+  }) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop) {
+            Navigator.pop(context, true);
+          }
+        },
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            backgroundColor: Colors.transparent,
+            child: Container(
+              width: 370,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              decoration: ShapeDecoration(
+                color: AppColors.white,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.transparent),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Success icon
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.check_circle,
+                      color: Colors.green,
+                      size: 50,
+                    ),
+                  ),
+                  verticalSpace(20),
+
+                  // Success message
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    textDirection: TextDirection.rtl,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  verticalSpace(20),
+
+                  // Share URL display (if available)
+                  if (shareUrl != null && shareUrl.isNotEmpty) ...[
+                    GestureDetector(
+                      onTap: () async {
+                        try {
+                          await Clipboard.setData(
+                              ClipboardData(text: shareUrl));
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'تم نسخ الرابط بنجاح!',
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'خطأ في نسخ الرابط: $e',
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.link,
+                            color: Colors.blue,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'أنسخ رابط المشاركة',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    verticalSpace(20),
+                  ],
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: CustomElevatedButton(
+                      onPressed: () {
+                        context.pop();
+                      },
+                      textButton: 'استمر',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

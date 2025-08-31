@@ -3,6 +3,7 @@ import 'package:elsadeken/features/chat/data/models/chat_settings_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_settings_request_model.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/chat_settings_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/lists_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_online_setting_cubit/chat_online_setting_cubit.dart';
 
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
@@ -26,19 +27,19 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   String _selectedAgeCategory = 'أي شخص';
   String _selectedNationalities = 'كل الجنسيات';
   String _selectedCountries = 'كل الدول';
-  
+
   // Age range for API
   int _fromAge = 18;
   int _toAge = 50;
   int _nationalityId = 0;
   int _countryId = 0;
-  
+
   // Store original loaded settings for comparison
   int _originalFromAge = 18;
   int _originalToAge = 50;
   int _originalNationalityId = 0;
   int _originalCountryId = 0;
-  
+
   // Track if initial settings have been loaded
   bool _hasLoadedInitialSettings = false;
 
@@ -48,9 +49,11 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     // Load settings and lists when the screen initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        print('[ChatSettingsScreen] initState: Loading chat settings and lists...');
+        print(
+            '[ChatSettingsScreen] initState: Loading chat settings and lists...');
         context.read<ChatSettingsCubit>().loadChatSettings();
         context.read<ListsCubit>().loadLists();
+        context.read<ChatOnlineSettingCubit>().getOnline();
       }
     });
   }
@@ -61,18 +64,18 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     _toAge = settings.toAge;
     _nationalityId = settings.nationalityId;
     _countryId = settings.countryId;
-    
+
     // Store original values for comparison
     _originalFromAge = settings.fromAge;
     _originalToAge = settings.toAge;
     _originalNationalityId = settings.nationalityId;
     _originalCountryId = settings.countryId;
-    
+
     // Update UI text based on IDs (you may need to map these to actual text values)
     _updateAgeCategoryText();
     _updateNationalitiesText();
     _updateCountriesText();
-    
+
     // Log the user's chat settings ID
     print('[ChatSettingsScreen] Loaded settings with ID: ${settings.id}');
   }
@@ -106,24 +109,23 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   }
 
   // Check if settings have changed from original values
-  
 
   bool _hasSettingsChanged() {
     final hasChanged = _fromAge != _originalFromAge ||
-           _toAge != _originalToAge ||
-           _nationalityId != _originalNationalityId ||
-           _countryId != _originalCountryId;
-    
+        _toAge != _originalToAge ||
+        _nationalityId != _originalNationalityId ||
+        _countryId != _originalCountryId;
+
     // Debug logging
     print('[ChatSettingsScreen] _hasSettingsChanged check:');
-    print('  Current: fromAge=$_fromAge, toAge=$_toAge, nationalityId=$_nationalityId, countryId=$_countryId');
-    print('  Original: fromAge=$_originalFromAge, toAge=$_originalToAge, nationalityId=$_originalNationalityId, countryId=$_originalCountryId');
+    print(
+        '  Current: fromAge=$_fromAge, toAge=$_toAge, nationalityId=$_nationalityId, countryId=$_countryId');
+    print(
+        '  Original: fromAge=$_originalFromAge, toAge=$_originalToAge, nationalityId=$_originalNationalityId, countryId=$_originalCountryId');
     print('  Has changes: $hasChanged');
-    
+
     return hasChanged;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -132,18 +134,20 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
       child: Scaffold(
         appBar: _buildAppBar(),
         backgroundColor: Colors.transparent,
-                body: SafeArea(
+        body: SafeArea(
           child: MultiBlocListener(
             listeners: [
               BlocListener<ChatSettingsCubit, ChatSettingsState>(
                 listener: (context, state) {
-                  print('[ChatSettingsScreen] ChatSettingsCubit state changed to: ${state.runtimeType}');
-                  
+                  print(
+                      '[ChatSettingsScreen] ChatSettingsCubit state changed to: ${state.runtimeType}');
+
                   if (state is ChatSettingsLoaded && mounted) {
-                    print('[ChatSettingsScreen] Settings loaded: ID=${state.chatSettings.id}, fromAge=${state.chatSettings.fromAge}, toAge=${state.chatSettings.toAge}');
+                    print(
+                        '[ChatSettingsScreen] Settings loaded: ID=${state.chatSettings.id}, fromAge=${state.chatSettings.fromAge}, toAge=${state.chatSettings.toAge}');
                     _loadSettingsFromApi(state.chatSettings);
                     setState(() {});
-                    
+
                     // Show loading success message (optional - can be removed if not needed)
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -168,7 +172,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     _originalToAge = _toAge;
                     _originalNationalityId = _nationalityId;
                     _originalCountryId = _countryId;
-                    
+
                     // Show success snackbar
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -187,7 +191,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         ),
                       ),
                     );
-                    
+
                     // Trigger UI update to reflect the new "no changes" state
                     setState(() {});
                   } else if (state is ChatSettingsUpdateError && mounted) {
@@ -246,50 +250,120 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                   }
                 },
               ),
+              BlocListener<ChatOnlineSettingCubit, ChatOnlineSettingState>(
+                listener: (context, state) {
+                  if (state is ChatOnlineSettingGetSuccess && mounted) {
+                    // Update online status based on API response
+                    setState(() {
+                      _isOnline =
+                          state.chatOnlineSettingModel.data?.enableOnline == 1;
+                    });
+                  } else if (state is ChatOnlineSettingSetSuccess && mounted) {
+                    // Show success message when online status is updated
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'تم تحديث حالة الاتصال بنجاح',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        backgroundColor: Colors.green,
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    );
+                    // Refresh the online status after setting
+                    context.read<ChatOnlineSettingCubit>().getOnline();
+                  } else if (state is ChatOnlineSettingGetFailure && mounted) {
+                    // Show error message when getting online status fails
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          state.error,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        backgroundColor: Colors.red,
+                        duration: const Duration(seconds: 4),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    );
+                  } else if (state is ChatOnlineSettingSetFailure && mounted) {
+                    // Show error message when setting online status fails
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          state.error,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        backgroundColor: Colors.red,
+                        duration: const Duration(seconds: 4),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
             ],
             child: BlocBuilder<ChatSettingsCubit, ChatSettingsState>(
               builder: (context, state) {
                 return Stack(
-                children: [
-                  // Background image should be behind content
-                 /* Positioned(
+                  children: [
+                    // Background image should be behind content
+                    /* Positioned(
                     top: 100.h,
                     right: -100.w,
                     child: _buildBackgroundImage(),
                   ),*/
-                  // Fallback background decoration
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      width: 300.w,
-                      height: 300.h,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFF0F0).withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(150),
-                      ),
-                    ),
-                  ),
-                  // Content should be on top and interactive
-                  Column(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            image: DecorationImage(
-                              image: AssetImage(
-                                'assets/images/chat/mail 1.png',
-                              ),
-                            ),
-                          ),
-                          child: _buildBody(state),
+                    // Fallback background decoration
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        width: 300.w,
+                        height: 300.h,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF0F0).withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(150),
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              );
+                    ),
+                    // Content should be on top and interactive
+                    Column(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  'assets/images/chat/mail 1.png',
+                                ),
+                              ),
+                            ),
+                            child: _buildBody(state),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
               },
             ),
           ),
@@ -373,7 +447,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             ),
             SizedBox(height: 16.h),
             ElevatedButton(
-              onPressed: () => context.read<ChatSettingsCubit>().loadChatSettings(),
+              onPressed: () =>
+                  context.read<ChatSettingsCubit>().loadChatSettings(),
               child: const Text('إعادة المحاولة'),
             ),
           ],
@@ -427,7 +502,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                 SizedBox(height: 50.h),
                 _buildDivider(),
                 SizedBox(height: 50.h),
-               // _buildNotificationSettingsSection(),
+                // _buildNotificationSettingsSection(),
               ],
             ),
           ),
@@ -451,25 +526,32 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
           ),
         ),
         SizedBox(height: 16.h),
-        _buildSettingRow(
-          title: 'متصل الآن',
-          subtitle: 'أظهر أنك متصل',
-          showGreenDot: true,
-          trailing: Transform.scale(
-            scale: 0.8,
-            child: Switch(
-              value: _isOnline,
-              onChanged: (value) {
-                setState(() {
-                  _isOnline = value;
-                });
-              },
-              activeColor: Colors.orangeAccent,
-              activeTrackColor: Colors.black,
-              inactiveThumbColor: Colors.red,
-              inactiveTrackColor: Colors.white,
-            ),
-          ),
+        BlocBuilder<ChatOnlineSettingCubit, ChatOnlineSettingState>(
+          builder: (context, state) {
+            return _buildSettingRow(
+              title: _isOnline ? 'متصل الآن' : 'غير متصل',
+              subtitle: 'أظهر أنك متصل',
+              showGreenDot: true,
+              trailing: Transform.scale(
+                scale: 0.8,
+                child: Switch(
+                  value: _isOnline,
+                  onChanged: (value) {
+                    // Immediately update the UI
+                    setState(() {
+                      _isOnline = value;
+                    });
+                    // Call the cubit to update online status
+                    context.read<ChatOnlineSettingCubit>().setOnline();
+                  },
+                  activeColor: Colors.orangeAccent,
+                  activeTrackColor: Colors.black,
+                  inactiveThumbColor: Colors.red,
+                  inactiveTrackColor: Colors.white,
+                ),
+              ),
+            );
+          },
         )
       ],
     );
@@ -558,10 +640,12 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     return InkWell(
       splashColor: Colors.blue.withOpacity(0.3),
       highlightColor: Colors.blue.withOpacity(0.1),
-      onTap: onTap != null ? () {
-        print('Tapped on: $title'); // Debug print
-        onTap();
-      } : null,
+      onTap: onTap != null
+          ? () {
+              print('Tapped on: $title'); // Debug print
+              onTap();
+            }
+          : null,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
         decoration: BoxDecoration(
@@ -579,8 +663,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     Container(
                       width: 20.w,
                       height: 20.w,
-                      decoration: const BoxDecoration(
-                        color: Colors.green,
+                      decoration: BoxDecoration(
+                        color: _isOnline ? Colors.green : AppColors.red,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -628,20 +712,26 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     return BlocBuilder<ChatSettingsCubit, ChatSettingsState>(
       builder: (context, state) {
         final isLoading = state is ChatSettingsUpdating;
-        final hasSettings = _fromAge != 0 || _toAge != 0 || _nationalityId != 0 || _countryId != 0;
+        final hasSettings = _fromAge != 0 ||
+            _toAge != 0 ||
+            _nationalityId != 0 ||
+            _countryId != 0;
         final hasChanges = _hasSettingsChanged();
-        
+
         // Debug logging for save button state
         print('[ChatSettingsScreen] Save button state:');
         print('  isLoading: $isLoading');
         print('  hasSettings: $hasSettings');
         print('  hasChanges: $hasChanges');
-        print('  Button enabled: ${!(isLoading || !hasSettings || !hasChanges)}');
-        
+        print(
+            '  Button enabled: ${!(isLoading || !hasSettings || !hasChanges)}');
+
         return Padding(
           padding: const EdgeInsets.all(20.0),
           child: CustomElevatedButton(
-            onPressed: (isLoading || !hasSettings || !hasChanges) ? () {} : _saveSettings,
+            onPressed: (isLoading || !hasSettings || !hasChanges)
+                ? () {}
+                : _saveSettings,
             textButton: isLoading ? 'جاري الحفظ...' : 'حفظ',
             height: 56.h,
             radius: 28.r,
@@ -649,7 +739,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
             ),
-            backgroundColor: (isLoading || !hasSettings || !hasChanges) ? Colors.grey : null,
+            backgroundColor:
+                (isLoading || !hasSettings || !hasChanges) ? Colors.grey : null,
           ),
         );
       },
@@ -658,7 +749,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
 
   void _saveSettings() {
     print('[ChatSettingsScreen] _saveSettings called');
-    
+
     // Check if we have valid settings to save
     if (!_hasSettingsChanged()) {
       print('[ChatSettingsScreen] No changes detected, showing snackbar');
@@ -677,7 +768,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     }
 
     print('[ChatSettingsScreen] Changes detected, creating request model');
-    
+
     // Create request model
     final request = ChatSettingsRequestModel(
       fromAge: _fromAge,
@@ -687,16 +778,19 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     );
 
     print('[ChatSettingsScreen] Request model: ${request.toJson()}');
-    print('[ChatSettingsScreen] Calling updateChatSettings via chat_settings_cubit');
+    print(
+        '[ChatSettingsScreen] Calling updateChatSettings via chat_settings_cubit');
 
     // Get current chat_settings_cubit state for debugging
     final currentState = context.read<ChatSettingsCubit>().state;
-    print('[ChatSettingsScreen] Current ChatSettingsCubit state: ${currentState.runtimeType}');
+    print(
+        '[ChatSettingsScreen] Current ChatSettingsCubit state: ${currentState.runtimeType}');
 
     // Update settings via API
     context.read<ChatSettingsCubit>().updateChatSettings(request);
-    
-    print('[ChatSettingsScreen] updateChatSettings called, waiting for response...');
+
+    print(
+        '[ChatSettingsScreen] updateChatSettings called, waiting for response...');
   }
 
   void _showAgeCategoryDialog() {
@@ -756,18 +850,19 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   void _showNationalitiesDialog() {
     final listsCubit = context.read<ListsCubit>();
     final currentState = listsCubit.state;
-    
+
     print('[ChatSettingsScreen] Opening nationalities dialog');
     print('[ChatSettingsScreen] Current ListsCubit state: $currentState');
-    
+
     // Only load if not already loaded or loading
     if (currentState is ListsInitial) {
       print('[ChatSettingsScreen] Lists not loaded yet, loading now...');
       listsCubit.loadLists();
     } else if (currentState is ListsLoaded) {
-      print('[ChatSettingsScreen] Using cached data (${currentState.fromCache ? 'from cache' : 'from API'})');
+      print(
+          '[ChatSettingsScreen] Using cached data (${currentState.fromCache ? 'from cache' : 'from API'})');
     }
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -775,7 +870,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         content: Builder(
           builder: (context) {
             if (currentState is ListsLoaded) {
-              print('[ChatSettingsScreen] Showing ${currentState.nationalities.length} nationalities');
+              print(
+                  '[ChatSettingsScreen] Showing ${currentState.nationalities.length} nationalities');
               return SizedBox(
                 width: double.maxFinite,
                 height: 400, // Fixed height to prevent overflow
@@ -792,8 +888,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         Navigator.pop(context);
                       }),
                       // Dynamic options from API
-                      ...currentState.nationalities.map((nationality) =>
-                        _buildDialogOption(
+                      ...currentState.nationalities.map(
+                        (nationality) => _buildDialogOption(
                           nationality.name,
                           () {
                             setState(() {
@@ -808,7 +904,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                   ),
                 ),
               );
-            } else if (currentState is ListsLoading || currentState is ListsInitial) {
+            } else if (currentState is ListsLoading ||
+                currentState is ListsInitial) {
               print('[ChatSettingsScreen] Lists are loading...');
               return const SizedBox(
                 height: 200,
@@ -830,7 +927,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                 ),
               );
             } else if (currentState is ListsError) {
-              print('[ChatSettingsScreen] Lists error: ${currentState.message}');
+              print(
+                  '[ChatSettingsScreen] Lists error: ${currentState.message}');
               return SizedBox(
                 height: 200,
                 child: Center(
@@ -838,13 +936,15 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                      const Icon(Icons.error_outline,
+                          color: Colors.red, size: 48),
                       const SizedBox(height: 16),
                       Text('حدث خطأ في تحميل الجنسيات'),
                       const SizedBox(height: 8),
                       Text(
                         currentState.message,
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.grey),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
@@ -890,18 +990,19 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   void _showCountriesDialog() {
     final listsCubit = context.read<ListsCubit>();
     final currentState = listsCubit.state;
-    
+
     print('[ChatSettingsScreen] Opening countries dialog');
     print('[ChatSettingsScreen] Current ListsCubit state: $currentState');
-    
+
     // Only load if not already loaded or loading
     if (currentState is ListsInitial) {
       print('[ChatSettingsScreen] Lists not loaded yet, loading now...');
       listsCubit.loadLists();
     } else if (currentState is ListsLoaded) {
-      print('[ChatSettingsScreen] Using cached data (${currentState.fromCache ? 'from cache' : 'from API'})');
+      print(
+          '[ChatSettingsScreen] Using cached data (${currentState.fromCache ? 'from cache' : 'from API'})');
     }
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -909,7 +1010,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         content: Builder(
           builder: (context) {
             if (currentState is ListsLoaded) {
-              print('[ChatSettingsScreen] Showing ${currentState.countries.length} countries');
+              print(
+                  '[ChatSettingsScreen] Showing ${currentState.countries.length} countries');
               return SizedBox(
                 width: double.maxFinite,
                 height: 400, // Fixed height to prevent overflow
@@ -926,8 +1028,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         Navigator.pop(context);
                       }),
                       // Dynamic options from API
-                      ...currentState.countries.map((country) =>
-                        _buildDialogOption(
+                      ...currentState.countries.map(
+                        (country) => _buildDialogOption(
                           country.name,
                           () {
                             setState(() {
@@ -942,7 +1044,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                   ),
                 ),
               );
-            } else if (currentState is ListsLoading || currentState is ListsInitial) {
+            } else if (currentState is ListsLoading ||
+                currentState is ListsInitial) {
               print('[ChatSettingsScreen] Lists are loading...');
               return const SizedBox(
                 height: 200,
@@ -964,7 +1067,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                 ),
               );
             } else if (currentState is ListsError) {
-              print('[ChatSettingsScreen] Lists error: ${currentState.message}');
+              print(
+                  '[ChatSettingsScreen] Lists error: ${currentState.message}');
               return SizedBox(
                 height: 200,
                 child: Center(
@@ -972,13 +1076,15 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                      const Icon(Icons.error_outline,
+                          color: Colors.red, size: 48),
                       const SizedBox(height: 16),
                       Text('حدث خطأ في تحميل الدول'),
                       const SizedBox(height: 8),
                       Text(
                         currentState.message,
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.grey),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),

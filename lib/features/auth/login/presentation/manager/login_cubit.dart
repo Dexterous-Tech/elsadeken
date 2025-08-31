@@ -45,11 +45,12 @@ class LoginCubit extends Cubit<LoginState> {
         await saveUserToken(loginResponseModel.data!.token);
         log("save token ");
 
-        // After successful login, save FCM token silently
-        await saveFcmTokenSilently();
-
-        // Mark user as logged in
-        await SharedPreferencesHelper.setIsLoggedIn(true);
+        if (loginResponseModel.data?.redirectToAttribute != true) {
+          // After successful login, save FCM token silently
+          await saveFcmTokenSilently();
+          // Mark user as logged in when redirectToAttribute is null, false, or any other value except true
+          await SharedPreferencesHelper.setIsLoggedIn(true);
+        }
 
         emit(LoginSuccess(loginResponseModel: loginResponseModel));
       },

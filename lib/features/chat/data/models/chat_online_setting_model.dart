@@ -1,23 +1,22 @@
-class ProfileDetailsActionResponseModel {
-  ProfileDetailsActionResponseModel({
+class ChatOnlineSettingModel {
+  ChatOnlineSettingModel({
+    this.data,
     this.message,
     this.type,
     this.status,
     this.showToast,
-    this.data,
   });
 
-  ProfileDetailsActionResponseModel.fromJson(dynamic json) {
+  ChatOnlineSettingModel.fromJson(dynamic json) {
     data = json['data'] != null
-        ? ProfileDetailsDataActionResponseModel.fromJson(json['data'])
+        ? ChatOnlineDataModel.fromJson(json['data'])
         : null;
     message = json['message'];
     type = json['type'];
     status = json['status'];
     showToast = json['showToast'];
   }
-
-  ProfileDetailsDataActionResponseModel? data;
+  ChatOnlineDataModel? data;
   String? message;
   String? type;
   int? status;
@@ -36,19 +35,19 @@ class ProfileDetailsActionResponseModel {
   }
 }
 
-class ProfileDetailsDataActionResponseModel {
-  ProfileDetailsDataActionResponseModel({
-    this.shareUrl,
+class ChatOnlineDataModel {
+  ChatOnlineDataModel({
+    this.enableOnline,
   });
 
-  ProfileDetailsDataActionResponseModel.fromJson(dynamic json) {
-    shareUrl = json['share_url'];
+  ChatOnlineDataModel.fromJson(dynamic json) {
+    enableOnline = json['enable_online'];
   }
-  String? shareUrl;
+  int? enableOnline;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['share_url'] = shareUrl;
+    map['enable_online'] = enableOnline;
     return map;
   }
 }

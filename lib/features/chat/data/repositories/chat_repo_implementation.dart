@@ -6,6 +6,7 @@ import 'package:elsadeken/core/networking/api_error_model.dart';
 import 'package:elsadeken/features/chat/data/datasources/chat_data_source.dart';
 import 'package:elsadeken/features/chat/data/models/chat_conversation_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
+import 'package:elsadeken/features/chat/data/models/chat_online_setting_model.dart';
 import 'package:elsadeken/features/chat/data/models/send_message_model.dart';
 import 'package:elsadeken/features/chat/domain/repositories/chat_repo.dart';
 
@@ -44,9 +45,9 @@ class ChatRepoImpl extends ChatRepoInterface {
 
   @override
   Future<Either<ApiErrorModel, SendMessageModel>> sendMessage(
-      int receiverId,
-      String message,
-      ) async {
+    int receiverId,
+    String message,
+  ) async {
     try {
       final response = await chatDataSource.sendMessage(receiverId, message);
       return Right(response);
@@ -61,7 +62,7 @@ class ChatRepoImpl extends ChatRepoInterface {
 
   @override
   Future<Either<ApiErrorModel, Map<String, dynamic>>>
-  markAllMessagesAsRead() async {
+      markAllMessagesAsRead() async {
     try {
       final response = await chatDataSource.markAllMessagesAsRead();
       return Right(response);
@@ -149,9 +150,11 @@ class ChatRepoImpl extends ChatRepoInterface {
 
   @override
   Future<Either<ApiErrorModel, Map<String, dynamic>>> addChatToFavorite(
-      int chatId, {int favourite = 1}) async {
+      int chatId,
+      {int favourite = 1}) async {
     try {
-      final response = await chatDataSource.addChatToFavorite(chatId, favourite: favourite);
+      final response =
+          await chatDataSource.addChatToFavorite(chatId, favourite: favourite);
       return Right(response);
     } catch (error) {
       log("error in addChatToFavorite: $error");
@@ -170,6 +173,34 @@ class ChatRepoImpl extends ChatRepoInterface {
       return Right(response);
     } catch (error) {
       log("error in removeChatFromFavorite: $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, ChatOnlineSettingModel>> getOnline() async {
+    try {
+      final response = await chatDataSource.getOnline();
+      return Right(response);
+    } catch (error) {
+      log("error in get online: $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, ChatOnlineSettingModel>> setOnline() async {
+    try {
+      final response = await chatDataSource.setOnline();
+      return Right(response);
+    } catch (error) {
+      log("error in get online: $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

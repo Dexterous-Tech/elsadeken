@@ -61,16 +61,6 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
               'title': 'قصص ناجحة',
               'value': response.data!.blog ?? false,
             },
-            {
-              'id': 'ring',
-              'title': 'إشعار نغمة الرنين',
-              'value': response.data!.ring ?? false,
-            },
-            {
-              'id': 'vibration',
-              'title': 'تنبيه بالاهتزاز',
-              'value': response.data!.vibration ?? false,
-            },
           ];
         }
         log('Settings list: $settingsList');
@@ -117,12 +107,6 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
         blog: settingId == 'blog'
             ? (isActive ? 1 : 0)
             : (currentData.blog == true ? 1 : 0),
-        ring: settingId == 'ring'
-            ? (isActive ? 1 : 0)
-            : (currentData.ring == true ? 1 : 0),
-        vibration: settingId == 'vibration'
-            ? (isActive ? 1 : 0)
-            : (currentData.vibration == true ? 1 : 0),
       );
 
       // Send update request
@@ -182,10 +166,6 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
         return 'رسائل جديدة';
       case 'blog':
         return 'قصص ناجحة';
-      case 'ring':
-        return 'إشعار نغمة الرنين';
-      case 'vibration':
-        return 'تنبيه بالاهتزاز';
       default:
         return 'الإعداد';
     }
@@ -205,10 +185,6 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
           return 'سيتم إعلامك عند استلام رسائل جديدة';
         case 'blog':
           return 'سيتم إعلامك عند نشر قصص ناجحة';
-        case 'ring':
-          return 'سيتم تشغيل نغمة الرنين للإشعارات';
-        case 'vibration':
-          return 'سيتم تفعيل الاهتزاز للإشعارات';
         default:
           return 'يسمح بتلقي الإشعارات';
       }
@@ -224,10 +200,6 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
           return 'لن يتم إعلامك عند استلام رسائل جديدة';
         case 'blog':
           return 'لن يتم إعلامك عند نشر قصص ناجحة';
-        case 'ring':
-          return 'لن يتم تشغيل نغمة الرنين للإشعارات';
-        case 'vibration':
-          return 'لن يتم تفعيل الاهتزاز للإشعارات';
         default:
           return 'لا يسمح بتلقي الإشعارات';
       }

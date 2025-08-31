@@ -16,7 +16,9 @@ class NotificationSettingResponseModel {
       }
       message = json['message']?.toString();
       type = json['type']?.toString();
-      status = json['status'] is int ? json['status'] : int.tryParse(json['status']?.toString() ?? '0');
+      status = json['status'] is int
+          ? json['status']
+          : int.tryParse(json['status']?.toString() ?? '0');
       showToast = json['showToast'] ?? false;
     } catch (e) {
       log('Error parsing NotificationSettingResponseModel: $e');
@@ -24,7 +26,7 @@ class NotificationSettingResponseModel {
       rethrow;
     }
   }
-  
+
   NotificationSettingDataModel? data;
   String? message;
   String? type;
@@ -53,23 +55,23 @@ class NotificationSettingDataModel {
     this.ignoreList,
     this.message,
     this.blog,
-    this.ring,
-    this.vibration,
     this.createdAt,
     this.updatedAt,
   });
 
   NotificationSettingDataModel.fromJson(dynamic json) {
     try {
-      id = json['id'] is int ? json['id'] : int.tryParse(json['id']?.toString() ?? '0');
-      userId = json['user_id'] is int ? json['user_id'] : int.tryParse(json['user_id']?.toString() ?? '0');
+      id = json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? '0');
+      userId = json['user_id'] is int
+          ? json['user_id']
+          : int.tryParse(json['user_id']?.toString() ?? '0');
       favoriteList = json['favorite_list'] == 1;
       visitProfile = json['visit_profile'] == 1;
       ignoreList = json['ignore_list'] == 1;
       message = json['message'] == 1;
       blog = json['blog'] == 1;
-      ring = json['ring'] == 1;
-      vibration = json['vibration'] == 1;
       createdAt = json['created_at']?.toString();
       updatedAt = json['updated_at']?.toString();
     } catch (e) {
@@ -78,7 +80,7 @@ class NotificationSettingDataModel {
       rethrow;
     }
   }
-  
+
   int? id;
   int? userId;
   bool? favoriteList;
@@ -86,8 +88,6 @@ class NotificationSettingDataModel {
   bool? ignoreList;
   bool? message;
   bool? blog;
-  bool? ring;
-  bool? vibration;
   String? createdAt;
   String? updatedAt;
 
@@ -100,8 +100,6 @@ class NotificationSettingDataModel {
     map['ignore_list'] = ignoreList == true ? 1 : 0;
     map['message'] = message == true ? 1 : 0;
     map['blog'] = blog == true ? 1 : 0;
-    map['ring'] = ring == true ? 1 : 0;
-    map['vibration'] = vibration == true ? 1 : 0;
     map['created_at'] = createdAt;
     map['updated_at'] = updatedAt;
     return map;
@@ -135,16 +133,6 @@ class NotificationSettingDataModel {
         'title': 'قصص ناجحة',
         'value': blog ?? false,
       },
-      {
-        'id': 'ring',
-        'title': 'إشعار نغمة الرنين',
-        'value': ring ?? false,
-      },
-      {
-        'id': 'vibration',
-        'title': 'تنبيه بالاهتزاز',
-        'value': vibration ?? false,
-      },
     ];
   }
 }
@@ -156,8 +144,6 @@ class UpdateNotificationSettingRequestModel {
     required this.ignoreList,
     required this.message,
     required this.blog,
-    required this.ring,
-    required this.vibration,
   });
 
   final int favoriteList;
@@ -165,8 +151,6 @@ class UpdateNotificationSettingRequestModel {
   final int ignoreList;
   final int message;
   final int blog;
-  final int ring;
-  final int vibration;
 
   Map<String, dynamic> toJson() {
     return {
@@ -175,11 +159,6 @@ class UpdateNotificationSettingRequestModel {
       'ignore_list': ignoreList,
       'message': message,
       'blog': blog,
-      'ring': ring,
-      'vibration': vibration,
     };
   }
-
-
 }
-

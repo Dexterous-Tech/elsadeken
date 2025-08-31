@@ -2,6 +2,7 @@ import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
 import 'package:elsadeken/features/chat/data/models/chat_conversation_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
+import 'package:elsadeken/features/chat/data/models/chat_online_setting_model.dart';
 import 'package:elsadeken/features/chat/data/models/send_message_model.dart';
 
 class ChatDataSource {
@@ -74,8 +75,9 @@ class ChatDataSource {
 
   Future<Map<String, dynamic>> deleteOneChat(int chatId) async {
     print('🌐 [ChatDataSource] Calling delete API for chat ID: $chatId');
-    print('🌐 [ChatDataSource] Endpoint: ${ApiConstants.deleteOneChatSettings(chatId.toString())}');
-    
+    print(
+        '🌐 [ChatDataSource] Endpoint: ${ApiConstants.deleteOneChatSettings(chatId.toString())}');
+
     final response = await _apiServices.delete(
       endpoint: ApiConstants.deleteOneChatSettings(chatId.toString()),
       requestBody: {},
@@ -107,7 +109,8 @@ class ChatDataSource {
     return ChatListModel.fromJson(response.data);
   }
 
-  Future<Map<String, dynamic>> addChatToFavorite(int chatId, {int favourite = 1}) async {
+  Future<Map<String, dynamic>> addChatToFavorite(int chatId,
+      {int favourite = 1}) async {
     final response = await _apiServices.get(
       endpoint: ApiConstants.addChatToFavorite(chatId),
       queryParameters: {
@@ -121,5 +124,24 @@ class ChatDataSource {
 
   Future<Map<String, dynamic>> removeChatFromFavorite(int chatId) async {
     return await addChatToFavorite(chatId, favourite: 0);
+  }
+
+  Future<ChatOnlineSettingModel> getOnline() async {
+    var response = await _apiServices.get(
+      endpoint: ApiConstants.getOnline,
+      requiresAuth: true,
+    );
+
+    return ChatOnlineSettingModel.fromJson(response.data);
+  }
+
+  Future<ChatOnlineSettingModel> setOnline() async {
+    var response = await _apiServices.post(
+      endpoint: ApiConstants.setOnline,
+      requestBody: null,
+      requiresAuth: true,
+    );
+
+    return ChatOnlineSettingModel.fromJson(response.data);
   }
 }

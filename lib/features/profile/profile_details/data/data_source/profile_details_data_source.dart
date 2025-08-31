@@ -43,4 +43,13 @@ class ProfileDetailsDataSource {
 
     return ProfileDetailsActionResponseModel.fromJson(response.data);
   }
+
+  Future<ProfileDetailsActionResponseModel> shareUser(int userId) async {
+    var response = await _apiServices.get(
+      endpoint: ApiConstants.shareUser(userId),
+      requiresAuth: true,
+    );
+
+    return ProfileDetailsActionResponseModel.fromJson(response.data);
+  }
 }

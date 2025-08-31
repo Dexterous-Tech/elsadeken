@@ -738,14 +738,11 @@ class _ManageProfileDialogContentState
             case 'آنسة':
               maritalStatusValue = 'single';
               break;
-            case 'متزوجة':
-              maritalStatusValue = 'married';
-              break;
             case 'مطلقة':
               maritalStatusValue = 'divorced';
               break;
             case 'أرملة':
-              maritalStatusValue = 'widwed';
+              maritalStatusValue = 'widower';
               break;
             // Male options
             case 'عازب':
@@ -758,7 +755,7 @@ class _ManageProfileDialogContentState
               maritalStatusValue = 'divorced';
               break;
             case 'أرمل':
-              maritalStatusValue = 'widwed';
+              maritalStatusValue = 'widower';
               break;
           }
         }

@@ -60,3 +60,17 @@ final class ReportUserSuccess extends ProfileDetailsState {
 
   ReportUserSuccess(this.profileDetailsActionResponseModel);
 }
+
+class ShareUserLoading extends ProfileDetailsState {}
+
+class ShareUserFailure extends ProfileDetailsState {
+  final String error;
+
+  ShareUserFailure(this.error);
+}
+
+class ShareUserSuccess extends ProfileDetailsState {
+  final ProfileDetailsActionResponseModel profileDetailsActionResponseModel;
+
+  ShareUserSuccess(this.profileDetailsActionResponseModel);
+}

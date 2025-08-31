@@ -168,10 +168,10 @@ class ManageProfileMaritalStatus extends StatelessWidget {
       case 'single':
         return _isMale(profileData?.gender) ? 'عازب' : 'آنسة';
       case 'married':
-        return _isMale(profileData?.gender) ? 'متزوج' : 'متزوجة';
+        return _isMale(profileData?.gender) ? 'متزوج' : '';
       case 'divorced':
         return _isMale(profileData?.gender) ? 'مطلق' : 'مطلقة';
-      case 'widwed':
+      case 'widower':
         return _isMale(profileData?.gender) ? 'أرمل' : 'أرملة';
       default:
         // If it's already in Arabic, return as is

@@ -77,8 +77,26 @@ class LoginBody extends StatelessWidget {
                                   context: context,
                                   message: state.loginResponseModel.message,
                                   onPressed: () {
-                                    context.pushNamedAndRemoveUntil(
-                                        AppRoutes.homeScreen);
+                                    if (state.loginResponseModel.data
+                                            ?.redirectToAttribute ==
+                                        true) {
+                                      // Navigate to signup screen at index 2 (SignupNational)
+                                      // Get gender from login response data
+                                      final gender = state.loginResponseModel
+                                              .data?.gender ??
+                                          'male';
+                                      context.pushReplacementNamed(
+                                        AppRoutes.signupScreen,
+                                        arguments: {
+                                          'gender': gender,
+                                          'initialStep': 2
+                                        },
+                                      );
+                                    } else {
+                                      // Navigate to home screen
+                                      context.pushNamedAndRemoveUntil(
+                                          AppRoutes.homeScreen);
+                                    }
                                   });
                             }
                             // Note: FcmLoading, FcmSuccess, and FcmFailure states are not handled here
