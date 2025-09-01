@@ -35,6 +35,7 @@ class _DropdownFieldState extends State<DropdownField> {
             height: 40,
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
+              color: AppColors.white,
               border: Border.all(color: AppColors.primaryOrange),
               borderRadius: BorderRadius.circular(8),
             ),

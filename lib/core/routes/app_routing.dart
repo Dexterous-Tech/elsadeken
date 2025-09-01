@@ -43,6 +43,7 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/manager/m
 
 import '../../features/profile/my_ignoring_list/presentation/view/my_ignoring_list_screen.dart';
 import 'package:elsadeken/features/profile/terms_conditions/presentation/view/terms_and_conditions_screen.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 
 class AppRouting {
   Route onGenerateRouting(RouteSettings setting) {
@@ -99,8 +100,12 @@ class AppRouting {
         return MaterialPageRoute(builder: (_) => ManageProfileScreen());
       case AppRoutes.searchScreen:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (context) => SearchCubit(sl<SearchUseCase>()),
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                  create: (context) => SearchCubit(sl<SearchUseCase>())),
+              BlocProvider(create: (context) => sl<SignUpListsCubit>()),
+            ],
             child: SearchPage(),
           ),
         );

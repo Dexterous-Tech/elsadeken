@@ -69,9 +69,14 @@ class _SignupScreenState extends State<SignupScreen> {
     return BlocProvider.value(
       value: _signupCubit,
       child: Scaffold(
-        body: SignupBody(
-          gender: _currentGender,
-          initialStep: _currentStep,
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus(); // Close keyboard
+          },
+          child: SignupBody(
+            gender: _currentGender,
+            initialStep: _currentStep,
+          ),
         ),
       ),
     );

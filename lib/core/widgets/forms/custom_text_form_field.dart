@@ -6,7 +6,7 @@ import '../../theme/app_color.dart';
 import '../../theme/app_text_styles.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  CustomTextFormField({
+  const CustomTextFormField({
     super.key,
     required this.hintText,
     this.hintStyle,
@@ -40,7 +40,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextStyle? hintStyle;
 
   final Widget? suffixIcon;
-  FocusNode? focusNode;
+  final FocusNode? focusNode;
   final Widget? prefixIcon;
   final EdgeInsetsGeometry? contentPadding;
   final Color? fillBackgroundColor;
@@ -79,7 +79,8 @@ class CustomTextFormField extends StatelessWidget {
         onTap: onTap,
         focusNode: focusNode,
         onChanged: onChanged,
-        onEditingComplete: () {
+        textInputAction: TextInputAction.done,
+        onFieldSubmitted: (_) {
           FocusScope.of(context).unfocus();
         },
         keyboardType: keyboardType,

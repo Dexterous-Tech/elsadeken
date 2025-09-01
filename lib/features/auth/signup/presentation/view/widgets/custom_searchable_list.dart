@@ -271,6 +271,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
             color: AppColors.desire.withValues(alpha: 0.474),
           ),
           child: ListView.separated(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             controller: _scrollController,
             physics: const BouncingScrollPhysics(),
             itemCount: _filteredItems.length,

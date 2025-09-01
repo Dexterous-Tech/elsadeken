@@ -183,14 +183,15 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                       ),
 
                       verticalSpace(12),
-                      buildValidationItem(result.hasMinLength, 'اقل من 6 أحرف'),
+                      buildValidationItem(
+                          result.hasMinLength, 'كلمه المرور لا تقل عن ٦ احرف'),
                       buildValidationItem(
                         result.hasNumberOrSymbol,
-                        'يجب استخدام علي الاقل رقم واحد(0-9) و رمز(@#\$&..)',
+                        'يجب استخدام رقم واحد (0,9) و رمز (@#\$& .... )',
                       ),
                       buildValidationItem(
                         result.hasUpperAndLower,
-                        'يجب استخدام حرف كبير وحرف صغير علي الاقل',
+                        'يجب استخدام حرف كبير و حرف صغير علي الاقل',
                       ),
                       verticalSpace(40),
 

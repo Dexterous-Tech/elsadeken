@@ -11,7 +11,12 @@ class ForgetPasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<ForgetCubit>(),
-      child: Scaffold(body: ForgetPasswordBody()),
+      child: Scaffold(
+          body: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus(); // Close keyboard
+              },
+              child: ForgetPasswordBody())),
     );
   }
 }

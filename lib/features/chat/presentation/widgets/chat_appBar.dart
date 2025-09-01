@@ -73,7 +73,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   decoration: BoxDecoration(
                                     color: status
                                         ? AppColors.primaryOrange
-                                        : Colors.red,
+                                        : AppColors.red,
                                     shape: BoxShape.circle,
                                   ),
                                 );
@@ -113,7 +113,9 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 return Text(
                                   status ? 'متصل الآن' : 'غير متصل',
                                   style: TextStyle(
-                                    color: Colors.red,
+                                    color: status
+                                        ? AppColors.primaryOrange
+                                        : AppColors.red,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
                                   ),

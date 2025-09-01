@@ -80,11 +80,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadMatchesUsers();
-    
+
     // Load chat list so SwipeableCard can access existing chat rooms
     print('🏠 [HomeScreen] Initializing and loading chat list...');
     _loadChatList();
-    
+
     _focusNode.addListener(() {
       setState(() {
         showHistory = _focusNode.hasFocus && _searchController.text.isEmpty;
@@ -99,27 +99,32 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       print('🏠 [HomeScreen] Loading chat list...');
       final chatListCubit = context.read<ChatListCubit>();
-      
+
       // Check current state
       final currentState = chatListCubit.state;
-      print('🏠 [HomeScreen] Current chat list state: ${currentState.runtimeType}');
-      
+      print(
+          '🏠 [HomeScreen] Current chat list state: ${currentState.runtimeType}');
+
       if (currentState is! ChatListLoaded) {
         print('🏠 [HomeScreen] Chat list not loaded, calling getChatList()...');
         await chatListCubit.getChatList();
-        
+
         // Wait a bit and check the state again
         await Future.delayed(Duration(milliseconds: 1000));
         final newState = chatListCubit.state;
-        print('🏠 [HomeScreen] Chat list state after loading: ${newState.runtimeType}');
-        
+        print(
+            '🏠 [HomeScreen] Chat list state after loading: ${newState.runtimeType}');
+
         if (newState is ChatListLoaded) {
-          print('🏠 [HomeScreen] ✅ Chat list loaded successfully with ${newState.chatList.data.length} chats');
+          print(
+              '🏠 [HomeScreen] ✅ Chat list loaded successfully with ${newState.chatList.data.length} chats');
         } else if (newState is ChatListError) {
-          print('🏠 [HomeScreen] ❌ Chat list failed to load: ${newState.message}');
+          print(
+              '🏠 [HomeScreen] ❌ Chat list failed to load: ${newState.message}');
         }
       } else {
-        print('🏠 [HomeScreen] ✅ Chat list already loaded with ${currentState.chatList.data.length} chats');
+        print(
+            '🏠 [HomeScreen] ✅ Chat list already loaded with ${currentState.chatList.data.length} chats');
       }
     } catch (e) {
       print('🏠 [HomeScreen] ❌ Error loading chat list: $e');
@@ -241,12 +246,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   Widget buildHomeContent() {
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             textDirection: TextDirection.rtl,
@@ -264,13 +269,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       context.read<SearchCubit>().updateUsername(value);
                       _onSearchChanged(value);
                     },
-                    // context.read<SearchCubit>().updateUsername(value);
-                    // Navigator.pushNamed(
-                    //   context,
-                    //   AppRoutes.searchResultScreen,
-                    //   arguments: context.read<SearchCubit>(),
-                    // );
-
                     hintText: '...بحث',
                     validator: (value) {},
                     suffixIcon: GestureDetector(
@@ -391,7 +389,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget getBody() {
     switch (_currentIndex) {
       case 0:
-        return buildHomeContent();
+        return GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus(); // Close keyboard
+            },
+            child: buildHomeContent());
       case 1:
         return ChatPage();
       case 2:

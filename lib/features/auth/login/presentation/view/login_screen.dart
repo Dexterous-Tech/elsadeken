@@ -16,8 +16,13 @@ class LoginScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<LoginCubit>(),
       child: Scaffold(
-          body: LoginBody(
-        isFromLogout: isFromLogout,
+          body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus(); // Close keyboard
+        },
+        child: LoginBody(
+          isFromLogout: isFromLogout,
+        ),
       )),
     );
   }

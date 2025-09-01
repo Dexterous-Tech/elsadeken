@@ -2,6 +2,7 @@
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/core/helper/app_constants.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
@@ -14,22 +15,33 @@ class SearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<SearchCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => sl<SearchCubit>()),
+        BlocProvider(create: (context) => sl<SignUpListsCubit>()),
+      ],
       child: Scaffold(
-        body: CustomProfileBody(
-          padding: EdgeInsets.all(AppConstants.defaultPadding),
-          contentBody: Column(
-          children: [
-            ProfileHeader(title: 'بحث'),
-            verticalSpace(42),
-            Expanded(
-              child: SingleChildScrollView(
-                child: SearchForm(),
-              ),
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus(); // Close keyboard
+          },
+          child: CustomProfileBody(
+            padding: EdgeInsets.all(AppConstants.defaultPadding),
+            contentBody: Column(
+              children: [
+                ProfileHeader(title: 'بحث'),
+                verticalSpace(42),
+                Expanded(
+                  child: SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    child: SearchForm(),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),),
+          ),
+        ),
       ),
     );
   }
