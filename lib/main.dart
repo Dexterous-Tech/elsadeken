@@ -1,10 +1,12 @@
 import 'dart:developer';
 import 'package:elsadeken/core/routes/app_routing.dart';
 import 'package:elsadeken/core/services/firebase_notification_service.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/di/injection_container.dart';
 import 'core/routes/app_routes.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,6 +14,9 @@ void main() async {
   // Initialize dependencies first
   await initializeDependencies();
   await sl.allReady();
+
+  // Initialize localization service
+  await LocalizationService.instance.initialize();
 
   try {
     // Initialize Firebase and notification services
@@ -34,11 +39,24 @@ class Elsadeken extends StatelessWidget {
       designSize: const Size(430, 937),
       minTextAdapt: true,
       splitScreenMode: true,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(scaffoldBackgroundColor: Colors.white),
-        onGenerateRoute: appRouting.onGenerateRouting,
-        initialRoute: AppRoutes.splashScreen,
+      child: ListenableBuilder(
+        listenable: LocalizationService.instance,
+        builder: (context, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+            onGenerateRoute: appRouting.onGenerateRouting,
+            initialRoute: AppRoutes.splashScreen,
+            localizationsDelegates: [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: LocalizationService.supportedLocales,
+            // Default language
+            locale: LocalizationService.instance.currentLocale,
+          );
+        },
       ),
     );
   }

@@ -28,6 +28,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  flutter:
+    sdk: flutter
   cached_network_image: ^3.4.1
   cloud_firestore: ^6.0.0
   country_code_picker: ^3.3.0
@@ -40,8 +42,6 @@ dependencies:
   firebase_auth: ^6.0.0
   firebase_core: ^4.0.0
   firebase_messaging: ^16.0.0
-  flutter:
-    sdk: flutter
   flutter_advanced_switch: ^3.1.0
   flutter_bloc: ^8.1.3
   flutter_html: ^3.0.0
@@ -60,6 +60,9 @@ dependencies:
   shared_preferences: ^2.2.2
   timeago: null
   vs_scrollbar: ^1.0.0
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
@@ -77,12 +80,9 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
+  generate: true
   uses-material-design: true
-
+  
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
@@ -101,6 +101,12 @@ flutter:
     - assets/images/members/menu_items/
     - assets/images/notification/
     - assets/lottie/
+
+flutter_gen_l10n:
+  arb-dir: lib/l10n
+  template-arb-file: app_en.arb
+  output-localization-file: l10n.dart
+  output-class: S
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -14,8 +14,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
+import '../../../../../../core/services/localization_service.dart';
+import '../../../../../../core/helper/localization_helper.dart';
 
 import '../../../../../../core/di/injection_container.dart';
+import '../../../../../../core/widgets/language_toggle.dart';
 
 class ProfileContent extends StatefulWidget {
   const ProfileContent({super.key});
@@ -308,11 +311,16 @@ class _ProfileContentState extends State<ProfileContent> {
                                           leading: _buildNotificationToggle(
                                               notificationState),
                                         ),
+
                                         verticalSpace(16),
 
                                         ...listGenerationContentItems(
                                             items: appSettings),
+                                        verticalSpace(15),
+                                        // Language Toggle Section
+                                        LanguageToggle(),
                                         verticalSpace(21),
+
                                         GestureDetector(
                                           onTap: () {
                                             deleteImageDialog(context);
@@ -381,6 +389,34 @@ class _ProfileContentState extends State<ProfileContent> {
       ),
     );
   }
+
+  // Widget _buildLanguageIndicator() {
+  //   return ListenableBuilder(
+  //     listenable: LocalizationService.instance,
+  //     builder: (context, child) {
+  //       final isArabic = LocalizationHelper.isArabic;
+  //       return Container(
+  //         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+  //         decoration: BoxDecoration(
+  //           color: isArabic ? Colors.green[100] : Colors.blue[100],
+  //           borderRadius: BorderRadius.circular(4),
+  //           border: Border.all(
+  //             color: isArabic ? Colors.green[300]! : Colors.blue[300]!,
+  //             width: 1,
+  //           ),
+  //         ),
+  //         child: Text(
+  //           isArabic ? 'عربي' : 'EN',
+  //           style: TextStyle(
+  //             fontSize: 10,
+  //             fontWeight: FontWeight.bold,
+  //             color: isArabic ? Colors.green[700] : Colors.blue[700],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildNotificationToggle(NotificationSettingsProfileState state) {
     bool isEnabled = false; // Default to false
