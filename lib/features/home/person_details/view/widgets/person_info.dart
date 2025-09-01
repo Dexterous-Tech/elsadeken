@@ -496,36 +496,44 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         GestureDetector(
           onTap: () async {
             try {
+              print(
+                  '🔍 [PersonInfo] Message icon tapped for user ID: ${widget.person.id}');
+
               // Check if there's an existing chat room first
               final chatListCubit = context.read<ChatListCubit>();
-              print(
-                  '🔍 Looking for existing chat room for user ID: ${widget.person.id}');
 
-              // Check if chat list is already loaded, if not, load it silently
+              // Check if chat list is already loaded, if not, load it
               if (chatListCubit.state is! ChatListLoaded) {
-                print('🔄 Chat list not loaded, loading silently...');
-                await chatListCubit.silentRefreshChatList();
+                print('🔄 [PersonInfo] Chat list not loaded, loading now...');
+                await chatListCubit.forceRefreshChatList();
+
+                // Wait a bit for the state to update
+                await Future.delayed(const Duration(milliseconds: 500));
               } else {
-                print('✅ Chat list already loaded');
+                print('✅ [PersonInfo] Chat list already loaded');
               }
 
+              // Find existing chat room between current user and this profile user
               final existingChatRoom =
                   chatListCubit.findExistingChatRoom(widget.person.id);
 
               if (existingChatRoom != null) {
-                print('✅ Found existing chat room: ${existingChatRoom.id}');
+                print(
+                    '✅ [PersonInfo] Found existing chat room: ${existingChatRoom.id}, navigating to it');
                 // Navigate to existing chat room
-                Navigator.pushNamed(
-                  context,
-                  AppRoutes.chatConversationScreen,
-                  arguments: {
-                    "chatRoom": existingChatRoom,
-                  },
-                );
+                if (context.mounted) {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.chatConversationScreen,
+                    arguments: {
+                      "chatRoom": existingChatRoom,
+                    },
+                  );
+                }
               } else {
                 print(
-                    '🆕 No existing chat room found, creating new temporary chat');
-                // Create new temporary chat room
+                    '🆕 [PersonInfo] No existing chat room found, creating new temporary chat');
+                // Create new temporary chat room for new conversation
                 Navigator.pushNamed(
                   context,
                   AppRoutes.chatConversationScreen,
@@ -539,8 +547,8 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                 );
               }
             } catch (e) {
-              print('⚠️ Error in message button onTap: $e');
-              // Fallback to creating new temporary chat room
+              print('❌ [PersonInfo] Error in message icon onTap: $e');
+              // Fallback to creating new chat
               Navigator.pushNamed(
                 context,
                 AppRoutes.chatConversationScreen,
