@@ -8,6 +8,9 @@ import 'core/di/injection_container.dart';
 import 'core/routes/app_routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+// 👇 Import the generated localizations
+import 'l10n/app_localizations.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -32,7 +35,7 @@ void main() async {
 class Elsadeken extends StatelessWidget {
   const Elsadeken({super.key, required this.appRouting});
   final AppRouting appRouting;
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -47,13 +50,19 @@ class Elsadeken extends StatelessWidget {
             theme: ThemeData(scaffoldBackgroundColor: Colors.white),
             onGenerateRoute: appRouting.onGenerateRouting,
             initialRoute: AppRoutes.splashScreen,
-            localizationsDelegates: [
+
+            // ✅ Add AppLocalizations.delegate
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
+
+            // ✅ Supported locales from your LocalizationService
             supportedLocales: LocalizationService.supportedLocales,
-            // Default language
+
+            // ✅ Current locale from your service
             locale: LocalizationService.instance.currentLocale,
           );
         },

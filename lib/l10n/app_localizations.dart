@@ -106,6 +106,35 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Welcome to my app'**
   String get welcome;
+  String get login;
+  String get signup;
+  String get nosignup;
+  String get logout;
+  String get email;
+  String get password;
+  String get confirmPassword;
+  String get forgotPassword;
+  String get resetPassword;
+  String get emailError;
+  String get passwordError;
+  String get submit;
+  String get cancel;
+  String get home;
+  String get profile;
+  String get settings;
+  String get language;
+  String get darkMode;
+  String get location;
+  String get locationSearch;
+  String get locationSelect;
+  String get locationAddress;
+  String get locationCountry;
+  String get locationCity;
+  String get locationStreet;
+
+
+
+
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

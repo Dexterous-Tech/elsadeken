@@ -1,16 +1,16 @@
 import 'package:elsadeken/core/helper/app_regex.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
+import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
 import 'package:elsadeken/features/auth/login/presentation/manager/login_cubit.dart';
+import 'package:elsadeken/features/auth/login/presentation/view/widgets/login_create_new_account.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../../core/routes/app_routes.dart';
-import '../../../../../../core/widgets/forms/custom_elevated_button.dart';
-import '../../../../../../core/widgets/forms/custom_text_form_field.dart';
-import 'login_create_new_account.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -21,22 +21,25 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   bool obscurePassword = true;
+
   @override
   Widget build(BuildContext context) {
     var cubit = LoginCubit.get(context);
+    final tr = AppLocalizations.of(context)!; // shortcut
+
     return Form(
       key: cubit.formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start, // ✅ will flip in RTL
         children: [
           Text(
-            'تسجيل الدخول',
+            tr.hello,
             style: AppTextStyles.font27ChineseBlackBoldLamaSans,
           ),
           verticalSpace(24),
+
           Text(
-            'بريد إلكتروني',
-            textDirection: TextDirection.rtl,
+            tr.email,
             style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
           ),
           verticalSpace(8),
@@ -47,14 +50,16 @@ class _LoginFormState extends State<LoginForm> {
             validator: (value) {
               if (cubit.emailController.text.isNullOrEmpty() ||
                   !AppRegex.isEmailValid(value!)) {
-                return 'يجب عليك ادخال بريد الكتروني صحيح';
+                return tr.emailError;
               }
+              return null;
             },
           ),
+
           verticalSpace(24),
+
           Text(
-            'كلمه المرور',
-            textDirection: TextDirection.rtl,
+            tr.password,
             style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
           ),
           verticalSpace(8),
@@ -64,8 +69,9 @@ class _LoginFormState extends State<LoginForm> {
             hintText: '********',
             validator: (value) {
               if (cubit.passwordController.text.isNullOrEmpty()) {
-                return 'يجب عليك ادخال كلمة المرور';
+                return tr.passwordError;
               }
+              return null;
             },
             obscureText: obscurePassword,
             suffixIcon: IconButton(
@@ -83,28 +89,33 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
           ),
+
           verticalSpace(12),
+
           GestureDetector(
             onTap: () {
               context.pushNamed(AppRoutes.forgetPasswordScreen);
             },
             child: Text(
-              'نسيت كلمه المرور؟',
-              textDirection: TextDirection.rtl,
+              tr.forgotPassword,
               style: AppTextStyles.font14BeerMediumLamaSans,
             ),
           ),
+
           verticalSpace(31),
+
           CustomElevatedButton(
             onPressed: () {
               if (cubit.formKey.currentState!.validate()) {
                 cubit.login();
               }
             },
-            textButton: 'تسجيل الدخول',
+            textButton: tr.login,
           ),
-          Spacer(),
-          Center(child: LoginCreateNewAccount()),
+
+          const Spacer(),
+
+          const Center(child: LoginCreateNewAccount()),
         ],
       ),
     );
