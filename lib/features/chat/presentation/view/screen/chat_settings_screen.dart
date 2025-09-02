@@ -372,30 +372,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     );
   }
 
-  Widget _buildBackgroundImage() {
-    return Image.asset(
-      'assets/images/chat/mail 1.png',
-      width: 400,
-      height: 400,
-      fit: BoxFit.contain,
-      errorBuilder: (context, error, stackTrace) {
-        print('Background image error: $error'); // Debug print
-        return Container(
-          width: 400,
-          height: 400,
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF0F0).withOpacity(0.5),
-            borderRadius: BorderRadius.circular(200),
-          ),
-          child: Icon(
-            Icons.mail,
-            size: 100,
-            color: Colors.grey[400],
-          ),
-        );
-      },
-    );
-  }
+
 
   PreferredSizeWidget _buildAppBar() {
     return PreferredSize(
@@ -800,6 +777,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         title: const Text('اختر الفئة العمرية'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildDialogOption('أي شخص', () {
               setState(() {
@@ -878,6 +856,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Option for "All Nationalities"
                       _buildDialogOption('كل الجنسيات', () {
@@ -1018,6 +997,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Option for "All Countries"
                       _buildDialogOption('كل الدول', () {
