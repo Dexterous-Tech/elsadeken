@@ -9,6 +9,7 @@ import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -386,7 +387,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             decoration: BoxDecoration(
               color: AppColors.white,
             ),
-            child: const ProfileHeader(title: 'إعدادات الرسائل'),
+            child: ProfileHeader(title: AppLocalizations.of(context)!.messageSettings),
           ),
           Positioned(
             top: 0,
@@ -548,21 +549,21 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
           ),
           SizedBox(height: 16.h),
           _buildSettingRow(
-            title: 'الفئة العمرية',
+            title: AppLocalizations.of(context)!.ageGroup,
             subtitle: _selectedAgeCategory,
             trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
             onTap: _showAgeCategoryDialog,
           ),
           SizedBox(height: 4.h),
           _buildSettingRow(
-            title: 'الجنسيات',
+            title: AppLocalizations.of(context)!.nationalities,
             subtitle: _selectedNationalities,
             trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
             onTap: _showNationalitiesDialog,
           ),
           SizedBox(height: 4.h),
           _buildSettingRow(
-            title: 'الدول',
+            title: AppLocalizations.of(context)!.countries,
             subtitle: _selectedCountries,
             trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
             onTap: _showCountriesDialog,
@@ -577,7 +578,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'إعدادات الإشعارات',
+          AppLocalizations.of(context)!.notifications,
           style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
@@ -585,7 +586,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         ),
         SizedBox(height: 8.h),
         _buildSettingRow(
-          title: 'رسائل جديدة',
+          title: AppLocalizations.of(context)!.newMessages,
           subtitle: '',
           trailing: Transform.scale(
             scale: 0.8,
@@ -844,7 +845,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('اختر الجنسيات'),
+        title: Text(AppLocalizations.of(context)!.selectNationalities),
         content: Builder(
           builder: (context) {
             if (currentState is ListsLoaded) {

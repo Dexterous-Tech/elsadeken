@@ -2,6 +2,7 @@ import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import 'package:elsadeken/features/chat/presentation/widgets/profile_image_widget.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/time_formatter.dart';
@@ -66,7 +67,7 @@ class ChatRoomItem extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    chat.lastMessage?.body ?? 'لا توجد رسائل',
+                    chat.lastMessage?.body ?? AppLocalizations.of(context)!.noResults,
                     style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans
                         .copyWith(
                       fontSize: 14.sp,
@@ -285,7 +286,7 @@ class ChatRoomItem extends StatelessWidget {
               // Show success snackbar with chat details
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('تم حذف محادثة "${chat.otherUser.name}" بنجاح'),
+                  content: Text(AppLocalizations.of(context)!.chatDeletedSuccess(chat.otherUser.name)),
                   backgroundColor: Colors.red,
                   duration: Duration(seconds: 3),
                 ),
@@ -340,8 +341,8 @@ class ChatRoomItem extends StatelessWidget {
 
               // Show success snackbar
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('تم حظر الشات بنجاح'),
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.chatBlockedSuccess),
                   backgroundColor: Colors.orange,
                 ),
               );
@@ -394,8 +395,8 @@ class ChatRoomItem extends StatelessWidget {
 
               // Show success snackbar
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('تم كتم الصوت'),
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.chatMutedSuccess),
                   backgroundColor: Colors.grey,
                 ),
               );

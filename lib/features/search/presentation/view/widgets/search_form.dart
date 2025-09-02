@@ -12,6 +12,7 @@ import 'package:elsadeken/features/search/presentation/view/widgets/range_text_f
 import 'package:elsadeken/features/search/presentation/view/widgets/search_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import '../../cubit/search_cubit.dart';
 import 'dropdown_field.dart';
 import 'expandable_section.dart';
@@ -155,13 +156,13 @@ class _SearchFormState extends State<SearchForm> {
         children: [
           // Search Fields
           SearchTextField(
-            hintText: 'بحث بإسم المستخدم',
+            hintText: AppLocalizations.of(context)!.searchByUsername,
             onChanged: (value) =>
                 context.read<SearchCubit>().updateUsername(value),
           ),
           SizedBox(height: 16),
           SearchTextField(
-            hintText: 'البحث السريع',
+            hintText: AppLocalizations.of(context)!.quickSearch,
             onChanged: (value) =>
                 context.read<SearchCubit>().updateQuickSearch(value),
           ),
@@ -179,7 +180,7 @@ class _SearchFormState extends State<SearchForm> {
                   } else if (snapshot.hasError) {
                     return Text("خطأ: ${snapshot.error}");
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Text("لا توجد جنسيات متاحة");
+                    return Text(AppLocalizations.of(context)!.noNationalitiesAvailable);
                   }
 
                   final nationalityObjects = snapshot.data!;
@@ -221,7 +222,7 @@ class _SearchFormState extends State<SearchForm> {
                   } else if (snapshot.hasError) {
                     return Text("خطأ: ${snapshot.error}");
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Text("لا توجد جنسيات متاحة");
+                    return Text(AppLocalizations.of(context)!.noNationalitiesAvailable);
                   }
 
                   final countryObjects = snapshot.data!;
@@ -278,7 +279,7 @@ class _SearchFormState extends State<SearchForm> {
                   } else if (snapshot.hasError) {
                     return Text("خطأ: ${snapshot.error}");
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Text("لا توجد مدن متاحة");
+                    return Text(AppLocalizations.of(context)!.noCitiesAvailable);
                   }
 
                   // ✅ تحويل الجنسيات من موديل إلى List<String>

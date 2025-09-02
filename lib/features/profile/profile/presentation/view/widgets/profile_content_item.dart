@@ -1,6 +1,7 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -25,7 +26,7 @@ class ProfileContentItem extends StatelessWidget {
       child: GestureDetector(
         onTap: onPressed,
         child: Row(
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
           children: [
             Image.asset(image, width: 44.w, height: 44.h),
             horizontalSpace(16),

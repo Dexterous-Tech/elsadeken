@@ -9,6 +9,7 @@ import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
 import 'package:elsadeken/features/search/presentation/view/widgets/search_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
@@ -29,7 +30,7 @@ class SearchPage extends StatelessWidget {
             padding: EdgeInsets.all(AppConstants.defaultPadding),
             contentBody: Column(
               children: [
-                ProfileHeader(title: 'بحث'),
+                ProfileHeader(title: AppLocalizations.of(context)!.search),
                 verticalSpace(42),
                 Expanded(
                   child: SingleChildScrollView(

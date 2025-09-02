@@ -8,6 +8,7 @@ import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../../core/theme/app_text_styles.dart';
@@ -112,7 +113,7 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       // password
-                      Text('إنشاء كلمه المرور',
+                      Text(AppLocalizations.of(context)!.createPassword,
                           textDirection: TextDirection.rtl,
                           style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                       verticalSpace(16),
@@ -196,7 +197,7 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                       verticalSpace(40),
 
                       // confirm password
-                      Text('تاكيد كلمه المرور',
+                      Text(AppLocalizations.of(context)!.confirmPasswordField,
                           textDirection: TextDirection.rtl,
                           style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                       verticalSpace(16),

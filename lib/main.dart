@@ -64,6 +64,14 @@ class Elsadeken extends StatelessWidget {
 
             // ✅ Current locale from your service
             locale: LocalizationService.instance.currentLocale,
+
+            // ✅ Add Directionality support for RTL/LTR
+            builder: (context, child) {
+              return Directionality(
+                textDirection: LocalizationService.instance.textDirection,
+                child: child!,
+              );
+            },
           );
         },
       ),

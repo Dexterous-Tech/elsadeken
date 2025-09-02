@@ -13,9 +13,9 @@ import 'package:elsadeken/features/profile/profile/presentation/view/widgets/pro
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
-import '../../../../../../core/services/localization_service.dart';
-import '../../../../../../core/helper/localization_helper.dart';
+
 
 import '../../../../../../core/di/injection_container.dart';
 import '../../../../../../core/widgets/language_toggle.dart';
@@ -167,14 +167,14 @@ class _ProfileContentState extends State<ProfileContent> {
                             personalInformation = [
                           ProfileContentItemModel(
                             image: AppImages.myProfileIcon,
-                            title: 'ادارة حسابي',
+                            title: AppLocalizations.of(context)!.manageAccount,
                             onPressed: () {
                               context.pushNamed(AppRoutes.manageProfileScreen);
                             },
                           ),
                           ProfileContentItemModel(
                             image: AppImages.interestsListIcon,
-                            title: 'قائمه الاهتمام',
+                            title: AppLocalizations.of(context)!.interestsList,
                             onPressed: () {
                               context.pushNamed(
                                   AppRoutes.profileInterestsListScreen);
@@ -182,7 +182,7 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                           ProfileContentItemModel(
                             image: AppImages.ignoringListIcon,
-                            title: 'قائمه التجاهل',
+                            title: AppLocalizations.of(context)!.ignoringList,
                             onPressed: () {
                               context.pushNamed(
                                   AppRoutes.profileMyIgnoringListScreen);
@@ -190,7 +190,7 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                           ProfileContentItemModel(
                             image: AppImages.interestingMeIcon,
-                            title: 'من يهتم بي',
+                            title: AppLocalizations.of(context)!.whoInterestsMe,
                             onPressed: () {
                               context.pushNamed(
                                   AppRoutes.profileMyInterestingListScreen);
@@ -198,14 +198,14 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                           ProfileContentItemModel(
                             image: AppImages.searchAdvancedIcon,
-                            title: 'بحث متقدم',
+                            title: AppLocalizations.of(context)!.advancedSearch,
                             onPressed: () {
                               context.pushNamed(AppRoutes.searchScreen);
                             },
                           ),
                           ProfileContentItemModel(
                             image: AppImages.membersProfileImagesIcon,
-                            title: 'صور الاعضاء',
+                            title: AppLocalizations.of(context)!.membersPhotos,
                             onPressed: () {
                               context.pushNamed(
                                   AppRoutes.profileMembersProfileScreen);
@@ -213,7 +213,7 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                           ProfileContentItemModel(
                             image: AppImages.excellencePackageIcon,
-                            title: 'باقه التميز',
+                            title: AppLocalizations.of(context)!.excellencePackage,
                             onPressed: () {
                               context.pushNamed(
                                   AppRoutes.profileExcellencePackageScreen);
@@ -221,14 +221,14 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                           ProfileContentItemModel(
                             image: AppImages.successStoryIcon,
-                            title: 'قصص نجاح',
+                            title: AppLocalizations.of(context)!.successStories,
                             onPressed: () {
                               context.pushNamed(AppRoutes.successStoriesScreen);
                             },
                           ),
                           ProfileContentItemModel(
                             image: AppImages.elsadekenNotesIcon,
-                            title: 'مدونه الصادقين والصادقات',
+                            title: AppLocalizations.of(context)!.blog,
                             onPressed: () {
                               context.pushNamed(AppRoutes.blogScreen);
                             },
@@ -238,19 +238,19 @@ class _ProfileContentState extends State<ProfileContent> {
                         final List<ProfileContentItemModel> appSettings = [
                           ProfileContentItemModel(
                             image: AppImages.aboutUsIcon,
-                            title: 'نبذه عننا',
+                            title: AppLocalizations.of(context)!.aboutUs,
                             onPressed: () {
                               context.pushNamed(AppRoutes.profileAboutUsScreen);
                             },
                           ),
                           ProfileContentItemModel(
                             image: AppImages.appShareIcon,
-                            title: 'مشاركه التطبيق',
+                            title: AppLocalizations.of(context)!.shareApp,
                             onPressed: () {},
                           ),
                           ProfileContentItemModel(
                             image: AppImages.contactUsIcon,
-                            title: 'اتصل بنا',
+                            title: AppLocalizations.of(context)!.contactUs,
                             onPressed: () {
                               context
                                   .pushNamed(AppRoutes.profileContactUsScreen);
@@ -285,7 +285,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                           CrossAxisAlignment.end,
                                       children: [
                                         Text(
-                                          'معلومات شخصية',
+                                          AppLocalizations.of(context)!.personalInfo,
                                           style: AppTextStyles
                                               .font12GrayMediumLamaSans,
                                         ),
@@ -294,7 +294,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                             items: personalInformation),
                                         verticalSpace(24),
                                         Text(
-                                          'إعدادات التطبيق',
+                                          AppLocalizations.of(context)!.appSettings,
                                           style: AppTextStyles
                                               .font12GrayMediumLamaSans,
                                         ),
@@ -303,7 +303,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                         // Notification item
                                         ProfileContentItem(
                                           image: AppImages.notificationIcon,
-                                          title: 'الاشعارات',
+                                          title: AppLocalizations.of(context)!.notifications,
                                           onPressed: () {
                                             // Navigate to notification screen
                                             // context.pushNamed(AppRoutes.notificationScreen);
@@ -335,7 +335,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                               ),
                                               horizontalSpace(16),
                                               Text(
-                                                'مسح صورتي',
+                                                AppLocalizations.of(context)!.deleteMyPhoto,
                                                 style: AppTextStyles
                                                     .font14CharlestonGreenMediumLamaSans
                                                     .copyWith(
@@ -360,7 +360,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                               ),
                                               horizontalSpace(16),
                                               Text(
-                                                'تسجيل الخروج',
+                                                AppLocalizations.of(context)!.logout,
                                                 style: AppTextStyles
                                                     .font14CharlestonGreenMediumLamaSans
                                                     .copyWith(

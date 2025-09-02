@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../../../core/theme/spacing.dart';
 import '../../../manager/signup_cubit.dart';
@@ -73,7 +74,7 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
                   // Marital Status
                   SignupMultiChoice(
                     height: 220.h,
-                    title: 'ما هي الحالة الاجتماعية ؟',
+                    title: AppLocalizations.of(context)!.whatIsMaritalStatus,
                     options: maritalStatusOptions.values.toList(),
                     selected: maritalStatusOptions[
                         cubit.maritalStatusController.text],
@@ -96,7 +97,7 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
                   // Type of Marriage - show for both genders
                   SignupMultiChoice(
                     height: 110.h,
-                    title: 'ما هو نوع الزواج ؟',
+                    title: AppLocalizations.of(context)!.whatIsMarriageType,
                     options: typeOfMarriageOptions.values.toList(),
                     selected: typeOfMarriageOptions[
                         cubit.typeOfMarriageController.text],
