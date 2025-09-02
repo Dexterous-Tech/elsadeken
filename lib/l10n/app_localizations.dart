@@ -152,7 +152,7 @@ abstract class AppLocalizations {
   /// No description provided for @confirmPassword.
   ///
   /// In en, this message translates to:
-  /// **'Confirm Password'**
+  /// **'Confirm password (optional)'**
   String get confirmPassword;
 
   /// No description provided for @forgotPassword.
@@ -482,7 +482,7 @@ abstract class AppLocalizations {
   /// No description provided for @showOnlineStatus.
   ///
   /// In en, this message translates to:
-  /// **'Show that you\'re online'**
+  /// **'Your Connection Status'**
   String get showOnlineStatus;
 
   /// No description provided for @newMessages.
@@ -584,8 +584,8 @@ abstract class AppLocalizations {
   /// No description provided for @addedToFavorites.
   ///
   /// In en, this message translates to:
-  /// **'Added to favorites'**
-  String get addedToFavorites;
+  /// **'Added {name} to favorites'**
+  String addedToFavorites(Object name);
 
   /// No description provided for @markAllAsReadConfirm.
   ///
@@ -1024,6 +1024,894 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Females'**
   String get females;
+
+  /// No description provided for @deleteAllChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All Chats'**
+  String get deleteAllChats;
+
+  /// No description provided for @markAllAsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark All as Read'**
+  String get markAllAsRead;
+
+  /// No description provided for @deleteChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Chat'**
+  String get deleteChat;
+
+  /// No description provided for @muteChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute Chat'**
+  String get muteChat;
+
+  /// No description provided for @blockUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Block User'**
+  String get blockUser;
+
+  /// No description provided for @addToFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Favorites'**
+  String get addToFavorites;
+
+  /// No description provided for @removeFromFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from Favorites'**
+  String get removeFromFavorites;
+
+  /// No description provided for @favoritesList.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites List'**
+  String get favoritesList;
+
+  /// No description provided for @errorLoadingMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading messages'**
+  String get errorLoadingMessages;
+
+  /// No description provided for @tryAgainButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgainButton;
+
+  /// No description provided for @now.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get now;
+
+  /// No description provided for @minute.
+  ///
+  /// In en, this message translates to:
+  /// **'minute'**
+  String get minute;
+
+  /// No description provided for @minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get minutes;
+
+  /// No description provided for @hour.
+  ///
+  /// In en, this message translates to:
+  /// **'hour'**
+  String get hour;
+
+  /// No description provided for @hours.
+  ///
+  /// In en, this message translates to:
+  /// **'hours'**
+  String get hours;
+
+  /// No description provided for @day.
+  ///
+  /// In en, this message translates to:
+  /// **'day'**
+  String get day;
+
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get days;
+
+  /// No description provided for @greetingSalam.
+  ///
+  /// In en, this message translates to:
+  /// **'Peace be upon you and God\'s mercy'**
+  String get greetingSalam;
+
+  /// No description provided for @freeRegistration.
+  ///
+  /// In en, this message translates to:
+  /// **'To provide opportunities for all members, registration is free.'**
+  String get freeRegistration;
+
+  /// No description provided for @oathFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Oath Format:'**
+  String get oathFormat;
+
+  /// No description provided for @mainOath.
+  ///
+  /// In en, this message translates to:
+  /// **'I swear by Almighty God that I have registered in this application for lawful marriage, and that my intention is serious and sincere in building a family based on love and mercy, in accordance with Islamic law.'**
+  String get mainOath;
+
+  /// No description provided for @commitmentPart1.
+  ///
+  /// In en, this message translates to:
+  /// **'I pledge to fully comply '**
+  String get commitmentPart1;
+
+  /// No description provided for @termsAndConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'with the terms and conditions'**
+  String get termsAndConditions;
+
+  /// No description provided for @commitmentPart2.
+  ///
+  /// In en, this message translates to:
+  /// **' of this application, and not to use it for any purpose that offends religion or morals or contradicts the objectives set for it, and God is a witness to what I say.'**
+  String get commitmentPart2;
+
+  /// No description provided for @oathAcceptance.
+  ///
+  /// In en, this message translates to:
+  /// **'I have taken the oath and will abide by it'**
+  String get oathAcceptance;
+
+  /// No description provided for @registerMaleFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Register as Husband Free (Male)'**
+  String get registerMaleFree;
+
+  /// No description provided for @registerFemaleFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Register as Wife Free (Female)'**
+  String get registerFemaleFree;
+
+  /// No description provided for @homeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeLabel;
+
+  /// No description provided for @messagesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get messagesLabel;
+
+  /// No description provided for @membersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get membersLabel;
+
+  /// No description provided for @accountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get accountLabel;
+
+  /// No description provided for @anyPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone'**
+  String get anyPerson;
+
+  /// No description provided for @allCountries.
+  ///
+  /// In en, this message translates to:
+  /// **'All Countries'**
+  String get allCountries;
+
+  /// No description provided for @allNationalities.
+  ///
+  /// In en, this message translates to:
+  /// **'All Nationalities'**
+  String get allNationalities;
+
+  /// No description provided for @notSpecified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Specified'**
+  String get notSpecified;
+
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
+  /// No description provided for @noData.
+  ///
+  /// In en, this message translates to:
+  /// **'No Data'**
+  String get noData;
+
+  /// No description provided for @premiumMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Member'**
+  String get premiumMember;
+
+  /// No description provided for @whoCanSendMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can send you messages?'**
+  String get whoCanSendMessages;
+
+  /// No description provided for @errorLoadingNationalities.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading nationalities'**
+  String get errorLoadingNationalities;
+
+  /// No description provided for @errorLoadingCountries.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading countries'**
+  String get errorLoadingCountries;
+
+  /// No description provided for @errorLoadingLists.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading lists'**
+  String get errorLoadingLists;
+
+  /// No description provided for @settingUpLists.
+  ///
+  /// In en, this message translates to:
+  /// **'Setting up lists...'**
+  String get settingUpLists;
+
+  /// No description provided for @pleaseWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait'**
+  String get pleaseWait;
+
+  /// No description provided for @onlineStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Online Now'**
+  String get onlineStatus;
+
+  /// No description provided for @offlineStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get offlineStatus;
+
+  /// No description provided for @connectionStatusUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection status updated successfully'**
+  String get connectionStatusUpdated;
+
+  /// No description provided for @savingInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get savingInProgress;
+
+  /// No description provided for @profilePictureNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Photos'**
+  String get profilePictureNotification;
+
+  /// No description provided for @manageMyAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage My Account'**
+  String get manageMyAccount;
+
+  /// No description provided for @myInterestsList.
+  ///
+  /// In en, this message translates to:
+  /// **'My Interests List'**
+  String get myInterestsList;
+
+  /// No description provided for @alsadeqenBlog.
+  ///
+  /// In en, this message translates to:
+  /// **'Alsadiqeen & Alsadiqat Blog'**
+  String get alsadeqenBlog;
+
+  /// No description provided for @freeRegistrationOnboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Registration'**
+  String get freeRegistrationOnboarding;
+
+  /// No description provided for @notSpecifiedTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Not specified'**
+  String get notSpecifiedTime;
+
+  /// No description provided for @currentlyOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Currently online'**
+  String get currentlyOnline;
+
+  /// No description provided for @aboutPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'About Person'**
+  String get aboutPerson;
+
+  /// No description provided for @historyRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'History Record'**
+  String get historyRecord;
+
+  /// No description provided for @registeredSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered since'**
+  String get registeredSince;
+
+  /// No description provided for @lastVisitDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Last visit date'**
+  String get lastVisitDate;
+
+  /// No description provided for @information.
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get information;
+
+  /// No description provided for @residence.
+  ///
+  /// In en, this message translates to:
+  /// **'Residence'**
+  String get residence;
+
+  /// No description provided for @typeOfMarriage.
+  ///
+  /// In en, this message translates to:
+  /// **'Type of Marriage'**
+  String get typeOfMarriage;
+
+  /// No description provided for @numberOfChildren.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Children'**
+  String get numberOfChildren;
+
+  /// No description provided for @cm.
+  ///
+  /// In en, this message translates to:
+  /// **'cm'**
+  String get cm;
+
+  /// No description provided for @kg.
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get kg;
+
+  /// No description provided for @invalidPersonId.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid person ID provided'**
+  String get invalidPersonId;
+
+  /// No description provided for @noDataFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No data found for this user'**
+  String get noDataFound;
+
+  /// No description provided for @failedToLoadUserDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load user details. Please try again.'**
+  String get failedToLoadUserDetails;
+
+  /// No description provided for @noDataFoundShort.
+  ///
+  /// In en, this message translates to:
+  /// **'No data found'**
+  String get noDataFoundShort;
+
+  /// No description provided for @selectAgeCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Age Category'**
+  String get selectAgeCategory;
+
+  /// No description provided for @pleaseWaitMoment.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait a moment'**
+  String get pleaseWaitMoment;
+
+  /// No description provided for @saving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get saving;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @noChangesMade.
+  ///
+  /// In en, this message translates to:
+  /// **'No changes made'**
+  String get noChangesMade;
+
+  /// No description provided for @settingsLoadedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings loaded successfully'**
+  String get settingsLoadedSuccessfully;
+
+  /// No description provided for @connectionStatusUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection status updated successfully'**
+  String get connectionStatusUpdatedSuccessfully;
+
+  /// No description provided for @onlineNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Online Now'**
+  String get onlineNow;
+
+  /// No description provided for @offline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get offline;
+
+  /// No description provided for @showThatYouAreOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Show that you\'re online'**
+  String get showThatYouAreOnline;
+
+  /// No description provided for @yourConnectionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Connection Status'**
+  String get yourConnectionStatus;
+
+  /// No description provided for @loadingNationalitiesPleaseWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading nationalities...'**
+  String get loadingNationalitiesPleaseWait;
+
+  /// No description provided for @blogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alsadiqeen & Alsadiqat Blog'**
+  String get blogTitle;
+
+  /// No description provided for @successStoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Success Stories'**
+  String get successStoriesTitle;
+
+  /// No description provided for @successStoriesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'By God\'s grace {count} success stories'**
+  String successStoriesCount(Object count);
+
+  /// No description provided for @nationalityAndResidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality and Residence'**
+  String get nationalityAndResidence;
+
+  /// No description provided for @heightCm.
+  ///
+  /// In en, this message translates to:
+  /// **'Height (cm)'**
+  String get heightCm;
+
+  /// No description provided for @weightKg.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get weightKg;
+
+  /// No description provided for @educationalQualification.
+  ///
+  /// In en, this message translates to:
+  /// **'Educational Qualification'**
+  String get educationalQualification;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// No description provided for @mostVisitedFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Most Visited First'**
+  String get mostVisitedFirst;
+
+  /// No description provided for @newestFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest First'**
+  String get newestFirst;
+
+  /// No description provided for @oldestFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest First'**
+  String get oldestFirst;
+
+  /// No description provided for @foundResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Found {count} results'**
+  String foundResults(Object count);
+
+  /// No description provided for @editMyData.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit My Data'**
+  String get editMyData;
+
+  /// No description provided for @loginData.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Data'**
+  String get loginData;
+
+  /// No description provided for @myAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'My Appearance'**
+  String get myAppearance;
+
+  /// No description provided for @religion.
+  ///
+  /// In en, this message translates to:
+  /// **'Religion'**
+  String get religion;
+
+  /// No description provided for @studyAndWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Study and Work'**
+  String get studyAndWork;
+
+  /// No description provided for @partnerDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description of your life partner you want to connect with'**
+  String get partnerDescription;
+
+  /// No description provided for @talkAboutYourself.
+  ///
+  /// In en, this message translates to:
+  /// **'Talk About Yourself'**
+  String get talkAboutYourself;
+
+  /// No description provided for @myImage.
+  ///
+  /// In en, this message translates to:
+  /// **'My Image'**
+  String get myImage;
+
+  /// No description provided for @importantInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Important Information:'**
+  String get importantInformation;
+
+  /// No description provided for @imageGuidelines1.
+  ///
+  /// In en, this message translates to:
+  /// **'The image must be respectful and appropriate for the Islamic app theme'**
+  String get imageGuidelines1;
+
+  /// No description provided for @imageGuidelines2.
+  ///
+  /// In en, this message translates to:
+  /// **'Any misuse of this service leads to banning your subscription without prior notice'**
+  String get imageGuidelines2;
+
+  /// No description provided for @allowedToViewMyImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed to view my image'**
+  String get allowedToViewMyImage;
+
+  /// No description provided for @noOne.
+  ///
+  /// In en, this message translates to:
+  /// **'No one'**
+  String get noOne;
+
+  /// No description provided for @hideMyImage.
+  ///
+  /// In en, this message translates to:
+  /// **'(Hide my image)'**
+  String get hideMyImage;
+
+  /// No description provided for @allMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'All members'**
+  String get allMembers;
+
+  /// No description provided for @noOneCanSeeYourImage.
+  ///
+  /// In en, this message translates to:
+  /// **'No one is allowed to see your image'**
+  String get noOneCanSeeYourImage;
+
+  /// No description provided for @uploadImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Image'**
+  String get uploadImage;
+
+  /// No description provided for @chooseImageSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Image Source'**
+  String get chooseImageSource;
+
+  /// No description provided for @takePhotoFromCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Take photo from camera'**
+  String get takePhotoFromCamera;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @updatingPrivacySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating privacy settings...'**
+  String get updatingPrivacySettings;
+
+  /// No description provided for @noOneWillSeeYourImage.
+  ///
+  /// In en, this message translates to:
+  /// **'No one will see your image'**
+  String get noOneWillSeeYourImage;
+
+  /// No description provided for @everyoneWillSeeYourImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone will see your image'**
+  String get everyoneWillSeeYourImage;
+
+  /// No description provided for @imageUploadedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Image uploaded successfully'**
+  String get imageUploadedSuccessfully;
+
+  /// No description provided for @successGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Your guide to success'**
+  String get successGuide;
+
+  /// No description provided for @zeroMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'0 members'**
+  String get zeroMembers;
+
+  /// No description provided for @loadingMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading more...'**
+  String get loadingMore;
+
+  /// No description provided for @noDataAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available'**
+  String get noDataAvailable;
+
+  /// No description provided for @membershipNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership Number'**
+  String get membershipNumber;
+
+  /// No description provided for @registrationDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Date'**
+  String get registrationDate;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @oneDayAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'One day ago'**
+  String get oneDayAgo;
+
+  /// No description provided for @daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days ago'**
+  String daysAgo(Object count);
+
+  /// No description provided for @weeksAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} weeks ago'**
+  String weeksAgo(Object count);
+
+  /// No description provided for @monthsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} months ago'**
+  String monthsAgo(Object count);
+
+  /// No description provided for @yearsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} years ago'**
+  String yearsAgo(Object count);
+
+  /// No description provided for @editLoginData.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Login Data'**
+  String get editLoginData;
+
+  /// No description provided for @enterUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter username'**
+  String get enterUsername;
+
+  /// No description provided for @enterPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter phone number'**
+  String get enterPhoneNumber;
+
+  /// No description provided for @enterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter email'**
+  String get enterEmail;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password (optional)'**
+  String get newPassword;
+
+  /// No description provided for @enterNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new password'**
+  String get enterNewPassword;
+
+  /// No description provided for @enterConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter confirm password'**
+  String get enterConfirmPassword;
+
+  /// No description provided for @editNationalityCountryCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Nationality, Country and City'**
+  String get editNationalityCountryCity;
+
+  /// No description provided for @chooseNationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose nationality'**
+  String get chooseNationality;
+
+  /// No description provided for @chooseCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose country'**
+  String get chooseCountry;
+
+  /// No description provided for @chooseCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose city'**
+  String get chooseCity;
+
+  /// No description provided for @deleteMyAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my account'**
+  String get deleteMyAccount;
+
+  /// No description provided for @logoutError.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout error'**
+  String get logoutError;
+
+  /// No description provided for @logoutSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout successful'**
+  String get logoutSuccessful;
+
+  /// No description provided for @doYouWantToLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to logout?'**
+  String get doYouWantToLogout;
+
+  /// No description provided for @unreportUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Unreport User'**
+  String get unreportUser;
+
+  /// No description provided for @confirmUnreport.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Unreport'**
+  String get confirmUnreport;
+
+  /// No description provided for @areYouSureUnreport.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to unreport this user?'**
+  String get areYouSureUnreport;
+
+  /// No description provided for @unreportSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'User unreported successfully'**
+  String get unreportSuccessful;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

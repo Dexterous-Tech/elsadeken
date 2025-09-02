@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'widgets/person_image.dart';
 import 'widgets/person_info.dart';
 
@@ -38,7 +39,7 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
     // Validate inputs
     if (widget.personId <= 0) {
       setState(() {
-        errorMessage = "Invalid person ID provided";
+        errorMessage = AppLocalizations.of(context)!.invalidPersonId;
         isLoading = false;
       });
       return;
@@ -63,14 +64,14 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
         });
       } else {
         setState(() {
-          errorMessage = "No data found for this user";
+          errorMessage = AppLocalizations.of(context)!.noDataFound;
           isLoading = false;
         });
       }
     } catch (e) {
       print("Error fetching person details: $e");
       setState(() {
-        errorMessage = "Failed to load user details. Please try again.";
+        errorMessage = AppLocalizations.of(context)!.failedToLoadUserDetails;
         isLoading = false;
       });
     }
@@ -106,13 +107,13 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
                         SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: fetchData,
-                          child: Text('حاول مرة أخرى'),
+                          child: Text(AppLocalizations.of(context)!.tryAgain),
                         ),
                       ],
                     ),
                   )
                 : person == null
-                    ? const Center(child: Text("No data found"))
+                    ? Center(child: Text(AppLocalizations.of(context)!.noDataFoundShort))
                     : SafeArea(
                         child: Stack(
                           children: [

@@ -3,6 +3,8 @@ import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cub
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
@@ -90,7 +92,7 @@ class _ChatScreenState extends State<ChatScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: SafeArea(
         child: Column(
           children: [
@@ -120,7 +122,7 @@ class _ChatScreenState extends State<ChatScreen>
       child: Column(
         children: [
           ProfileHeader(
-            title: 'الرسائل',
+            title: AppLocalizations.of(context)!.messagesLabel,
             showBackButton: false,
           ),
           SizedBox(height: 16.h),

@@ -1,6 +1,7 @@
 // File: lib/presentation/widgets/search_button.dart
 import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../core/theme/app_color.dart';
 
@@ -46,7 +47,7 @@ class SearchButton extends StatelessWidget {
                 ),
               )
             : Text(
-                'بحث',
+                AppLocalizations.of(context)!.search,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

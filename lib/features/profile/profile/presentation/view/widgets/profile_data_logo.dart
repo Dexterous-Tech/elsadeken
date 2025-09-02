@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class ProfileDataLogo extends StatefulWidget {
   const ProfileDataLogo({super.key});
@@ -105,7 +106,7 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
                 if (isFeatured) ...[
                   verticalSpace(8),
                   Text(
-                    'عضو مميز',
+                    AppLocalizations.of(context)!.premiumMember,
                     style: AppTextStyles.font14JetRegularLamaSans.copyWith(
                       color: AppColors.white,
                       fontWeight: FontWeight.bold,

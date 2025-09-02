@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
@@ -6,6 +7,7 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/view/widg
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,10 +24,11 @@ class ManageProfileLoginData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      textDirection: TextDirection.rtl,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         ManageProfileContentItem(
-          title: 'رقم العضوية',
+          title: AppLocalizations.of(context)!.membershipNumber,
           itemContent: ManageProfileContentText(
             text: profileData?.id?.toString() ?? '',
             isLoading: isLoading,
@@ -33,7 +36,7 @@ class ManageProfileLoginData extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'اسم المستخدم',
+          title: AppLocalizations.of(context)!.username,
           itemContent: ManageProfileContentText(
             text: profileData?.name ?? '',
             isLoading: isLoading,
@@ -41,7 +44,7 @@ class ManageProfileLoginData extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'رقم الهاتف',
+          title: AppLocalizations.of(context)!.phoneNumber,
           itemContent: ManageProfileContentText(
             text: profileData?.phone ?? '',
             isLoading: isLoading,
@@ -49,15 +52,15 @@ class ManageProfileLoginData extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'تاريخ التسجيل',
+          title: AppLocalizations.of(context)!.registrationDate,
           itemContent: ManageProfileContentText(
-            text: _formatDate(profileData?.createdAt),
+            text: _formatDate(context, profileData?.createdAt),
             isLoading: isLoading,
           ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'كلمة المرور',
+          title: AppLocalizations.of(context)!.password,
           itemContent: ManageProfileContentText(
             text: '**********',
             isLoading: isLoading,
@@ -65,7 +68,7 @@ class ManageProfileLoginData extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'البريد الإلكتروني',
+          title: AppLocalizations.of(context)!.email,
           itemContent: ManageProfileContentText(
             text: profileData?.email ?? '',
             isLoading: isLoading,
@@ -80,7 +83,7 @@ class ManageProfileLoginData extends StatelessWidget {
     );
   }
 
-  String _formatDate(String? dateString) {
+  String _formatDate(BuildContext context, String? dateString) {
     if (dateString == null || dateString.isEmpty) {
       return '';
     }
@@ -91,20 +94,20 @@ class ManageProfileLoginData extends StatelessWidget {
       final difference = now.difference(date);
 
       if (difference.inDays == 0) {
-        return 'اليوم';
+        return AppLocalizations.of(context)!.today;
       } else if (difference.inDays == 1) {
-        return 'منذ يوم واحد';
+        return AppLocalizations.of(context)!.oneDayAgo;
       } else if (difference.inDays < 7) {
-        return 'منذ ${difference.inDays} أيام';
+        return AppLocalizations.of(context)!.daysAgo(difference.inDays.toString());
       } else if (difference.inDays < 30) {
         final weeks = (difference.inDays / 7).floor();
-        return 'منذ $weeks أسابيع';
+        return AppLocalizations.of(context)!.weeksAgo(weeks.toString());
       } else if (difference.inDays < 365) {
         final months = (difference.inDays / 30).floor();
-        return 'منذ $months أشهر';
+        return AppLocalizations.of(context)!.monthsAgo(months.toString());
       } else {
         final years = (difference.inDays / 365).floor();
-        return 'منذ $years سنوات';
+        return AppLocalizations.of(context)!.yearsAgo(years.toString());
       }
     } catch (e) {
       return dateString;
@@ -115,42 +118,42 @@ class ManageProfileLoginData extends StatelessWidget {
     final updateProfileCubit = context.read<UpdateProfileCubit>();
 
     final dialogData = ManageProfileDialogData(
-      title: 'تعديل بيانات تسجيل الدخول',
+      title: AppLocalizations.of(context)!.editLoginData,
       cubit: updateProfileCubit,
       signUpListsCubit: null, // Login data doesn't need SignUpListsCubit
       dialogType: ManageProfileDialogType.loginData,
       fields: [
         ManageProfileField(
-          label: 'اسم المستخدم',
-          hint: 'أدخل اسم المستخدم',
+          label: AppLocalizations.of(context)!.username,
+          hint: AppLocalizations.of(context)!.enterUsername,
           currentValue: profileData?.name ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.text,
         ),
         ManageProfileField(
-          label: 'رقم الهاتف',
-          hint: 'أدخل رقم الهاتف',
+          label: AppLocalizations.of(context)!.phoneNumber,
+          hint: AppLocalizations.of(context)!.enterPhoneNumber,
           currentValue: profileData?.phone ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.phone,
         ),
         ManageProfileField(
-          label: 'البريد الإلكتروني',
-          hint: 'أدخل البريد الإلكتروني',
+          label: AppLocalizations.of(context)!.email,
+          hint: AppLocalizations.of(context)!.enterEmail,
           currentValue: profileData?.email ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.emailAddress,
         ),
         ManageProfileField(
-          label: 'كلمة المرور (اختياري)',
-          hint: 'أدخل كلمة المرور الجديدة',
+          label: AppLocalizations.of(context)!.newPassword,
+          hint: AppLocalizations.of(context)!.enterNewPassword,
           currentValue: '',
           type: ManageProfileFieldType.password,
           isRequired: false,
         ),
         ManageProfileField(
-          label: 'تأكيد كلمة المرور (اختياري)',
-          hint: 'أدخل تأكيد كلمة المرور',
+          label: AppLocalizations.of(context)!.confirmPassword,
+          hint: AppLocalizations.of(context)!.enterConfirmPassword,
           currentValue: '',
           type: ManageProfileFieldType.password,
           isRequired: false,

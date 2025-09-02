@@ -10,6 +10,7 @@ import 'package:elsadeken/features/on_boarding/presentation/view/widgets/oath_di
 // import 'package:elsadeken/features/on_boarding/presentation/view/widgets/oath_dialog/oath_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class OnBoardingBody extends StatelessWidget {
   const OnBoardingBody({super.key});
@@ -101,7 +102,7 @@ class OnBoardingBody extends StatelessWidget {
                         oathDialog(context: context);
                       },
                       child: Text(
-                        'التسجيل مجاناً',
+                        AppLocalizations.of(context)!.freeRegistrationOnboarding,
                         style: AppTextStyles.font16CulturedMediumPlexSans
                             .copyWith(color: AppColors.white),
                       ),

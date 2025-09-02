@@ -1,9 +1,7 @@
-import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
-import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/delete/delete_dialog.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../../core/helper/app_images.dart';
@@ -40,7 +38,7 @@ class DeleteProfile extends StatelessWidget {
           ),
           horizontalSpace(16),
           Text(
-            ' حذف حسابي',
+            AppLocalizations.of(context)!.deleteMyAccount,
             style: AppTextStyles.font26BlackBoldLamaSans
                 .copyWith(color: AppColors.coralRed, fontSize: 18.sp),
           ),

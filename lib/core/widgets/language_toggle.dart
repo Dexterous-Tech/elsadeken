@@ -27,7 +27,7 @@ class LanguageToggle extends StatelessWidget {
             ],
           ),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
             children: [
               Text(
                 LocalizationHelper.getLocalizedText('اللغة', 'Lang'),
@@ -37,7 +37,7 @@ class LanguageToggle extends StatelessWidget {
                   color: Colors.grey,
                 ),
               ),
-              const SizedBox(width: 8),
+              Spacer(),
               _buildLanguageOption(
                 context,
                 'عربي',

@@ -1,4 +1,5 @@
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../widgets/container_success_way.dart';
 import '../../../../widgets/profile_header.dart';
@@ -17,7 +18,7 @@ class InterestsListBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         textDirection: TextDirection.rtl,
         children: [
-          ProfileHeader(title: 'قائمة الاهتمام'),
+          ProfileHeader(title: AppLocalizations.of(context)!.interestsList),
           verticalSpace(42),
           ContainerSuccessWay(),
           verticalSpace(32),

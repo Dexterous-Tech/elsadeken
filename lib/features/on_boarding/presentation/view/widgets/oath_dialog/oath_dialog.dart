@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:ui';
+import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 
 Future<void> oathDialog({
   required BuildContext context,
@@ -59,7 +61,7 @@ Future<void> oathDialog({
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'السلام عليكم ورحمة الله',
+              AppLocalizations.of(context)!.greetingSalam,
               textDirection: TextDirection.rtl,
               style: AppTextStyles.font22BistreSemiBoldLamaSans,
             ),
@@ -67,7 +69,7 @@ Future<void> oathDialog({
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0.w),
               child: Text(
-                'لإتاحة الفرصة لجميع الأعضاء، فإن\n التسجيل مجاني.',
+                AppLocalizations.of(context)!.freeRegistration,
                 textDirection: TextDirection.rtl,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.font15BistreSemiBoldLamaSans
@@ -76,7 +78,7 @@ Future<void> oathDialog({
             ),
             verticalSpace(48),
             Text(
-              'صيغة القسم:',
+              AppLocalizations.of(context)!.oathFormat,
               style: AppTextStyles.font15BistreSemiBoldLamaSans
                   .copyWith(color: AppColors.black),
               textAlign: TextAlign.center,
@@ -123,7 +125,7 @@ Future<void> oathDialog({
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'لقد قمت باداء القسم وسالتزم به',
+                  AppLocalizations.of(context)!.oathAcceptance,
                   textDirection: TextDirection.rtl,
                   style: AppTextStyles.font14PumpkinOrangeBoldLamaSans,
                 ),
@@ -151,7 +153,7 @@ Future<void> oathDialog({
                     }
                   : () {},
               // verticalPadding: 17.32.h,
-              textButton: 'تسجيل كزوج مجانا (ذكر)',
+              textButton: AppLocalizations.of(context)!.registerMaleFree,
               backgroundColor: AppColors.darkSunray,
             ),
             verticalSpace(14),
@@ -167,7 +169,7 @@ Future<void> oathDialog({
                     }
                   : () {},
               // verticalPadding: 17.32.h,
-              textButton: 'تسجيل كزوجة مجانا (انثي)',
+              textButton: AppLocalizations.of(context)!.registerFemaleFree,
               backgroundColor: AppColors.desire.withValues(alpha: 0.474),
               border: Border.all(color: AppColors.white),
             ),

@@ -1,4 +1,5 @@
 // File: lib/presentation/widgets/dropdown_field.dart
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_color.dart';
@@ -27,9 +28,18 @@ class _DropdownFieldState extends State<DropdownField> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      textDirection: LocalizationService.instance.textDirection,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Icon(Icons.keyboard_arrow_down, color: AppColors.primaryOrange),
+        Text(
+          widget.label,
+          style: TextStyle(
+            fontSize: 14,
+            color: AppColors.black,
+          ),
+        ),
         SizedBox(width: 8),
+
         Expanded(
           child: Container(
             height: 40,
@@ -70,14 +80,7 @@ class _DropdownFieldState extends State<DropdownField> {
             ),
           ),
         ),
-        SizedBox(width: 8),
-        Text(
-          widget.label,
-          style: TextStyle(
-            fontSize: 14,
-            color: AppColors.black,
-          ),
-        ),
+
       ],
     );
   }

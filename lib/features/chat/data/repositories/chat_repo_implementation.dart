@@ -91,6 +91,21 @@ class ChatRepoImpl extends ChatRepoInterface {
   }
 
   @override
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> unreportChat(
+      int chatId) async {
+    try {
+      final response = await chatDataSource.unreportChat(chatId);
+      return Right(response);
+    } catch (error) {
+      log("error in unreportChat: $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
   Future<Either<ApiErrorModel, Map<String, dynamic>>> muteChat(
       int chatId) async {
     try {

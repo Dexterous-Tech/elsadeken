@@ -23,7 +23,7 @@ class ChatTabBar extends StatefulWidget {
 class _ChatTabBarState extends State<ChatTabBar> {
   List<String> get tabs => [
     AppLocalizations.of(context)!.selectAll,
-    'القائمة المفضلة' // TODO: Add to localization
+    AppLocalizations.of(context)!.favoritesList
   ];
 
   @override

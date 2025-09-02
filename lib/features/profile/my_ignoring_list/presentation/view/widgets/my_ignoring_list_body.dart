@@ -1,5 +1,6 @@
 import 'package:elsadeken/features/profile/my_ignoring_list/presentation/view/widgets/my_ignoring_list_items.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../../core/theme/spacing.dart';
@@ -16,7 +17,7 @@ class MyIgnoringListBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         textDirection: TextDirection.rtl,
         children: [
-          ProfileHeader(title: 'قائمة التجاهل'),
+          ProfileHeader(title: AppLocalizations.of(context)!.ignoringList),
           verticalSpace(42),
           ContainerSuccessWay(),
           verticalSpace(32),

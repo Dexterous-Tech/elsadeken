@@ -1,6 +1,7 @@
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -282,7 +283,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                   child: IntrinsicHeight(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.end,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           AppLocalizations.of(context)!.personalInfo,
@@ -294,6 +295,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                             items: personalInformation),
                                         verticalSpace(24),
                                         Text(
+                                          textDirection: LocalizationService.instance.textDirection,
                                           AppLocalizations.of(context)!.appSettings,
                                           style: AppTextStyles
                                               .font12GrayMediumLamaSans,
@@ -326,7 +328,8 @@ class _ProfileContentState extends State<ProfileContent> {
                                             deleteImageDialog(context);
                                           },
                                           child: Row(
-                                            textDirection: TextDirection.rtl,
+                                            textDirection: LocalizationService.instance.textDirection,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
                                               Icon(
                                                 Icons.delete_forever,
@@ -351,8 +354,8 @@ class _ProfileContentState extends State<ProfileContent> {
                                             logoutDialog(context);
                                           },
                                           child: Row(
-                                            textDirection: TextDirection.rtl,
-                                            children: [
+                                            textDirection: LocalizationService.instance.textDirection,
+                                            mainAxisAlignment: MainAxisAlignment.start,                                            children: [
                                               Image.asset(
                                                 AppImages.logoutIcon,
                                                 width: 44.w,
@@ -472,6 +475,8 @@ List<Widget> listGenerationContentItems({
 }) {
   return List.generate(items.length, (index) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         ProfileContentItem(
           image: items[index].image,

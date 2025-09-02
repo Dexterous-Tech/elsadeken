@@ -103,7 +103,7 @@ class ListsCubit extends Cubit<ListsState> {
     } catch (e) {
       stopwatch.stop();
       print('[ListsCubit] Exception occurred after ${stopwatch.elapsedMilliseconds}ms: $e');
-      emit(const ListsError('حدث خطأ أثناء تحميل القوائم'));
+      emit(const ListsError('Error loading lists')); // Using English as fallback since no context available
     } finally {
       _isLoading = false;
     }
@@ -124,11 +124,11 @@ class ListsCubit extends Cubit<ListsState> {
       final currentState = state as ListsLoaded;
       final nationality = currentState.nationalities.firstWhere(
         (n) => n.id == id,
-        orElse: () => NationalityModel(id: 0, name: 'غير محدد'),
+        orElse: () => NationalityModel(id: 0, name: 'Not Specified'),
       );
       return nationality.name;
     }
-    return 'غير محدد';
+    return 'Not Specified';
   }
 
   /// Get country name by ID
@@ -137,11 +137,11 @@ class ListsCubit extends Cubit<ListsState> {
       final currentState = state as ListsLoaded;
       final country = currentState.countries.firstWhere(
         (c) => c.id == id,
-        orElse: () => CountryModel(id: 0, name: 'غير محدد'),
+        orElse: () => CountryModel(id: 0, name: 'Not Specified'),
       );
       return country.name;
     }
-    return 'غير محدد';
+    return 'Not Specified';
   }
 
   /// Get current nationalities list

@@ -227,6 +227,32 @@ class ChatListCubit extends Cubit<ChatListState> {
     }
   }
 
+  /// Unreport a user
+  Future<void> unreportUser(int userId) async {
+    try {
+      print('[ChatListCubit] Unreporting user $userId...');
+
+      final Either<ApiErrorModel, Map<String, dynamic>> result =
+          await chatListRepo.unreportChat(userId);
+
+      result.fold(
+        (failure) {
+          print('[ChatListCubit] Unreport user failed: ${failure.message}');
+          // Show error message to user
+          emit(ChatListError(failure.message ?? 'فشل في إلغاء الإبلاغ عن المستخدم'));
+        },
+        (success) {
+          print('[ChatListCubit] Unreport user successful: $success');
+          // Show success message and refresh chat list
+          getChatList();
+        },
+      );
+    } catch (e) {
+      print('[ChatListCubit] Exception in unreportUser: $e');
+      emit(ChatListError('حدث خطأ أثناء إلغاء الإبلاغ عن المستخدم'));
+    }
+  }
+
   /// Mute a user
   Future<void> muteUser(int userId) async {
     try {

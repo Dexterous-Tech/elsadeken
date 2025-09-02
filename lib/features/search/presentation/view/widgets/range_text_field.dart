@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -30,11 +31,22 @@ class _RangeTextFieldState extends State<RangeTextField> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      textDirection: LocalizationService.instance.textDirection,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(width: 32), // Space for alignment with other fields
         Expanded(
           child: Row(
+            textDirection: LocalizationService.instance.textDirection,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              Text(
+                widget.label,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.black,
+                ),
+              ),
+              Spacer(),
               Expanded(
                 child: Container(
                   height: 40,
@@ -105,14 +117,6 @@ class _RangeTextFieldState extends State<RangeTextField> {
                 ),
               ),
             ],
-          ),
-        ),
-        SizedBox(width: 8),
-        Text(
-          widget.label,
-          style: TextStyle(
-            fontSize: 14,
-            color: AppColors.black,
           ),
         ),
       ],

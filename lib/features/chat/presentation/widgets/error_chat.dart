@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class ErrorChatState extends StatelessWidget {
   final String message;
@@ -19,7 +20,7 @@ class ErrorChatState extends StatelessWidget {
           Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
           const SizedBox(height: 16),
           Text(
-            'حدث خطأ في تحميل الرسائل',
+            AppLocalizations.of(context)!.errorLoadingMessages,
             style: TextStyle(
               color: Colors.red[600],
               fontSize: 18,
@@ -38,7 +39,7 @@ class ErrorChatState extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: onRetry,
-            child: const Text('إعادة المحاولة'),
+            child: Text(AppLocalizations.of(context)!.tryAgainButton),
           ),
         ],
       ),

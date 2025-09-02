@@ -141,9 +141,10 @@ class ChatRoomItem extends StatelessWidget {
       builder: (context) => ChatOptionsPopup(
         onDelete: () => _showDeleteConfirmation(context),
         onMute: () => _muteChat(context),
-        onBlock: () => _reportUser(context),
+        onBlock: () => _handleReportUnreport(context),
         onAddToFavorites: () => _toggleFavorite(context),
         isChatFavorite: chat.isFavorite, // Pass the current favorite status
+        isChatReported: chat.isReported, // Pass the current report status
       ),
     );
   }
@@ -305,7 +306,9 @@ class ChatRoomItem extends StatelessWidget {
     );
   }
 
-  void _reportUser(BuildContext context) {
+  void _handleReportUnreport(BuildContext context) {
+    final bool isReported = chat.isReported;
+    
     // Show confirmation dialog
     showDialog(
       context: context,
@@ -314,12 +317,16 @@ class ChatRoomItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
         ),
         title: Text(
-          'تأكيد الإبلاغ',
+          isReported 
+              ? AppLocalizations.of(context)!.confirmUnreport
+              : 'تأكيد الإبلاغ',
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
         content: Text(
-          'هل أنت متأكد من الإبلاغ عن هذا المستخدم؟',
+          isReported 
+              ? AppLocalizations.of(context)!.areYouSureUnreport
+              : 'هل أنت متأكد من الإبلاغ عن هذا المستخدم؟',
           style: AppTextStyles.font16BlackSemiBoldLamaSans,
           textAlign: TextAlign.center,
         ),
@@ -327,7 +334,7 @@ class ChatRoomItem extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              'إلغاء',
+              AppLocalizations.of(context)!.cancel,
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                 color: Colors.grey[600],
               ),
@@ -336,16 +343,30 @@ class ChatRoomItem extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              // Call the cubit method to report this user
-              chatListCubit.reportUser(chat.id);
+              
+              if (isReported) {
+                // Call the cubit method to unreport this user
+                chatListCubit.unreportUser(chat.id);
+                
+                // Show success snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.unreportSuccessful),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              } else {
+                // Call the cubit method to report this user
+                chatListCubit.reportUser(chat.id);
 
-              // Show success snackbar
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(AppLocalizations.of(context)!.chatBlockedSuccess),
-                  backgroundColor: Colors.orange,
-                ),
-              );
+                // Show success snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.chatBlockedSuccess),
+                    backgroundColor: Colors.orange,
+                  ),
+                );
+              }
             },
             child: Text(
               'تأكيد',
@@ -426,18 +447,7 @@ class ChatRoomItem extends StatelessWidget {
     );
   }
 
-  void _addToFavorites(BuildContext context) {
-    // Call the chat_settings_cubit method to add this chat to favorites
-    chatListCubit.addChatToFavorite(chat.id);
 
-    // Show success snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('تم الإضافة إلى المفضلة'),
-        backgroundColor: Colors.pink,
-      ),
-    );
-  }
 
   /// Get background color based on chat status
   Color _getBackgroundColor() {

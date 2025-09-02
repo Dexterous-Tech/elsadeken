@@ -444,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 24.w,
                 height: 24.h,
               ),
-              label: 'الرئيسية',
+              label: AppLocalizations.of(context)!.homeLabel,
               activeIcon: Image.asset(
                 'assets/images/home/home_orange.png',
                 width: 24.w,
@@ -457,7 +457,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 24.w,
                 height: 24.h,
               ),
-              label: 'الرسائل',
+              label: AppLocalizations.of(context)!.messagesLabel,
               activeIcon: Image.asset(
                 'assets/images/home/message_orange.png',
                 width: 24.w,
@@ -470,7 +470,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 24.w,
                 height: 24.h,
               ),
-              label: 'الاعضاء',
+              label: AppLocalizations.of(context)!.membersLabel,
               activeIcon: Image.asset(
                 'assets/images/home/group_orange.png',
                 width: 24.w,
@@ -483,7 +483,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 24.w,
                 height: 24.h,
               ),
-              label: 'الحساب',
+              label: AppLocalizations.of(context)!.accountLabel,
               activeIcon: Image.asset(
                 'assets/images/home/profile_orange.png',
                 width: 24.w,

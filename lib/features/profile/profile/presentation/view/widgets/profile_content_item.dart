@@ -19,6 +19,7 @@ class ProfileContentItem extends StatelessWidget {
   final void Function()? onPressed;
 
   final Widget? leading;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -26,18 +27,18 @@ class ProfileContentItem extends StatelessWidget {
       child: GestureDetector(
         onTap: onPressed,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           textDirection: LocalizationService.instance.textDirection,
           children: [
             Image.asset(image, width: 44.w, height: 44.h),
             horizontalSpace(16),
-            Expanded(
-              child: Text(
-                title,
-                textAlign: TextAlign.right,
-                style: AppTextStyles.font14CharlestonGreenMediumLamaSans,
-                overflow: TextOverflow.ellipsis,
-              ),
+            Text(
+              title,
+              textAlign: TextAlign.right,
+              style: AppTextStyles.font14CharlestonGreenMediumLamaSans,
+              overflow: TextOverflow.ellipsis,
             ),
+            Spacer(),
             leading ??
                 IconButton(
                   onPressed: onPressed,

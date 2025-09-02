@@ -1,6 +1,8 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +24,7 @@ class BlogScreen extends StatelessWidget {
 
                 contentBody: Column(
               children: [
-                ProfileHeader(title: 'مدونة الصادقون و الصادقات'),
+                ProfileHeader(title: AppLocalizations.of(context)!.blogTitle),
                 SizedBox(height: 20.h),
                 Expanded(
                     child: const Center(
@@ -38,7 +40,7 @@ class BlogScreen extends StatelessWidget {
               contentBody: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ProfileHeader(title: 'مدونة الصادقون و الصادقات'),
+                  ProfileHeader(title: AppLocalizations.of(context)!.blogTitle),
                   SizedBox(height: 20.h),
                   Expanded(
                     child: ListView.separated(
@@ -47,7 +49,8 @@ class BlogScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final blog = state.blogs[index];
                         return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          textDirection: LocalizationService.instance.textDirection,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12.r),
@@ -77,7 +80,7 @@ class BlogScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 12.h),
                             Align(
-                              alignment: Alignment.centerRight,
+                              alignment: LocalizationService.instance.startAlignment,
                               child: Text(
                                 blog.title,
                                 style: TextStyle(
@@ -90,7 +93,7 @@ class BlogScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 8.h),
                             Align(
-                              alignment: Alignment.centerRight,
+                              alignment: LocalizationService.instance.startAlignment,
                               child: Text(
                                 blog.content,
                                 style: TextStyle(
@@ -116,7 +119,7 @@ class BlogScreen extends StatelessWidget {
 
                 contentBody: Column(
               children: [
-                ProfileHeader(title: 'مدونة الصادقون و الصادقات'),
+                ProfileHeader(title: AppLocalizations.of(context)!.blogTitle),
                 SizedBox(height: 20.h),
                 Expanded(child: Center(child: Text(state.message))),
               ],

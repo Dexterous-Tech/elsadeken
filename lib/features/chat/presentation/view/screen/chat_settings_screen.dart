@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/chat/data/models/chat_settings_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_settings_request_model.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/chat_settings_cubit.dart';
@@ -25,9 +26,9 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   bool _isOnline = true;
   bool _newMessagesNotification = false;
   bool _profilePictureNotification = false;
-  String _selectedAgeCategory = 'أي شخص';
-  String _selectedNationalities = 'كل الجنسيات';
-  String _selectedCountries = 'كل الدول';
+  String _selectedAgeCategory = '';
+  String _selectedNationalities = '';
+  String _selectedCountries = '';
 
   // Age range for API
   int _fromAge = 18;
@@ -47,9 +48,14 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   @override
   void initState() {
     super.initState();
-    // Load settings and lists when the screen initializes
+    // Initialize localized strings
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
+        setState(() {
+          _selectedAgeCategory = AppLocalizations.of(context)!.anyPerson;
+          _selectedNationalities = AppLocalizations.of(context)!.allNationalities;
+          _selectedCountries = AppLocalizations.of(context)!.allCountries;
+        });
         print(
             '[ChatSettingsScreen] initState: Loading chat settings and lists...');
         context.read<ChatSettingsCubit>().loadChatSettings();
@@ -83,7 +89,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
 
   void _updateAgeCategoryText() {
     if (_fromAge == 0 && _toAge == 0) {
-      _selectedAgeCategory = 'أي شخص';
+      _selectedAgeCategory = AppLocalizations.of(context)!.anyPerson;
     } else {
       _selectedAgeCategory = '$_fromAge - $_toAge';
     }
@@ -91,7 +97,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
 
   void _updateNationalitiesText() {
     if (_nationalityId == 0) {
-      _selectedNationalities = 'كل الجنسيات';
+      _selectedNationalities = AppLocalizations.of(context)!.allNationalities;
     } else {
       // Get nationality name from lists chat_settings_cubit
       final listsCubit = context.read<ListsCubit>();
@@ -101,7 +107,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
 
   void _updateCountriesText() {
     if (_countryId == 0) {
-      _selectedCountries = 'كل الدول';
+      _selectedCountries = AppLocalizations.of(context)!.allCountries;
     } else {
       // Get country name from lists chat_settings_cubit
       final listsCubit = context.read<ListsCubit>();
@@ -131,7 +137,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
         appBar: _buildAppBar(),
         backgroundColor: Colors.transparent,
@@ -152,8 +158,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     // Show loading success message (optional - can be removed if not needed)
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: const Text(
-                          'تم تحميل الإعدادات بنجاح',
+                        content: Text(
+                          AppLocalizations.of(context)!.settingsLoadedSuccessfully,
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -264,7 +270,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'تم تحديث حالة الاتصال بنجاح',
+                          AppLocalizations.of(context)!.connectionStatusUpdatedSuccessfully,
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -427,7 +433,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             ElevatedButton(
               onPressed: () =>
                   context.read<ChatSettingsCubit>().loadChatSettings(),
-              child: const Text('إعادة المحاولة'),
+              child: Text(AppLocalizations.of(context)!.retry),
             ),
           ],
         ),
@@ -497,7 +503,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'حالة الاتصال الخاصة بك',
+          AppLocalizations.of(context)!.showOnlineStatus,
           style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
@@ -507,8 +513,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         BlocBuilder<ChatOnlineSettingCubit, ChatOnlineSettingState>(
           builder: (context, state) {
             return _buildSettingRow(
-              title: _isOnline ? 'متصل الآن' : 'غير متصل',
-              subtitle: 'أظهر أنك متصل',
+              title: _isOnline ? AppLocalizations.of(context)!.onlineStatus : AppLocalizations.of(context)!.offlineStatus,
+              subtitle: AppLocalizations.of(context)!.showOnlineStatus,
               showGreenDot: true,
               trailing: Transform.scale(
                 scale: 0.8,
@@ -538,10 +544,13 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   Widget _buildWhoCanSendSection() {
     return Container(
       child: Column(
+        textDirection: LocalizationService.instance.textDirection,
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            'من يستطيع إرسال الرسائل إليك؟',
+            textDirection: LocalizationService.instance.textDirection,
+            AppLocalizations.of(context)!.whoCanSendMessages,
             style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
@@ -710,7 +719,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             onPressed: (isLoading || !hasSettings || !hasChanges)
                 ? () {}
                 : _saveSettings,
-            textButton: isLoading ? 'جاري الحفظ...' : 'حفظ',
+            textButton: isLoading ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.save,
             height: 56.h,
             radius: 28.r,
             styleTextButton: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
@@ -733,7 +742,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
       print('[ChatSettingsScreen] No changes detected, showing snackbar');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('لم يتم إجراء أي تغييرات'),
+          content: Text(AppLocalizations.of(context)!.noChangesMade),
           backgroundColor: Colors.orange,
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
@@ -775,14 +784,14 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('اختر الفئة العمرية'),
+        title: Text(AppLocalizations.of(context)!.selectAgeCategory),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildDialogOption('أي شخص', () {
+            _buildDialogOption(AppLocalizations.of(context)!.anyPerson, () {
               setState(() {
-                _selectedAgeCategory = 'أي شخص';
+                _selectedAgeCategory = AppLocalizations.of(context)!.anyPerson;
                 _fromAge = 0;
                 _toAge = 0;
               });
@@ -860,9 +869,9 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Option for "All Nationalities"
-                      _buildDialogOption('كل الجنسيات', () {
+                      _buildDialogOption(AppLocalizations.of(context)!.allNationalities, () {
                         setState(() {
-                          _selectedNationalities = 'كل الجنسيات';
+                          _selectedNationalities = AppLocalizations.of(context)!.allNationalities;
                           _nationalityId = 0;
                         });
                         Navigator.pop(context);
@@ -887,20 +896,20 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             } else if (currentState is ListsLoading ||
                 currentState is ListsInitial) {
               print('[ChatSettingsScreen] Lists are loading...');
-              return const SizedBox(
+              return SizedBox(
                 height: 200,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 16),
-                      Text('جاري تحميل الجنسيات...'),
-                      SizedBox(height: 8),
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 16),
+                      Text(AppLocalizations.of(context)!.loadingNationalities),
+                      const SizedBox(height: 8),
                       Text(
-                        'يرجى الانتظار',
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                        AppLocalizations.of(context)!.pleaseWait,
+                        style: const TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                     ],
                   ),
@@ -919,7 +928,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                       const Icon(Icons.error_outline,
                           color: Colors.red, size: 48),
                       const SizedBox(height: 16),
-                      Text('حدث خطأ في تحميل الجنسيات'),
+                      Text(AppLocalizations.of(context)!.errorLoadingNationalities),
                       const SizedBox(height: 8),
                       Text(
                         currentState.message,
@@ -933,7 +942,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                           Navigator.pop(context);
                           listsCubit.loadLists();
                         },
-                        child: const Text('إعادة المحاولة'),
+                        child: Text(AppLocalizations.of(context)!.retry),
                       ),
                     ],
                   ),
@@ -986,7 +995,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('اختر الدول'),
+        title: Text(AppLocalizations.of(context)!.selectCountries),
         content: Builder(
           builder: (context) {
             if (currentState is ListsLoaded) {
@@ -1001,9 +1010,9 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Option for "All Countries"
-                      _buildDialogOption('كل الدول', () {
+                      _buildDialogOption(AppLocalizations.of(context)!.allCountries, () {
                         setState(() {
-                          _selectedCountries = 'كل الدول';
+                          _selectedCountries = AppLocalizations.of(context)!.allCountries;
                           _countryId = 0;
                         });
                         Navigator.pop(context);
@@ -1028,7 +1037,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             } else if (currentState is ListsLoading ||
                 currentState is ListsInitial) {
               print('[ChatSettingsScreen] Lists are loading...');
-              return const SizedBox(
+              return  SizedBox(
                 height: 200,
                 child: Center(
                   child: Column(
@@ -1037,10 +1046,10 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     children: [
                       CircularProgressIndicator(),
                       SizedBox(height: 16),
-                      Text('جاري تحميل الدول...'),
+                      Text(AppLocalizations.of(context)!.loadingCountries),
                       SizedBox(height: 8),
                       Text(
-                        'يرجى الانتظار',
+                        AppLocalizations.of(context)!.pleaseWait,
                         style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                     ],
@@ -1060,7 +1069,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                       const Icon(Icons.error_outline,
                           color: Colors.red, size: 48),
                       const SizedBox(height: 16),
-                      Text('حدث خطأ في تحميل الدول'),
+                      Text(AppLocalizations.of(context)!.errorLoadingCountries),
                       const SizedBox(height: 8),
                       Text(
                         currentState.message,
@@ -1074,7 +1083,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                           Navigator.pop(context);
                           listsCubit.loadLists();
                         },
-                        child: const Text('إعادة المحاولة'),
+                        child: Text(AppLocalizations.of(context)!.retry),
                       ),
                     ],
                   ),
@@ -1082,7 +1091,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               );
             } else {
               print('[ChatSettingsScreen] Unknown state: $currentState');
-              return const SizedBox(
+              return  SizedBox(
                 height: 200,
                 child: Center(
                   child: Column(
@@ -1091,10 +1100,10 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     children: [
                       Icon(Icons.help_outline, color: Colors.orange, size: 48),
                       SizedBox(height: 16),
-                      Text('جاري إعداد القوائم...'),
+                      Text(AppLocalizations.of(context)!.settingUpLists),
                       SizedBox(height: 16),
                       Text(
-                        'يرجى الانتظار قليلاً',
+                        AppLocalizations.of(context)!.pleaseWaitMoment,
                         style: TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                     ],
