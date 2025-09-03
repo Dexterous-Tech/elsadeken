@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../../core/theme/spacing.dart';
@@ -37,7 +38,7 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('كم عمرك ؟',
+                    Text(AppLocalizations.of(context)!.howOldAreYou,
                         textDirection: TextDirection.rtl,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
@@ -67,7 +68,7 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                       },
                     ),
                     verticalSpace(40),
-                    Text('كم عدد الاطفال ؟',
+                    Text(AppLocalizations.of(context)!.howManyChildren,
                         textDirection: TextDirection.rtl,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
@@ -98,7 +99,7 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                       },
                     ),
                     verticalSpace(40),
-                    Text('كم وزنك (كجم) ؟',
+                    Text(AppLocalizations.of(context)!.howMuchDoYouWeigh,
                         textDirection: TextDirection.rtl,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
@@ -129,7 +130,7 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                       },
                     ),
                     verticalSpace(40),
-                    Text('كم طولك (سم) ؟',
+                    Text(AppLocalizations.of(context)!.howTallAreYou,
                         textDirection: TextDirection.rtl,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),

@@ -1,3 +1,5 @@
+import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -22,10 +24,11 @@ class ManageProfileMaritalStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ManageProfileContentItem(
-          title: 'الحالة الاجتماعية',
+          title: AppLocalizations.of(context)!.maritalStatus,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.maritalStatus ?? '',
             isLoading: isLoading,
@@ -33,7 +36,7 @@ class ManageProfileMaritalStatus extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'نوع الزواج',
+          title: AppLocalizations.of(context)!.marriageType,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.typeOfMarriage ?? '',
             isLoading: isLoading,
@@ -41,7 +44,7 @@ class ManageProfileMaritalStatus extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'العمر',
+          title: AppLocalizations.of(context)!.age,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.age?.toString() ?? '',
             isLoading: isLoading,
@@ -49,7 +52,7 @@ class ManageProfileMaritalStatus extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'الاطفال',
+          title: AppLocalizations.of(context)!.children,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.children?.toString() ?? '',
             isLoading: isLoading,
@@ -76,57 +79,57 @@ class ManageProfileMaritalStatus extends StatelessWidget {
         'DEBUG: Current type of marriage: "${profileData?.attribute?.typeOfMarriage}"');
 
     final dialogData = ManageProfileDialogData(
-      title: 'تعديل الحالة الاجتماعية',
+      title: AppLocalizations.of(context)!.editMaritalStatus,
       cubit: updateProfileCubit,
       signUpListsCubit: null, // Marital status doesn't need SignUpListsCubit
       dialogType: ManageProfileDialogType.socialStatus,
       fields: [
         ManageProfileField(
-          label: 'الحالة الاجتماعية',
-          hint: 'اختر الحالة الاجتماعية',
+          label: AppLocalizations.of(context)!.maritalStatus,
+          hint: AppLocalizations.of(context)!.chooseMaritalStatus,
           currentValue:
-              _mapMaritalStatusToDisplay(profileData?.attribute?.maritalStatus),
+              _mapMaritalStatusToDisplay(profileData?.attribute?.maritalStatus, context),
           type: ManageProfileFieldType.dropdown,
           options: _isMale(profileData?.gender)
               ? [
-                  'عازب',
-                  'متزوج',
-                  'مطلق',
-                  'أرمل',
+                  AppLocalizations.of(context)!.single,
+                  AppLocalizations.of(context)!.married,
+                  AppLocalizations.of(context)!.divorced,
+                  AppLocalizations.of(context)!.widowed,
                 ]
               : [
-                  'آنسة',
-                  'متزوجة',
-                  'مطلقة',
-                  'أرملة',
+                  AppLocalizations.of(context)!.singleFemale,
+                  AppLocalizations.of(context)!.marriedFemale,
+                  AppLocalizations.of(context)!.divorcedFemale,
+                  AppLocalizations.of(context)!.widowedFemale,
                 ],
         ),
         ManageProfileField(
-          label: 'نوع الزواج',
-          hint: 'اختر نوع الزواج',
+          label: AppLocalizations.of(context)!.marriageType,
+          hint: AppLocalizations.of(context)!.chooseMarriageType,
           currentValue: _mapTypeOfMarriageToDisplay(
-              profileData?.attribute?.typeOfMarriage),
+              profileData?.attribute?.typeOfMarriage, context),
           type: ManageProfileFieldType.dropdown,
           options: _isMale(profileData?.gender)
               ? [
-                  'زوجة اولي',
-                  'زوجة ثانية',
+                  AppLocalizations.of(context)!.firstWife,
+                  AppLocalizations.of(context)!.secondWife,
                 ]
               : [
-                  'الزوج الوحيد',
-                  'لا مانع من تعدل الزوجات',
+                  AppLocalizations.of(context)!.onlyHusband,
+                  AppLocalizations.of(context)!.noObjectionToPolygamy,
                 ],
         ),
         ManageProfileField(
-          label: 'العمر',
-          hint: 'أدخل العمر',
+          label: AppLocalizations.of(context)!.age,
+          hint: AppLocalizations.of(context)!.enterAge,
           currentValue: profileData?.attribute?.age?.toString() ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.number,
         ),
         ManageProfileField(
-          label: 'عدد الأطفال',
-          hint: 'أدخل عدد الأطفال',
+          label: AppLocalizations.of(context)!.numberOfChildren,
+          hint: AppLocalizations.of(context)!.enterNumberOfChildren,
           currentValue: profileData?.attribute?.children?.toString() ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.number,
@@ -158,7 +161,7 @@ class ManageProfileMaritalStatus extends StatelessWidget {
   }
 
   /// Helper method to map API marital status values to display values
-  String _mapMaritalStatusToDisplay(String? apiValue) {
+  String _mapMaritalStatusToDisplay(String? apiValue, BuildContext context) {
     if (apiValue == null || apiValue.isEmpty) return '';
 
     final value = apiValue.trim();
@@ -166,13 +169,13 @@ class ManageProfileMaritalStatus extends StatelessWidget {
     // Map API values to display values
     switch (value.toLowerCase()) {
       case 'single':
-        return _isMale(profileData?.gender) ? 'عازب' : 'آنسة';
+        return _isMale(profileData?.gender) ? AppLocalizations.of(context)!.single : AppLocalizations.of(context)!.singleFemale;
       case 'married':
-        return _isMale(profileData?.gender) ? 'متزوج' : '';
+        return _isMale(profileData?.gender) ? AppLocalizations.of(context)!.married : '';
       case 'divorced':
-        return _isMale(profileData?.gender) ? 'مطلق' : 'مطلقة';
+        return _isMale(profileData?.gender) ? AppLocalizations.of(context)!.divorced : AppLocalizations.of(context)!.divorcedFemale;
       case 'widower':
-        return _isMale(profileData?.gender) ? 'أرمل' : 'أرملة';
+        return _isMale(profileData?.gender) ? AppLocalizations.of(context)!.widowed : AppLocalizations.of(context)!.widowedFemale;
       default:
         // If it's already in Arabic, return as is
         return value;
@@ -180,7 +183,7 @@ class ManageProfileMaritalStatus extends StatelessWidget {
   }
 
   /// Helper method to map API type of marriage values to display values
-  String _mapTypeOfMarriageToDisplay(String? apiValue) {
+  String _mapTypeOfMarriageToDisplay(String? apiValue, BuildContext context) {
     if (apiValue == null || apiValue.isEmpty) return '';
 
     final value = apiValue.trim();
@@ -188,11 +191,11 @@ class ManageProfileMaritalStatus extends StatelessWidget {
     // Map API values to display values
     switch (value.toLowerCase()) {
       case 'only_one':
-        return _isMale(profileData?.gender) ? 'زوجة اولي' : 'الزوج الوحيد';
+        return _isMale(profileData?.gender) ? AppLocalizations.of(context)!.firstWife : AppLocalizations.of(context)!.onlyHusband;
       case 'multi':
         return _isMale(profileData?.gender)
-            ? 'زوجة ثانية'
-            : 'لا مانع من تعدل الزوجات';
+            ? AppLocalizations.of(context)!.secondWife
+            : AppLocalizations.of(context)!.noObjectionToPolygamy;
       default:
         // If it's already in Arabic, return as is
         return value;

@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/di/injection_container.dart';
@@ -74,7 +76,7 @@ class _ViewersViewState extends State<ViewersView> {
   String _calculateTimeSinceVisited(
       String? visitedAtDate, String? visitedAtTime) {
     if (visitedAtDate == null || visitedAtTime == null) {
-      return 'غير محدد';
+      return AppLocalizations.of(context)!.notSpecified;
     }
 
     try {
@@ -85,43 +87,43 @@ class _ViewersViewState extends State<ViewersView> {
       final difference = now.difference(visitedDateTime);
 
       if (difference.inMinutes < 1) {
-        return 'الآن';
+        return AppLocalizations.of(context)!.now;
       } else if (difference.inMinutes < 60) {
         final minutes = difference.inMinutes;
         if (minutes == 1) {
-          return 'منذ دقيقة';
+          return AppLocalizations.of(context)!.minuteAgo;
         } else if (minutes == 2) {
-          return 'منذ دقيقتين';
+          return AppLocalizations.of(context)!.twoMinutesAgo;
         } else if (minutes < 11) {
-          return 'منذ $minutes دقائق';
+          return AppLocalizations.of(context)!.minutesAgo(minutes);
         } else {
-          return 'منذ $minutes دقيقة';
+          return AppLocalizations.of(context)!.minutesAgoSingle(minutes);
         }
       } else if (difference.inHours < 24) {
         final hours = difference.inHours;
         if (hours == 1) {
-          return 'منذ ساعة';
+          return AppLocalizations.of(context)!.hourAgo;
         } else if (hours == 2) {
-          return 'منذ ساعتين';
+          return AppLocalizations.of(context)!.twoHoursAgo;
         } else if (hours < 11) {
-          return 'منذ $hours ساعات';
+          return AppLocalizations.of(context)!.hoursAgo(hours);
         } else {
-          return 'منذ $hours ساعة';
+          return AppLocalizations.of(context)!.hoursAgoSingle(hours);
         }
       } else {
         final days = difference.inDays;
         if (days == 1) {
-          return 'منذ يوم';
+          return AppLocalizations.of(context)!.dayAgo;
         } else if (days == 2) {
-          return 'منذ يومين';
+          return AppLocalizations.of(context)!.twoDaysAgo;
         } else if (days < 11) {
-          return 'منذ $days أيام';
+          return AppLocalizations.of(context)!.daysAgo(days);
         } else {
-          return 'منذ $days يوم';
+          return AppLocalizations.of(context)!.daysAgoSingle(days);
         }
       }
     } catch (e) {
-      return 'غير محدد';
+      return AppLocalizations.of(context)!.notSpecified;
     }
   }
 
@@ -143,8 +145,8 @@ class _ViewersViewState extends State<ViewersView> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           automaticallyImplyLeading: false,
-          title: const Text(
-            ' من زار بياناتي ',
+          title: Text(
+            AppLocalizations.of(context)!.whoVisitedMyProfile,
             style: TextStyle(
               color: Colors.black,
               fontSize: 20,
@@ -223,10 +225,10 @@ class _ViewersViewState extends State<ViewersView> {
                           );
                         }
                         if (state is MembersListEmpty<UsersDataModel>) {
-                          return const Expanded(
+                          return Expanded(
                             child: Center(
                               child: Text(
-                                'لا توجد نتائج حالياً',
+                                AppLocalizations.of(context)!.noResultsCurrently,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -246,16 +248,18 @@ class _ViewersViewState extends State<ViewersView> {
                                 itemBuilder: (context, index) {
                                   if (index == items.length && _isLoadingMore) {
                                     return Padding(
-                                      padding: const EdgeInsets.all(16.0),
+                                      padding: const EdgeInsetsDirectional.all(16.0),
                                       child: Center(
                                         child: Column(
+                                          textDirection: LocalizationService.instance.textDirection,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             CircularProgressIndicator(
                                               strokeWidth: 2,
                                             ),
                                             const SizedBox(height: 8),
-                                            const Text(
-                                              'جاري تحميل المزيد...',
+                                            Text(
+                                              AppLocalizations.of(context)!.loadingMore,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontSize: 12,
@@ -275,7 +279,7 @@ class _ViewersViewState extends State<ViewersView> {
                                     m.visitedAtTime,
                                   );
                                   return Padding(
-                                    padding: const EdgeInsets.only(bottom: 12),
+                                    padding:  EdgeInsetsDirectional.only(bottom: 12),
                                     child: ContainerItem(
                                       favUser: m,
                                       isTime: true,

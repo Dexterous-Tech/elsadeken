@@ -166,7 +166,7 @@ class ChatRoomItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
         ),
         title: Text(
-          'تأكيد حذف المحادثة',
+          AppLocalizations.of(context)!.confirmDeletion,
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
@@ -175,7 +175,7 @@ class ChatRoomItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'هل أنت متأكد من حذف هذه المحادثة؟',
+              AppLocalizations.of(context)!.confirmDelCont,
               style: AppTextStyles.font16BlackSemiBoldLamaSans,
               textAlign: TextAlign.center,
             ),
@@ -196,7 +196,7 @@ class ChatRoomItem extends StatelessWidget {
                       SizedBox(width: 8.w),
                       Expanded(
                         child: Text(
-                          'اسم المحادثة: ${chat.otherUser.name}',
+                          chat.otherUser.name,
                           style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -210,7 +210,7 @@ class ChatRoomItem extends StatelessWidget {
                       Icon(Icons.tag, size: 16.sp, color: Colors.grey[600]),
                       SizedBox(width: 8.w),
                       Text(
-                        'معرف المحادثة: ${chat.id}',
+                        '${chat.id}',
                         style: AppTextStyles.font14BlackSemiBoldLamaSans,
                       ),
                     ],
@@ -223,7 +223,7 @@ class ChatRoomItem extends StatelessWidget {
                         SizedBox(width: 8.w),
                         Expanded(
                           child: Text(
-                            'آخر رسالة: ${chat.lastMessage!.body}',
+                            ' ${chat.lastMessage!.body}',
                             style: AppTextStyles.font14BlackSemiBoldLamaSans,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -239,7 +239,7 @@ class ChatRoomItem extends StatelessWidget {
                         Icon(Icons.mark_email_unread, size: 16.sp, color: Colors.orange),
                         SizedBox(width: 8.w),
                         Text(
-                          'رسائل غير مقروءة: ${chat.unreadCount}',
+                          ' ${chat.unreadCount}',
                           style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
                             color: Colors.orange,
                             fontWeight: FontWeight.bold,
@@ -251,15 +251,7 @@ class ChatRoomItem extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 16.h),
-            Text(
-              '⚠️ لا يمكن التراجع عن هذا الإجراء.',
-              style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
-                color: Colors.red[600],
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
+
           ],
         ),
         actions: [
@@ -269,7 +261,7 @@ class ChatRoomItem extends StatelessWidget {
               Navigator.of(context).pop();
             },
             child: Text(
-              'إلغاء',
+              AppLocalizations.of(context)!.cancel,
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                 color: Colors.grey[600],
               ),
@@ -294,7 +286,7 @@ class ChatRoomItem extends StatelessWidget {
               );
             },
             child: Text(
-              'حذف المحادثة',
+              AppLocalizations.of(context)!.deleteChat,
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                 color: Colors.red,
                 fontWeight: FontWeight.bold,
@@ -319,14 +311,14 @@ class ChatRoomItem extends StatelessWidget {
         title: Text(
           isReported 
               ? AppLocalizations.of(context)!.confirmUnreport
-              : 'تأكيد الإبلاغ',
+              : AppLocalizations.of(context)!.confirm,
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
         content: Text(
           isReported 
               ? AppLocalizations.of(context)!.areYouSureUnreport
-              : 'هل أنت متأكد من الإبلاغ عن هذا المستخدم؟',
+              : AppLocalizations.of(context)!.report,
           style: AppTextStyles.font16BlackSemiBoldLamaSans,
           textAlign: TextAlign.center,
         ),
@@ -369,7 +361,7 @@ class ChatRoomItem extends StatelessWidget {
               }
             },
             child: Text(
-              'تأكيد',
+              AppLocalizations.of(context)!.confirm,
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                 color: Colors.red,
               ),
@@ -389,12 +381,12 @@ class ChatRoomItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
         ),
         title: Text(
-          'تأكيد كتم الصوت',
+          AppLocalizations.of(context)!.confirm,
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
         content: Text(
-          'هل تريد كتم صوت هذا المستخدم؟',
+          AppLocalizations.of(context)!.muteChat,
           style: AppTextStyles.font16BlackSemiBoldLamaSans,
           textAlign: TextAlign.center,
         ),
@@ -402,7 +394,7 @@ class ChatRoomItem extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              'إلغاء',
+              AppLocalizations.of(context)!.cancel,
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                 color: Colors.grey[600],
               ),
@@ -423,7 +415,7 @@ class ChatRoomItem extends StatelessWidget {
               );
             },
             child: Text(
-              'تأكيد',
+              AppLocalizations.of(context)!.confirm,
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                 color: Colors.orangeAccent,
               ),
@@ -441,7 +433,7 @@ class ChatRoomItem extends StatelessWidget {
     // Show appropriate snackbar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(chat.isFavorite ? 'تم إزالة من المفضلة' : 'تم الإضافة إلى المفضلة'),
+        content: Text(chat.isFavorite ? '${AppLocalizations.of(context)!.removeFromFavorites}' : '${AppLocalizations.of(context)!.addToFavorites}'),
         backgroundColor: chat.isFavorite ? Colors.grey : Colors.pink,
       ),
     );

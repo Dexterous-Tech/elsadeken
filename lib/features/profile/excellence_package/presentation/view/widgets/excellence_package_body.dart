@@ -11,6 +11,7 @@ import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../../core/theme/app_color.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
@@ -328,7 +329,7 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                             );
                           } else if (state is GetPackagesFailure) {
                             return Center(
-                              child: Text("فشل تحميل البيانات"),
+                              child: Text(AppLocalizations.of(context)!.failedToLoadData),
                             );
                           }
                           return SizedBox.shrink();

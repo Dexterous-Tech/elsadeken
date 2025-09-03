@@ -62,8 +62,7 @@ import 'app_localizations_en.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,8 +82,7 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
     delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
@@ -194,6 +191,54 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @confirmDeletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Delete'**
+  String get confirmDeletion;
+
+  /// No description provided for @confirmDelCont.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you confirm delete all chats? u can\'t roll back it'**
+  String get confirmDelCont;
+
+  /// No description provided for @delteDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletion Successfully'**
+  String get delteDone;
+
+  /// No description provided for @confirmReadCont.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to make all chats have read mark?'**
+  String get confirmReadCont;
+
+  /// No description provided for @doneReadCont.
+  ///
+  /// In en, this message translates to:
+  /// **'All chats have read mark?'**
+  String get doneReadCont;
+
+  /// No description provided for @modify.
+  ///
+  /// In en, this message translates to:
+  /// **'Modify'**
+  String get modify;
+
+  /// No description provided for @update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get update;
+
   /// No description provided for @home.
   ///
   /// In en, this message translates to:
@@ -223,6 +268,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dark Mode'**
   String get darkMode;
+
+  /// No description provided for @more.
+  ///
+  /// In en, this message translates to:
+  /// **'more'**
+  String get more;
 
   /// No description provided for @location.
   ///
@@ -367,12 +418,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Personal Account'**
   String get personalAccount;
-
-  /// No description provided for @confirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm'**
-  String get confirm;
 
   /// No description provided for @areYouSure.
   ///
@@ -677,7 +722,7 @@ abstract class AppLocalizations {
   /// No description provided for @appearancePreferences.
   ///
   /// In en, this message translates to:
-  /// **'Appearance, Height and Weight Preferences'**
+  /// **'Appearance Preferences'**
   String get appearancePreferences;
 
   /// No description provided for @sortResults.
@@ -893,19 +938,19 @@ abstract class AppLocalizations {
   /// No description provided for @firstWife.
   ///
   /// In en, this message translates to:
-  /// **'First Wife'**
+  /// **'First wife'**
   String get firstWife;
 
   /// No description provided for @secondWife.
   ///
   /// In en, this message translates to:
-  /// **'Second Wife'**
+  /// **'Second wife'**
   String get secondWife;
 
   /// No description provided for @onlyHusband.
   ///
   /// In en, this message translates to:
-  /// **'Only Husband'**
+  /// **'Only husband'**
   String get onlyHusband;
 
   /// No description provided for @noPolygamyHusband.
@@ -1235,7 +1280,7 @@ abstract class AppLocalizations {
   /// No description provided for @notSpecified.
   ///
   /// In en, this message translates to:
-  /// **'Not Specified'**
+  /// **'Not specified'**
   String get notSpecified;
 
   /// No description provided for @unknown.
@@ -1355,7 +1400,7 @@ abstract class AppLocalizations {
   /// No description provided for @currentlyOnline.
   ///
   /// In en, this message translates to:
-  /// **'Currently online'**
+  /// **'Currently Online'**
   String get currentlyOnline;
 
   /// No description provided for @aboutPerson.
@@ -1373,13 +1418,13 @@ abstract class AppLocalizations {
   /// No description provided for @registeredSince.
   ///
   /// In en, this message translates to:
-  /// **'Registered since'**
+  /// **'Registered Since'**
   String get registeredSince;
 
   /// No description provided for @lastVisitDate.
   ///
   /// In en, this message translates to:
-  /// **'Last visit date'**
+  /// **'Last Visit Date'**
   String get lastVisitDate;
 
   /// No description provided for @information.
@@ -1775,48 +1820,32 @@ abstract class AppLocalizations {
   /// No description provided for @oneDayAgo.
   ///
   /// In en, this message translates to:
-  /// **'One day ago'**
+  /// **'One Day Ago'**
   String get oneDayAgo;
 
   /// No description provided for @daysAgo.
   ///
   /// In en, this message translates to:
-  /// **'{count} days ago'**
+  /// **'{count} Days Ago'**
   String daysAgo(Object count);
 
   /// No description provided for @weeksAgo.
   ///
   /// In en, this message translates to:
-  /// **'{count} weeks ago'**
+  /// **'{count} Weeks Ago'**
   String weeksAgo(Object count);
 
   /// No description provided for @monthsAgo.
   ///
   /// In en, this message translates to:
-  /// **'{count} months ago'**
+  /// **'{count} Months Ago'**
   String monthsAgo(Object count);
 
   /// No description provided for @yearsAgo.
   ///
   /// In en, this message translates to:
-  /// **'{count} years ago'**
+  /// **'{count} Years Ago'**
   String yearsAgo(Object count);
-
-  /// No description provided for @year.
-  ///
-  /// In en, this message translates to:
-  /// **'year'**
-  /// In ar, this message translates to:
-  /// **'سنة'**
-  String get year;
-
-  /// No description provided for @ageText.
-  ///
-  /// In en, this message translates to:
-  /// **'$count year' or '$count years'**
-  /// In ar, this message translates to:
-  /// **'$count سنة' or '$count سنوات'**
-  String ageText(Object count);
 
   /// No description provided for @editLoginData.
   ///
@@ -1931,10 +1960,699 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User unreported successfully'**
   String get unreportSuccessful;
+
+  /// No description provided for @year.
+  ///
+  /// In en, this message translates to:
+  /// **'year'**
+  String get year;
+
+  /// No description provided for @ageText.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, select, 1{year} other{years}}'**
+  String ageText(String count);
+
+  /// No description provided for @whatIsYourJob.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your job?'**
+  String get whatIsYourJob;
+
+  /// No description provided for @whatIsYourMonthlyIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your monthly income?'**
+  String get whatIsYourMonthlyIncome;
+
+  /// No description provided for @jobRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Job is required'**
+  String get jobRequired;
+
+  /// No description provided for @jobTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Job must not exceed 50 characters'**
+  String get jobTooLong;
+
+  /// No description provided for @jobNoLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Job cannot contain links'**
+  String get jobNoLinks;
+
+  /// No description provided for @retryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retryButton;
+
+  /// No description provided for @pleaseWaitWhileLoadingProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait while loading profile'**
+  String get pleaseWaitWhileLoadingProfile;
+
+  /// No description provided for @failedToLoadData.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load data'**
+  String get failedToLoadData;
+
+  /// No description provided for @enterNumberOfChildren.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter number of children'**
+  String get enterNumberOfChildren;
+
+  /// No description provided for @religiousCommitment.
+  ///
+  /// In en, this message translates to:
+  /// **'Religious Commitment'**
+  String get religiousCommitment;
+
+  /// No description provided for @prayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer'**
+  String get prayer;
+
+  /// No description provided for @smoking.
+  ///
+  /// In en, this message translates to:
+  /// **'Smoking'**
+  String get smoking;
+
+  /// No description provided for @hijab.
+  ///
+  /// In en, this message translates to:
+  /// **'Hijab'**
+  String get hijab;
+
+  /// No description provided for @beard.
+  ///
+  /// In en, this message translates to:
+  /// **'Beard'**
+  String get beard;
+
+  /// No description provided for @editReligiousInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Religious Information'**
+  String get editReligiousInfo;
+
+  /// No description provided for @chooseReligiousCommitmentLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose religious commitment level'**
+  String get chooseReligiousCommitmentLevel;
+
+  /// No description provided for @choosePrayerStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose prayer status'**
+  String get choosePrayerStatus;
+
+  /// No description provided for @chooseSmokingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose smoking status'**
+  String get chooseSmokingStatus;
+
+  /// No description provided for @howOldAreYou.
+  ///
+  /// In en, this message translates to:
+  /// **'How old are you?'**
+  String get howOldAreYou;
+
+  /// No description provided for @howManyChildren.
+  ///
+  /// In en, this message translates to:
+  /// **'How many children do you have?'**
+  String get howManyChildren;
+
+  /// No description provided for @howMuchDoYouWeigh.
+  ///
+  /// In en, this message translates to:
+  /// **'How much do you weigh (kg)?'**
+  String get howMuchDoYouWeigh;
+
+  /// No description provided for @howTallAreYou.
+  ///
+  /// In en, this message translates to:
+  /// **'How tall are you (cm)?'**
+  String get howTallAreYou;
+
+  /// No description provided for @premiumMembersCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Members Count: {count}'**
+  String premiumMembersCount(Object count);
+
+  /// No description provided for @onlineMembersCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Online Now: {count}'**
+  String onlineMembersCount(Object count);
+
+  /// No description provided for @whoVisitedMyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Who Visited My Profile'**
+  String get whoVisitedMyProfile;
+
+  /// No description provided for @noResultsCurrently.
+  ///
+  /// In en, this message translates to:
+  /// **'No results currently'**
+  String get noResultsCurrently;
+
+  /// No description provided for @minuteAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'A minute ago'**
+  String get minuteAgo;
+
+  /// No description provided for @twoMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Two minutes ago'**
+  String get twoMinutesAgo;
+
+  /// No description provided for @minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Minutes Ago'**
+  String minutesAgo(Object count);
+
+  /// No description provided for @minutesAgoSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} minute ago'**
+  String minutesAgoSingle(Object count);
+
+  /// No description provided for @hourAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'An hour ago'**
+  String get hourAgo;
+
+  /// No description provided for @twoHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Two hours ago'**
+  String get twoHoursAgo;
+
+  /// No description provided for @hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Hours Ago'**
+  String hoursAgo(Object count);
+
+  /// No description provided for @hoursAgoSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} hour ago'**
+  String hoursAgoSingle(Object count);
+
+  /// No description provided for @dayAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'A day ago'**
+  String get dayAgo;
+
+  /// No description provided for @twoDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Two days ago'**
+  String get twoDaysAgo;
+
+  /// No description provided for @daysAgoSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} day ago'**
+  String daysAgoSingle(Object count);
+
+  /// No description provided for @filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter;
+
+  /// No description provided for @resultsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Results Count: {count}'**
+  String resultsCount(Object count);
+
+  /// No description provided for @healthStatusesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Statuses Count: {count}'**
+  String healthStatusesCount(Object count);
+
+  /// No description provided for @noHealthStatuses.
+  ///
+  /// In en, this message translates to:
+  /// **'No health statuses'**
+  String get noHealthStatuses;
+
+  /// No description provided for @filteredByHealthStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered by health status: {status}'**
+  String filteredByHealthStatus(Object status);
+
+  /// No description provided for @filteredByCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered by country: {country}'**
+  String filteredByCountry(Object country);
+
+  /// No description provided for @clearFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Filter'**
+  String get clearFilter;
+
+  /// No description provided for @filterByHealthStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by health status'**
+  String get filterByHealthStatus;
+
+  /// No description provided for @filterByCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by country'**
+  String get filterByCountry;
+
+  /// No description provided for @clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
+
+  /// No description provided for @conditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions'**
+  String get conditions;
+
+  /// No description provided for @editMaritalStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Marital Status'**
+  String get editMaritalStatus;
+
+  /// No description provided for @chooseMaritalStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose marital status'**
+  String get chooseMaritalStatus;
+
+  /// No description provided for @chooseMarriageType.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose marriage type'**
+  String get chooseMarriageType;
+
+  /// No description provided for @enterAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter age'**
+  String get enterAge;
+
+  /// No description provided for @widowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Widowed'**
+  String get widowed;
+
+  /// No description provided for @widowedFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Widowed'**
+  String get widowedFemale;
+
+  /// No description provided for @noObjectionToPolygamy.
+  ///
+  /// In en, this message translates to:
+  /// **'No objection to polygamy'**
+  String get noObjectionToPolygamy;
+
+  /// No description provided for @notAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Available'**
+  String get notAvailable;
+
+  /// No description provided for @errorNoUpdateProfileCubit.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: UpdateProfileCubit not provided'**
+  String get errorNoUpdateProfileCubit;
+
+  /// No description provided for @pleaseConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm password'**
+  String get pleaseConfirmPassword;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Password and confirm password do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @passwordOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Password (optional)'**
+  String get passwordOptional;
+
+  /// No description provided for @confirmPasswordOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password (optional)'**
+  String get confirmPasswordOptional;
+
+  /// No description provided for @countryCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Country Code'**
+  String get countryCode;
+
+  /// No description provided for @physique.
+  ///
+  /// In en, this message translates to:
+  /// **'Physique'**
+  String get physique;
+
+  /// No description provided for @usernameMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be at least 2 characters'**
+  String get usernameMinLength;
+
+  /// No description provided for @usernameMaxLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Username cannot exceed 50 characters'**
+  String get usernameMaxLength;
+
+  /// No description provided for @pleaseEnterValidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get pleaseEnterValidEmail;
+
+  /// No description provided for @phoneNumberLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number must be between 8 and 15 digits'**
+  String get phoneNumberLength;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain at least 6 characters'**
+  String get passwordMinLength;
+
+  /// No description provided for @passwordNumberOrSymbol.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain at least one number (0-9) or symbol'**
+  String get passwordNumberOrSymbol;
+
+  /// No description provided for @passwordCase.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain at least one uppercase and lowercase letter'**
+  String get passwordCase;
+
+  /// No description provided for @pleaseSelectAllRequiredFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select all required fields'**
+  String get pleaseSelectAllRequiredFields;
+
+  /// No description provided for @pleaseEnterValidMonthlyIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid monthly income'**
+  String get pleaseEnterValidMonthlyIncome;
+
+  /// No description provided for @monthlyIncomeMustBePositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly income must be greater than zero'**
+  String get monthlyIncomeMustBePositive;
+
+  /// No description provided for @pleaseEnterValidAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid age'**
+  String get pleaseEnterValidAge;
+
+  /// No description provided for @ageRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Age must be between 18 - 99'**
+  String get ageRange;
+
+  /// No description provided for @pleaseEnterValidChildrenCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid number of children'**
+  String get pleaseEnterValidChildrenCount;
+
+  /// No description provided for @childrenRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of children must be between 0 - 99'**
+  String get childrenRange;
+
+  /// No description provided for @pleaseEnterValidWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid weight'**
+  String get pleaseEnterValidWeight;
+
+  /// No description provided for @weightRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight cannot exceed 300 and must be at least 30'**
+  String get weightRange;
+
+  /// No description provided for @pleaseEnterValidHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid height'**
+  String get pleaseEnterValidHeight;
+
+  /// No description provided for @heightRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Height cannot exceed 250 and must be at least 50'**
+  String get heightRange;
+
+  /// No description provided for @deleteAccountError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error deleting account'**
+  String get deleteAccountError;
+
+  /// No description provided for @accountDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deleted successfully'**
+  String get accountDeletedSuccessfully;
+
+  /// No description provided for @doYouWantToDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to delete your account permanently?'**
+  String get doYouWantToDeleteAccount;
+
+  /// No description provided for @cannotUndoThisAction.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone'**
+  String get cannotUndoThisAction;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccount;
+
+  /// No description provided for @lifePartner.
+  ///
+  /// In en, this message translates to:
+  /// **'Life Partner'**
+  String get lifePartner;
+
+  /// No description provided for @writeAboutLifePartner.
+  ///
+  /// In en, this message translates to:
+  /// **'Write about your life partner\'s characteristics'**
+  String get writeAboutLifePartner;
+
+  /// No description provided for @aboutMe.
+  ///
+  /// In en, this message translates to:
+  /// **'About Me'**
+  String get aboutMe;
+
+  /// No description provided for @writeAboutYourself.
+  ///
+  /// In en, this message translates to:
+  /// **'Write about yourself'**
+  String get writeAboutYourself;
+
+  /// No description provided for @editWrittenContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Written Content'**
+  String get editWrittenContent;
+
+  /// No description provided for @bodyStructure.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Structure'**
+  String get bodyStructure;
+
+  /// No description provided for @enterWeightInKg.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter weight in kilograms'**
+  String get enterWeightInKg;
+
+  /// No description provided for @enterHeightInCm.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter height in centimeters'**
+  String get enterHeightInCm;
+
+  /// No description provided for @chooseSkinColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose skin color'**
+  String get chooseSkinColor;
+
+  /// No description provided for @chooseBodyStructure.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose body structure'**
+  String get chooseBodyStructure;
+
+  /// No description provided for @editPhysicalAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Physical Appearance'**
+  String get editPhysicalAppearance;
+
+  /// No description provided for @editProfessionalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Professional Information'**
+  String get editProfessionalInfo;
+
+  /// No description provided for @chooseEducationalQualification.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose educational qualification'**
+  String get chooseEducationalQualification;
+
+  /// No description provided for @chooseFinancialStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose financial status'**
+  String get chooseFinancialStatus;
+
+  /// No description provided for @enterJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter job'**
+  String get enterJob;
+
+  /// No description provided for @enterMonthlyIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter monthly income'**
+  String get enterMonthlyIncome;
+
+  /// No description provided for @chooseHealthStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose health status'**
+  String get chooseHealthStatus;
+
+  /// No description provided for @recordHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Record History'**
+  String get recordHistory;
+
+  /// No description provided for @futureSpouseDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Future Spouse Description'**
+  String get futureSpouseDescription;
+
+  /// No description provided for @myDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'My Description'**
+  String get myDescription;
+
+  /// No description provided for @sinceToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Since Today'**
+  String get sinceToday;
+
+  /// No description provided for @oneWeekAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'One Week Ago'**
+  String get oneWeekAgo;
+
+  /// No description provided for @oneMonthAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'One Month Ago'**
+  String get oneMonthAgo;
+
+  /// No description provided for @oneYearAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'One Year Ago'**
+  String get oneYearAgo;
+
+  /// No description provided for @oneHourAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'One Hour Ago'**
+  String get oneHourAgo;
+
+  /// No description provided for @centimeters.
+  ///
+  /// In en, this message translates to:
+  /// **'cm'**
+  String get centimeters;
+
+  /// No description provided for @kilograms.
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get kilograms;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -1943,25 +2661,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['ar', 'en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'ar':
-      return AppLocalizationsAr();
-    case 'en':
-      return AppLocalizationsEn();
+    case 'ar': return AppLocalizationsAr();
+    case 'en': return AppLocalizationsEn();
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.'
+  );
 }

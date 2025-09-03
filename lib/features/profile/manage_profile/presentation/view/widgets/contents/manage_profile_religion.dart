@@ -1,3 +1,4 @@
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -86,35 +87,35 @@ class ManageProfileReligion extends StatelessWidget {
     print('DEBUG: Hijab: "${profileData?.attribute?.hijab}"');
 
     final dialogData = ManageProfileDialogData(
-      title: 'تعديل المعلومات الدينية',
+      title: AppLocalizations.of(context)!.editReligiousInfo,
       cubit: updateProfileCubit,
       signUpListsCubit: null, // No lists needed for religious data
       dialogType: ManageProfileDialogType.religion,
       fields: [
         ManageProfileField(
-          label: 'الإلتزام الديني',
-          hint: 'اختر مستوى الالتزام الديني',
+          label: AppLocalizations.of(context)!.religiousCommitment,
+          hint: AppLocalizations.of(context)!.chooseReligiousCommitmentLevel,
           currentValue: _mapReligionToDisplay(
               profileData?.attribute?.religiousCommitment),
           type: ManageProfileFieldType.dropdown,
           options: religionOptions.values.toList(),
         ),
         ManageProfileField(
-          label: 'الصلاة',
-          hint: 'اختر حالة الصلاة',
+          label: AppLocalizations.of(context)!.prayer,
+          hint: AppLocalizations.of(context)!.choosePrayerStatus,
           currentValue: _mapPrayerToDisplay(profileData?.attribute?.prayer),
           type: ManageProfileFieldType.dropdown,
           options: prayerOptions.values.toList(),
         ),
         ManageProfileField(
-          label: 'التدخين',
-          hint: 'اختر حالة التدخين',
+          label: AppLocalizations.of(context)!.smoking,
+          hint: AppLocalizations.of(context)!.chooseSmokingStatus,
           currentValue:
               _getSmokingDisplayValue(profileData?.attribute?.smoking),
           type: ManageProfileFieldType.dropdown,
           options: [
-            'نعم',
-            'لا',
+            AppLocalizations.of(context)!.yes,
+            AppLocalizations.of(context)!.no,
           ],
         ),
         // Show beard for males only

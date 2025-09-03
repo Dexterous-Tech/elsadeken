@@ -30,7 +30,7 @@ class LanguageToggle extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               Text(
-                LocalizationHelper.getLocalizedText('اللغة', 'Lang'),
+                LocalizationHelper.getLocalizedText('اللغة', 'Language'),
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,

@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,8 @@ class ProfileDetailsCardItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 16.h),
       child: Row(
-        // crossAxisAlignment: CrossAxisAlignment.end,
-        textDirection: TextDirection.rtl,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        textDirection: LocalizationService.instance.textDirection,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(

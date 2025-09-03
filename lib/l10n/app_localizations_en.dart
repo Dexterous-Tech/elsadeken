@@ -57,6 +57,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get confirmDeletion => 'Confirm Delete';
+
+  @override
+  String get confirmDelCont => 'Do you confirm delete all chats? u can\'t roll back it';
+
+  @override
+  String get delteDone => 'Deletion Successfully';
+
+  @override
+  String get confirmReadCont => 'Do you want to make all chats have read mark?';
+
+  @override
+  String get doneReadCont => 'All chats have read mark?';
+
+  @override
+  String get modify => 'Modify';
+
+  @override
+  String get update => 'Update';
+
+  @override
   String get home => 'Home';
 
   @override
@@ -70,6 +94,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get darkMode => 'Dark Mode';
+
+  @override
+  String get more => 'more';
 
   @override
   String get location => 'Location';
@@ -144,9 +171,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get personalAccount => 'Personal Account';
 
   @override
-  String get confirm => 'Confirm';
-
-  @override
   String get areYouSure => 'Are you sure?';
 
   @override
@@ -189,12 +213,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteImageLoading => 'Deleting image...';
 
   @override
-  String get deleteImageConfirm =>
-      'Do you want to delete your profile picture?';
+  String get deleteImageConfirm => 'Do you want to delete your profile picture?';
 
   @override
-  String get deleteAccountConfirm =>
-      'Do you want to permanently delete your account?';
+  String get deleteAccountConfirm => 'Do you want to permanently delete your account?';
 
   @override
   String get deleteAccountWarning => 'This action cannot be undone';
@@ -261,8 +283,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get markAllAsReadConfirm =>
-      'Do you want to mark all messages as read?';
+  String get markAllAsReadConfirm => 'Do you want to mark all messages as read?';
 
   @override
   String get fieldRequired => 'This field is required';
@@ -304,8 +325,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weight => 'Weight';
 
   @override
-  String get appearancePreferences =>
-      'Appearance, Height and Weight Preferences';
+  String get appearancePreferences => 'Appearance Preferences';
 
   @override
   String get sortResults => 'Sort Results';
@@ -419,13 +439,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPolygamy => 'No Polygamy Allowed';
 
   @override
-  String get firstWife => 'First Wife';
+  String get firstWife => 'First wife';
 
   @override
-  String get secondWife => 'Second Wife';
+  String get secondWife => 'Second wife';
 
   @override
-  String get onlyHusband => 'Only Husband';
+  String get onlyHusband => 'Only husband';
 
   @override
   String get noPolygamyHusband => 'No Polygamy Allowed';
@@ -542,15 +562,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get greetingSalam => 'Peace be upon you and God\'s mercy';
 
   @override
-  String get freeRegistration =>
-      'To provide opportunities for all members, registration is free.';
+  String get freeRegistration => 'To provide opportunities for all members, registration is free.';
 
   @override
   String get oathFormat => 'Oath Format:';
 
   @override
-  String get mainOath =>
-      'I swear by Almighty God that I have registered in this application for lawful marriage, and that my intention is serious and sincere in building a family based on love and mercy, in accordance with Islamic law.';
+  String get mainOath => 'I swear by Almighty God that I have registered in this application for lawful marriage, and that my intention is serious and sincere in building a family based on love and mercy, in accordance with Islamic law.';
 
   @override
   String get commitmentPart1 => 'I pledge to fully comply ';
@@ -559,8 +577,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get termsAndConditions => 'with the terms and conditions';
 
   @override
-  String get commitmentPart2 =>
-      ' of this application, and not to use it for any purpose that offends religion or morals or contradicts the objectives set for it, and God is a witness to what I say.';
+  String get commitmentPart2 => ' of this application, and not to use it for any purpose that offends religion or morals or contradicts the objectives set for it, and God is a witness to what I say.';
 
   @override
   String get oathAcceptance => 'I have taken the oath and will abide by it';
@@ -593,7 +610,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allNationalities => 'All Nationalities';
 
   @override
-  String get notSpecified => 'Not Specified';
+  String get notSpecified => 'Not specified';
 
   @override
   String get unknown => 'Unknown';
@@ -629,8 +646,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offlineStatus => 'Offline';
 
   @override
-  String get connectionStatusUpdated =>
-      'Connection status updated successfully';
+  String get connectionStatusUpdated => 'Connection status updated successfully';
 
   @override
   String get savingInProgress => 'Saving...';
@@ -654,7 +670,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notSpecifiedTime => 'Not specified';
 
   @override
-  String get currentlyOnline => 'Currently online';
+  String get currentlyOnline => 'Currently Online';
 
   @override
   String get aboutPerson => 'About Person';
@@ -663,10 +679,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyRecord => 'History Record';
 
   @override
-  String get registeredSince => 'Registered since';
+  String get registeredSince => 'Registered Since';
 
   @override
-  String get lastVisitDate => 'Last visit date';
+  String get lastVisitDate => 'Last Visit Date';
 
   @override
   String get information => 'Information';
@@ -693,8 +709,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noDataFound => 'No data found for this user';
 
   @override
-  String get failedToLoadUserDetails =>
-      'Failed to load user details. Please try again.';
+  String get failedToLoadUserDetails => 'Failed to load user details. Please try again.';
 
   @override
   String get noDataFoundShort => 'No data found';
@@ -718,8 +733,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLoadedSuccessfully => 'Settings loaded successfully';
 
   @override
-  String get connectionStatusUpdatedSuccessfully =>
-      'Connection status updated successfully';
+  String get connectionStatusUpdatedSuccessfully => 'Connection status updated successfully';
 
   @override
   String get onlineNow => 'Online Now';
@@ -792,8 +806,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get studyAndWork => 'Study and Work';
 
   @override
-  String get partnerDescription =>
-      'Description of your life partner you want to connect with';
+  String get partnerDescription => 'Description of your life partner you want to connect with';
 
   @override
   String get talkAboutYourself => 'Talk About Yourself';
@@ -805,12 +818,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importantInformation => 'Important Information:';
 
   @override
-  String get imageGuidelines1 =>
-      'The image must be respectful and appropriate for the Islamic app theme';
+  String get imageGuidelines1 => 'The image must be respectful and appropriate for the Islamic app theme';
 
   @override
-  String get imageGuidelines2 =>
-      'Any misuse of this service leads to banning your subscription without prior notice';
+  String get imageGuidelines2 => 'Any misuse of this service leads to banning your subscription without prior notice';
 
   @override
   String get allowedToViewMyImage => 'Allowed to view my image';
@@ -873,38 +884,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get today => 'Today';
 
   @override
-  String get oneDayAgo => 'One day ago';
+  String get oneDayAgo => 'One Day Ago';
 
   @override
   String daysAgo(Object count) {
-    return '$count days ago';
+    return '$count Days Ago';
   }
 
   @override
   String weeksAgo(Object count) {
-    return '$count weeks ago';
+    return '$count Weeks Ago';
   }
 
   @override
   String monthsAgo(Object count) {
-    return '$count months ago';
+    return '$count Months Ago';
   }
 
   @override
   String yearsAgo(Object count) {
-    return '$count years ago';
-  }
-
-  @override
-  String get year => 'year';
-
-  @override
-  String ageText(Object count) {
-    if (count == 1) {
-      return '$count year';
-    } else {
-      return '$count years';
-    }
+    return '$count Years Ago';
   }
 
   @override
@@ -959,9 +958,384 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmUnreport => 'Confirm Unreport';
 
   @override
-  String get areYouSureUnreport =>
-      'Are you sure you want to unreport this user?';
+  String get areYouSureUnreport => 'Are you sure you want to unreport this user?';
 
   @override
   String get unreportSuccessful => 'User unreported successfully';
+
+  @override
+  String get year => 'year';
+
+  @override
+  String ageText(String count) {
+    String _temp0 = intl.Intl.selectLogic(
+      count,
+      {
+        '1': 'year',
+        'other': 'years',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get whatIsYourJob => 'What is your job?';
+
+  @override
+  String get whatIsYourMonthlyIncome => 'What is your monthly income?';
+
+  @override
+  String get jobRequired => 'Job is required';
+
+  @override
+  String get jobTooLong => 'Job must not exceed 50 characters';
+
+  @override
+  String get jobNoLinks => 'Job cannot contain links';
+
+  @override
+  String get retryButton => 'Retry';
+
+  @override
+  String get pleaseWaitWhileLoadingProfile => 'Please wait while loading profile';
+
+  @override
+  String get failedToLoadData => 'Failed to load data';
+
+  @override
+  String get enterNumberOfChildren => 'Enter number of children';
+
+  @override
+  String get religiousCommitment => 'Religious Commitment';
+
+  @override
+  String get prayer => 'Prayer';
+
+  @override
+  String get smoking => 'Smoking';
+
+  @override
+  String get hijab => 'Hijab';
+
+  @override
+  String get beard => 'Beard';
+
+  @override
+  String get editReligiousInfo => 'Edit Religious Information';
+
+  @override
+  String get chooseReligiousCommitmentLevel => 'Choose religious commitment level';
+
+  @override
+  String get choosePrayerStatus => 'Choose prayer status';
+
+  @override
+  String get chooseSmokingStatus => 'Choose smoking status';
+
+  @override
+  String get howOldAreYou => 'How old are you?';
+
+  @override
+  String get howManyChildren => 'How many children do you have?';
+
+  @override
+  String get howMuchDoYouWeigh => 'How much do you weigh (kg)?';
+
+  @override
+  String get howTallAreYou => 'How tall are you (cm)?';
+
+  @override
+  String premiumMembersCount(Object count) {
+    return 'Premium Members Count: $count';
+  }
+
+  @override
+  String onlineMembersCount(Object count) {
+    return 'Online Now: $count';
+  }
+
+  @override
+  String get whoVisitedMyProfile => 'Who Visited My Profile';
+
+  @override
+  String get noResultsCurrently => 'No results currently';
+
+  @override
+  String get minuteAgo => 'A minute ago';
+
+  @override
+  String get twoMinutesAgo => 'Two minutes ago';
+
+  @override
+  String minutesAgo(Object count) {
+    return '$count Minutes Ago';
+  }
+
+  @override
+  String minutesAgoSingle(Object count) {
+    return '$count minute ago';
+  }
+
+  @override
+  String get hourAgo => 'An hour ago';
+
+  @override
+  String get twoHoursAgo => 'Two hours ago';
+
+  @override
+  String hoursAgo(Object count) {
+    return '$count Hours Ago';
+  }
+
+  @override
+  String hoursAgoSingle(Object count) {
+    return '$count hour ago';
+  }
+
+  @override
+  String get dayAgo => 'A day ago';
+
+  @override
+  String get twoDaysAgo => 'Two days ago';
+
+  @override
+  String daysAgoSingle(Object count) {
+    return '$count day ago';
+  }
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String resultsCount(Object count) {
+    return 'Results Count: $count';
+  }
+
+  @override
+  String healthStatusesCount(Object count) {
+    return 'Health Statuses Count: $count';
+  }
+
+  @override
+  String get noHealthStatuses => 'No health statuses';
+
+  @override
+  String filteredByHealthStatus(Object status) {
+    return 'Filtered by health status: $status';
+  }
+
+  @override
+  String filteredByCountry(Object country) {
+    return 'Filtered by country: $country';
+  }
+
+  @override
+  String get clearFilter => 'Clear Filter';
+
+  @override
+  String get filterByHealthStatus => 'Filter by health status';
+
+  @override
+  String get filterByCountry => 'Filter by country';
+
+  @override
+  String get clear => 'Clear';
+
+  @override
+  String get conditions => 'Conditions';
+
+  @override
+  String get editMaritalStatus => 'Edit Marital Status';
+
+  @override
+  String get chooseMaritalStatus => 'Choose marital status';
+
+  @override
+  String get chooseMarriageType => 'Choose marriage type';
+
+  @override
+  String get enterAge => 'Enter age';
+
+  @override
+  String get widowed => 'Widowed';
+
+  @override
+  String get widowedFemale => 'Widowed';
+
+  @override
+  String get noObjectionToPolygamy => 'No objection to polygamy';
+
+  @override
+  String get notAvailable => 'Not Available';
+
+  @override
+  String get errorNoUpdateProfileCubit => 'Error: UpdateProfileCubit not provided';
+
+  @override
+  String get pleaseConfirmPassword => 'Please confirm password';
+
+  @override
+  String get passwordsDoNotMatch => 'Password and confirm password do not match';
+
+  @override
+  String get passwordOptional => 'Password (optional)';
+
+  @override
+  String get confirmPasswordOptional => 'Confirm password (optional)';
+
+  @override
+  String get countryCode => 'Country Code';
+
+  @override
+  String get physique => 'Physique';
+
+  @override
+  String get usernameMinLength => 'Username must be at least 2 characters';
+
+  @override
+  String get usernameMaxLength => 'Username cannot exceed 50 characters';
+
+  @override
+  String get pleaseEnterValidEmail => 'Please enter a valid email';
+
+  @override
+  String get phoneNumberLength => 'Phone number must be between 8 and 15 digits';
+
+  @override
+  String get passwordMinLength => 'Password must contain at least 6 characters';
+
+  @override
+  String get passwordNumberOrSymbol => 'Password must contain at least one number (0-9) or symbol';
+
+  @override
+  String get passwordCase => 'Password must contain at least one uppercase and lowercase letter';
+
+  @override
+  String get pleaseSelectAllRequiredFields => 'Please select all required fields';
+
+  @override
+  String get pleaseEnterValidMonthlyIncome => 'Please enter a valid monthly income';
+
+  @override
+  String get monthlyIncomeMustBePositive => 'Monthly income must be greater than zero';
+
+  @override
+  String get pleaseEnterValidAge => 'Please enter a valid age';
+
+  @override
+  String get ageRange => 'Age must be between 18 - 99';
+
+  @override
+  String get pleaseEnterValidChildrenCount => 'Please enter a valid number of children';
+
+  @override
+  String get childrenRange => 'Number of children must be between 0 - 99';
+
+  @override
+  String get pleaseEnterValidWeight => 'Please enter a valid weight';
+
+  @override
+  String get weightRange => 'Weight cannot exceed 300 and must be at least 30';
+
+  @override
+  String get pleaseEnterValidHeight => 'Please enter a valid height';
+
+  @override
+  String get heightRange => 'Height cannot exceed 250 and must be at least 50';
+
+  @override
+  String get deleteAccountError => 'Error deleting account';
+
+  @override
+  String get accountDeletedSuccessfully => 'Account deleted successfully';
+
+  @override
+  String get doYouWantToDeleteAccount => 'Do you want to delete your account permanently?';
+
+  @override
+  String get cannotUndoThisAction => 'This action cannot be undone';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get lifePartner => 'Life Partner';
+
+  @override
+  String get writeAboutLifePartner => 'Write about your life partner\'s characteristics';
+
+  @override
+  String get aboutMe => 'About Me';
+
+  @override
+  String get writeAboutYourself => 'Write about yourself';
+
+  @override
+  String get editWrittenContent => 'Edit Written Content';
+
+  @override
+  String get bodyStructure => 'Body Structure';
+
+  @override
+  String get enterWeightInKg => 'Enter weight in kilograms';
+
+  @override
+  String get enterHeightInCm => 'Enter height in centimeters';
+
+  @override
+  String get chooseSkinColor => 'Choose skin color';
+
+  @override
+  String get chooseBodyStructure => 'Choose body structure';
+
+  @override
+  String get editPhysicalAppearance => 'Edit Physical Appearance';
+
+  @override
+  String get editProfessionalInfo => 'Edit Professional Information';
+
+  @override
+  String get chooseEducationalQualification => 'Choose educational qualification';
+
+  @override
+  String get chooseFinancialStatus => 'Choose financial status';
+
+  @override
+  String get enterJob => 'Enter job';
+
+  @override
+  String get enterMonthlyIncome => 'Enter monthly income';
+
+  @override
+  String get chooseHealthStatus => 'Choose health status';
+
+  @override
+  String get recordHistory => 'Record History';
+
+  @override
+  String get futureSpouseDescription => 'Future Spouse Description';
+
+  @override
+  String get myDescription => 'My Description';
+
+  @override
+  String get sinceToday => 'Since Today';
+
+  @override
+  String get oneWeekAgo => 'One Week Ago';
+
+  @override
+  String get oneMonthAgo => 'One Month Ago';
+
+  @override
+  String get oneYearAgo => 'One Year Ago';
+
+  @override
+  String get oneHourAgo => 'One Hour Ago';
+
+  @override
+  String get centimeters => 'cm';
+
+  @override
+  String get kilograms => 'kg';
 }

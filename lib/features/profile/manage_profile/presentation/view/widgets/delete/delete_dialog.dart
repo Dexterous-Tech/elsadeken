@@ -2,6 +2,7 @@ import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/app_lottie.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
@@ -13,6 +14,7 @@ import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -47,7 +49,7 @@ Future<void> deleteProfileDialog(BuildContext context) async {
                 }
               });
               // Show success message briefly
-              return _successDelete();
+              return _successDelete(context);
             } else {
               // Show delete confirmation dialog
               return _deleteContent(context);
@@ -77,8 +79,8 @@ Widget _errorDelete(BuildContext context, String error) {
       Lottie.asset(AppLottie.errorLottie, width: 100.w, height: 100.h),
       verticalSpace(24),
       Text(
-        'خطأ في حذف الحساب',
-        textDirection: TextDirection.rtl,
+        AppLocalizations.of(context)!.deleteAccountError,
+        textDirection: LocalizationService.instance.textDirection,
         style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
           color: AppColors.darkBlue,
           fontWeight: FontWeightHelper.bold,
@@ -87,7 +89,7 @@ Widget _errorDelete(BuildContext context, String error) {
       verticalSpace(8),
       Text(
         error,
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         textAlign: TextAlign.center,
         style: AppTextStyles.font14LightGrayRegularLamaSans,
       ),
@@ -98,7 +100,7 @@ Widget _errorDelete(BuildContext context, String error) {
           onPressed: () {
             context.pop(); // Close dialog
           },
-          textButton: 'إغلاق',
+          textButton: AppLocalizations.of(context)!.close,
           verticalPadding: 12,
           backgroundColor: AppColors.brightRed,
           radius: 8,
@@ -108,7 +110,7 @@ Widget _errorDelete(BuildContext context, String error) {
   );
 }
 
-Widget _successDelete() {
+Widget _successDelete(BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.center,
@@ -116,8 +118,8 @@ Widget _successDelete() {
       Lottie.asset(AppLottie.successLottie, width: 150.w, height: 150.h),
       verticalSpace(24),
       Text(
-        'تم حذف الحساب بنجاح',
-        textDirection: TextDirection.rtl,
+        AppLocalizations.of(context)!.accountDeletedSuccessfully,
+        textDirection: LocalizationService.instance.textDirection,
         style: AppTextStyles.font16BlackSemiBoldLamaSans,
       ),
     ],
@@ -136,8 +138,8 @@ Widget _deleteContent(BuildContext context) {
       ),
       verticalSpace(24),
       Text(
-        'هل انت متاكد؟',
-        textDirection: TextDirection.rtl,
+        AppLocalizations.of(context)!.areYouSure,
+        textDirection: LocalizationService.instance.textDirection,
         style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
           color: AppColors.darkBlue,
           fontWeight: FontWeightHelper.bold,
@@ -145,21 +147,21 @@ Widget _deleteContent(BuildContext context) {
       ),
       verticalSpace(4),
       Text(
-        'هل تريد حذف حسابك نهائياً؟',
-        textDirection: TextDirection.rtl,
+        AppLocalizations.of(context)!.doYouWantToDeleteAccount,
+        textDirection: LocalizationService.instance.textDirection,
         style: AppTextStyles.font14LightGrayRegularLamaSans,
       ),
       verticalSpace(8),
       Text(
-        'لا يمكن التراجع عن هذا الإجراء',
-        textDirection: TextDirection.rtl,
+        AppLocalizations.of(context)!.cannotUndoThisAction,
+        textDirection: LocalizationService.instance.textDirection,
         style: AppTextStyles.font12JetRegularLamaSans.copyWith(
           color: AppColors.coralRed,
         ),
       ),
       verticalSpace(24),
       Row(
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
@@ -168,7 +170,7 @@ Widget _deleteContent(BuildContext context) {
               onPressed: () {
                 context.pop();
               },
-              textButton: 'الغاء',
+              textButton: AppLocalizations.of(context)!.cancel,
               verticalPadding: 12,
               backgroundColor: AppColors.darkSunray,
               radius: 8,
@@ -181,7 +183,7 @@ Widget _deleteContent(BuildContext context) {
               context.read<ManageProfileCubit>().deleteProfile();
             },
             child: Text(
-              'حذف الحساب',
+              AppLocalizations.of(context)!.deleteAccount,
               style: AppTextStyles.font14LightGrayRegularLamaSans.copyWith(
                 fontWeight: FontWeightHelper.semiBold,
                 color: AppColors.coralRed,

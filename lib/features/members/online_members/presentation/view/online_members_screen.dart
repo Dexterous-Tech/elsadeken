@@ -1,5 +1,7 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/features/members/online_members/presentation/view/widgets/filter_buttom_sheet.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
@@ -9,7 +11,6 @@ import 'package:elsadeken/features/members/logic/cubit/members_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
-import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 
 import '../../../Health_statuses/presentation/view/widgets/gender_filter.dart';
@@ -22,7 +23,7 @@ class OnlineMembersView extends StatefulWidget {
 }
 
 class _OnlineMembersViewState extends State<OnlineMembersView> {
-  String _activeFilter = 'الكل';
+  String _activeFilter = 'all';
   int? _selectedCountryId;
   String _selectedCountryName = '';
   List<UsersDataModel> _allMembers = [];
@@ -75,9 +76,9 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
 
   List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
     switch (_activeFilter) {
-      case 'الذكور':
+      case 'males':
         return allMembers.where((member) => member.gender == 'ذكر').toList();
-      case 'الإناث':
+      case 'females':
         return allMembers.where((member) => member.gender == 'انثى').toList();
       default:
         return allMembers;
@@ -107,11 +108,11 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
     print(
         'Updated _selectedCountryId to: $_selectedCountryId, _selectedCountryName to: $_selectedCountryName');
 
-    // If "الكل" is selected, clear the filters
-    if (filterData['name'] == 'الكل') {
+    // If "all" is selected, clear the filters
+    if (filterData['name'] == 'all') {
       _selectedCountryId = null;
       _selectedCountryName = '';
-      print('Cleared filters because "الكل" was selected');
+      print('Cleared filters because "all" was selected');
     }
   }
 
@@ -133,7 +134,7 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
     final hasValidCity = isValidString(city);
 
     if (!hasValidCountry && !hasValidCity) {
-      return 'غير محدد';
+      return AppLocalizations.of(context)!.notSpecified;
     }
 
     if (hasValidCountry && hasValidCity) {
@@ -165,8 +166,8 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           automaticallyImplyLeading: false,
-          title: const Text(
-            ' المتواجدون الان',
+          title: Text(
+            AppLocalizations.of(context)!.onlineMembers,
             style: TextStyle(
               color: Colors.black,
               fontSize: 20,
@@ -203,12 +204,14 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(24.0),
+                      padding: const EdgeInsetsDirectional.all(24.0),
                       child: Row(
+                        textDirection: LocalizationService.instance.textDirection,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'المتواجدون',
+                            AppLocalizations.of(context)!.onlineMembers,
                             style: TextStyle(fontSize: 18),
                           ),
                           SizedBox(width: 20),
@@ -242,7 +245,7 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                 child: Row(
                                   children: [
                                     Text(
-                                      'فلترة',
+                                      AppLocalizations.of(context)!.filter,
                                       style: TextStyle(
                                           color: Color(0xFFD4AF37),
                                           fontSize: 18),
@@ -269,27 +272,27 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           GenderFilter(
-                            text: 'الكل',
-                            isActive: _activeFilter == 'الكل',
-                            onTap: () => _onGenderFilterChanged('الكل'),
+                            text: AppLocalizations.of(context)!.all,
+                            isActive: _activeFilter == 'all',
+                            onTap: () => _onGenderFilterChanged('all'),
                           ),
                           const SizedBox(width: 6),
                           GenderFilter(
-                            text: 'الذكور',
-                            isActive: _activeFilter == 'الذكور',
-                            onTap: () => _onGenderFilterChanged('الذكور'),
+                            text: AppLocalizations.of(context)!.males,
+                            isActive: _activeFilter == 'males',
+                            onTap: () => _onGenderFilterChanged('males'),
                           ),
                           const SizedBox(width: 6),
                           GenderFilter(
-                            text: 'الإناث',
-                            isActive: _activeFilter == 'الإناث',
-                            onTap: () => _onGenderFilterChanged('الإناث'),
+                            text: AppLocalizations.of(context)!.females,
+                            isActive: _activeFilter == 'females',
+                            onTap: () => _onGenderFilterChanged('females'),
                           ),
                         ],
                       ),
                     ),
                     if (_selectedCountryName.isNotEmpty &&
-                        _selectedCountryName != 'الكل')
+                        _selectedCountryName != 'all')
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 24, vertical: 8),
@@ -299,7 +302,7 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                 color: Color(0xFFD4AF37), size: 16),
                             SizedBox(width: 8),
                             Text(
-                              'تم الفلترة حسب: $_selectedCountryName',
+                              AppLocalizations.of(context)!.filteredByCountry(_selectedCountryName),
                               style: TextStyle(
                                 color: Color(0xFFD4AF37),
                                 fontSize: 14,
@@ -316,7 +319,7 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                 _applyFilters();
                               },
                               child: Text(
-                                'إلغاء',
+                                AppLocalizations.of(context)!.clearFilter,
                                 style: TextStyle(color: Colors.red),
                               ),
                             ),
@@ -348,10 +351,10 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                           );
                         }
                         if (state is MembersListEmpty<UsersDataModel>) {
-                          return const Expanded(
+                          return Expanded(
                             child: Center(
                               child: Text(
-                                'لا توجد نتائج حالياً',
+                                AppLocalizations.of(context)!.noResultsCurrently,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -369,7 +372,7 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                       horizontal: 20, vertical: 12),
                                   color: Colors.white,
                                   child: Text(
-                                    ' المتواجدون الآن : ${items.length}',
+                                    AppLocalizations.of(context)!.onlineMembersCount(items.length),
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       color: Color(0xFFD4AF37),
@@ -400,8 +403,8 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                                     strokeWidth: 2,
                                                   ),
                                                   const SizedBox(height: 8),
-                                                  const Text(
-                                                    'جاري تحميل المزيد...',
+                                                  Text(
+                                                    AppLocalizations.of(context)!.loadingMore,
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                       fontSize: 12,

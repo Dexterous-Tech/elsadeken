@@ -280,7 +280,7 @@ class _ChatScreenState extends State<ChatScreen>
             ),
             ListTile(
               leading: const Icon(Icons.block),
-              title: const Text('حظر المستخدم'),
+              title: Text(AppLocalizations.of(context)!.blockUser),
               onTap: () => Navigator.pop(context),
             ),
           ],

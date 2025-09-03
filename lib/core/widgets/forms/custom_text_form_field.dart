@@ -67,10 +67,10 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: TextFormField(
-        textDirection: TextDirection.rtl,
-        textAlign: TextAlign.right,
+        textDirection: LocalizationService.instance.textDirection,
+        textAlign: TextAlign.start,
         style: style ?? AppTextStyles.font16ChineseBlackMediumLamaSans,
         obscureText: obscureText ?? false,
         controller: controller,
@@ -102,7 +102,7 @@ class CustomTextFormField extends StatelessWidget {
           prefixIcon: prefixIcon,
           isDense: true,
           contentPadding: contentPadding ??
-              EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+              EdgeInsetsDirectional.symmetric(horizontal: 12.w, vertical: 14.h),
           filled: true,
           fillColor: fillBackgroundColor ?? AppColors.snow,
           errorMaxLines: 3,

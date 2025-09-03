@@ -181,7 +181,7 @@ class _SearchFormState extends State<SearchForm> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Text("خطأ: ${snapshot.error}");
+                    return Text(AppLocalizations.of(context)!.error(snapshot.error.toString()));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return Text(AppLocalizations.of(context)!.noNationalitiesAvailable);
                   }
@@ -217,7 +217,7 @@ class _SearchFormState extends State<SearchForm> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Text("خطأ: ${snapshot.error}");
+                    return Text(AppLocalizations.of(context)!.error(snapshot.error.toString()));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return Text(AppLocalizations.of(context)!.noNationalitiesAvailable);
                   }
@@ -274,7 +274,7 @@ class _SearchFormState extends State<SearchForm> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Text("خطأ: ${snapshot.error}");
+                    return Text(AppLocalizations.of(context)!.error(snapshot.error.toString()));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return Text(AppLocalizations.of(context)!.noCitiesAvailable);
                   }

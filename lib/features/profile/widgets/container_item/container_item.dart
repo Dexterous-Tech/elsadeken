@@ -1,12 +1,14 @@
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../item/profile_lists_item_logo.dart';
 
@@ -30,8 +32,8 @@ class ContainerItem extends StatelessWidget {
     final city = favUser?.attribute?.city?.trim();
 
     final location = [
-      country?.isNotEmpty == true ? country : 'لا يوجد',
-      city?.isNotEmpty == true ? city : 'لا يوجد',
+      country?.isNotEmpty == true ? country : AppLocalizations.of(context)!.notAvailable,
+      city?.isNotEmpty == true ? city : AppLocalizations.of(context)!.notAvailable,
     ].join(' , ');
     return GestureDetector(
       onTap: () {
@@ -50,7 +52,8 @@ class ContainerItem extends StatelessWidget {
               ),
             ]),
         child: Row(
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             ProfileListsItemLogo(
               image: favUser?.image,
@@ -60,8 +63,9 @@ class ContainerItem extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Column(
+                textDirection: LocalizationService.instance.textDirection,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                textDirection: TextDirection.rtl,
                 children: [
                   Text(
                     favUser?.name ?? '',
@@ -80,20 +84,22 @@ class ContainerItem extends StatelessWidget {
                     ),
                   ],
                   Row(
-                    textDirection: TextDirection.rtl,
-                    children: [
+                    textDirection: LocalizationService.instance.textDirection,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,                    children: [
                       Image.asset(
                         AppImages.homeLocation,
                         width: 12.5.w,
                         height: 15.h,
                       ),
-                      // horizontalSpace(3),
+                       horizontalSpace(3),
                       Expanded(
                         child: Text(
+                          textDirection: LocalizationService.instance.textDirection,
                           location,
-                          maxLines: 3,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.right,
+                          textAlign: TextAlign.start,
                           style:
                               AppTextStyles.font13BlackMediumLamaSans.copyWith(
                             color: AppColors.black.withValues(
@@ -119,7 +125,7 @@ class ContainerItem extends StatelessWidget {
                 child: Text(
                   favUser?.attribute?.age != null
                       ? '${favUser!.attribute!.age} سنه'
-                      : 'لا يوجد',
+                      : AppLocalizations.of(context)!.notAvailable,
                   textDirection: TextDirection.rtl,
                   textAlign: TextAlign.right,
                   style: AppTextStyles.font14BlackSemiBoldLamaSans
