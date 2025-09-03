@@ -3,7 +3,7 @@ import 'package:elsadeken/features/members/Health_statuses/presentation/view/wid
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:elsadeken/features/profile/widgets/container_item/container_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
@@ -76,17 +76,24 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
     }
   }
 
-  Future<void> _onRefresh() async {
-    // Refresh with current filters
-    // We'll handle this in the build method where context is available
-  }
-
   List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
+    // Debug: Print unique gender values to help identify what the API returns
+    final uniqueGenders = allMembers.map((m) => m.gender).toSet();
+    print('🔍 Health Statuses - Unique gender values from API: $uniqueGenders');
+
     switch (_activeFilter) {
       case 'males':
-        return allMembers.where((member) => member.gender == 'ذكر').toList();
+        return allMembers.where((member) {
+          final gender = member.gender?.toLowerCase();
+          // Handle both Arabic and English gender values
+          return gender == 'ذكر' || gender == 'male' || gender == 'm';
+        }).toList();
       case 'females':
-        return allMembers.where((member) => member.gender == 'انثى').toList();
+        return allMembers.where((member) {
+          final gender = member.gender?.toLowerCase();
+          // Handle both Arabic and English gender values
+          return gender == 'انثى' || gender == 'female' || gender == 'f';
+        }).toList();
       default:
         return allMembers;
     }
@@ -251,58 +258,19 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                               GenderFilter(
                                 text: AppLocalizations.of(context)!.all,
                                 isActive: _activeFilter == 'all',
-                                onTap: () {
-                                  setState(() => _activeFilter = 'all');
-                                  // Refresh data to show all members
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    if (mounted) {
-                                      context
-                                          .read<
-                                              MembersListCubit<
-                                                  UsersDataModel>>()
-                                          .fetch(page: 1);
-                                    }
-                                  });
-                                },
+                                onTap: () => setState(() => _activeFilter = 'all'),
                               ),
                               const SizedBox(width: 6),
                               GenderFilter(
                                 text: AppLocalizations.of(context)!.males,
                                 isActive: _activeFilter == 'males',
-                                onTap: () {
-                                  setState(() => _activeFilter = 'males');
-                                  // Refresh data to show male members
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    if (mounted) {
-                                      context
-                                          .read<
-                                              MembersListCubit<
-                                                  UsersDataModel>>()
-                                          .fetch(page: 1);
-                                    }
-                                  });
-                                },
+                                onTap: () => setState(() => _activeFilter = 'males'),
                               ),
                               const SizedBox(width: 6),
                               GenderFilter(
                                 text: AppLocalizations.of(context)!.females,
                                 isActive: _activeFilter == 'females',
-                                onTap: () {
-                                  setState(() => _activeFilter = 'females');
-                                  // Refresh data to show female members
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    if (mounted) {
-                                      context
-                                          .read<
-                                              MembersListCubit<
-                                                  UsersDataModel>>()
-                                          .fetch(page: 1);
-                                    }
-                                  });
-                                },
+                                onTap: () => setState(() => _activeFilter = 'females'),
                               ),
                             ],
                           ),
@@ -428,7 +396,8 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                               );
                             }
                             if (state is MembersListLoaded<UsersDataModel>) {
-                              final items = _getFilteredMembers(state.items);
+                              final allMembers = state.items;
+                              final items = _getFilteredMembers(allMembers);
                               return Expanded(
                                 child: Column(
                                   children: [
