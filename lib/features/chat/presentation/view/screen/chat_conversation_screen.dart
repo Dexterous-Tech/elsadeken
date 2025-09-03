@@ -20,6 +20,7 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/manager/m
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/chat/data/services/chat_message_service.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 
 class ChatConversationScreen extends StatefulWidget {
   final ChatRoomModel chatRoom;
@@ -35,14 +36,15 @@ class ChatConversationScreen extends StatefulWidget {
 
 class _ChatConversationScreenState extends State<ChatConversationScreen>
     with WidgetsBindingObserver {
-
-
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<ChatMessage> _messages = [];
   int? _currentUserId;
   String _currentUserName = '';
   String _currentUserImage = '';
+
+  // New variables for sender and receiver images
+  String _receiverImage = '';
 
   // Stream subscriptions for real-time updates
   StreamSubscription<PusherMessageModel>? _messageSubscription;
@@ -67,9 +69,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
     // Load user profile and setup real-time connections in parallel
     _loadCurrentUserProfile();
+    _loadReceiverProfile();
     _setupRealTimeListeners();
     _setupScrollListener();
-    
+
     // Mark messages as read when entering the chat
     _markMessagesAsReadOnEnter();
   }
@@ -77,7 +80,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Store cubit references safely for disposal
     try {
       _chatMessagesCubit ??= context.read<ChatMessagesCubit>();
@@ -94,7 +97,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (state == AppLifecycleState.resumed) {
       // Check connection health on resume and re-establish if needed
       _checkPusherConnectionHealth();
-      
+
       // Minimal refresh - only if Pusher is not working
       if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null) {
         _checkAndStartMinimalRefresh();
@@ -132,13 +135,15 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       print('⚠️ Cubit references not available for minimal refresh check');
       return;
     }
-    
+
     try {
       final isConnected = await _pusherCubit!.checkConnectionHealth();
       if (!isConnected) {
         // Only start auto-refresh as backup if Pusher is not working
-        print('🔄 Pusher not available, starting minimal backup refresh (60s interval)');
-        _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id, interval: Duration(seconds: 60));
+        print(
+            '🔄 Pusher not available, starting minimal backup refresh (60s interval)');
+        _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id,
+            interval: Duration(seconds: 60));
       } else {
         print('✅ Pusher is working, no backup refresh needed');
         _chatMessagesCubit!.stopAutoRefresh();
@@ -146,7 +151,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     } catch (e) {
       print('⚠️ Error checking Pusher status, starting backup refresh: $e');
       try {
-        _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id, interval: Duration(seconds: 60));
+        _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id,
+            interval: Duration(seconds: 60));
       } catch (refreshError) {
         print('⚠️ Error starting backup refresh: $refreshError');
       }
@@ -186,12 +192,12 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       print(
           '[ChatConversationScreen] Processing real-time message: ${message.body}');
 
-      // Convert Pusher message to ChatMessage
+      // Convert Pusher message to ChatMessage with correct images
       final chatMessage = message.toChatMessage(
         _currentUserId.toString(),
         widget.chatRoom.name,
-        widget.chatRoom.image,
-        _currentUserImage,
+        _receiverImage, // Pass receiver's image as otherUserImage
+        _currentUserImage, // Pass current user's image
       );
 
       // Add message to the list if it doesn't already exist
@@ -209,7 +215,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         }
 
         // Update chat list to reflect new message and maintain sorting
-        if (!widget.chatRoom.id.startsWith('temp_')) {
+        if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null) {
           final chatId = int.tryParse(widget.chatRoom.id);
           if (chatId != null) {
             context.read<ChatListCubit>().handleNewMessage(
@@ -288,6 +294,17 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     context.read<ManageProfileCubit>().getProfile();
   }
 
+  /// Load receiver profile to get their image
+  void _loadReceiverProfile() {
+    // Get receiver ID from chat room
+    final receiverId = widget.chatRoom.receiverId;
+    if (receiverId != null) {
+      print(
+          '[ChatConversationScreen] Loading receiver profile for ID: $receiverId');
+      context.read<ProfileDetailsCubit>().getProfileDetails(receiverId);
+    }
+  }
+
   /// Load chat messages early for faster UI response
   void _loadChatMessagesEarly() {
     // Don't load messages for temporary chat rooms
@@ -315,26 +332,58 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           '[ChatConversationScreen] Updating messages with correct user info...');
       setState(() {
         _messages = _messages.map((message) {
-          // Update message with correct user info if it was using temporary values
-          if (message.senderId == 'temp_user' || message.senderImage.isEmpty) {
-            return ChatMessage(
-              id: message.id,
-              roomId: message.roomId,
-              senderId: message.senderId == 'temp_user'
-                  ? _currentUserId.toString()
-                  : message.senderId,
-              senderName: message.senderName,
-              senderImage: message.senderId == _currentUserId.toString()
-                  ? _currentUserImage
-                  : message.senderImage,
-              message: message.message,
-              timestamp: message.timestamp,
-              isRead: message.isRead,
-            );
-          }
-          return message;
+          // Always update the sender image to ensure correctness
+          return ChatMessage(
+            id: message.id,
+            roomId: message.roomId,
+            senderId: message.senderId == 'temp_user'
+                ? _currentUserId.toString()
+                : message.senderId,
+            senderName: message.senderName,
+            senderImage: _getCorrectSenderImage(message.senderId == 'temp_user'
+                ? _currentUserId.toString()
+                : message.senderId),
+            message: message.message,
+            timestamp: message.timestamp,
+            isRead: message.isRead,
+          );
         }).toList();
       });
+    }
+  }
+
+  /// Get the correct sender image based on sender ID
+  String _getCorrectSenderImage(String senderId) {
+    if (senderId == _currentUserId.toString()) {
+      return _currentUserImage;
+    } else {
+      return _receiverImage;
+    }
+  }
+
+  /// Update existing messages with correct sender/receiver images
+  void _updateMessagesWithCorrectImages() {
+    if (_messages.isNotEmpty &&
+        _currentUserId != null &&
+        _receiverImage.isNotEmpty) {
+      print(
+          '[ChatConversationScreen] Updating messages with correct sender/receiver images...');
+      setState(() {
+        _messages = _messages.map((message) {
+          // Always update the sender image to ensure correctness
+          return ChatMessage(
+            id: message.id,
+            roomId: message.roomId,
+            senderId: message.senderId,
+            senderName: message.senderName,
+            senderImage: _getCorrectSenderImage(message.senderId),
+            message: message.message,
+            timestamp: message.timestamp,
+            isRead: message.isRead,
+          );
+        }).toList();
+      });
+      print('✅ Messages updated with correct sender/receiver images');
     }
   }
 
@@ -342,7 +391,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   Future<void> _markMessagesAsReadOnEnter() async {
     // Don't mark as read for temporary chats
     if (widget.chatRoom.id.startsWith('temp_')) {
-      print('[ChatConversationScreen] Skipping mark as read for temporary chat');
+      print(
+          '[ChatConversationScreen] Skipping mark as read for temporary chat');
       return;
     }
 
@@ -352,21 +402,21 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       return;
     }
 
-    print('[ChatConversationScreen] Marking messages as read for chat ${widget.chatRoom.id}...');
-    
+    print(
+        '[ChatConversationScreen] Marking messages as read for chat ${widget.chatRoom.id}...');
+
     try {
       // Mark all messages as read via API (since there's no specific chat endpoint)
       final chatListCubit = context.read<ChatListCubit>();
       await chatListCubit.markAllMessagesAsRead();
-      
+
       print('✅ Messages marked as read successfully');
-      
+
       // Update local message read status immediately
       _updateLocalMessagesReadStatus();
-      
+
       // Refresh chat list to update unread counts
       chatListCubit.silentRefreshChatList();
-      
     } catch (e) {
       print('⚠️ Error marking messages as read: $e');
     }
@@ -384,7 +434,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               roomId: message.roomId,
               senderId: message.senderId,
               senderName: message.senderName,
-              senderImage: message.senderImage,
+              senderImage: _getCorrectSenderImage(
+                  message.senderId), // Ensure correct image
               message: message.message,
               timestamp: message.timestamp,
               isRead: true, // Mark as read
@@ -399,33 +450,35 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
   /// Mark a newly received message as read immediately
   Future<void> _markNewMessageAsRead(PusherMessageModel message) async {
-    print('[ChatConversationScreen] Marking new message as read: ${message.body}');
-    
+    print(
+        '[ChatConversationScreen] Marking new message as read: ${message.body}');
+
     try {
       // Call the mark all messages as read API
       // (since there's no specific endpoint for individual messages)
       final chatListCubit = context.read<ChatListCubit>();
       await chatListCubit.markAllMessagesAsRead();
-      
+
       // Update the specific message in the local list to show as read
       setState(() {
-        final messageIndex = _messages.indexWhere((msg) => msg.id == message.id.toString());
+        final messageIndex =
+            _messages.indexWhere((msg) => msg.id == message.id.toString());
         if (messageIndex != -1) {
           _messages[messageIndex] = ChatMessage(
             id: _messages[messageIndex].id,
             roomId: _messages[messageIndex].roomId,
             senderId: _messages[messageIndex].senderId,
             senderName: _messages[messageIndex].senderName,
-            senderImage: _messages[messageIndex].senderImage,
+            senderImage:
+                _getCorrectSenderImage(_messages[messageIndex].senderId),
             message: _messages[messageIndex].message,
             timestamp: _messages[messageIndex].timestamp,
             isRead: true, // Mark as read
           );
         }
       });
-      
+
       print('✅ New message marked as read successfully');
-      
     } catch (e) {
       print('⚠️ Error marking new message as read: $e');
     }
@@ -453,7 +506,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           chatRoomImage: widget.chatRoom.image,
           onBack: () {
             // Stop auto-refresh when navigating back using stored cubit reference
-            if (!widget.chatRoom.id.startsWith('temp_') && _chatMessagesCubit != null) {
+            if (!widget.chatRoom.id.startsWith('temp_') &&
+                _chatMessagesCubit != null) {
               try {
                 _chatMessagesCubit!.stopAutoRefresh();
                 print('✅ Auto-refresh stopped on navigation back');
@@ -498,6 +552,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   currentUserImage,
                 );
               });
+
+              // Update messages with correct sender/receiver images
+              _updateMessagesWithCorrectImages();
 
               _scrollToBottom();
 
@@ -555,6 +612,21 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
               // Setup Pusher in background - messages are already loading
               _initializeAndSubscribePusher();
+            }
+          },
+        ),
+        BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
+          listener: (context, state) async {
+            if (state is GetProfileDetailsSuccess && _receiverImage.isEmpty) {
+              setState(() {
+                _receiverImage =
+                    state.profileDetailsResponseModel.data?.image ?? '';
+              });
+              print(
+                  '[ChatConversationScreen] Receiver image loaded: $_receiverImage');
+
+              // Update existing messages with correct sender/receiver images
+              _updateMessagesWithCorrectImages();
             }
           },
         ),
@@ -892,7 +964,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   @override
   void dispose() {
     print('🗑️ Disposing ChatConversationScreen...');
-    
+
     // Stop auto-refresh when disposing using stored cubit reference
     if (!widget.chatRoom.id.startsWith('temp_') && _chatMessagesCubit != null) {
       try {

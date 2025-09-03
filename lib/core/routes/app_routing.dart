@@ -22,6 +22,7 @@ import 'package:elsadeken/features/profile/members_profile/presentation/view/mem
 import 'package:elsadeken/features/profile/my_excellence/presentation/view/my_excellence_screen.dart';
 import 'package:elsadeken/features/profile/my_image/presentation/view/my_image_screen.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/my_interesting_list_screen.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/profile_details_screen.dart';
 import 'package:elsadeken/features/profile/success_stories/presentation/cubit/success_story_cubit.dart';
 import 'package:elsadeken/features/profile/success_stories/presentation/view/success_story_screen.dart';
@@ -195,6 +196,8 @@ class AppRouting {
               BlocProvider(create: (context) => sl<SendMessageCubit>()),
               BlocProvider(create: (context) => sl<PusherCubit>()),
               BlocProvider(create: (context) => sl<ChatListCubit>()),
+              BlocProvider(create: (context) => sl<ProfileDetailsCubit>()),
+              BlocProvider(create: (context) => sl<ManageProfileCubit>()),
             ],
             child: ChatConversationScreen(chatRoom: chatRoom),
           ),

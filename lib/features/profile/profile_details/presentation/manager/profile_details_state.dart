@@ -1,6 +1,5 @@
 part of 'profile_details_cubit.dart';
 
-@immutable
 class ProfileDetailsState {}
 
 class ProfileDetailsInitial extends ProfileDetailsState {}
