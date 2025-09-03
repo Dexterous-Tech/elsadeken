@@ -287,7 +287,7 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                     });
                                   },
                                   child: Text(
-                                    'إلغاء الفلترة',
+                                    'إلغاء التصفية',
                                     style: TextStyle(color: Colors.red),
                                   ),
                                 ),
