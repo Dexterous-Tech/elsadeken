@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 
@@ -59,9 +60,10 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Row(
+            textDirection: LocalizationService.instance.textDirection,
             children: [
-              Icon(Icons.chevron_left, color: textColor, size: 28),
-              const Spacer(),
+              _buildAvatar(),
+              const SizedBox(width: 20),
               Text(
                 widget.title,
                 style: TextStyle(
@@ -70,8 +72,12 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                 ),
                 textDirection: TextDirection.rtl,
               ),
-              const SizedBox(width: 20),
-              _buildAvatar(),
+              const Spacer(),
+              Icon(
+                Icons.arrow_forward_ios, // point left in LTR
+                size: 20,
+                color: textColor,
+              ),
             ],
           ),
         ),

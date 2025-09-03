@@ -32,8 +32,12 @@ class ContainerItem extends StatelessWidget {
     final city = favUser?.attribute?.city?.trim();
 
     final location = [
-      country?.isNotEmpty == true ? country : AppLocalizations.of(context)!.notAvailable,
-      city?.isNotEmpty == true ? city : AppLocalizations.of(context)!.notAvailable,
+      country?.isNotEmpty == true
+          ? country
+          : AppLocalizations.of(context)!.notAvailable,
+      city?.isNotEmpty == true
+          ? city
+          : AppLocalizations.of(context)!.notAvailable,
     ].join(' , ');
     return GestureDetector(
       onTap: () {
@@ -86,16 +90,18 @@ class ContainerItem extends StatelessWidget {
                   Row(
                     textDirection: LocalizationService.instance.textDirection,
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,                    children: [
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
                       Image.asset(
                         AppImages.homeLocation,
                         width: 12.5.w,
                         height: 15.h,
                       ),
-                       horizontalSpace(3),
+                      horizontalSpace(3),
                       Expanded(
                         child: Text(
-                          textDirection: LocalizationService.instance.textDirection,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
                           location,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -124,7 +130,7 @@ class ContainerItem extends StatelessWidget {
               child: Center(
                 child: Text(
                   favUser?.attribute?.age != null
-                      ? '${favUser!.attribute!.age} سنه'
+                      ? '${favUser!.attribute!.age} ${AppLocalizations.of(context)!.year}'
                       : AppLocalizations.of(context)!.notAvailable,
                   textDirection: TextDirection.rtl,
                   textAlign: TextAlign.right,

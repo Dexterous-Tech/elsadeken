@@ -320,6 +320,8 @@ class _SwipeableCardState extends State<SwipeableCard>
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
+                                      textDirection: LocalizationService
+                                          .instance.textDirection,
                                       children: [
                                         Flexible(
                                           child: Container(
@@ -400,6 +402,8 @@ class _SwipeableCardState extends State<SwipeableCard>
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
                           children: [
                             GestureDetector(
                               onTap: () => _handleButtonPress(false),

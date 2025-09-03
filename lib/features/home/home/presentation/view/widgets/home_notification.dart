@@ -78,7 +78,7 @@ class _HomeNotificationState extends State<HomeNotification> {
         ),
         Positioned(
           bottom: -2.w,
-          right: -2.h,
+          right: 0.h,
           child: BlocBuilder<NotificationCountCubit, NotificationCountState>(
             buildWhen: (context, current) =>
                 current is NotificationLoading ||

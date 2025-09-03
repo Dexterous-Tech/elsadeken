@@ -43,7 +43,7 @@ class ProfileContentItem extends StatelessWidget {
                 IconButton(
                   onPressed: onPressed,
                   icon: Icon(
-                    Icons.arrow_back_ios_new,
+                    Icons.arrow_forward_ios, // point right in RTL,
                     size: 18,
                     color: AppColors.gray,
                   ),

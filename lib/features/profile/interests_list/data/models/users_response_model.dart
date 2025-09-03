@@ -251,6 +251,7 @@ class UsersAttributeModel {
     this.prayer,
     this.smoking,
     this.hijab,
+    this.beard,
     this.job,
     this.income,
     this.lifePartner,
@@ -277,6 +278,7 @@ class UsersAttributeModel {
     prayer = json['prayer'];
     smoking = json['smoking'];
     hijab = json['hijab'];
+    beard = json['beard'];
     job = json['job'];
     income = json['income'];
     lifePartner = json['life_partner'];
@@ -302,6 +304,7 @@ class UsersAttributeModel {
   String? prayer;
   String? smoking;
   String? hijab;
+  String? beard;
   String? job;
   int? income;
   String? lifePartner;
@@ -328,6 +331,7 @@ class UsersAttributeModel {
     map['prayer'] = prayer;
     map['smoking'] = smoking;
     map['hijab'] = hijab;
+    map['beard'] = beard;
     map['job'] = job;
     map['income'] = income;
     map['life_partner'] = lifePartner;

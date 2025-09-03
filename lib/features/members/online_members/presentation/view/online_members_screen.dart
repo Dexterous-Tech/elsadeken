@@ -27,22 +27,21 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
   int? _selectedCountryId;
   String _selectedCountryName = '';
   List<UsersDataModel> _allMembers = [];
-  final ScrollController _scrollController = ScrollController();
+  ScrollController? _scrollController;
   bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollController?.dispose();
     super.dispose();
   }
 
-  void _loadMoreUsers() {
+  void _loadMoreUsers(BuildContext context) {
     final cubit = context.read<MembersListCubit<UsersDataModel>>();
     final state = cubit.state;
 
@@ -63,15 +62,16 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
     }
   }
 
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      _loadMoreUsers();
+  void _onScroll(BuildContext context) {
+    if (_scrollController?.position.pixels != null &&
+        _scrollController!.position.pixels >=
+            _scrollController!.position.maxScrollExtent - 200) {
+      _loadMoreUsers(context);
     }
   }
 
   Future<void> _onRefresh() async {
-    context.read<MembersListCubit<UsersDataModel>>().fetch(page: 1);
+    // We'll handle this in the build method where context is available
   }
 
   List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
@@ -152,8 +152,9 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
   Widget build(BuildContext context) {
     final cubit = MembersListCubit<UsersDataModel>(
       ({int? page}) async {
-        final response = await sl<MembersRepository>().getOnlineMembers();
-        return response.data ?? [];
+        final response =
+            await sl<MembersRepository>().getOnlineMembers(page: page);
+        return response;
       },
     )..fetch();
 
@@ -201,242 +202,265 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
             SafeArea(
               child: BlocProvider<MembersListCubit<UsersDataModel>>(
                 create: (_) => cubit,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsetsDirectional.all(24.0),
-                      child: Row(
-                        textDirection: LocalizationService.instance.textDirection,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.onlineMembers,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          SizedBox(width: 20),
-                          Row(
+                child: Builder(
+                  builder: (context) {
+                    // Initialize scroll controller here where context is available
+                    _scrollController ??= ScrollController()
+                      ..addListener(() => _onScroll(context));
+
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsetsDirectional.all(24.0),
+                          child: Row(
+                            textDirection:
+                                LocalizationService.instance.textDirection,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              GestureDetector(
-                                onTap: () async {
-                                  final result = await showModalBottomSheet<
-                                      Map<String, dynamic>>(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) {
-                                      print(
-                                          'Creating FilterBottomSheet with selectedCountryId: $_selectedCountryId, selectedCountryName: $_selectedCountryName');
-                                      return BlocProvider(
-                                        create: (context) =>
-                                            sl<SignUpListsCubit>(),
-                                        child: FilterBottomSheet(
-                                          selectedCountryId: _selectedCountryId,
-                                          selectedCountryName:
-                                              _selectedCountryName,
-                                        ),
+                              Text(
+                                AppLocalizations.of(context)!.onlineMembers,
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              SizedBox(width: 20),
+                              Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () async {
+                                      final result = await showModalBottomSheet<
+                                          Map<String, dynamic>>(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        builder: (context) {
+                                          print(
+                                              'Creating FilterBottomSheet with selectedCountryId: $_selectedCountryId, selectedCountryName: $_selectedCountryName');
+                                          return BlocProvider(
+                                            create: (context) =>
+                                                sl<SignUpListsCubit>(),
+                                            child: FilterBottomSheet(
+                                              selectedCountryId:
+                                                  _selectedCountryId,
+                                              selectedCountryName:
+                                                  _selectedCountryName,
+                                            ),
+                                          );
+                                        },
                                       );
+                                      if (result != null) {
+                                        _onCountryFilterChanged(result);
+                                      }
                                     },
-                                  );
-                                  if (result != null) {
-                                    _onCountryFilterChanged(result);
-                                  }
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of(context)!.filter,
-                                      style: TextStyle(
-                                          color: Color(0xFFD4AF37),
-                                          fontSize: 18),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.filter,
+                                          style: TextStyle(
+                                              color: Color(0xFFD4AF37),
+                                              fontSize: 18),
+                                        ),
+                                        SizedBox(width: 6),
+                                        Icon(Icons.arrow_forward_ios,
+                                            size: 16, color: Color(0xFFD4AF37)),
+                                      ],
                                     ),
-                                    SizedBox(width: 6),
-                                    Icon(Icons.arrow_forward_ios,
-                                        size: 16, color: Color(0xFFD4AF37)),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF5F1E8),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          GenderFilter(
-                            text: AppLocalizations.of(context)!.all,
-                            isActive: _activeFilter == 'all',
-                            onTap: () => _onGenderFilterChanged('all'),
-                          ),
-                          const SizedBox(width: 6),
-                          GenderFilter(
-                            text: AppLocalizations.of(context)!.males,
-                            isActive: _activeFilter == 'males',
-                            onTap: () => _onGenderFilterChanged('males'),
-                          ),
-                          const SizedBox(width: 6),
-                          GenderFilter(
-                            text: AppLocalizations.of(context)!.females,
-                            isActive: _activeFilter == 'females',
-                            onTap: () => _onGenderFilterChanged('females'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (_selectedCountryName.isNotEmpty &&
-                        _selectedCountryName != 'all')
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 8),
-                        child: Row(
-                          children: [
-                            Icon(Icons.location_on,
-                                color: Color(0xFFD4AF37), size: 16),
-                            SizedBox(width: 8),
-                            Text(
-                              AppLocalizations.of(context)!.filteredByCountry(_selectedCountryName),
-                              style: TextStyle(
-                                color: Color(0xFFD4AF37),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            Spacer(),
-                            TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  _selectedCountryId = null;
-                                  _selectedCountryName = '';
-                                });
-                                _applyFilters();
-                              },
-                              child: Text(
-                                AppLocalizations.of(context)!.clearFilter,
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ),
-                          ],
                         ),
-                      ),
-                    SizedBox(height: 16),
-                    BlocBuilder<MembersListCubit<UsersDataModel>,
-                        MembersListState<UsersDataModel>>(
-                      builder: (context, state) {
-                        if (state is MembersListLoading<UsersDataModel>) {
-                          return Padding(
-                            padding: EdgeInsets.only(top: 24),
-                            child: Center(
-                                child: CircularProgressIndicator(
-                              color: AppColors.beer,
-                            )),
-                          );
-                        }
-                        if (state is MembersListError<UsersDataModel>) {
-                          return Expanded(
-                            child: Center(
-                              child: Text(
-                                state.message,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: Colors.red),
+                        SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF5F1E8),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GenderFilter(
+                                text: AppLocalizations.of(context)!.all,
+                                isActive: _activeFilter == 'all',
+                                onTap: () => _onGenderFilterChanged('all'),
                               ),
-                            ),
-                          );
-                        }
-                        if (state is MembersListEmpty<UsersDataModel>) {
-                          return Expanded(
-                            child: Center(
-                              child: Text(
-                                AppLocalizations.of(context)!.noResultsCurrently,
-                                textAlign: TextAlign.center,
+                              const SizedBox(width: 6),
+                              GenderFilter(
+                                text: AppLocalizations.of(context)!.males,
+                                isActive: _activeFilter == 'males',
+                                onTap: () => _onGenderFilterChanged('males'),
                               ),
-                            ),
-                          );
-                        }
-                        if (state is MembersListLoaded<UsersDataModel>) {
-                          _allMembers = state.items;
-                          final items = _getFilteredMembers(_allMembers);
-                          return Expanded(
-                            child: Column(
+                              const SizedBox(width: 6),
+                              GenderFilter(
+                                text: AppLocalizations.of(context)!.females,
+                                isActive: _activeFilter == 'females',
+                                onTap: () => _onGenderFilterChanged('females'),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (_selectedCountryName.isNotEmpty &&
+                            _selectedCountryName != 'all')
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 8),
+                            child: Row(
                               children: [
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 12),
-                                  color: Colors.white,
-                                  child: Text(
-                                    AppLocalizations.of(context)!.onlineMembersCount(items.length),
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Color(0xFFD4AF37),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                Icon(Icons.location_on,
+                                    color: Color(0xFFD4AF37), size: 16),
+                                SizedBox(width: 8),
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .filteredByCountry(_selectedCountryName),
+                                  style: TextStyle(
+                                    color: Color(0xFFD4AF37),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
-                                Expanded(
-                                  child: RefreshIndicator(
-                                    onRefresh: _onRefresh,
-                                    child: ListView.builder(
-                                      controller: _scrollController,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16),
-                                      itemCount: items.length +
-                                          (_isLoadingMore ? 1 : 0),
-                                      itemBuilder: (context, index) {
-                                        if (index == items.length &&
-                                            _isLoadingMore) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Center(
-                                              child: Column(
-                                                children: [
-                                                  CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                  ),
-                                                  const SizedBox(height: 8),
-                                                  Text(
-                                                    AppLocalizations.of(context)!.loadingMore,
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }
-
-                                        final m = items[index];
-                                        return Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 12),
-                                          child: ContainerItem(
-                                            favUser: m,
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                Spacer(),
+                                TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _selectedCountryId = null;
+                                      _selectedCountryName = '';
+                                    });
+                                    _applyFilters();
+                                  },
+                                  child: Text(
+                                    AppLocalizations.of(context)!.clearFilter,
+                                    style: TextStyle(color: Colors.red),
                                   ),
                                 ),
                               ],
                             ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                  ],
+                          ),
+                        SizedBox(height: 16),
+                        BlocBuilder<MembersListCubit<UsersDataModel>,
+                            MembersListState<UsersDataModel>>(
+                          builder: (context, state) {
+                            if (state is MembersListLoading<UsersDataModel>) {
+                              return Padding(
+                                padding: EdgeInsets.only(top: 24),
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  color: AppColors.beer,
+                                )),
+                              );
+                            }
+                            if (state is MembersListError<UsersDataModel>) {
+                              return Expanded(
+                                child: Center(
+                                  child: Text(
+                                    state.message,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              );
+                            }
+                            if (state is MembersListEmpty<UsersDataModel>) {
+                              return Expanded(
+                                child: Center(
+                                  child: Text(
+                                    AppLocalizations.of(context)!
+                                        .noResultsCurrently,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              );
+                            }
+                            if (state is MembersListLoaded<UsersDataModel>) {
+                              _allMembers = state.items;
+                              final items = _getFilteredMembers(_allMembers);
+                              return Expanded(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 12),
+                                      color: Colors.white,
+                                      child: Text(
+                                        AppLocalizations.of(context)!
+                                            .onlineMembersCount(items.length),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Color(0xFFD4AF37),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Expanded(
+                                      child: RefreshIndicator(
+                                        onRefresh: () async {
+                                          context
+                                              .read<
+                                                  MembersListCubit<
+                                                      UsersDataModel>>()
+                                              .fetch(page: 1);
+                                        },
+                                        child: ListView.builder(
+                                          controller: _scrollController,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          itemCount: items.length +
+                                              (_isLoadingMore ? 1 : 0),
+                                          itemBuilder: (context, index) {
+                                            if (index == items.length &&
+                                                _isLoadingMore) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(16.0),
+                                                child: Center(
+                                                  child: Column(
+                                                    children: [
+                                                      CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Text(
+                                                        AppLocalizations.of(
+                                                                context)!
+                                                            .loadingMore,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }
+
+                                            final m = items[index];
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 12),
+                                              child: ContainerItem(
+                                                favUser: m,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),

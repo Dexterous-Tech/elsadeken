@@ -3,6 +3,7 @@ import 'package:elsadeken/features/members/Health_statuses/presentation/view/wid
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:elsadeken/features/profile/widgets/container_item/container_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
@@ -28,22 +29,21 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
   String _selectedHealthName = '';
   int? _selectedCountryId;
   String _selectedCountryName = '';
-  final ScrollController _scrollController = ScrollController();
+  ScrollController? _scrollController;
   bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollController?.dispose();
     super.dispose();
   }
 
-  void _loadMoreUsers() {
+  void _loadMoreUsers(BuildContext context) {
     final cubit = context.read<MembersListCubit<UsersDataModel>>();
     final state = cubit.state;
 
@@ -67,19 +67,32 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
     }
   }
 
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+  void _onScroll(BuildContext context) {
+    if (_scrollController?.position.pixels != null &&
+        _scrollController!.position.pixels >=
+            _scrollController!.position.maxScrollExtent - 200) {
       print('Scroll threshold reached, triggering pagination');
-      _loadMoreUsers();
+      _loadMoreUsers(context);
     }
   }
 
   Future<void> _onRefresh() async {
-    context.read<MembersListCubit<UsersDataModel>>().fetch(page: 1);
+    // Refresh with current filters
+    // We'll handle this in the build method where context is available
   }
 
-  void _onFilterChanged(Map<String, dynamic> filterData) {
+  List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
+    switch (_activeFilter) {
+      case 'males':
+        return allMembers.where((member) => member.gender == 'ذكر').toList();
+      case 'females':
+        return allMembers.where((member) => member.gender == 'انثى').toList();
+      default:
+        return allMembers;
+    }
+  }
+
+  void _onFilterChanged(Map<String, dynamic> filterData, BuildContext context) {
     setState(() {
       final healthData = filterData['health'] as Map<String, dynamic>?;
       final countryData = filterData['country'] as Map<String, dynamic>?;
@@ -99,18 +112,17 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
         _selectedCountryName = '';
       }
     });
+
+    // Refresh data with new filters using a post-frame callback
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<MembersListCubit<UsersDataModel>>().fetch(page: 1);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final cubit = MembersListCubit<UsersDataModel>(
-      ({int? page}) async {
-        final response =
-            await sl<MembersRepository>().getHealthConditionMembers();
-        return response.data ?? [];
-      },
-    )..fetch();
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -154,261 +166,354 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
             ),
             SafeArea(
               child: BlocProvider<MembersListCubit<UsersDataModel>>(
-                create: (_) => cubit,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsetsDirectional.all(24.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        textDirection: LocalizationService.instance.textDirection,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.conditions,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          SizedBox(width: 20),
-                          GestureDetector(
-                            onTap: () async {
-                              final result = await showModalBottomSheet<
-                                  Map<String, dynamic>>(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) =>
-                                    const FilterHealthStatues(),
-                              );
-                              if (result != null) {
-                                _onFilterChanged(result);
-                              }
-                            },
-                            child: Row(
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.filter,
-                                  style: TextStyle(
-                                      color: Color(0xFFD4AF37), fontSize: 18),
-                                ),
-                                SizedBox(width: 6),
-                                Icon(Icons.arrow_forward_ios,
-                                    size: 16, color: Color(0xFFD4AF37)),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF5F1E8),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        textDirection: LocalizationService.instance.textDirection,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GenderFilter(
-                            text: AppLocalizations.of(context)!.all,
-                            isActive: _activeFilter == 'all',
-                            onTap: () => setState(() => _activeFilter = 'all'),
-                          ),
-                          const SizedBox(width: 6),
-                          GenderFilter(
-                            text: AppLocalizations.of(context)!.males,
-                            isActive: _activeFilter == 'males',
-                            onTap: () =>
-                                setState(() => _activeFilter = 'males'),
-                          ),
-                          const SizedBox(width: 6),
-                          GenderFilter(
-                            text: AppLocalizations.of(context)!.females,
-                            isActive: _activeFilter == 'females',
-                            onTap: () =>
-                                setState(() => _activeFilter = 'females'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (_selectedHealthName.isNotEmpty &&
-                            _selectedHealthName != 'all' ||
-                        _selectedCountryName.isNotEmpty &&
-                            _selectedCountryName != 'all')
-                      Padding(
-                        padding: const EdgeInsetsDirectional.symmetric(
-                            horizontal: 24, vertical: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (_selectedHealthName.isNotEmpty &&
-                                _selectedHealthName != 'all')
-                              Padding(
-                                padding: const EdgeInsetsDirectional.only(bottom: 8),
+                create: (_) => MembersListCubit<UsersDataModel>(
+                  ({int? page}) async {
+                    final response =
+                        await sl<MembersRepository>().getHealthConditionMembers(
+                      healthConditionId: _selectedHealthId,
+                      countryId: _selectedCountryId,
+                      page: page,
+                    );
+                    return response;
+                  },
+                )..fetch(),
+                child: Builder(
+                  builder: (context) {
+                    // Initialize scroll controller here where context is available
+                    _scrollController ??= ScrollController()
+                      ..addListener(() => _onScroll(context));
+
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsetsDirectional.all(24.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.conditions,
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              SizedBox(width: 20),
+                              GestureDetector(
+                                onTap: () async {
+                                  final result = await showModalBottomSheet<
+                                      Map<String, dynamic>>(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) =>
+                                        const FilterHealthStatues(),
+                                  );
+                                  if (result != null) {
+                                    _onFilterChanged(result, context);
+                                  }
+                                },
                                 child: Row(
+                                  textDirection: LocalizationService
+                                      .instance.textDirection,
                                   children: [
-                                    Icon(Icons.health_and_safety,
-                                        color: Color(0xFFD4AF37), size: 16),
-                                    SizedBox(width: 8),
                                     Text(
-                                      AppLocalizations.of(context)!.filteredByHealthStatus(_selectedHealthName),
+                                      AppLocalizations.of(context)!.filter,
                                       style: TextStyle(
-                                        color: Color(0xFFD4AF37),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
+                                          color: Color(0xFFD4AF37),
+                                          fontSize: 18),
+                                    ),
+                                    SizedBox(width: 6),
+                                    Icon(
+                                        LocalizationService.instance.isArabic
+                                            ? Icons.arrow_forward_ios
+                                            : Icons.arrow_back_ios,
+                                        size: 16,
+                                        color: Color(0xFFD4AF37)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF5F1E8),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GenderFilter(
+                                text: AppLocalizations.of(context)!.all,
+                                isActive: _activeFilter == 'all',
+                                onTap: () {
+                                  setState(() => _activeFilter = 'all');
+                                  // Refresh data to show all members
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    if (mounted) {
+                                      context
+                                          .read<
+                                              MembersListCubit<
+                                                  UsersDataModel>>()
+                                          .fetch(page: 1);
+                                    }
+                                  });
+                                },
+                              ),
+                              const SizedBox(width: 6),
+                              GenderFilter(
+                                text: AppLocalizations.of(context)!.males,
+                                isActive: _activeFilter == 'males',
+                                onTap: () {
+                                  setState(() => _activeFilter = 'males');
+                                  // Refresh data to show male members
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    if (mounted) {
+                                      context
+                                          .read<
+                                              MembersListCubit<
+                                                  UsersDataModel>>()
+                                          .fetch(page: 1);
+                                    }
+                                  });
+                                },
+                              ),
+                              const SizedBox(width: 6),
+                              GenderFilter(
+                                text: AppLocalizations.of(context)!.females,
+                                isActive: _activeFilter == 'females',
+                                onTap: () {
+                                  setState(() => _activeFilter = 'females');
+                                  // Refresh data to show female members
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    if (mounted) {
+                                      context
+                                          .read<
+                                              MembersListCubit<
+                                                  UsersDataModel>>()
+                                          .fetch(page: 1);
+                                    }
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (_selectedHealthName.isNotEmpty &&
+                                _selectedHealthName != 'all' ||
+                            _selectedCountryName.isNotEmpty &&
+                                _selectedCountryName != 'all')
+                          Padding(
+                            padding: const EdgeInsetsDirectional.symmetric(
+                                horizontal: 24, vertical: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (_selectedHealthName.isNotEmpty &&
+                                    _selectedHealthName != 'all')
+                                  Padding(
+                                    padding: const EdgeInsetsDirectional.only(
+                                        bottom: 8),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.health_and_safety,
+                                            color: Color(0xFFD4AF37), size: 16),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          AppLocalizations.of(context)!
+                                              .filteredByHealthStatus(
+                                                  _selectedHealthName),
+                                          style: TextStyle(
+                                            color: Color(0xFFD4AF37),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                if (_selectedCountryName.isNotEmpty &&
+                                    _selectedCountryName != 'all')
+                                  Row(
+                                    children: [
+                                      Icon(Icons.location_on,
+                                          color: Color(0xFFD4AF37), size: 16),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        AppLocalizations.of(context)!
+                                            .filteredByCountry(
+                                                _selectedCountryName),
+                                        style: TextStyle(
+                                          color: Color(0xFFD4AF37),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _selectedHealthId = null;
+                                          _selectedHealthName = '';
+                                          _selectedCountryId = null;
+                                          _selectedCountryName = '';
+                                        });
+                                        // Refresh data after clearing filters
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) {
+                                          if (mounted) {
+                                            context
+                                                .read<
+                                                    MembersListCubit<
+                                                        UsersDataModel>>()
+                                                .fetch(page: 1);
+                                          }
+                                        });
+                                      },
+                                      child: Text(
+                                        AppLocalizations.of(context)!
+                                            .clearFilter,
+                                        style: TextStyle(color: Colors.red),
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                            if (_selectedCountryName.isNotEmpty &&
-                                _selectedCountryName != 'all')
-                              Row(
-                                children: [
-                                  Icon(Icons.location_on,
-                                      color: Color(0xFFD4AF37), size: 16),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    AppLocalizations.of(context)!.filteredByCountry(_selectedCountryName),
-                                    style: TextStyle(
-                                      color: Color(0xFFD4AF37),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _selectedHealthId = null;
-                                      _selectedHealthName = '';
-                                      _selectedCountryId = null;
-                                      _selectedCountryName = '';
-                                    });
-                                  },
-                                  child: Text(
-                                    AppLocalizations.of(context)!.clearFilter,
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    BlocBuilder<MembersListCubit<UsersDataModel>,
-                        MembersListState<UsersDataModel>>(
-                      builder: (context, state) {
-                        if (state is MembersListLoading<UsersDataModel>) {
-                          return Padding(
-                            padding: EdgeInsets.only(top: 24),
-                            child: Center(
-                                child: CircularProgressIndicator(
-                              color: AppColors.beer,
-                            )),
-                          );
-                        }
-                        if (state is MembersListError<UsersDataModel>) {
-                          return Expanded(
-                            child: Center(
-                              child: Text(
-                                state.message,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                            ),
-                          );
-                        }
-                        if (state is MembersListEmpty<UsersDataModel>) {
-                          return Expanded(
-                            child: Center(
-                              child: Text(
-                                AppLocalizations.of(context)!.noHealthStatuses,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          );
-                        }
-                        if (state is MembersListLoaded<UsersDataModel>) {
-                          final items = state.items;
-                          return Expanded(
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 12),
-                                  color: Colors.white,
+                          ),
+                        BlocBuilder<MembersListCubit<UsersDataModel>,
+                            MembersListState<UsersDataModel>>(
+                          builder: (context, state) {
+                            if (state is MembersListLoading<UsersDataModel>) {
+                              return Padding(
+                                padding: EdgeInsets.only(top: 24),
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  color: AppColors.beer,
+                                )),
+                              );
+                            }
+                            if (state is MembersListError<UsersDataModel>) {
+                              return Expanded(
+                                child: Center(
                                   child: Text(
-                                    AppLocalizations.of(context)!.healthStatusesCount(items.length),
+                                    state.message,
                                     textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Color(0xFFD4AF37),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                    style: const TextStyle(color: Colors.red),
                                   ),
                                 ),
-                                const SizedBox(height: 8),
-                                Expanded(
-                                  child: RefreshIndicator(
-                                    onRefresh: _onRefresh,
-                                    child: ListView.builder(
-                                      controller: _scrollController,
+                              );
+                            }
+                            if (state is MembersListEmpty<UsersDataModel>) {
+                              return Expanded(
+                                child: Center(
+                                  child: Text(
+                                    AppLocalizations.of(context)!
+                                        .noHealthStatuses,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              );
+                            }
+                            if (state is MembersListLoaded<UsersDataModel>) {
+                              final items = _getFilteredMembers(state.items);
+                              return Expanded(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 16),
-                                      itemCount: items.length +
-                                          (_isLoadingMore ? 1 : 0),
-                                      itemBuilder: (context, index) {
-                                        if (index == items.length &&
-                                            _isLoadingMore) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Center(
-                                              child: Column(
-                                                children: [
-                                                  CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                  ),
-                                                  const SizedBox(height: 8),
-                                                  Text(
-                                                    AppLocalizations.of(context)!.loadingMore,
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }
-
-                                        return Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 12),
-                                            child: ContainerItem(
-                                              favUser: items[index],
-                                            ));
-                                      },
+                                          horizontal: 20, vertical: 12),
+                                      color: Colors.white,
+                                      child: Text(
+                                        AppLocalizations.of(context)!
+                                            .healthStatusesCount(items.length),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Color(0xFFD4AF37),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    const SizedBox(height: 8),
+                                    Expanded(
+                                      child: RefreshIndicator(
+                                        onRefresh: () async {
+                                          context
+                                              .read<
+                                                  MembersListCubit<
+                                                      UsersDataModel>>()
+                                              .fetch(page: 1);
+                                        },
+                                        child: ListView.builder(
+                                          controller: _scrollController,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          itemCount: items.length +
+                                              (_isLoadingMore ? 1 : 0),
+                                          itemBuilder: (context, index) {
+                                            if (index == items.length &&
+                                                _isLoadingMore) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(16.0),
+                                                child: Center(
+                                                  child: Column(
+                                                    children: [
+                                                      CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Text(
+                                                        AppLocalizations.of(
+                                                                context)!
+                                                            .loadingMore,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }
+
+                                            return Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 12),
+                                                child: ContainerItem(
+                                                  favUser: items[index],
+                                                ));
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                  ],
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),

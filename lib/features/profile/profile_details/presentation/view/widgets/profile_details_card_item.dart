@@ -28,6 +28,7 @@ class ProfileDetailsCardItem extends StatelessWidget {
           Text(
             itemTitle,
             textDirection: TextDirection.rtl,
+            overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.right,
             style: AppTextStyles.font18GreyRegularLamaSans,
           ),

@@ -22,22 +22,21 @@ class ViewersView extends StatefulWidget {
 }
 
 class _ViewersViewState extends State<ViewersView> {
-  final ScrollController _scrollController = ScrollController();
+  ScrollController? _scrollController;
   bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollController?.dispose();
     super.dispose();
   }
 
-  void _loadMoreUsers() {
+  void _loadMoreUsers(BuildContext context) {
     final cubit = context.read<MembersListCubit<UsersDataModel>>();
     final state = cubit.state;
 
@@ -61,16 +60,17 @@ class _ViewersViewState extends State<ViewersView> {
     }
   }
 
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+  void _onScroll(BuildContext context) {
+    if (_scrollController?.position.pixels != null &&
+        _scrollController!.position.pixels >=
+            _scrollController!.position.maxScrollExtent - 200) {
       print('Scroll threshold reached, triggering pagination');
-      _loadMoreUsers();
+      _loadMoreUsers(context);
     }
   }
 
   Future<void> _onRefresh() async {
-    context.read<MembersListCubit<UsersDataModel>>().fetch(page: 1);
+    // We'll handle this in the build method where context is available
   }
 
   String _calculateTimeSinceVisited(
@@ -131,8 +131,8 @@ class _ViewersViewState extends State<ViewersView> {
   Widget build(BuildContext context) {
     final cubit = MembersListCubit<UsersDataModel>(
       ({int? page}) async {
-        final response = await sl<MembersRepository>().getVisitors();
-        return response.data ?? [];
+        final response = await sl<MembersRepository>().getVisitors(page: page);
+        return response;
       },
     )..fetch();
 
@@ -228,7 +228,8 @@ class _ViewersViewState extends State<ViewersView> {
                           return Expanded(
                             child: Center(
                               child: Text(
-                                AppLocalizations.of(context)!.noResultsCurrently,
+                                AppLocalizations.of(context)!
+                                    .noResultsCurrently,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -248,18 +249,22 @@ class _ViewersViewState extends State<ViewersView> {
                                 itemBuilder: (context, index) {
                                   if (index == items.length && _isLoadingMore) {
                                     return Padding(
-                                      padding: const EdgeInsetsDirectional.all(16.0),
+                                      padding:
+                                          const EdgeInsetsDirectional.all(16.0),
                                       child: Center(
                                         child: Column(
-                                          textDirection: LocalizationService.instance.textDirection,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          textDirection: LocalizationService
+                                              .instance.textDirection,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             CircularProgressIndicator(
                                               strokeWidth: 2,
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
-                                              AppLocalizations.of(context)!.loadingMore,
+                                              AppLocalizations.of(context)!
+                                                  .loadingMore,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontSize: 12,
@@ -279,7 +284,8 @@ class _ViewersViewState extends State<ViewersView> {
                                     m.visitedAtTime,
                                   );
                                   return Padding(
-                                    padding:  EdgeInsetsDirectional.only(bottom: 12),
+                                    padding:
+                                        EdgeInsetsDirectional.only(bottom: 12),
                                     child: ContainerItem(
                                       favUser: m,
                                       isTime: true,

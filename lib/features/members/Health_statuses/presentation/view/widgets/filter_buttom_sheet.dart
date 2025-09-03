@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,13 +18,21 @@ class FilterHealthStatues extends StatefulWidget {
 }
 
 class _FilterHealthStatuesState extends State<FilterHealthStatues> {
-  List<_HealthOption> _healthOptions = const [
-    const _HealthOption(id: 0, name: 'all')
-  ];
-  List<_Country> _countries = const [const _Country(id: 0, name: 'all')];
+  late final String all;
+  late List<_HealthOption> _healthOptions;
+  late List<_Country> _countries;
 
   int _selectedHealthIndex = 0;
   int _selectedCountryIndex = 0;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    all = LocalizationHelper.getLocalizedText('الكل', 'all');
+    _healthOptions = [_HealthOption(id: 0, name: all)];
+    _countries = [_Country(id: 0, name: all)];
+  }
 
   static const Color kMuted = Color(0xFF9E9E9E);
   static const Color kClearRed = Color(0xFFF04438);
@@ -49,7 +58,7 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
         .whereType<_HealthOption>()
         .toList();
 
-    return [const _HealthOption(id: 0, name: 'all'), ...parsed];
+    return [_HealthOption(id: 0, name: all), ...parsed];
   }
 
   List<_Country> _parseCountries(
@@ -64,7 +73,7 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
         .whereType<_Country>()
         .toList();
 
-    return [const _Country(id: 0, name: 'all'), ...parsed];
+    return [_Country(id: 0, name: all), ...parsed];
   }
 
   @override
@@ -73,7 +82,7 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
     return BlocProvider(
       create: (context) => sl<SignUpListsCubit>(),
       child: Directionality(
-        textDirection:  LocalizationService.instance.textDirection,
+        textDirection: LocalizationService.instance.textDirection,
         child: SafeArea(
           top: false,
           child: Container(
@@ -123,6 +132,31 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                               });
                             }
 
+                            // Show loading state until both data are loaded
+                            if (state is SignUpListsStateInitial ||
+                                state is HealthConditionsLoading ||
+                                state is CountriesLoading) {
+                              return Center(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 24),
+                                  child: Column(
+                                    children: [
+                                      const CircularProgressIndicator(),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        AppLocalizations.of(context)!.loading,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Color(0xFF666666),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+
                             // Handle both states independently
                             if (state is HealthConditionsSuccess) {
                               _healthOptions =
@@ -137,12 +171,38 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                                   'Countries loaded: ${_countries.map((e) => '${e.id}:${e.name}').toList()}');
                             }
 
+                            // Only show content when both data are loaded
+                            if (_healthOptions.length <= 1 ||
+                                _countries.length <= 1) {
+                              return Center(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 24),
+                                  child: Column(
+                                    children: [
+                                      const CircularProgressIndicator(),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        AppLocalizations.of(context)!.loading,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Color(0xFF666666),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+
                             return Column(
-                              textDirection: LocalizationService.instance.textDirection,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _Section(
-                                  title: AppLocalizations.of(context)!.filterByHealthStatus,
+                                  title: AppLocalizations.of(context)!
+                                      .filterByHealthStatus,
                                   options: _healthOptions
                                       .map((e) => e.name)
                                       .toList(),
@@ -152,7 +212,8 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                                 ),
                                 const SizedBox(height: 20),
                                 _Section(
-                                  title: AppLocalizations.of(context)!.filterByCountry,
+                                  title: AppLocalizations.of(context)!
+                                      .filterByCountry,
                                   options:
                                       _countries.map((e) => e.name).toList(),
                                   selectedIndex: _selectedCountryIndex,
@@ -178,35 +239,53 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                         child: _GradientButton(
                           label: AppLocalizations.of(context)!.filter,
                           gradient: _applyGradient,
-                          onTap: () {
-                            final selectedHealth = (_selectedHealthIndex >= 0 &&
-                                    _selectedHealthIndex <
-                                        _healthOptions.length)
-                                ? _healthOptions[_selectedHealthIndex]
-                                : const _HealthOption(id: 0, name: 'all');
+                          isLoading: _isLoading,
+                          onTap: _isLoading
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
 
-                            final selectedCountry = (_selectedCountryIndex >=
-                                        0 &&
-                                    _selectedCountryIndex < _countries.length)
-                                ? _countries[_selectedCountryIndex]
-                                : const _Country(id: 0, name: 'all');
+                                  // Simulate loading delay for better UX
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 500));
 
-                            // Return the filter data to the parent screen
-                            Navigator.of(context).maybePop({
-                              'health': {
-                                'id': selectedHealth.id == 0
-                                    ? null
-                                    : selectedHealth.id,
-                                'name': selectedHealth.name,
-                              },
-                              'country': {
-                                'id': selectedCountry.id == 0
-                                    ? null
-                                    : selectedCountry.id,
-                                'name': selectedCountry.name,
-                              },
-                            });
-                          },
+                                  if (mounted) {
+                                    final selectedHealth =
+                                        (_selectedHealthIndex >= 0 &&
+                                                _selectedHealthIndex <
+                                                    _healthOptions.length)
+                                            ? _healthOptions[
+                                                _selectedHealthIndex]
+                                            : const _HealthOption(
+                                                id: 0, name: 'all');
+
+                                    final selectedCountry =
+                                        (_selectedCountryIndex >= 0 &&
+                                                _selectedCountryIndex <
+                                                    _countries.length)
+                                            ? _countries[_selectedCountryIndex]
+                                            : const _Country(
+                                                id: 0, name: 'all');
+
+                                    // Return the filter data to the parent screen
+                                    Navigator.of(context).maybePop({
+                                      'health': {
+                                        'id': selectedHealth.id == 0
+                                            ? null
+                                            : selectedHealth.id,
+                                        'name': selectedHealth.name,
+                                      },
+                                      'country': {
+                                        'id': selectedCountry.id == 0
+                                            ? null
+                                            : selectedCountry.id,
+                                        'name': selectedCountry.name,
+                                      },
+                                    });
+                                  }
+                                },
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -287,7 +366,7 @@ class _Section extends StatelessWidget {
                 onTap: () => onSelect(i),
                 borderRadius: BorderRadius.circular(10),
                 child: Padding(
-                  padding:  EdgeInsetsDirectional.symmetric(vertical: 8),
+                  padding: EdgeInsetsDirectional.symmetric(vertical: 8),
                   child: Row(
                     textDirection: LocalizationService.instance.textDirection,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -345,11 +424,13 @@ class _GradientButton extends StatelessWidget {
     required this.label,
     required this.gradient,
     required this.onTap,
+    this.isLoading = false,
   });
 
   final String label;
   final Gradient gradient;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -363,18 +444,27 @@ class _GradientButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
         child: InkWell(
           borderRadius: BorderRadius.circular(32),
-          onTap: onTap,
+          onTap: onTap != null ? () => onTap!() : null,
           child: Padding(
             padding: const EdgeInsetsDirectional.symmetric(vertical: 14),
             child: Center(
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+              child: isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
             ),
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,9 +23,11 @@ class FilterBottomSheet extends StatefulWidget {
 }
 
 class _FilterBottomSheetState extends State<FilterBottomSheet> {
-  List<_Country> _countries = const [const _Country(id: 0, name: 'all')];
+  late final String all;
+  late List<_Country> _countries;
   int _selectedCountryIndex = 0;
   bool _hasInitializedSelection = false;
+  bool _isLoading = false;
 
   static const Color kMuted = Color(0xFF9E9E9E);
   static const Color kClearRed = Color(0xFFF04438);
@@ -50,7 +53,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         .whereType<_Country>()
         .toList();
 
-    return [const _Country(id: 0, name: 'all'), ...parsed];
+    return [_Country(id: 0, name: all), ...parsed];
   }
 
   void _updateSelectedIndex() {
@@ -81,6 +84,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   @override
   void initState() {
     super.initState();
+    all = LocalizationHelper.getLocalizedText('الكل', 'all');
+    // Initialize the countries list
+    _countries = [_Country(id: 0, name: all)];
+
     // Initialize the selected index based on the passed country ID
     if (widget.selectedCountryId != null && widget.selectedCountryId != 0) {
       // We'll set this when countries are loaded
@@ -165,10 +172,23 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                             }
 
                             if (state is CountriesLoading) {
-                              return  Center(
+                              return Center(
                                   child: Padding(
-                                padding: EdgeInsetsDirectional.symmetric(vertical: 24),
-                                child: CircularProgressIndicator(),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 24),
+                                child: Column(
+                                  children: [
+                                    const CircularProgressIndicator(),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      AppLocalizations.of(context)!.loading,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFF666666),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ));
                             } else if (state is CountriesSuccess) {
                               _countries = _parseCountries(state.countriesList);
@@ -183,15 +203,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                               }
                             } else if (state is CountriesFailure) {
                               // Keep the default list on failure
-                              _countries = const [
-                                const _Country(id: 0, name: 'all')
-                              ];
+                              _countries = [_Country(id: 0, name: all)];
                             }
 
                             print(
                                 'Building _Section with selectedIndex: $_selectedCountryIndex, countries: ${_countries.map((e) => '${e.id}:${e.name}').toList()}');
                             return _Section(
-                              title: AppLocalizations.of(context)!.filterByCountry,
+                              title:
+                                  AppLocalizations.of(context)!.filterByCountry,
                               options: _countries.map((e) => e.name).toList(),
                               selectedIndex: _selectedCountryIndex,
                               onSelect: (i) =>
@@ -214,18 +233,34 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         child: _GradientButton(
                           label: AppLocalizations.of(context)!.filter,
                           gradient: _applyGradient,
-                          onTap: () {
-                            final selected = (_selectedCountryIndex >= 0 &&
-                                    _selectedCountryIndex < _countries.length)
-                                ? _countries[_selectedCountryIndex]
-                                : const _Country(id: 0, name: 'all');
+                          isLoading: _isLoading,
+                          onTap: _isLoading
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
 
-                            // Return the filter data to the parent screen
-                            Navigator.of(context).maybePop({
-                              'id': selected.id == 0 ? null : selected.id,
-                              'name': selected.name,
-                            });
-                          },
+                                  // Simulate loading delay for better UX
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 500));
+
+                                  if (mounted) {
+                                    final selected = (_selectedCountryIndex >=
+                                                0 &&
+                                            _selectedCountryIndex <
+                                                _countries.length)
+                                        ? _countries[_selectedCountryIndex]
+                                        : const _Country(id: 0, name: 'all');
+
+                                    // Return the filter data to the parent screen
+                                    Navigator.of(context).maybePop({
+                                      'id':
+                                          selected.id == 0 ? null : selected.id,
+                                      'name': selected.name,
+                                    });
+                                  }
+                                },
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -354,11 +389,13 @@ class _GradientButton extends StatelessWidget {
     required this.label,
     required this.gradient,
     required this.onTap,
+    this.isLoading = false,
   });
 
   final String label;
   final Gradient gradient;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -372,18 +409,27 @@ class _GradientButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
         child: InkWell(
           borderRadius: BorderRadius.circular(32),
-          onTap: onTap,
+          onTap: onTap != null ? () => onTap!() : null,
           child: Padding(
             padding: const EdgeInsetsDirectional.symmetric(vertical: 14),
             child: Center(
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+              child: isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
             ),
           ),
         ),

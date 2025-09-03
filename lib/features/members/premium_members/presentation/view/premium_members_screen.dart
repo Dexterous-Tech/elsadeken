@@ -23,22 +23,21 @@ class PremiumMembersView extends StatefulWidget {
 
 class _PremiumMembersViewState extends State<PremiumMembersView> {
   String _activeFilter = 'all';
-  final ScrollController _scrollController = ScrollController();
+  ScrollController? _scrollController;
   bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollController?.dispose();
     super.dispose();
   }
 
-  void _loadMoreUsers() {
+  void _loadMoreUsers(BuildContext context) {
     final cubit = context.read<MembersListCubit<UsersDataModel>>();
     final state = cubit.state;
 
@@ -62,16 +61,17 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
     }
   }
 
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+  void _onScroll(BuildContext context) {
+    if (_scrollController?.position.pixels != null &&
+        _scrollController!.position.pixels >=
+            _scrollController!.position.maxScrollExtent - 200) {
       print('Scroll threshold reached, triggering pagination');
-      _loadMoreUsers();
+      _loadMoreUsers(context);
     }
   }
 
   Future<void> _onRefresh() async {
-    context.read<MembersListCubit<UsersDataModel>>().fetch(page: 1);
+    // We'll handle this in the build method where context is available
   }
 
   @override
@@ -79,8 +79,8 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
     final cubit = MembersListCubit<UsersDataModel>(
       ({int? page}) async {
         final response =
-            await sl<MembersRepository>().getDistinguishedMembers();
-        return response.data ?? [];
+            await sl<MembersRepository>().getDistinguishedMembers(page: page);
+        return response;
       },
     )..fetch();
 
@@ -134,7 +134,8 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                       padding: const EdgeInsetsDirectional.all(24.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        textDirection: LocalizationService.instance.textDirection,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -186,13 +187,15 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                           GenderFilter(
                             text: AppLocalizations.of(context)!.males,
                             isActive: _activeFilter == 'males',
-                            onTap: () => setState(() => _activeFilter = 'males'),
+                            onTap: () =>
+                                setState(() => _activeFilter = 'males'),
                           ),
                           const SizedBox(width: 6),
                           GenderFilter(
                             text: AppLocalizations.of(context)!.females,
                             isActive: _activeFilter == 'females',
-                            onTap: () => setState(() => _activeFilter = 'females'),
+                            onTap: () =>
+                                setState(() => _activeFilter = 'females'),
                           ),
                         ],
                       ),
@@ -241,7 +244,8 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                                       horizontal: 20, vertical: 12),
                                   color: Colors.white,
                                   child: Text(
-                                    AppLocalizations.of(context)!.premiumMembersCount(items.length),
+                                    AppLocalizations.of(context)!
+                                        .premiumMembersCount(items.length),
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       color: Color(0xFFD4AF37),

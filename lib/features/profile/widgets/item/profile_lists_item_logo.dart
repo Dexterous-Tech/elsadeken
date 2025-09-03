@@ -21,6 +21,7 @@ class ProfileListsItemLogo extends StatelessWidget {
     // );
     return Stack(
       alignment: Alignment.bottomRight,
+      clipBehavior: Clip.none,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(100),
@@ -32,8 +33,8 @@ class ProfileListsItemLogo extends StatelessWidget {
         ),
         if (isSpecial)
           Positioned(
-              bottom: 0,
-              right: 3,
+              bottom: -5,
+              right: 0,
               child: Image.asset(
                 'assets/images/members/menu_items/special.png',
                 width: 22.w,
