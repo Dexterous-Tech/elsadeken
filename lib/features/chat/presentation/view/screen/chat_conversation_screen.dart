@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_appBar.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -582,10 +583,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
                 // Show brief notification that chat was deleted
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('المحادثة محذوفة - يمكنك بدء محادثة جديدة'),
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.chatDeleted),
                     backgroundColor: Colors.orange,
-                    duration: Duration(seconds: 2),
+                    duration: const Duration(seconds: 2),
                   ),
                 );
 
@@ -702,7 +703,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       child: BlocBuilder<ChatMessagesCubit, ChatMessagesState>(
         builder: (context, state) {
           if (state is ChatMessagesLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return  Center(child: CircularProgressIndicator());
           } else if (state is ChatMessagesError) {
             return Center(
               child: Column(
@@ -730,7 +731,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _loadChatMessages,
-                    child: Text('إعادة المحاولة'),
+                    child: Text(AppLocalizations.of(context)!.retryButton),
                   ),
                 ],
               ),
@@ -943,8 +944,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (_messageController.text.trim().isEmpty) return;
     if (_currentUserId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('يرجى الانتظار حتى يتم تحميل الملف الشخصي'),
+         SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseWaitWhileLoadingProfile),
           backgroundColor: Colors.orange,
         ),
       );

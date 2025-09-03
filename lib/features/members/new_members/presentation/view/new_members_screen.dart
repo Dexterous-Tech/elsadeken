@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/di/injection_container.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:elsadeken/features/profile/widgets/container_item/container_item.dart';
 import 'package:elsadeken/features/members/data/repositories/members_repository.dart';
@@ -6,6 +7,7 @@ import 'package:elsadeken/features/members/logic/cubit/members_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/members/online_members/presentation/view/widgets/filter_buttom_sheet.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../core/theme/app_color.dart';
 import '../../../Health_statuses/presentation/view/widgets/gender_filter.dart';
@@ -20,7 +22,7 @@ class NewMembersView extends StatefulWidget {
 }
 
 class _NewMembersViewState extends State<NewMembersView> {
-  String _activeFilter = 'الكل';
+  String _activeFilter = 'all'; // Will be localized in UI
   int? _selectedCountryId;
   List<UsersDataModel> _allMembers = [];
   final ScrollController _scrollController = ScrollController();
@@ -76,9 +78,9 @@ class _NewMembersViewState extends State<NewMembersView> {
 
   List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
     switch (_activeFilter) {
-      case 'الذكور':
+      case 'males':
         return allMembers.where((member) => member.gender == 'ذكر').toList();
-      case 'الإناث':
+      case 'females':
         return allMembers.where((member) => member.gender == 'انثى').toList();
       default:
         return allMembers;
@@ -103,8 +105,8 @@ class _NewMembersViewState extends State<NewMembersView> {
           backgroundColor: Colors.white,
           elevation: 0,
           automaticallyImplyLeading: false,
-          title: const Text(
-            'أعضاء جدد',
+          title: Text(
+            AppLocalizations.of(context)!.newMembers,
             style: TextStyle(
               color: Colors.black,
               fontSize: 20,
@@ -129,35 +131,37 @@ class _NewMembersViewState extends State<NewMembersView> {
             child: Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(6),
+                  padding: const EdgeInsetsDirectional.all(6),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF5F1E8),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Row(
+                    textDirection: LocalizationService.instance.textDirection,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       GenderFilter(
-                        text: 'الكل',
-                        isActive: _activeFilter == 'الكل',
+                        text: AppLocalizations.of(context)!.all,
+                        isActive: _activeFilter == 'all',
                         onTap: () {
-                          setState(() => _activeFilter = 'الكل');
+                          setState(() => _activeFilter = 'all');
                         },
                       ),
                       const SizedBox(width: 6),
                       GenderFilter(
-                        text: 'الذكور',
-                        isActive: _activeFilter == 'الذكور',
+                        text: AppLocalizations.of(context)!.males,
+                        isActive: _activeFilter == 'males',
                         onTap: () {
-                          setState(() => _activeFilter = 'الذكور');
+                          setState(() => _activeFilter = 'males');
                         },
                       ),
                       const SizedBox(width: 6),
                       GenderFilter(
-                        text: 'الإناث',
-                        isActive: _activeFilter == 'الإناث',
+                        text: AppLocalizations.of(context)!.females,
+                        isActive: _activeFilter == 'females',
                         onTap: () {
-                          setState(() => _activeFilter = 'الإناث');
+                          setState(() => _activeFilter = 'females');
                         },
                       ),
                     ],
@@ -203,11 +207,11 @@ class _NewMembersViewState extends State<NewMembersView> {
                           );
                         }
                       },
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'فلترة',
+                            AppLocalizations.of(context)!.filter,
                             style: TextStyle(
                                 color: Color(0xFFD4AF37), fontSize: 16),
                           ),
@@ -243,10 +247,10 @@ class _NewMembersViewState extends State<NewMembersView> {
                       );
                     }
                     if (state is MembersListEmpty<UsersDataModel>) {
-                      return const Expanded(
+                      return Expanded(
                         child: Center(
                           child: Text(
-                            'لا توجد نتائج حالياً',
+                            AppLocalizations.of(context)!.noResultsCurrently,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -264,7 +268,7 @@ class _NewMembersViewState extends State<NewMembersView> {
                                   horizontal: 20, vertical: 12),
                               color: Colors.white,
                               child: Text(
-                                'عدد النتائج: ${items.length}',
+                                AppLocalizations.of(context)!.resultsCount(items.length),
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   color: Color(0xFFD4AF37),
@@ -295,8 +299,8 @@ class _NewMembersViewState extends State<NewMembersView> {
                                                 strokeWidth: 2,
                                               ),
                                               const SizedBox(height: 8),
-                                              const Text(
-                                                'جاري تحميل المزيد...',
+                                              Text(
+                                                AppLocalizations.of(context)!.loadingMore,
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   fontSize: 12,

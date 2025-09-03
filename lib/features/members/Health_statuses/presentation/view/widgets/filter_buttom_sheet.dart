@@ -1,6 +1,8 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:elsadeken/features/auth/signup/data/models/national_country_models.dart';
 import 'package:elsadeken/features/auth/signup/data/models/general_info_models.dart';
 import '../../../../../../core/di/injection_container.dart';
@@ -16,9 +18,9 @@ class FilterHealthStatues extends StatefulWidget {
 
 class _FilterHealthStatuesState extends State<FilterHealthStatues> {
   List<_HealthOption> _healthOptions = const [
-    const _HealthOption(id: 0, name: 'الكل')
+    const _HealthOption(id: 0, name: 'all')
   ];
-  List<_Country> _countries = const [const _Country(id: 0, name: 'الكل')];
+  List<_Country> _countries = const [const _Country(id: 0, name: 'all')];
 
   int _selectedHealthIndex = 0;
   int _selectedCountryIndex = 0;
@@ -47,7 +49,7 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
         .whereType<_HealthOption>()
         .toList();
 
-    return [const _HealthOption(id: 0, name: 'الكل'), ...parsed];
+    return [const _HealthOption(id: 0, name: 'all'), ...parsed];
   }
 
   List<_Country> _parseCountries(
@@ -62,7 +64,7 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
         .whereType<_Country>()
         .toList();
 
-    return [const _Country(id: 0, name: 'الكل'), ...parsed];
+    return [const _Country(id: 0, name: 'all'), ...parsed];
   }
 
   @override
@@ -71,7 +73,7 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
     return BlocProvider(
       create: (context) => sl<SignUpListsCubit>(),
       child: Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection:  LocalizationService.instance.textDirection,
         child: SafeArea(
           top: false,
           child: Container(
@@ -84,26 +86,31 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                   const BorderRadius.vertical(top: Radius.circular(20)),
             ),
             child: Column(
+              textDirection: LocalizationService.instance.textDirection,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 8, 12),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    textDirection: LocalizationService.instance.textDirection,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       IconButton(
                         onPressed: () => Navigator.of(context).maybePop(),
                         icon: const Icon(Icons.close, color: kMuted),
-                        tooltip: 'إغلاق',
+                        tooltip: AppLocalizations.of(context)!.close,
                       ),
                     ],
                   ),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(
+                    padding: const EdgeInsetsDirectional.symmetric(
                         horizontal: 16, vertical: 12),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      textDirection: LocalizationService.instance.textDirection,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         BlocBuilder<SignUpListsCubit, SignUpListsState>(
                           builder: (context, state) {
@@ -131,9 +138,11 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                             }
 
                             return Column(
+                              textDirection: LocalizationService.instance.textDirection,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _Section(
-                                  title: 'فلتره بواسطه الحاله الصحيه',
+                                  title: AppLocalizations.of(context)!.filterByHealthStatus,
                                   options: _healthOptions
                                       .map((e) => e.name)
                                       .toList(),
@@ -143,7 +152,7 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                                 ),
                                 const SizedBox(height: 20),
                                 _Section(
-                                  title: 'فلتره بواسطه الدوله',
+                                  title: AppLocalizations.of(context)!.filterByCountry,
                                   options:
                                       _countries.map((e) => e.name).toList(),
                                   selectedIndex: _selectedCountryIndex,
@@ -160,25 +169,27 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsetsDirectional.all(16),
                   child: Row(
+                    textDirection: LocalizationService.instance.textDirection,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: _GradientButton(
-                          label: 'فلتره',
+                          label: AppLocalizations.of(context)!.filter,
                           gradient: _applyGradient,
                           onTap: () {
                             final selectedHealth = (_selectedHealthIndex >= 0 &&
                                     _selectedHealthIndex <
                                         _healthOptions.length)
                                 ? _healthOptions[_selectedHealthIndex]
-                                : const _HealthOption(id: 0, name: 'الكل');
+                                : const _HealthOption(id: 0, name: 'all');
 
                             final selectedCountry = (_selectedCountryIndex >=
                                         0 &&
                                     _selectedCountryIndex < _countries.length)
                                 ? _countries[_selectedCountryIndex]
-                                : const _Country(id: 0, name: 'الكل');
+                                : const _Country(id: 0, name: 'all');
 
                             // Return the filter data to the parent screen
                             Navigator.of(context).maybePop({
@@ -201,7 +212,7 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: _OutlinedActionButton(
-                          label: 'مسح',
+                          label: AppLocalizations.of(context)!.clear,
                           color: kClearRed,
                           onTap: () {
                             setState(() {
@@ -269,25 +280,28 @@ class _Section extends StatelessWidget {
         ...List.generate(options.length, (i) {
           final selected = i == selectedIndex;
           return Column(
+            textDirection: LocalizationService.instance.textDirection,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               InkWell(
                 onTap: () => onSelect(i),
                 borderRadius: BorderRadius.circular(10),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding:  EdgeInsetsDirectional.symmetric(vertical: 8),
                   child: Row(
+                    textDirection: LocalizationService.instance.textDirection,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Text(
-                          options[i],
-                          textAlign: TextAlign.right,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: kText,
-                          ),
+                      Text(
+                        options[i],
+                        textAlign: TextAlign.end,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: kText,
                         ),
                       ),
+                      Spacer(),
                       _SquareCheck(value: selected),
                     ],
                   ),
@@ -351,7 +365,7 @@ class _GradientButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(32),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14),
+            padding: const EdgeInsetsDirectional.symmetric(vertical: 14),
             child: Center(
               child: Text(
                 label,
@@ -395,7 +409,7 @@ class _OutlinedActionButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(32),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14),
+            padding: const EdgeInsetsDirectional.symmetric(vertical: 14),
             child: Center(
               child: Text(
                 label,

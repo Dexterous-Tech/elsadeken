@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../../core/theme/spacing.dart';
@@ -63,7 +64,7 @@ class _SignupJobState extends State<SignupJob> {
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('ما هي وظيفتك ؟',
+                    Text(AppLocalizations.of(context)!.whatIsYourJob,
                         textDirection: TextDirection.rtl,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
@@ -80,21 +81,21 @@ class _SignupJobState extends State<SignupJob> {
                       ],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'يجب إدخال الوظيفة';
+                          return AppLocalizations.of(context)!.jobRequired;
                         }
                         if (value.trim().length > 50) {
-                          return 'الوظيفة يجب ألا تتجاوز 50 حرفًا';
+                          return AppLocalizations.of(context)!.jobTooLong;
                         }
                         // Extra safety: block if it looks like a link
                         if (RegExp(r'https?://|www\.|\.com').hasMatch(value)) {
-                          return 'الوظيفة لا يمكن أن تحتوي على روابط';
+                          return AppLocalizations.of(context)!.jobNoLinks;
                         }
                         return null;
                       },
                     ),
                     verticalSpace(40),
 
-                    Text('ما هو الدخل الشهري ؟',
+                    Text(AppLocalizations.of(context)!.whatIsYourMonthlyIncome,
                         textDirection: TextDirection.rtl,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),

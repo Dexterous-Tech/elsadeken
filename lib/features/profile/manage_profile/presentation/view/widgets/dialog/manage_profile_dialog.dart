@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -15,6 +16,7 @@ import 'package:elsadeken/features/auth/signup/data/models/general_info_models.d
 import 'package:elsadeken/features/auth/signup/data/models/national_country_models.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -133,10 +135,12 @@ Future<void> manageProfileDialog(
         : Container(
             padding: EdgeInsets.all(16.w),
             child: Column(
+              textDirection: LocalizationService.instance.textDirection,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'خطأ: لم يتم توفير UpdateProfileCubit',
+                  AppLocalizations.of(context)!.errorNoUpdateProfileCubit,
                   style: AppTextStyles.font18JetMediumLamaSans,
                   textAlign: TextAlign.center,
                 ),
@@ -144,7 +148,7 @@ Future<void> manageProfileDialog(
                 CustomElevatedButton(
                   height: 41.h,
                   onPressed: () => Navigator.pop(context),
-                  textButton: 'إغلاق',
+                  textButton: AppLocalizations.of(context)!.close,
                   backgroundColor: AppColors.red,
                 ),
               ],
@@ -247,7 +251,6 @@ class _ManageProfileDialogContentState
         ),
       );
     }
-
     return MultiBlocListener(
       listeners: listeners,
       child: Container(
@@ -256,6 +259,8 @@ class _ManageProfileDialogContentState
           key: widget.formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            textDirection: LocalizationService.instance.textDirection,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Title
               Text(
@@ -264,11 +269,10 @@ class _ManageProfileDialogContentState
                 textAlign: TextAlign.center,
               ),
               verticalSpace(10),
-
               // Fields
               ...widget.data.fields.map((field) {
                 return Padding(
-                  padding: EdgeInsets.only(bottom: 16.h),
+                  padding: EdgeInsetsDirectional.only(bottom: 16.h),
                   child: _buildFieldInternal(
                     field: field,
                     controller: widget.controllers[field.label]!,
@@ -291,12 +295,14 @@ class _ManageProfileDialogContentState
 
               // Buttons
               Row(
+                textDirection: LocalizationService.instance.textDirection,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: CustomElevatedButton(
                       height: 41.h,
                       onPressed: () => Navigator.pop(context),
-                      textButton: 'إغلاق',
+                      textButton: AppLocalizations.of(context)!.close,
                       styleTextButton:
                           AppTextStyles.font14DesiredMediumLamaSans,
                       backgroundColor: Colors.transparent,
@@ -307,7 +313,7 @@ class _ManageProfileDialogContentState
                     child: CustomElevatedButton(
                       height: 41.h,
                       onPressed: () => _handleSave(context),
-                      textButton: 'تعديل',
+                      textButton: AppLocalizations.of(context)!.edit,
                       backgroundColor: AppColors.darkSunray,
                       styleTextButton: AppTextStyles.font14DesiredMediumLamaSans
                           .copyWith(color: AppColors.jet),
@@ -334,10 +340,10 @@ class _ManageProfileDialogContentState
         signUpListsCubit.getCites(countryId.toString());
 
         // Reset city field when country changes
-        final cityController = widget.controllers['المدينة'];
+        final cityController = widget.controllers[AppLocalizations.of(context)!.city];
         if (cityController != null) {
           cityController.clear();
-          widget.selectedValues['المدينة'] =
+          widget.selectedValues[AppLocalizations.of(context)!.city] =
               null; // Set to null instead of empty string
           setState(() {}); // Trigger rebuild to update UI
         }
@@ -532,6 +538,8 @@ class _ManageProfileDialogContentState
               ],
             ),
             child: Row(
+              textDirection: LocalizationService.instance.textDirection,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Text(
@@ -632,7 +640,7 @@ class _ManageProfileDialogContentState
       // Show success dialog
       successDialog(
         context: context,
-        message: 'تم تحديث البيانات بنجاح',
+        message: AppLocalizations.of(context)!.dataUpdatedSuccessfully,
         onPressed: () {
           Navigator.pop(context); // Close success dialog
           Navigator.pop(context); // Close edit dialog
@@ -645,13 +653,13 @@ class _ManageProfileDialogContentState
   void _handleSave(BuildContext context) {
     if (widget.formKey.currentState!.validate()) {
       // Get password and confirm password values for login data
-      final password = widget.controllers['كلمة المرور (اختياري)']?.text ?? '';
+      final password = widget.controllers[AppLocalizations.of(context)!.passwordOptional]?.text ?? '';
       final passwordConfirmation =
-          widget.controllers['تأكيد كلمة المرور (اختياري)']?.text ?? '';
+          widget.controllers[AppLocalizations.of(context)!.confirmPasswordOptional]?.text ?? '';
 
       // If password is entered, confirm password is required
       if (password.isNotEmpty && passwordConfirmation.isEmpty) {
-        _showSnackBarAboveDialog(context, 'يرجى تأكيد كلمة المرور', Colors.red);
+        _showSnackBarAboveDialog(context, AppLocalizations.of(context)!.pleaseConfirmPassword, Colors.red);
         return;
       }
 
@@ -659,27 +667,27 @@ class _ManageProfileDialogContentState
       if (password.isNotEmpty && passwordConfirmation.isNotEmpty) {
         if (password != passwordConfirmation) {
           _showSnackBarAboveDialog(context,
-              'كلمة المرور وتأكيد كلمة المرور غير متطابقين', Colors.red);
+              AppLocalizations.of(context)!.passwordsDoNotMatch, Colors.red);
           return;
         }
       }
 
       // Additional validation for login data fields
       if (widget.data.dialogType == ManageProfileDialogType.loginData) {
-        final name = widget.controllers['اسم المستخدم']?.text ?? '';
-        final email = widget.controllers['البريد الإلكتروني']?.text ?? '';
-        final phone = widget.controllers['رقم الهاتف']?.text ?? '';
+        final name = widget.controllers[AppLocalizations.of(context)!.username]?.text ?? '';
+        final email = widget.controllers[AppLocalizations.of(context)!.email]?.text ?? '';
+        final phone = widget.controllers[AppLocalizations.of(context)!.phoneNumber]?.text ?? '';
 
         // Validate name
         if (name.trim().length < 2) {
           _showSnackBarAboveDialog(
-              context, 'اسم المستخدم يجب أن يكون على الأقل حرفين', Colors.red);
+              context, AppLocalizations.of(context)!.usernameMinLength, Colors.red);
           return;
         }
 
         if (name.trim().length > 50) {
           _showSnackBarAboveDialog(
-              context, 'اسم المستخدم لا يمكن أن يتجاوز 50 حرف', Colors.red);
+              context, AppLocalizations.of(context)!.usernameMaxLength, Colors.red);
           return;
         }
 
@@ -688,7 +696,7 @@ class _ManageProfileDialogContentState
           final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
           if (!emailRegex.hasMatch(email.trim())) {
             _showSnackBarAboveDialog(
-                context, 'يرجى إدخال بريد إلكتروني صحيح', Colors.red);
+                context, AppLocalizations.of(context)!.pleaseEnterValidEmail, Colors.red);
             return;
           }
         }
@@ -698,7 +706,7 @@ class _ManageProfileDialogContentState
           final cleanPhone = phone.replaceAll(RegExp(r'[^\d]'), '');
           if (cleanPhone.length < 8 || cleanPhone.length > 15) {
             _showSnackBarAboveDialog(
-                context, 'رقم الهاتف يجب أن يكون بين 8 و 15 رقم', Colors.red);
+                context, AppLocalizations.of(context)!.phoneNumberLength, Colors.red);
             return;
           }
         }
@@ -707,7 +715,7 @@ class _ManageProfileDialogContentState
         if (password.isNotEmpty) {
           if (password.length < 6) {
             _showSnackBarAboveDialog(context,
-                'كلمة المرور يجب أن تحتوي على 6 أحرف على الأقل', Colors.red);
+                AppLocalizations.of(context)!.passwordMinLength, Colors.red);
             return;
           }
 
@@ -717,7 +725,7 @@ class _ManageProfileDialogContentState
           if (!hasNumber && !hasSymbol) {
             _showSnackBarAboveDialog(
                 context,
-                'كلمة المرور يجب أن تحتوي على رقم واحد (0-9) أو رمز على الأقل',
+                AppLocalizations.of(context)!.passwordNumberOrSymbol,
                 Colors.red);
             return;
           }
@@ -727,7 +735,7 @@ class _ManageProfileDialogContentState
           if (!hasUppercase || !hasLowercase) {
             _showSnackBarAboveDialog(
                 context,
-                'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير على الأقل',
+                AppLocalizations.of(context)!.passwordCase,
                 Colors.red);
             return;
           }
@@ -745,9 +753,9 @@ class _ManageProfileDialogContentState
       String password, String passwordConfirmation) {
     switch (widget.data.dialogType) {
       case ManageProfileDialogType.loginData:
-        final name = widget.controllers['اسم المستخدم']?.text ?? '';
-        final email = widget.controllers['البريد الإلكتروني']?.text ?? '';
-        final phone = widget.controllers['رقم الهاتف']?.text ?? '';
+        final name = widget.controllers[AppLocalizations.of(context)!.username]?.text ?? '';
+        final email = widget.controllers[AppLocalizations.of(context)!.email]?.text ?? '';
+        final phone = widget.controllers[AppLocalizations.of(context)!.phoneNumber]?.text ?? '';
 
         // Extract country code and phone number from the phone field
         String? countryCode;
@@ -776,9 +784,9 @@ class _ManageProfileDialogContentState
 
       case ManageProfileDialogType.nationalCountry:
         // Extract selected values from controllers
-        final nationalityName = widget.controllers['الجنسية']?.text ?? '';
-        final countryName = widget.controllers['الدولة']?.text ?? '';
-        final cityName = widget.controllers['المدينة']?.text ?? '';
+        final nationalityName = widget.controllers[AppLocalizations.of(context)!.nationality]?.text ?? '';
+        final countryName = widget.controllers[AppLocalizations.of(context)!.country]?.text ?? '';
+        final cityName = widget.controllers[AppLocalizations.of(context)!.city]?.text ?? '';
 
         print('DEBUG: Extracted values from controllers:');
         print('  - nationalityName: "$nationalityName"');
@@ -807,31 +815,31 @@ class _ManageProfileDialogContentState
           print('DEBUG: Some IDs are null, showing error message');
           // Show error message if any required field is missing
           _showSnackBarAboveDialog(
-              context, 'يرجى اختيار جميع الحقول المطلوبة', Colors.red);
+              context, AppLocalizations.of(context)!.pleaseSelectAllRequiredFields, Colors.red);
         }
         break;
 
       case ManageProfileDialogType.job:
         final qualificationName =
-            widget.controllers['المؤهل التعليمي']?.text ?? '';
+            widget.controllers[AppLocalizations.of(context)!.educationalQualification]?.text ?? '';
         final financialSituationName =
-            widget.controllers['الوضع المادي']?.text ?? '';
-        final jobTitle = widget.controllers['الوظيفة']?.text ?? '';
-        final monthlyIncomeStr = widget.controllers['الدخل الشهري']?.text ?? '';
+            widget.controllers[AppLocalizations.of(context)!.financialStatus]?.text ?? '';
+        final jobTitle = widget.controllers[AppLocalizations.of(context)!.job]?.text ?? '';
+        final monthlyIncomeStr = widget.controllers[AppLocalizations.of(context)!.monthlyIncome]?.text ?? '';
         final healthConditionName =
-            widget.controllers['الحالة الصحية']?.text ?? '';
+            widget.controllers[AppLocalizations.of(context)!.healthStatus]?.text ?? '';
 
         // Validate income - must be greater than 0
         if (monthlyIncomeStr.isNotEmpty) {
           final income = int.tryParse(monthlyIncomeStr);
           if (income == null) {
             _showSnackBarAboveDialog(
-                context, 'يرجى إدخال رقم صحيح للدخل الشهري', Colors.red);
+                context, AppLocalizations.of(context)!.pleaseEnterValidMonthlyIncome, Colors.red);
             return;
           }
           if (income <= 0) {
             _showSnackBarAboveDialog(
-                context, 'الدخل الشهري يجب أن يكون أكبر من صفر', Colors.red);
+                context, AppLocalizations.of(context)!.monthlyIncomeMustBePositive, Colors.red);
             return;
           }
         }
@@ -879,22 +887,22 @@ class _ManageProfileDialogContentState
 
       case ManageProfileDialogType.socialStatus:
         final maritalStatus =
-            widget.controllers['الحالة الاجتماعية']?.text ?? '';
-        final typeOfMarriage = widget.controllers['نوع الزواج']?.text ?? '';
-        final ageStr = widget.controllers['العمر']?.text ?? '';
-        final childrenStr = widget.controllers['عدد الأطفال']?.text ?? '';
+            widget.controllers[AppLocalizations.of(context)!.maritalStatus]?.text ?? '';
+        final typeOfMarriage = widget.controllers[AppLocalizations.of(context)!.marriageType]?.text ?? '';
+        final ageStr = widget.controllers[AppLocalizations.of(context)!.age]?.text ?? '';
+        final childrenStr = widget.controllers[AppLocalizations.of(context)!.numberOfChildren]?.text ?? '';
 
         // Validate age
         if (ageStr.isNotEmpty) {
           final age = int.tryParse(ageStr);
           if (age == null) {
             _showSnackBarAboveDialog(
-                context, 'يرجى إدخال رقم صحيح للعمر', Colors.red);
+                context, AppLocalizations.of(context)!.pleaseEnterValidAge, Colors.red);
             return;
           }
           if (age > 99 || age < 18) {
             _showSnackBarAboveDialog(
-                context, 'العمر يجب ان يتراوح بين 18 - 99', Colors.red);
+                context, AppLocalizations.of(context)!.ageRange, Colors.red);
             return;
           }
         }
@@ -904,12 +912,12 @@ class _ManageProfileDialogContentState
           final children = int.tryParse(childrenStr);
           if (children == null) {
             _showSnackBarAboveDialog(
-                context, 'يرجى إدخال رقم صحيح لعدد الأطفال', Colors.red);
+                context, AppLocalizations.of(context)!.pleaseEnterValidChildrenCount, Colors.red);
             return;
           }
           if (children > 99 || children < 0) {
             _showSnackBarAboveDialog(
-                context, 'عدد الاطفال يجب ان يتراوح بين 0 - 99', Colors.red);
+                context, AppLocalizations.of(context)!.childrenRange, Colors.red);
             return;
           }
         }
@@ -988,22 +996,22 @@ class _ManageProfileDialogContentState
         break;
 
       case ManageProfileDialogType.bodyInfo:
-        final weightStr = widget.controllers['الوزن']?.text ?? '';
-        final heightStr = widget.controllers['الطول']?.text ?? '';
-        final skinColorName = widget.controllers['لون البشرة']?.text ?? '';
-        final physiqueName = widget.controllers['البنية الجسدية']?.text ?? '';
+        final weightStr = widget.controllers[AppLocalizations.of(context)!.weight]?.text ?? '';
+        final heightStr = widget.controllers[AppLocalizations.of(context)!.height]?.text ?? '';
+        final skinColorName = widget.controllers[AppLocalizations.of(context)!.skinColor]?.text ?? '';
+        final physiqueName = widget.controllers[AppLocalizations.of(context)!.physique]?.text ?? '';
 
         // Validate weight
         if (weightStr.isNotEmpty) {
           final weight = int.tryParse(weightStr);
           if (weight == null) {
             _showSnackBarAboveDialog(
-                context, 'يرجى إدخال رقم صحيح للوزن', Colors.red);
+                context, AppLocalizations.of(context)!.pleaseEnterValidWeight, Colors.red);
             return;
           }
           if (weight > 300 || weight < 30) {
             _showSnackBarAboveDialog(context,
-                'الوزن لا يمكن أن يتجاوز 300 ولا يقل عن 30', Colors.red);
+                AppLocalizations.of(context)!.weightRange, Colors.red);
             return;
           }
         }
@@ -1013,13 +1021,13 @@ class _ManageProfileDialogContentState
           final height = int.tryParse(heightStr);
           if (height == null) {
             _showSnackBarAboveDialog(
-                context, 'يرجى إدخال رقم صحيح للطول', Colors.red);
+                context, AppLocalizations.of(context)!.pleaseEnterValidHeight, Colors.red);
             return;
           }
           if (height > 250 || height < 50) {
             _showSnackBarAboveDialog(
                 context,
-                'لا يمكن ان يصل الطول الي اكثر من 250 او اقل من 50',
+                AppLocalizations.of(context)!.heightRange,
                 Colors.red);
             return;
           }
@@ -1043,13 +1051,13 @@ class _ManageProfileDialogContentState
 
       case ManageProfileDialogType.education:
         final qualificationName =
-            widget.controllers['المؤهل التعليمي']?.text ?? '';
+            widget.controllers[AppLocalizations.of(context)!.educationalQualification]?.text ?? '';
         final financialSituationName =
-            widget.controllers['الوضع المادي']?.text ?? '';
-        final jobTitle = widget.controllers['الوظيفة']?.text ?? '';
-        final monthlyIncomeStr = widget.controllers['الدخل الشهري']?.text ?? '';
+            widget.controllers[AppLocalizations.of(context)!.financialStatus]?.text ?? '';
+        final jobTitle = widget.controllers[AppLocalizations.of(context)!.job]?.text ?? '';
+        final monthlyIncomeStr = widget.controllers[AppLocalizations.of(context)!.monthlyIncome]?.text ?? '';
         final healthConditionName =
-            widget.controllers['الحالة الصحية']?.text ?? '';
+            widget.controllers[AppLocalizations.of(context)!.healthStatus]?.text ?? '';
 
         // Convert income string to number
         int? income =
@@ -1205,9 +1213,9 @@ class _ManageProfileDialogContentState
       case ManageProfileDialogType.personalInfo:
       case null:
         // For now, fall back to login data if no type is specified
-        final name = widget.controllers['اسم المستخدم']?.text ?? '';
-        final email = widget.controllers['البريد الإلكتروني']?.text ?? '';
-        final phone = widget.controllers['رقم الهاتف']?.text ?? '';
+        final name = widget.controllers[AppLocalizations.of(context)!.username]?.text ?? '';
+        final email = widget.controllers[AppLocalizations.of(context)!.email]?.text ?? '';
+        final phone = widget.controllers[AppLocalizations.of(context)!.phoneNumber]?.text ?? '';
 
         widget.data.cubit!.updateProfileLoginData(
           name: name.isNotEmpty ? name : null,
@@ -1229,7 +1237,7 @@ class _ManageProfileDialogContentState
     // If SignUpListsCubit is not available, show empty dropdown
     if (widget.data.signUpListsCubit == null) {
       return Column(
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -1366,7 +1374,7 @@ class _ManageProfileDialogContentState
     switch (field.type) {
       case ManageProfileFieldType.text:
         return Column(
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -1382,7 +1390,7 @@ class _ManageProfileDialogContentState
               maxLines: field.maxLines,
               validator: (value) {
                 if (field.isRequired && (value == null || value.isEmpty)) {
-                  return 'هذا الحقل مطلوب';
+                  return AppLocalizations.of(context)!.fieldRequired;
                 }
                 return null;
               },
@@ -1392,7 +1400,7 @@ class _ManageProfileDialogContentState
 
       case ManageProfileFieldType.password:
         return Column(
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -1405,7 +1413,7 @@ class _ManageProfileDialogContentState
               hintText: field.hint,
               controller: controller,
               obscureText: true,
-              inputFormatters: _getInputFormattersForField(field.label),
+              inputFormatters: _getInputFormattersForField(field.label, context),
               validator: (value) {
                 // Password fields are optional, so no validation needed here
                 // The validation logic is handled in the save button onPressed
@@ -1483,7 +1491,7 @@ class _ManageProfileDialogContentState
     }
 
     return Column(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -1493,8 +1501,9 @@ class _ManageProfileDialogContentState
         ),
         verticalSpace(2),
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          textDirection: LocalizationService.instance.textDirection,
           children: [
             Expanded(
               child: CustomTextFormField(
@@ -1504,7 +1513,7 @@ class _ManageProfileDialogContentState
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: (value) {
                   if (field.isRequired && (value == null || value.isEmpty)) {
-                    return 'هذا الحقل مطلوب';
+                    return AppLocalizations.of(context)!.fieldRequired;
                   }
                   return null;
                 },
@@ -1521,24 +1530,24 @@ class _ManageProfileDialogContentState
     );
   }
 
-  List<TextInputFormatter>? _getInputFormattersForField(String label) {
-    switch (label) {
-      case 'رقم الهاتف':
-        return [FilteringTextInputFormatter.digitsOnly];
-      case 'رمز الدولة':
-        return [FilteringTextInputFormatter.digitsOnly];
-      case 'العمر':
-        return [FilteringTextInputFormatter.digitsOnly];
-      case 'عدد الأطفال':
-        return [FilteringTextInputFormatter.digitsOnly];
-      case 'الوزن':
-        return [FilteringTextInputFormatter.digitsOnly];
-      case 'الطول':
-        return [FilteringTextInputFormatter.digitsOnly];
-      case 'الدخل الشهري':
-        return [FilteringTextInputFormatter.digitsOnly];
-      default:
-        return null;
+  List<TextInputFormatter>? _getInputFormattersForField(String label, BuildContext context) {
+    final phoneNumber = AppLocalizations.of(context)!.phoneNumber;
+    final countryCode = AppLocalizations.of(context)!.countryCode;
+    final age = AppLocalizations.of(context)!.age;
+    final numberOfChildren = AppLocalizations.of(context)!.numberOfChildren;
+    final weight = AppLocalizations.of(context)!.weight;
+    final height = AppLocalizations.of(context)!.height;
+    final monthlyIncome = AppLocalizations.of(context)!.monthlyIncome;
+    
+    if (label == phoneNumber || 
+        label == countryCode || 
+        label == age || 
+        label == numberOfChildren || 
+        label == weight || 
+        label == height || 
+        label == monthlyIncome) {
+      return [FilteringTextInputFormatter.digitsOnly];
     }
+    return null;
   }
 }

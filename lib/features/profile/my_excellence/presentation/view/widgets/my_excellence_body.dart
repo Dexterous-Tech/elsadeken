@@ -8,6 +8,7 @@ import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/spacing.dart';
@@ -165,7 +166,7 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                         verticalSpace(16),
                         ElevatedButton(
                           onPressed: _loadFeatures,
-                          child: Text('إعادة المحاولة'),
+                          child: Text(AppLocalizations.of(context)!.retry),
                         ),
                       ],
                     ),

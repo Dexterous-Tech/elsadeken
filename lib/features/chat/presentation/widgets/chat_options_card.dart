@@ -10,7 +10,7 @@ import 'package:elsadeken/l10n/app_localizations.dart';
 
 class ChatOptionsCard extends StatelessWidget {
   final ChatListCubit chatListCubit;
-  
+
   const ChatOptionsCard({
     Key? key,
     required this.chatListCubit,
@@ -164,12 +164,12 @@ class ChatOptionsCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16.r),
           ),
           title: Text(
-            'تأكيد',
+            AppLocalizations.of(context)!.confirm,
             style: AppTextStyles.font40BlackSemiBoldPlexSans,
             textAlign: TextAlign.center,
           ),
           content: Text(
-            'هل تريد وضع علامة مقروء على جميع الرسائل؟',
+            AppLocalizations.of(context)!.confirmReadCont,
             style: AppTextStyles.font16BlackSemiBoldLamaSans,
             textAlign: TextAlign.center,
           ),
@@ -177,7 +177,7 @@ class ChatOptionsCard extends StatelessWidget {
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                'إلغاء',
+                AppLocalizations.of(context)!.cancel,
                 style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                   color: Colors.grey[600],
                 ),
@@ -192,8 +192,8 @@ class ChatOptionsCard extends StatelessWidget {
                   // Show success snackbar
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text(
-                        'تم وضع علامة مقروء على جميع الرسائل',
+                      content:  Text(
+                        AppLocalizations.of(context)!.doneReadCont,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -209,7 +209,7 @@ class ChatOptionsCard extends StatelessWidget {
                   );
                 },
               child: Text(
-                'تأكيد',
+                AppLocalizations.of(context)!.confirm,
                 style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                   color: Colors.green,
                 ),
@@ -231,12 +231,12 @@ class ChatOptionsCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16.r),
           ),
           title: Text(
-            'تأكيد الحذف',
+            AppLocalizations.of(context)!.confirm,
             style: AppTextStyles.font23ChineseBlackBoldLamaSans,
             textAlign: TextAlign.center,
           ),
           content: Text(
-            'هل أنت متأكد من حذف جميع المحادثات؟ لا يمكن التراجع عن هذا الإجراء.',
+            AppLocalizations.of(context)!.confirmDelCont,
             style: AppTextStyles.font16BlackSemiBoldLamaSans,
             textAlign: TextAlign.center,
           ),
@@ -244,7 +244,7 @@ class ChatOptionsCard extends StatelessWidget {
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                'إلغاء',
+                AppLocalizations.of(context)!.cancel,
                 style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                   color: Colors.grey[600],
                 ),
@@ -259,8 +259,8 @@ class ChatOptionsCard extends StatelessWidget {
                 // Show success snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: const Text(
-                      'تم حذف جميع المحادثات بنجاح',
+                    content:  Text(
+                      AppLocalizations.of(context)!.delteDone,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -276,7 +276,7 @@ class ChatOptionsCard extends StatelessWidget {
                 );
               },
               child: Text(
-                'حذف',
+                AppLocalizations.of(context)!.delete,
                 style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                   color: Colors.red,
                 ),

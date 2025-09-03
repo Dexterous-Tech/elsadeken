@@ -57,6 +57,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancel => 'الغاء';
 
   @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get confirmDeletion => 'تأكيد الحذف';
+
+  @override
+  String get confirmDelCont => 'هل أنت متأكد من حذف جميع المحادثات؟ لا يمكن التراجع عن هذا الاجراء.';
+
+  @override
+  String get delteDone => 'تم حذف جميع المحادثات بنجاح';
+
+  @override
+  String get confirmReadCont => 'هل تريد وضع علامة مقروء علي جميع المحادثات';
+
+  @override
+  String get doneReadCont => 'تم وضع علامة مقروء علي جميع المحادثات';
+
+  @override
+  String get modify => 'تعديل';
+
+  @override
+  String get update => 'تحديث';
+
+  @override
   String get home => 'الرئيسية';
 
   @override
@@ -70,6 +94,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get darkMode => 'الوضع الداكن';
+
+  @override
+  String get more => 'عرض المزيد';
 
   @override
   String get location => 'الموقع';
@@ -142,9 +169,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get personalAccount => 'الحساب الشخصي';
-
-  @override
-  String get confirm => 'تأكيد';
 
   @override
   String get areYouSure => 'هل انت متاكد؟';
@@ -259,8 +283,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get markAllAsReadConfirm =>
-      'هل تريد وضع علامة مقروء على جميع الرسائل؟';
+  String get markAllAsReadConfirm => 'هل تريد وضع علامة مقروء على جميع الرسائل؟';
 
   @override
   String get fieldRequired => 'هذا الحقل مطلوب';
@@ -278,7 +301,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get to => 'إلى';
 
   @override
-  String get nationality => 'الجنسية';
+  String get nationality => 'الجنسيه';
 
   @override
   String get country => 'الدولة';
@@ -293,7 +316,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get marriageType => 'نوع الزواج';
 
   @override
-  String get skinColor => 'لون البشرة';
+  String get skinColor => 'لون البشره';
 
   @override
   String get height => 'الطول';
@@ -383,7 +406,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectAllRequiredFields => 'يرجى اختيار جميع الحقول المطلوبة';
 
   @override
-  String get maritalStatus => 'الحالة الإجتماعية';
+  String get maritalStatus => 'الحاله الاجتماعيه';
 
   @override
   String get whatIsMaritalStatus => 'ما هي الحالة الاجتماعية ؟';
@@ -392,7 +415,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get whatIsMarriageType => 'ما هو نوع الزواج ؟';
 
   @override
-  String get single => 'أعزب';
+  String get single => 'عازب';
 
   @override
   String get married => 'متزوج';
@@ -401,7 +424,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get divorced => 'مطلق';
 
   @override
-  String get singleFemale => 'عزباء';
+  String get singleFemale => 'آنسة';
 
   @override
   String get marriedFemale => 'متزوجة';
@@ -419,7 +442,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get firstWife => 'زوجة اولي';
 
   @override
-  String get secondWife => ' زوجة ثانية';
+  String get secondWife => 'زوجة ثانية';
 
   @override
   String get onlyHusband => 'الزوج الوحيد';
@@ -467,7 +490,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileVisitors => 'من زار بياناتي';
 
   @override
-  String get newMembers => 'اعضاء جدد';
+  String get newMembers => 'أعضاء جدد';
 
   @override
   String get premiumMembers => 'الاعضاء المميزين';
@@ -539,15 +562,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get greetingSalam => 'السلام عليكم ورحمة الله';
 
   @override
-  String get freeRegistration =>
-      'لإتاحة الفرصة لجميع الأعضاء، فإن التسجيل مجاني.';
+  String get freeRegistration => 'لإتاحة الفرصة لجميع الأعضاء، فإن التسجيل مجاني.';
 
   @override
   String get oathFormat => 'صيغة القسم:';
 
   @override
-  String get mainOath =>
-      'أقسم بالله العظيم أنني سجلت في هذا التطبيق زواجًا شرعيًا، وأن قصدي جاد وصادق في بناء أسرة قائمة على المودة والرحمة، وفقًا لأحكام الشريعة الإسلامية.';
+  String get mainOath => 'أقسم بالله العظيم أنني سجلت في هذا التطبيق زواجًا شرعيًا، وأن قصدي جاد وصادق في بناء أسرة قائمة على المودة والرحمة، وفقًا لأحكام الشريعة الإسلامية.';
 
   @override
   String get commitmentPart1 => 'وأتعهد بالالتزام الكامل ';
@@ -556,8 +577,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get termsAndConditions => 'بشروط وقوانين';
 
   @override
-  String get commitmentPart2 =>
-      ' هذا التطبيق، وعدم استخدامه لأي غرض يسيء للدين أو الأخلاق أو يخالف ما وضع له من أهداف، والله على ما أقول شهيد.';
+  String get commitmentPart2 => ' هذا التطبيق، وعدم استخدامه لأي غرض يسيء للدين أو الأخلاق أو يخالف ما وضع له من أهداف، والله على ما أقول شهيد.';
 
   @override
   String get oathAcceptance => 'لقد قمت باداء القسم وسالتزم به';
@@ -662,7 +682,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get registeredSince => 'مسجل منذ';
 
   @override
-  String get lastVisitDate => 'تاريخ آخر زيادة';
+  String get lastVisitDate => 'تاريخ اخر زياره';
 
   @override
   String get information => 'المعلومات';
@@ -689,8 +709,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noDataFound => 'No data found for this user';
 
   @override
-  String get failedToLoadUserDetails =>
-      'Failed to load user details. Please try again.';
+  String get failedToLoadUserDetails => 'Failed to load user details. Please try again.';
 
   @override
   String get noDataFoundShort => 'No data found';
@@ -714,8 +733,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsLoadedSuccessfully => 'تم تحميل الإعدادات بنجاح';
 
   @override
-  String get connectionStatusUpdatedSuccessfully =>
-      'تم تحديث حالة الاتصال بنجاح';
+  String get connectionStatusUpdatedSuccessfully => 'تم تحديث حالة الاتصال بنجاح';
 
   @override
   String get onlineNow => 'متصل الآن';
@@ -747,10 +765,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nationalityAndResidence => 'الجنسية و الإقامة';
 
   @override
-  String get heightCm => 'الطول (سم)';
+  String get heightCm => 'الطول(سم)';
 
   @override
-  String get weightKg => 'الوزن (كم)';
+  String get weightKg => 'الوزن(كغ)';
 
   @override
   String get educationalQualification => 'المؤهل التعليمي';
@@ -800,12 +818,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get importantInformation => 'معلومات هامة :';
 
   @override
-  String get imageGuidelines1 =>
-      'يجب ان تكون الصورة محترمة ، ولائقة بطابع التطبيق الإسلامي';
+  String get imageGuidelines1 => 'يجب ان تكون الصورة محترمة ، ولائقة بطابع التطبيق الإسلامي';
 
   @override
-  String get imageGuidelines2 =>
-      'أي إستخدام سيء لهذه الخدمة يؤدي إاى حظر إشتراكك بدون سابق إنذار';
+  String get imageGuidelines2 => 'أي إستخدام سيء لهذه الخدمة يؤدي إاى حظر إشتراكك بدون سابق إنذار';
 
   @override
   String get allowedToViewMyImage => 'المسموح لهم بمشاهدة صورتي';
@@ -891,20 +907,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get year => 'سنة';
-
-  @override
-  String ageText(Object count) {
-    if (count == 1) {
-      return '$count سنة';
-    } else if (count == 2) {
-      return '$count سنتين';
-    } else {
-      return '$count سنوات';
-    }
-  }
-
-  @override
   String get editLoginData => 'تعديل بيانات تسجيل الدخول';
 
   @override
@@ -956,9 +958,385 @@ class AppLocalizationsAr extends AppLocalizations {
   String get confirmUnreport => 'تأكيد إلغاء الإبلاغ';
 
   @override
-  String get areYouSureUnreport =>
-      'هل أنت متأكد من إلغاء الإبلاغ عن هذا المستخدم؟';
+  String get areYouSureUnreport => 'هل أنت متأكد من إلغاء الإبلاغ عن هذا المستخدم؟';
 
   @override
   String get unreportSuccessful => 'تم إلغاء الإبلاغ عن المستخدم بنجاح';
+
+  @override
+  String get year => 'سنة';
+
+  @override
+  String ageText(String count) {
+    String _temp0 = intl.Intl.selectLogic(
+      count,
+      {
+        '1': 'سنة',
+        '2': 'سنتين',
+        'other': 'سنوات',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get whatIsYourJob => 'ما هي وظيفتك ؟';
+
+  @override
+  String get whatIsYourMonthlyIncome => 'ما هو الدخل الشهري ؟';
+
+  @override
+  String get jobRequired => 'يجب إدخال الوظيفة';
+
+  @override
+  String get jobTooLong => 'الوظيفة يجب ألا تتجاوز 50 حرفًا';
+
+  @override
+  String get jobNoLinks => 'الوظيفة لا يمكن أن تحتوي على روابط';
+
+  @override
+  String get retryButton => 'إعادة المحاولة';
+
+  @override
+  String get pleaseWaitWhileLoadingProfile => 'يرجى الانتظار حتى يتم تحميل الملف الشخصي';
+
+  @override
+  String get failedToLoadData => 'فشل تحميل البيانات';
+
+  @override
+  String get enterNumberOfChildren => 'أدخل عدد الأطفال';
+
+  @override
+  String get religiousCommitment => 'الإتزام الديني';
+
+  @override
+  String get prayer => 'الصلاة';
+
+  @override
+  String get smoking => 'التدخين';
+
+  @override
+  String get hijab => 'الحجاب';
+
+  @override
+  String get beard => 'اللحية';
+
+  @override
+  String get editReligiousInfo => 'تعديل المعلومات الدينية';
+
+  @override
+  String get chooseReligiousCommitmentLevel => 'اختر مستوى الالتزام الديني';
+
+  @override
+  String get choosePrayerStatus => 'اختر حالة الصلاة';
+
+  @override
+  String get chooseSmokingStatus => 'اختر حالة التدخين';
+
+  @override
+  String get howOldAreYou => 'كم عمرك ؟';
+
+  @override
+  String get howManyChildren => 'كم عدد الاطفال ؟';
+
+  @override
+  String get howMuchDoYouWeigh => 'كم وزنك (كجم) ؟';
+
+  @override
+  String get howTallAreYou => 'كم طولك (سم) ؟';
+
+  @override
+  String premiumMembersCount(Object count) {
+    return 'عدد الأعضاء المميزين: $count';
+  }
+
+  @override
+  String onlineMembersCount(Object count) {
+    return 'المتواجدون الآن : $count';
+  }
+
+  @override
+  String get whoVisitedMyProfile => 'من زار بياناتي';
+
+  @override
+  String get noResultsCurrently => 'لا توجد نتائج حالياً';
+
+  @override
+  String get minuteAgo => 'منذ دقيقة';
+
+  @override
+  String get twoMinutesAgo => 'منذ دقيقتين';
+
+  @override
+  String minutesAgo(Object count) {
+    return 'منذ $count دقيقة';
+  }
+
+  @override
+  String minutesAgoSingle(Object count) {
+    return 'منذ $count دقيقة';
+  }
+
+  @override
+  String get hourAgo => 'منذ ساعة';
+
+  @override
+  String get twoHoursAgo => 'منذ ساعتين';
+
+  @override
+  String hoursAgo(Object count) {
+    return 'منذ $count ساعات';
+  }
+
+  @override
+  String hoursAgoSingle(Object count) {
+    return 'منذ $count ساعة';
+  }
+
+  @override
+  String get dayAgo => 'منذ يوم';
+
+  @override
+  String get twoDaysAgo => 'منذ يومين';
+
+  @override
+  String daysAgoSingle(Object count) {
+    return 'منذ $count يوم';
+  }
+
+  @override
+  String get filter => 'فلترة';
+
+  @override
+  String resultsCount(Object count) {
+    return 'عدد النتائج: $count';
+  }
+
+  @override
+  String healthStatusesCount(Object count) {
+    return 'عدد الحالات : $count';
+  }
+
+  @override
+  String get noHealthStatuses => 'لا يوجد حالات صحيه';
+
+  @override
+  String filteredByHealthStatus(Object status) {
+    return 'تم الفلترة حسب الحالة الصحية: $status';
+  }
+
+  @override
+  String filteredByCountry(Object country) {
+    return 'تم الفلترة حسب الدولة: $country';
+  }
+
+  @override
+  String get clearFilter => 'إلغاء التصفية';
+
+  @override
+  String get filterByHealthStatus => 'فلتره بواسطه الحاله الصحيه';
+
+  @override
+  String get filterByCountry => 'فلتره بواسطه الدوله';
+
+  @override
+  String get clear => 'مسح';
+
+  @override
+  String get conditions => 'الحالات';
+
+  @override
+  String get editMaritalStatus => 'تعديل الحالة الاجتماعية';
+
+  @override
+  String get chooseMaritalStatus => 'اختر الحالة الاجتماعية';
+
+  @override
+  String get chooseMarriageType => 'اختر نوع الزواج';
+
+  @override
+  String get enterAge => 'أدخل العمر';
+
+  @override
+  String get widowed => 'أرمل';
+
+  @override
+  String get widowedFemale => 'أرملة';
+
+  @override
+  String get noObjectionToPolygamy => 'لا مانع من تعدل الزوجات';
+
+  @override
+  String get notAvailable => 'لا يوجد';
+
+  @override
+  String get errorNoUpdateProfileCubit => 'خطأ: لم يتم توفير UpdateProfileCubit';
+
+  @override
+  String get pleaseConfirmPassword => 'يرجى تأكيد كلمة المرور';
+
+  @override
+  String get passwordsDoNotMatch => 'كلمة المرور وتأكيد كلمة المرور غير متطابقين';
+
+  @override
+  String get passwordOptional => 'كلمة المرور (اختياري)';
+
+  @override
+  String get confirmPasswordOptional => 'تأكيد كلمة المرور (اختياري)';
+
+  @override
+  String get countryCode => 'رمز الدولة';
+
+  @override
+  String get physique => 'البنية الجسدية';
+
+  @override
+  String get usernameMinLength => 'اسم المستخدم يجب أن يكون على الأقل حرفين';
+
+  @override
+  String get usernameMaxLength => 'اسم المستخدم لا يمكن أن يتجاوز 50 حرف';
+
+  @override
+  String get pleaseEnterValidEmail => 'يرجى إدخال بريد إلكتروني صحيح';
+
+  @override
+  String get phoneNumberLength => 'رقم الهاتف يجب أن يكون بين 8 و 15 رقم';
+
+  @override
+  String get passwordMinLength => 'كلمة المرور يجب أن تحتوي على 6 أحرف على الأقل';
+
+  @override
+  String get passwordNumberOrSymbol => 'كلمة المرور يجب أن تحتوي على رقم واحد (0-9) أو رمز على الأقل';
+
+  @override
+  String get passwordCase => 'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير على الأقل';
+
+  @override
+  String get pleaseSelectAllRequiredFields => 'يرجى اختيار جميع الحقول المطلوبة';
+
+  @override
+  String get pleaseEnterValidMonthlyIncome => 'يرجى إدخال رقم صحيح للدخل الشهري';
+
+  @override
+  String get monthlyIncomeMustBePositive => 'الدخل الشهري يجب أن يكون أكبر من صفر';
+
+  @override
+  String get pleaseEnterValidAge => 'يرجى إدخال رقم صحيح للعمر';
+
+  @override
+  String get ageRange => 'العمر يجب ان يتراوح بين 18 - 99';
+
+  @override
+  String get pleaseEnterValidChildrenCount => 'يرجى إدخال رقم صحيح لعدد الأطفال';
+
+  @override
+  String get childrenRange => 'عدد الاطفال يجب ان يتراوح بين 0 - 99';
+
+  @override
+  String get pleaseEnterValidWeight => 'يرجى إدخال رقم صحيح للوزن';
+
+  @override
+  String get weightRange => 'الوزن لا يمكن أن يتجاوز 300 ولا يقل عن 30';
+
+  @override
+  String get pleaseEnterValidHeight => 'يرجى إدخال رقم صحيح للطول';
+
+  @override
+  String get heightRange => 'لا يمكن ان يصل الطول الي اكثر من 250 او اقل من 50';
+
+  @override
+  String get deleteAccountError => 'خطأ في حذف الحساب';
+
+  @override
+  String get accountDeletedSuccessfully => 'تم حذف الحساب بنجاح';
+
+  @override
+  String get doYouWantToDeleteAccount => 'هل تريد حذف حسابك نهائياً؟';
+
+  @override
+  String get cannotUndoThisAction => 'لا يمكن التراجع عن هذا الإجراء';
+
+  @override
+  String get deleteAccount => 'حذف الحساب';
+
+  @override
+  String get lifePartner => 'شريك الحياة';
+
+  @override
+  String get writeAboutLifePartner => 'اكتب عن مواصفات شريك حياتك';
+
+  @override
+  String get aboutMe => 'نبذة عني';
+
+  @override
+  String get writeAboutYourself => 'اكتب عن نفسك';
+
+  @override
+  String get editWrittenContent => 'تعديل المحتوى المكتوب';
+
+  @override
+  String get bodyStructure => 'بنية الجسم';
+
+  @override
+  String get enterWeightInKg => 'أدخل الوزن بالكيلوغرام';
+
+  @override
+  String get enterHeightInCm => 'أدخل الطول بالسنتيمتر';
+
+  @override
+  String get chooseSkinColor => 'اختر لون البشرة';
+
+  @override
+  String get chooseBodyStructure => 'اختر البنية الجسدية';
+
+  @override
+  String get editPhysicalAppearance => 'تعديل المظهر الخارجي';
+
+  @override
+  String get editProfessionalInfo => 'تعديل المعلومات المهنية';
+
+  @override
+  String get chooseEducationalQualification => 'اختر المؤهل التعليمي';
+
+  @override
+  String get chooseFinancialStatus => 'اختر الوضع المادي';
+
+  @override
+  String get enterJob => 'أدخل الوظيفة';
+
+  @override
+  String get enterMonthlyIncome => 'أدخل الدخل الشهري';
+
+  @override
+  String get chooseHealthStatus => 'اختر الحالة الصحية';
+
+  @override
+  String get recordHistory => 'تاريخ السجل';
+
+  @override
+  String get futureSpouseDescription => 'موصفات زوجي المستقبلي';
+
+  @override
+  String get myDescription => 'موصفاتي انا';
+
+  @override
+  String get sinceToday => 'منذ اليوم';
+
+  @override
+  String get oneWeekAgo => 'منذ أسبوع واحد';
+
+  @override
+  String get oneMonthAgo => 'منذ شهر واحد';
+
+  @override
+  String get oneYearAgo => 'منذ سنة واحدة';
+
+  @override
+  String get oneHourAgo => 'منذ ساعة واحدة';
+
+  @override
+  String get centimeters => 'سنتي';
+
+  @override
+  String get kilograms => 'كيلو';
 }

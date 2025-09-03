@@ -950,7 +950,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               );
             } else {
               print('[ChatSettingsScreen] Unknown state: $currentState');
-              return const SizedBox(
+              return  SizedBox(
                 height: 200,
                 child: Center(
                   child: Column(
@@ -959,10 +959,10 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     children: [
                       Icon(Icons.help_outline, color: Colors.orange, size: 48),
                       SizedBox(height: 16),
-                      Text('جاري إعداد القوائم...'),
+                      Text(AppLocalizations.of(context)!.settingUpLists),
                       SizedBox(height: 8),
                       Text(
-                        'يرجى الانتظار قليلاً',
+                        AppLocalizations.of(context)!.pleaseWaitMoment,
                         style: TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                     ],

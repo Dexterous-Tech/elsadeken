@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/delete/delete_dialog.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class DeleteProfile extends StatelessWidget {
         deleteProfileDialog(context);
       },
       child: Row(
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         children: [
           Container(
             width: 50.w,

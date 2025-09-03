@@ -1,4 +1,6 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/di/injection_container.dart';
@@ -20,7 +22,7 @@ class PremiumMembersView extends StatefulWidget {
 }
 
 class _PremiumMembersViewState extends State<PremiumMembersView> {
-  String _activeFilter = 'الكل';
+  String _activeFilter = 'all';
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
 
@@ -91,8 +93,8 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           automaticallyImplyLeading: false,
-          title: const Text(
-            'أعضاء مميزين',
+          title: Text(
+            AppLocalizations.of(context)!.premiumMembers,
             style: TextStyle(
               color: Colors.black,
               fontSize: 20,
@@ -129,12 +131,14 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(24.0),
+                      padding: const EdgeInsetsDirectional.all(24.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        textDirection: LocalizationService.instance.textDirection,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'الأعضاء المميزون',
+                            AppLocalizations.of(context)!.premiumMembers,
                             style: TextStyle(fontSize: 18),
                           ),
                           SizedBox(width: 20),
@@ -150,7 +154,7 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                             child: Row(
                               children: [
                                 Text(
-                                  'فلترة',
+                                  AppLocalizations.of(context)!.filter,
                                   style: TextStyle(
                                       color: Color(0xFFD4AF37), fontSize: 18),
                                 ),
@@ -174,23 +178,21 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           GenderFilter(
-                            text: 'الكل',
-                            isActive: _activeFilter == 'الكل',
-                            onTap: () => setState(() => _activeFilter = 'الكل'),
+                            text: AppLocalizations.of(context)!.all,
+                            isActive: _activeFilter == 'all',
+                            onTap: () => setState(() => _activeFilter = 'all'),
                           ),
                           const SizedBox(width: 6),
                           GenderFilter(
-                            text: 'الذكور',
-                            isActive: _activeFilter == 'الذكور',
-                            onTap: () =>
-                                setState(() => _activeFilter = 'الذكور'),
+                            text: AppLocalizations.of(context)!.males,
+                            isActive: _activeFilter == 'males',
+                            onTap: () => setState(() => _activeFilter = 'males'),
                           ),
                           const SizedBox(width: 6),
                           GenderFilter(
-                            text: 'الإناث',
-                            isActive: _activeFilter == 'الإناث',
-                            onTap: () =>
-                                setState(() => _activeFilter = 'الإناث'),
+                            text: AppLocalizations.of(context)!.females,
+                            isActive: _activeFilter == 'females',
+                            onTap: () => setState(() => _activeFilter = 'females'),
                           ),
                         ],
                       ),
@@ -239,7 +241,7 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                                       horizontal: 20, vertical: 12),
                                   color: Colors.white,
                                   child: Text(
-                                    'عدد الأعضاء المميزين: ${items.length}',
+                                    AppLocalizations.of(context)!.premiumMembersCount(items.length),
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       color: Color(0xFFD4AF37),

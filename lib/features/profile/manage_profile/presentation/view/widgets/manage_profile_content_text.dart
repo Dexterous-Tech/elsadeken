@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -42,7 +43,7 @@ class ManageProfileContentText extends StatelessWidget {
     }
 
     return Text(
-      text.isEmpty ? 'غير محدد' : text,
+      text.isEmpty ? AppLocalizations.of(context)!.notSpecified : text,
       style: textStyle ??
           AppTextStyles.font18PhilippineBronzeRegularLamaSans.copyWith(
             color: textColor,

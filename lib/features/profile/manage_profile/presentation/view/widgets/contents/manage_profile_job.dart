@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
@@ -10,6 +11,7 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/view/widg
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class ManageProfileJob extends StatelessWidget {
   const ManageProfileJob({
@@ -24,10 +26,10 @@ class ManageProfileJob extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         ManageProfileContentItem(
-          title: 'المؤهل التعليمي ',
+          title: AppLocalizations.of(context)!.educationalQualification,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.qualification ?? '',
             isLoading: isLoading,
@@ -35,7 +37,7 @@ class ManageProfileJob extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'الوضع المادي',
+          title: AppLocalizations.of(context)!.financialStatus,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.financialSituation ?? '',
             isLoading: isLoading,
@@ -43,7 +45,7 @@ class ManageProfileJob extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'الوظيفة',
+          title: AppLocalizations.of(context)!.job,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.job ?? '',
             isLoading: isLoading,
@@ -51,7 +53,7 @@ class ManageProfileJob extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'الدخل الشهري',
+          title: AppLocalizations.of(context)!.monthlyIncome,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.income?.toString() ?? '',
             isLoading: isLoading,
@@ -59,7 +61,7 @@ class ManageProfileJob extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'الحالة الصحية',
+          title: AppLocalizations.of(context)!.healthStatus,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.healthCondition ?? '',
             isLoading: isLoading,
@@ -78,42 +80,42 @@ class ManageProfileJob extends StatelessWidget {
     final signUpListsCubit = context.read<SignUpListsCubit>();
 
     final dialogData = ManageProfileDialogData(
-      title: 'تعديل المعلومات المهنية',
+      title: AppLocalizations.of(context)!.editProfessionalInfo,
       cubit: updateProfileCubit,
       signUpListsCubit: signUpListsCubit,
       dialogType: ManageProfileDialogType.job,
       fields: [
         ManageProfileField(
-          label: 'المؤهل التعليمي',
-          hint: 'اختر المؤهل التعليمي',
+          label: AppLocalizations.of(context)!.educationalQualification,
+          hint: AppLocalizations.of(context)!.chooseEducationalQualification,
           currentValue: profileData?.attribute?.qualification ?? '',
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.qualification,
         ),
         ManageProfileField(
-          label: 'الوضع المادي',
-          hint: 'اختر الوضع المادي',
+          label: AppLocalizations.of(context)!.financialStatus,
+          hint: AppLocalizations.of(context)!.chooseFinancialStatus,
           currentValue: profileData?.attribute?.financialSituation ?? '',
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.financialSituation,
         ),
         ManageProfileField(
-          label: 'الوظيفة',
-          hint: 'أدخل الوظيفة',
+          label: AppLocalizations.of(context)!.job,
+          hint: AppLocalizations.of(context)!.enterJob,
           currentValue: profileData?.attribute?.job ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.text,
         ),
         ManageProfileField(
-          label: 'الدخل الشهري',
-          hint: 'أدخل الدخل الشهري',
+          label: AppLocalizations.of(context)!.monthlyIncome,
+          hint: AppLocalizations.of(context)!.enterMonthlyIncome,
           currentValue: profileData?.attribute?.income?.toString() ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.number,
         ),
         ManageProfileField(
-          label: 'الحالة الصحية',
-          hint: 'اختر الحالة الصحية',
+          label: AppLocalizations.of(context)!.healthStatus,
+          hint: AppLocalizations.of(context)!.chooseHealthStatus,
           currentValue: profileData?.attribute?.healthCondition ?? '',
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.healthCondition,

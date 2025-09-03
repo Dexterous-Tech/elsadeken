@@ -17,9 +17,9 @@ class GenderFilter extends StatelessWidget {
 return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        width: 100,
+        width: 120,
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+        padding: const EdgeInsetsDirectional.symmetric(horizontal: 28, vertical: 12),
         decoration: BoxDecoration(
           color: isActive 
               ? const Color(0xFFE8A5A5)  

@@ -1,9 +1,11 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/members/Health_statuses/presentation/view/widgets/filter_buttom_sheet.dart';
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:elsadeken/features/profile/widgets/container_item/container_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/di/injection_container.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import 'package:elsadeken/features/members/data/repositories/members_repository.dart';
 import 'package:elsadeken/features/members/logic/cubit/members_cubit.dart';
@@ -21,7 +23,7 @@ class HealthStatusesView extends StatefulWidget {
 }
 
 class _HealthStatusesViewState extends State<HealthStatusesView> {
-  String _activeFilter = 'الكل';
+  String _activeFilter = 'all'; // Will be localized in UI
   int? _selectedHealthId;
   String _selectedHealthName = '';
   int? _selectedCountryId;
@@ -87,12 +89,12 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
       _selectedCountryId = countryData?['id'];
       _selectedCountryName = countryData?['name'] ?? '';
 
-      // Clear filters if "الكل" is selected
-      if (healthData?['name'] == 'الكل') {
+      // Clear filters if "all" is selected
+      if (healthData?['name'] == 'all') {
         _selectedHealthId = null;
         _selectedHealthName = '';
       }
-      if (countryData?['name'] == 'الكل') {
+      if (countryData?['name'] == 'all') {
         _selectedCountryId = null;
         _selectedCountryName = '';
       }
@@ -118,8 +120,8 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           automaticallyImplyLeading: false,
-          title: const Text(
-            'الحالات الصحية',
+          title: Text(
+            AppLocalizations.of(context)!.healthStatuses,
             style: TextStyle(
               color: Colors.black,
               fontSize: 20,
@@ -156,12 +158,14 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(24.0),
+                      padding: const EdgeInsetsDirectional.all(24.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        textDirection: LocalizationService.instance.textDirection,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'الحالات',
+                            AppLocalizations.of(context)!.conditions,
                             style: TextStyle(fontSize: 18),
                           ),
                           SizedBox(width: 20),
@@ -182,7 +186,7 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                             child: Row(
                               children: [
                                 Text(
-                                  'فلترة',
+                                  AppLocalizations.of(context)!.filter,
                                   style: TextStyle(
                                       color: Color(0xFFD4AF37), fontSize: 18),
                                 ),
@@ -204,50 +208,52 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
+                        textDirection: LocalizationService.instance.textDirection,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           GenderFilter(
-                            text: 'الكل',
-                            isActive: _activeFilter == 'الكل',
-                            onTap: () => setState(() => _activeFilter = 'الكل'),
+                            text: AppLocalizations.of(context)!.all,
+                            isActive: _activeFilter == 'all',
+                            onTap: () => setState(() => _activeFilter = 'all'),
                           ),
                           const SizedBox(width: 6),
                           GenderFilter(
-                            text: 'الذكور',
-                            isActive: _activeFilter == 'الذكور',
+                            text: AppLocalizations.of(context)!.males,
+                            isActive: _activeFilter == 'males',
                             onTap: () =>
-                                setState(() => _activeFilter = 'الذكور'),
+                                setState(() => _activeFilter = 'males'),
                           ),
                           const SizedBox(width: 6),
                           GenderFilter(
-                            text: 'الإناث',
-                            isActive: _activeFilter == 'الإناث',
+                            text: AppLocalizations.of(context)!.females,
+                            isActive: _activeFilter == 'females',
                             onTap: () =>
-                                setState(() => _activeFilter = 'الإناث'),
+                                setState(() => _activeFilter = 'females'),
                           ),
                         ],
                       ),
                     ),
                     if (_selectedHealthName.isNotEmpty &&
-                            _selectedHealthName != 'الكل' ||
+                            _selectedHealthName != 'all' ||
                         _selectedCountryName.isNotEmpty &&
-                            _selectedCountryName != 'الكل')
+                            _selectedCountryName != 'all')
                       Padding(
-                        padding: const EdgeInsets.symmetric(
+                        padding: const EdgeInsetsDirectional.symmetric(
                             horizontal: 24, vertical: 8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if (_selectedHealthName.isNotEmpty &&
-                                _selectedHealthName != 'الكل')
+                                _selectedHealthName != 'all')
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
+                                padding: const EdgeInsetsDirectional.only(bottom: 8),
                                 child: Row(
                                   children: [
                                     Icon(Icons.health_and_safety,
                                         color: Color(0xFFD4AF37), size: 16),
                                     SizedBox(width: 8),
                                     Text(
-                                      'تم الفلترة حسب الحالة الصحية: $_selectedHealthName',
+                                      AppLocalizations.of(context)!.filteredByHealthStatus(_selectedHealthName),
                                       style: TextStyle(
                                         color: Color(0xFFD4AF37),
                                         fontSize: 14,
@@ -258,14 +264,14 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                 ),
                               ),
                             if (_selectedCountryName.isNotEmpty &&
-                                _selectedCountryName != 'الكل')
+                                _selectedCountryName != 'all')
                               Row(
                                 children: [
                                   Icon(Icons.location_on,
                                       color: Color(0xFFD4AF37), size: 16),
                                   SizedBox(width: 8),
                                   Text(
-                                    'تم الفلترة حسب الدولة: $_selectedCountryName',
+                                    AppLocalizations.of(context)!.filteredByCountry(_selectedCountryName),
                                     style: TextStyle(
                                       color: Color(0xFFD4AF37),
                                       fontSize: 14,
@@ -287,7 +293,7 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                     });
                                   },
                                   child: Text(
-                                    'إلغاء التصفية',
+                                    AppLocalizations.of(context)!.clearFilter,
                                     style: TextStyle(color: Colors.red),
                                   ),
                                 ),
@@ -320,10 +326,10 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                           );
                         }
                         if (state is MembersListEmpty<UsersDataModel>) {
-                          return const Expanded(
+                          return Expanded(
                             child: Center(
                               child: Text(
-                                'لا يوجد حالات صحيه',
+                                AppLocalizations.of(context)!.noHealthStatuses,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -340,7 +346,7 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                       horizontal: 20, vertical: 12),
                                   color: Colors.white,
                                   child: Text(
-                                    'عدد الحالات : ${items.length}',
+                                    AppLocalizations.of(context)!.healthStatusesCount(items.length),
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       color: Color(0xFFD4AF37),
@@ -371,8 +377,8 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                                     strokeWidth: 2,
                                                   ),
                                                   const SizedBox(height: 8),
-                                                  const Text(
-                                                    'جاري تحميل المزيد...',
+                                                  Text(
+                                                    AppLocalizations.of(context)!.loadingMore,
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                       fontSize: 12,

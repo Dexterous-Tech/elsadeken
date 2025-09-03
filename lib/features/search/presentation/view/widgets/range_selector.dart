@@ -1,5 +1,6 @@
 // File: lib/presentation/widgets/range_selector.dart
 import 'package:flutter/material.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../core/theme/app_color.dart';
 
@@ -50,7 +51,7 @@ class RangeSelector extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 8),
-              Text('إلى', style: TextStyle(fontSize: 12)),
+              Text(AppLocalizations.of(context)!.to, style: TextStyle(fontSize: 12)),
               SizedBox(width: 8),
               Expanded(
                 child: Container(
