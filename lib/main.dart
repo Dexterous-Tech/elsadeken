@@ -24,6 +24,9 @@ void main() async {
   try {
     // Initialize Firebase and notification services
     await FirebaseNotificationService.instance.initialize();
+
+    // Check notification permissions for debugging
+    await FirebaseNotificationService.instance.checkNotificationPermissions();
   } catch (e) {
     log("Error initializing Firebase: $e");
     // Continue without Firebase if it fails

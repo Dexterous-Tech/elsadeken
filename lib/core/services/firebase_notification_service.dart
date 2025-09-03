@@ -101,21 +101,21 @@ class FirebaseNotificationService {
   static void _triggerBackgroundChatRefresh(RemoteMessage message) {
     try {
       log("🔄 Triggering background chat refresh from Firebase notification: ${message.notification?.title}");
-      
+
       // Check if this is a chat-related notification
-      final notificationTitle = message.notification?.title?.toLowerCase() ?? '';
+      final notificationTitle =
+          message.notification?.title?.toLowerCase() ?? '';
       final notificationBody = message.notification?.body?.toLowerCase() ?? '';
-      
+
       // Check if it's a chat message notification
-      if (notificationTitle.contains('رساله') || 
+      if (notificationTitle.contains('رساله') ||
           notificationTitle.contains('message') ||
           notificationBody.contains('رساله') ||
           notificationBody.contains('message') ||
           message.data.containsKey('chat_id') ||
           message.data.containsKey('message_id')) {
-        
         log("💬 Background chat notification detected, will refresh when app becomes active");
-        
+
         // Store a flag that the app should refresh chats when it becomes active
         // This will be handled by the main app when it resumes
         _storeChatRefreshFlag();
@@ -131,7 +131,8 @@ class FirebaseNotificationService {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('chat_refresh_needed', true);
-      await prefs.setString('chat_refresh_timestamp', DateTime.now().toIso8601String());
+      await prefs.setString(
+          'chat_refresh_timestamp', DateTime.now().toIso8601String());
       log("✅ Chat refresh flag stored for when app becomes active");
     } catch (e) {
       log("❌ Error storing chat refresh flag: $e");
@@ -324,24 +325,24 @@ class FirebaseNotificationService {
   void _triggerChatRefresh(RemoteMessage message) {
     try {
       log("🔄 Triggering chat refresh from Firebase notification: ${message.notification?.title}");
-      
+
       // Check if this is a chat-related notification
-      final notificationTitle = message.notification?.title?.toLowerCase() ?? '';
+      final notificationTitle =
+          message.notification?.title?.toLowerCase() ?? '';
       final notificationBody = message.notification?.body?.toLowerCase() ?? '';
-      
+
       // Check if it's a chat message notification
-      if (notificationTitle.contains('رساله') || 
+      if (notificationTitle.contains('رساله') ||
           notificationTitle.contains('message') ||
           notificationBody.contains('رساله') ||
           notificationBody.contains('message') ||
           message.data.containsKey('chat_id') ||
           message.data.containsKey('message_id')) {
-        
         log("💬 Chat notification detected, refreshing chat list and conversations");
-        
+
         // Trigger chat list refresh through the message service
         ChatMessageService.instance.triggerFirebaseChatRefresh();
-        
+
         // You can also add specific chat updates if you have chat_id in the data
         if (message.data.containsKey('chat_id')) {
           final chatId = int.tryParse(message.data['chat_id'].toString());
@@ -487,16 +488,16 @@ class FirebaseNotificationService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final needsRefresh = prefs.getBool('chat_refresh_needed') ?? false;
-      
+
       if (needsRefresh) {
         log("🔄 Chat refresh needed, clearing flag and triggering refresh");
         await prefs.setBool('chat_refresh_needed', false);
-        
+
         // Trigger chat refresh
         ChatMessageService.instance.triggerFirebaseChatRefresh();
         return true;
       }
-      
+
       return false;
     } catch (e) {
       log("❌ Error checking chat refresh flag: $e");
@@ -516,6 +517,39 @@ class FirebaseNotificationService {
     } catch (e) {
       log("❌ Error getting chat refresh timestamp: $e");
       return null;
+    }
+  }
+
+  /// Check notification permissions and settings for debugging
+  Future<void> checkNotificationPermissions() async {
+    try {
+      if (_messaging == null) {
+        log("❌ Firebase messaging not initialized");
+        return;
+      }
+
+      final settings = await _messaging!.getNotificationSettings();
+      log('📱 Notification settings: ${settings.authorizationStatus}');
+      log('📱 Alert: ${settings.alert}');
+      log('📱 Badge: ${settings.badge}');
+      log('📱 Sound: ${settings.sound}');
+      log('📱 Critical Alert: ${settings.criticalAlert}');
+      log('📱 Announcement: ${settings.announcement}');
+      log('📱 Car Play: ${settings.carPlay}');
+      log('📱 Lock Screen: ${settings.lockScreen}');
+      log('📱 Notification Center: ${settings.notificationCenter}');
+
+      // Get FCM token
+      final token = await _messaging!.getToken();
+      log('🔑 FCM Token: $token');
+
+      // Check local notification settings
+      final prefs = await SharedPreferences.getInstance();
+      final notificationsEnabled =
+          prefs.getBool('notifications_enabled') ?? true;
+      log('⚙️ Local notifications enabled: $notificationsEnabled');
+    } catch (e) {
+      log("❌ Error checking notification permissions: $e");
     }
   }
 }
