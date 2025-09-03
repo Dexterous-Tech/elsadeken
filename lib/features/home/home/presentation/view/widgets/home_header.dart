@@ -5,6 +5,7 @@ import 'package:elsadeken/core/widgets/custom_image_network.dart';
 import 'package:elsadeken/features/home/home/presentation/view/widgets/home_notification.dart';
 import 'package:elsadeken/features/home/notification/notification/presentation/manager/notification_count_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,7 +29,7 @@ class _HomeHeaderState extends State<HomeHeader> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         Expanded(
           child: BlocBuilder<ManageProfileCubit, ManageProfileState>(
@@ -41,7 +42,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                 final image = profileData?.image ?? '';
 
                 return Row(
-                  textDirection: TextDirection.rtl,
+                  textDirection: LocalizationService.instance.textDirection,
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(100),
@@ -56,17 +57,17 @@ class _HomeHeaderState extends State<HomeHeader> {
                     SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             name,
                             style: AppTextStyles.font16BlackSemiBoldLamaSans,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            textDirection: TextDirection.rtl,
+                            textDirection: LocalizationService.instance.textDirection,
                           ),
                           Row(
-                            textDirection: TextDirection.rtl,
+                            textDirection: LocalizationService.instance.textDirection,
                             children: [
                               Image.asset(
                                 'assets/images/home/home_location.png',
@@ -74,22 +75,21 @@ class _HomeHeaderState extends State<HomeHeader> {
                                 height: 18.h,
                               ),
                               SizedBox(width: 10.w),
-                              Expanded(
-                                child: Text(
-                                  '$country, $city',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  textDirection: TextDirection.rtl,
-                                  textAlign: TextAlign.right,
-                                  style: AppTextStyles
-                                      .font15BistreSemiBoldLamaSans
-                                      .copyWith(
-                                    color:
-                                        AppColors.black.withValues(alpha: 0.87),
-                                    fontWeight: FontWeightHelper.medium,
-                                  ),
+                              Text(
+                                '$country, $city',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textDirection: LocalizationService.instance.textDirection,
+                                textAlign: TextAlign.right,
+                                style: AppTextStyles
+                                    .font15BistreSemiBoldLamaSans
+                                    .copyWith(
+                                  color:
+                                      AppColors.black.withValues(alpha: 0.87),
+                                  fontWeight: FontWeightHelper.medium,
                                 ),
                               ),
+
                             ],
                           ),
                         ],
@@ -99,7 +99,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                 );
               } else if (state is ManageProfileFailure) {
                 return Row(
-                  textDirection: TextDirection.rtl,
+                  textDirection: LocalizationService.instance.textDirection,
                   children: [
                     CircleAvatar(
                       radius: 32.r,
@@ -123,7 +123,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Row(
-                            textDirection: TextDirection.rtl,
+                            textDirection: LocalizationService.instance.textDirection,
                             children: [
                               Image.asset(
                                 'assets/images/home/home_location.png',
@@ -154,7 +154,7 @@ class _HomeHeaderState extends State<HomeHeader> {
               } else {
                 // Loading state
                 return Row(
-                  textDirection: TextDirection.rtl,
+                  textDirection: LocalizationService.instance.textDirection,
                   children: [
                     CircleAvatar(
                       radius: 32.r,
@@ -175,7 +175,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                           ),
                           SizedBox(height: 8.h),
                           Row(
-                            textDirection: TextDirection.rtl,
+                            textDirection: LocalizationService.instance.textDirection,
                             children: [
                               Image.asset(
                                 'assets/images/home/home_location.png',

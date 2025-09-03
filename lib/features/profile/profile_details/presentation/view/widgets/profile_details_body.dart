@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../../core/routes/app_routes.dart';
 import '../../../../../chat/data/models/chat_room_model.dart';
@@ -83,7 +84,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                   child: CustomContainer(
                     img: AppImages.share,
                     color: AppColors.lightBlue.withValues(alpha: 0.07),
-                    text: 'مشاركة',
+                    text: AppLocalizations.of(context)!.share,
                     onTap: () {
                       context
                           .read<ProfileDetailsCubit>()
@@ -108,7 +109,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                           context: context,
                           message:
                               state.profileDetailsActionResponseModel.message ??
-                                  'تم الاعجاب',
+                                  AppLocalizations.of(context)!.liked,
                           onPressed: () {
                             context.pop();
                             context.pop();
@@ -118,7 +119,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                   child: CustomContainer(
                     img: AppImages.like,
                     color: AppColors.lightPink.withValues(alpha: 0.07),
-                    text: 'اهتمام',
+                    text: AppLocalizations.of(context)!.interest,
                     onTap: () {
                       context
                           .read<ProfileDetailsCubit>()
@@ -143,7 +144,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                           context: context,
                           message:
                               state.profileDetailsActionResponseModel.message ??
-                                  'تم التجاهل',
+                                  AppLocalizations.of(context)!.ignored,
                           onPressed: () {
                             context.pop();
                             context.pop();
@@ -153,7 +154,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                   child: CustomContainer(
                     img: AppImages.thumbDown,
                     color: AppColors.lightPink.withValues(alpha: 0.07),
-                    text: 'تجاهل',
+                    text: AppLocalizations.of(context)!.ignore,
                     onTap: () {
                       context
                           .read<ProfileDetailsCubit>()
@@ -277,7 +278,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                           context: context,
                           message:
                               state.profileDetailsActionResponseModel.message ??
-                                  'تم الابلاغ',
+                                  AppLocalizations.of(context)!.reported,
                           onPressed: () {
                             context.pop();
                             context.pop();
@@ -287,7 +288,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                   child: CustomContainer(
                     img: AppImages.block,
                     color: AppColors.lightRed.withValues(alpha: 0.07),
-                    text: 'ابلاغ',
+                    text: AppLocalizations.of(context)!.report,
                     onTap: () {
                       context
                           .read<ProfileDetailsCubit>()
@@ -435,7 +436,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                       onPressed: () {
                         context.pop();
                       },
-                      textButton: 'استمر',
+                      textButton: AppLocalizations.of(context)!.continueButton,
                     ),
                   ),
                 ],

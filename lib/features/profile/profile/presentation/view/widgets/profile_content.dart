@@ -1,6 +1,7 @@
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -13,9 +14,12 @@ import 'package:elsadeken/features/profile/profile/presentation/view/widgets/pro
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
 
+
 import '../../../../../../core/di/injection_container.dart';
+import '../../../../../../core/widgets/language_toggle.dart';
 
 class ProfileContent extends StatefulWidget {
   const ProfileContent({super.key});
@@ -164,14 +168,14 @@ class _ProfileContentState extends State<ProfileContent> {
                             personalInformation = [
                           ProfileContentItemModel(
                             image: AppImages.myProfileIcon,
-                            title: 'ادارة حسابي',
+                            title: AppLocalizations.of(context)!.manageAccount,
                             onPressed: () {
                               context.pushNamed(AppRoutes.manageProfileScreen);
                             },
                           ),
                           ProfileContentItemModel(
                             image: AppImages.interestsListIcon,
-                            title: 'قائمه الاهتمام',
+                            title: AppLocalizations.of(context)!.interestsList,
                             onPressed: () {
                               context.pushNamed(
                                   AppRoutes.profileInterestsListScreen);
@@ -179,7 +183,7 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                           ProfileContentItemModel(
                             image: AppImages.ignoringListIcon,
-                            title: 'قائمه التجاهل',
+                            title: AppLocalizations.of(context)!.ignoringList,
                             onPressed: () {
                               context.pushNamed(
                                   AppRoutes.profileMyIgnoringListScreen);
@@ -187,7 +191,7 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                           ProfileContentItemModel(
                             image: AppImages.interestingMeIcon,
-                            title: 'من يهتم بي',
+                            title: AppLocalizations.of(context)!.whoInterestsMe,
                             onPressed: () {
                               context.pushNamed(
                                   AppRoutes.profileMyInterestingListScreen);
@@ -195,14 +199,14 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                           ProfileContentItemModel(
                             image: AppImages.searchAdvancedIcon,
-                            title: 'بحث متقدم',
+                            title: AppLocalizations.of(context)!.advancedSearch,
                             onPressed: () {
                               context.pushNamed(AppRoutes.searchScreen);
                             },
                           ),
                           ProfileContentItemModel(
                             image: AppImages.membersProfileImagesIcon,
-                            title: 'صور الاعضاء',
+                            title: AppLocalizations.of(context)!.membersPhotos,
                             onPressed: () {
                               context.pushNamed(
                                   AppRoutes.profileMembersProfileScreen);
@@ -210,7 +214,7 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                           ProfileContentItemModel(
                             image: AppImages.excellencePackageIcon,
-                            title: 'باقه التميز',
+                            title: AppLocalizations.of(context)!.excellencePackage,
                             onPressed: () {
                               context.pushNamed(
                                   AppRoutes.profileExcellencePackageScreen);
@@ -218,14 +222,14 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                           ProfileContentItemModel(
                             image: AppImages.successStoryIcon,
-                            title: 'قصص نجاح',
+                            title: AppLocalizations.of(context)!.successStories,
                             onPressed: () {
                               context.pushNamed(AppRoutes.successStoriesScreen);
                             },
                           ),
                           ProfileContentItemModel(
                             image: AppImages.elsadekenNotesIcon,
-                            title: 'مدونه الصادقين والصادقات',
+                            title: AppLocalizations.of(context)!.blog,
                             onPressed: () {
                               context.pushNamed(AppRoutes.blogScreen);
                             },
@@ -235,19 +239,19 @@ class _ProfileContentState extends State<ProfileContent> {
                         final List<ProfileContentItemModel> appSettings = [
                           ProfileContentItemModel(
                             image: AppImages.aboutUsIcon,
-                            title: 'نبذه عننا',
+                            title: AppLocalizations.of(context)!.aboutUs,
                             onPressed: () {
                               context.pushNamed(AppRoutes.profileAboutUsScreen);
                             },
                           ),
                           ProfileContentItemModel(
                             image: AppImages.appShareIcon,
-                            title: 'مشاركه التطبيق',
+                            title: AppLocalizations.of(context)!.shareApp,
                             onPressed: () {},
                           ),
                           ProfileContentItemModel(
                             image: AppImages.contactUsIcon,
-                            title: 'اتصل بنا',
+                            title: AppLocalizations.of(context)!.contactUs,
                             onPressed: () {
                               context
                                   .pushNamed(AppRoutes.profileContactUsScreen);
@@ -279,10 +283,10 @@ class _ProfileContentState extends State<ProfileContent> {
                                   child: IntrinsicHeight(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.end,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'معلومات شخصية',
+                                          AppLocalizations.of(context)!.personalInfo,
                                           style: AppTextStyles
                                               .font12GrayMediumLamaSans,
                                         ),
@@ -291,7 +295,8 @@ class _ProfileContentState extends State<ProfileContent> {
                                             items: personalInformation),
                                         verticalSpace(24),
                                         Text(
-                                          'إعدادات التطبيق',
+                                          textDirection: LocalizationService.instance.textDirection,
+                                          AppLocalizations.of(context)!.appSettings,
                                           style: AppTextStyles
                                               .font12GrayMediumLamaSans,
                                         ),
@@ -300,7 +305,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                         // Notification item
                                         ProfileContentItem(
                                           image: AppImages.notificationIcon,
-                                          title: 'الاشعارات',
+                                          title: AppLocalizations.of(context)!.notifications,
                                           onPressed: () {
                                             // Navigate to notification screen
                                             // context.pushNamed(AppRoutes.notificationScreen);
@@ -308,17 +313,23 @@ class _ProfileContentState extends State<ProfileContent> {
                                           leading: _buildNotificationToggle(
                                               notificationState),
                                         ),
+
                                         verticalSpace(16),
 
                                         ...listGenerationContentItems(
                                             items: appSettings),
+                                        verticalSpace(15),
+                                        // Language Toggle Section
+                                        LanguageToggle(),
                                         verticalSpace(21),
+
                                         GestureDetector(
                                           onTap: () {
                                             deleteImageDialog(context);
                                           },
                                           child: Row(
-                                            textDirection: TextDirection.rtl,
+                                            textDirection: LocalizationService.instance.textDirection,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
                                               Icon(
                                                 Icons.delete_forever,
@@ -327,7 +338,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                               ),
                                               horizontalSpace(16),
                                               Text(
-                                                'مسح صورتي',
+                                                AppLocalizations.of(context)!.deleteMyPhoto,
                                                 style: AppTextStyles
                                                     .font14CharlestonGreenMediumLamaSans
                                                     .copyWith(
@@ -343,8 +354,8 @@ class _ProfileContentState extends State<ProfileContent> {
                                             logoutDialog(context);
                                           },
                                           child: Row(
-                                            textDirection: TextDirection.rtl,
-                                            children: [
+                                            textDirection: LocalizationService.instance.textDirection,
+                                            mainAxisAlignment: MainAxisAlignment.start,                                            children: [
                                               Image.asset(
                                                 AppImages.logoutIcon,
                                                 width: 44.w,
@@ -352,7 +363,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                               ),
                                               horizontalSpace(16),
                                               Text(
-                                                'تسجيل الخروج',
+                                                AppLocalizations.of(context)!.logout,
                                                 style: AppTextStyles
                                                     .font14CharlestonGreenMediumLamaSans
                                                     .copyWith(
@@ -381,6 +392,34 @@ class _ProfileContentState extends State<ProfileContent> {
       ),
     );
   }
+
+  // Widget _buildLanguageIndicator() {
+  //   return ListenableBuilder(
+  //     listenable: LocalizationService.instance,
+  //     builder: (context, child) {
+  //       final isArabic = LocalizationHelper.isArabic;
+  //       return Container(
+  //         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+  //         decoration: BoxDecoration(
+  //           color: isArabic ? Colors.green[100] : Colors.blue[100],
+  //           borderRadius: BorderRadius.circular(4),
+  //           border: Border.all(
+  //             color: isArabic ? Colors.green[300]! : Colors.blue[300]!,
+  //             width: 1,
+  //           ),
+  //         ),
+  //         child: Text(
+  //           isArabic ? 'عربي' : 'EN',
+  //           style: TextStyle(
+  //             fontSize: 10,
+  //             fontWeight: FontWeight.bold,
+  //             color: isArabic ? Colors.green[700] : Colors.blue[700],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildNotificationToggle(NotificationSettingsProfileState state) {
     bool isEnabled = false; // Default to false
@@ -436,6 +475,8 @@ List<Widget> listGenerationContentItems({
 }) {
   return List.generate(items.length, (index) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         ProfileContentItem(
           image: items[index].image,

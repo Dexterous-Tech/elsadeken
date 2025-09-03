@@ -12,6 +12,7 @@ import 'package:elsadeken/features/profile/my_image/presentation/manager/my_imag
 import 'package:elsadeken/features/profile/widgets/container_success_way.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -96,10 +97,10 @@ class _MyImageBodyState extends State<MyImageBody> {
           crossAxisAlignment: CrossAxisAlignment.start,
           textDirection: TextDirection.rtl,
           children: [
-            ProfileHeader(title: 'صورتي'),
+            ProfileHeader(title: AppLocalizations.of(context)!.myImage),
             verticalSpace(30),
             Text(
-              'معلومات هامة :',
+              AppLocalizations.of(context)!.importantInformation,
               textDirection: TextDirection.rtl,
               style: AppTextStyles.font20LightOrangeMediumLamaSans.copyWith(
                 color: Color(0xffF9F9F9),
@@ -107,9 +108,9 @@ class _MyImageBodyState extends State<MyImageBody> {
             ),
             verticalSpace(30),
             informationItem(
-                'يجب ان تكون الصورة محترمة ، ولائقة بطابع التطبيق الإسلامي'),
+                AppLocalizations.of(context)!.imageGuidelines1),
             informationItem(
-                'أي إستخدام سيء لهذه الخدمة يؤدي إاى حظر إشتراكك بدون سابق إنذار'),
+                AppLocalizations.of(context)!.imageGuidelines2),
             verticalSpace(35),
             BlocConsumer<MyImageCubit, MyImageState>(
               buildWhen: (previous, current) =>
@@ -141,7 +142,7 @@ class _MyImageBodyState extends State<MyImageBody> {
                   successDialog(
                     context: context,
                     message: state.profileActionResponseModel.message ??
-                        'تم رفع الصورة بنجاح',
+                        AppLocalizations.of(context)!.imageUploadedSuccessfully,
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pop(context, true);
@@ -230,7 +231,7 @@ class _MyImageBodyState extends State<MyImageBody> {
                           children: [
                             Expanded(
                               child: Text(
-                                'جاري تحديث إعدادات الخصوصية...',
+                                AppLocalizations.of(context)!.updatingPrivacySettings,
                                 textDirection: TextDirection.rtl,
                                 textAlign: TextAlign.center,
                                 style: AppTextStyles
@@ -290,8 +291,8 @@ class _MyImageBodyState extends State<MyImageBody> {
                       SnackBar(
                         content: Text(
                           selectedPrivacyOption == 'no_one'
-                              ? 'لا احد سوف يري صورتك'
-                              : 'سوف يري صورتك الجميع',
+                              ? AppLocalizations.of(context)!.noOneWillSeeYourImage
+                              : AppLocalizations.of(context)!.everyoneWillSeeYourImage,
                           textDirection: TextDirection.rtl,
                           textAlign: TextAlign.center,
                           style: AppTextStyles.font14PumpkinOrangeBoldLamaSans
@@ -313,7 +314,7 @@ class _MyImageBodyState extends State<MyImageBody> {
                 child: Column(
                   textDirection: TextDirection.rtl,
                   children: [
-                    ContainerSuccessWay(text: 'المسموح لهم بمشاهدة صورتي'),
+                    ContainerSuccessWay(text: AppLocalizations.of(context)!.allowedToViewMyImage),
                     verticalSpace(30),
                     Row(
                       textDirection: TextDirection.rtl,
@@ -340,12 +341,12 @@ class _MyImageBodyState extends State<MyImageBody> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                    text: 'لا احد ',
+                                    text: AppLocalizations.of(context)!.noOne + ' ',
                                     style: AppTextStyles
                                         .font14PumpkinOrangeBoldLamaSans
                                         .copyWith(color: AppColors.black)),
                                 TextSpan(
-                                  text: '(حجب صورتي)',
+                                  text: AppLocalizations.of(context)!.hideMyImage,
                                   style: AppTextStyles
                                       .font14PumpkinOrangeBoldLamaSans
                                       .copyWith(color: AppColors.beer),
@@ -382,7 +383,7 @@ class _MyImageBodyState extends State<MyImageBody> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: 'كل الاعضاء ',
+                                  text: AppLocalizations.of(context)!.allMembers + ' ',
                                   style: AppTextStyles
                                       .font14PumpkinOrangeBoldLamaSans
                                       .copyWith(color: AppColors.black),
@@ -403,11 +404,11 @@ class _MyImageBodyState extends State<MyImageBody> {
                 (userGender != 'ذكر' && userGender != 'male')) ...[
               Column(
                 children: [
-                  ContainerSuccessWay(text: 'المسموح لهم بمشاهدة صورتي'),
+                  ContainerSuccessWay(text: AppLocalizations.of(context)!.allowedToViewMyImage),
                   verticalSpace(30),
                   Center(
                     child: Text(
-                      'لا احد يسمح برؤية صورتك',
+                      AppLocalizations.of(context)!.noOneCanSeeYourImage,
                       textDirection: TextDirection.rtl,
                       textAlign: TextAlign.center,
                       style: AppTextStyles.font14PumpkinOrangeBoldLamaSans
@@ -431,7 +432,7 @@ class _MyImageBodyState extends State<MyImageBody> {
                   onPressed: context.read<MyImageCubit>().image != null
                       ? () => context.read<MyImageCubit>().updateImage()
                       : () {},
-                  textButton: 'تحميل صوره',
+                  textButton: AppLocalizations.of(context)!.uploadImage,
                 );
               },
             ),
@@ -452,7 +453,7 @@ class _MyImageBodyState extends State<MyImageBody> {
             borderRadius: BorderRadius.circular(15.r),
           ),
           title: Text(
-            'اختر مصدر الصورة',
+            AppLocalizations.of(context)!.chooseImageSource,
             textDirection: TextDirection.rtl,
             textAlign: TextAlign.center,
             style: AppTextStyles.font16BlackSemiBoldLamaSans,
@@ -463,7 +464,7 @@ class _MyImageBodyState extends State<MyImageBody> {
               ListTile(
                 leading: Icon(Icons.camera_alt, color: AppColors.primaryOrange),
                 title: Text(
-                  'التقاط صورة من الكاميرا',
+                  AppLocalizations.of(context)!.takePhotoFromCamera,
                   textDirection: TextDirection.rtl,
                   style: AppTextStyles.font14BlackRegularLamaSans,
                 ),
@@ -476,7 +477,7 @@ class _MyImageBodyState extends State<MyImageBody> {
                 leading:
                     Icon(Icons.photo_library, color: AppColors.primaryOrange),
                 title: Text(
-                  'اختيار من المعرض',
+                  AppLocalizations.of(context)!.chooseFromGallery,
                   textDirection: TextDirection.rtl,
                   style: AppTextStyles.font14BlackRegularLamaSans,
                 ),

@@ -5,6 +5,7 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/interesting_list_state.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/interesting_list_cubit.dart';
 import 'package:elsadeken/features/profile/widgets/container_item/container_item.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -99,7 +100,7 @@ class _MyInterestingListItemsState extends State<MyInterestingListItems> {
                     foregroundColor: Colors.white,
                   ),
                   child: Text(
-                    'إعادة المحاولة',
+                    AppLocalizations.of(context)!.retry,
                     style: TextStyle(fontSize: 14.sp),
                   ),
                 ),
@@ -112,7 +113,7 @@ class _MyInterestingListItemsState extends State<MyInterestingListItems> {
           if (interestingList.isEmpty) {
             return Center(
               child: Text(
-                '0 عضو',
+                AppLocalizations.of(context)!.zeroMembers,
                 style: AppTextStyles.font20LightOrangeMediumLamaSans
                     .copyWith(color: AppColors.jet),
               ),
@@ -138,7 +139,7 @@ class _MyInterestingListItemsState extends State<MyInterestingListItems> {
                           ),
                           SizedBox(height: 8.h),
                           Text(
-                            'جاري تحميل المزيد...',
+                            AppLocalizations.of(context)!.loadingMore,
                             style: AppTextStyles.font12JetRegularLamaSans
                                 .copyWith(color: AppColors.beer),
                             textDirection: TextDirection.rtl,

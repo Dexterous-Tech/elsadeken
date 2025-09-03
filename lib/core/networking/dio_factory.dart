@@ -5,6 +5,7 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../di/injection_container.dart';
 import '../shared/shared_preferences_helper.dart';
 import '../shared/shared_preferences_key.dart';
+import '../services/localization_service.dart';
 import 'api_services.dart';
 
 class DioFactory {
@@ -31,7 +32,7 @@ class DioFactory {
     final headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'lang': 'ar',
+      'lang': LocalizationService.instance.currentLanguageCode,
     };
     if (includeAuth) {
       final String token = await SharedPreferencesHelper.getSecuredString(
@@ -54,9 +55,19 @@ class DioFactory {
       'Authorization': 'Bearer $token',
       'Accept': 'application/json',
       'Content-Type': 'application/json',
+      'lang': LocalizationService.instance.currentLanguageCode,
     };
     // Force recreation of Dio instance
     log("🔑 Headers set after login: ${_dio?.options.headers}");
+  }
+
+  /// Update headers when language changes
+  static Future<void> updateLanguageHeader() async {
+    if (_dio != null) {
+      _dio!.options.headers['lang'] =
+          LocalizationService.instance.currentLanguageCode;
+      log("🔑 Language header updated: ${_dio?.options.headers['lang']}");
+    }
   }
 
   /*

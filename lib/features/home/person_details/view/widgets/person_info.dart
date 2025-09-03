@@ -4,6 +4,8 @@ import 'package:elsadeken/features/home/person_details/data/models/person_model.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 
 import '../../../../../core/routes/app_routes.dart';
 import '../../../../chat/data/models/chat_room_model.dart';
@@ -42,7 +44,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
     // Example: Show a snackbar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('تم إضافة ${widget.person.name} إلى المفضلة'),
+        content: Text(AppLocalizations.of(context)!.addedToFavorites(widget.person.name)),
         duration: const Duration(seconds: 2),
         backgroundColor: Colors.green,
       ),
@@ -52,10 +54,10 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   /// Format the createdAt date string to a readable format
   String _formatCreatedAt(String createdAt) {
     try {
-      if (createdAt.isEmpty) return 'غير محدد';
+      if (createdAt.isEmpty) return AppLocalizations.of(context)!.notSpecifiedTime;
 
       final date = DateTime.tryParse(createdAt);
-      if (date == null) return 'غير محدد';
+      if (date == null) return AppLocalizations.of(context)!.notSpecifiedTime;
 
       final now = DateTime.now();
       final difference = now.difference(date);
@@ -137,7 +139,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
       }
     } catch (e) {
       print('Error formatting lastSeen: $e');
-      return 'متواجد حاليا';
+      return AppLocalizations.of(context)!.currentlyOnline;
     }
   }
 
@@ -157,6 +159,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
             borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            textDirection: LocalizationService.instance.textDirection,
             children: [
               _buildDragHandle(),
               Expanded(
@@ -211,9 +216,32 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   Widget _buildPersonHeader() {
     final p = widget.person;
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      textDirection: LocalizationService.instance.textDirection,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                p.name,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '${p.attribute.country}, ${p.attribute.city}',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey,
+                ),
+                textDirection: LocalizationService.instance.textDirection,
+              ),
+            ],
+          ),
+        ),
         GestureDetector(
           onTap: () => _handleFavoritePress(),
           child: Container(
@@ -230,29 +258,6 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
             ),
           ),
         ),
-        SizedBox(width: 12.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                p.name,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '${p.attribute.country}, ${p.attribute.city}',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.grey,
-                ),
-                textDirection: TextDirection.rtl,
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }
@@ -260,15 +265,15 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   Widget _buildAboutSection() {
     final p = widget.person;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'عن الشخص',
+        Text(
+          AppLocalizations.of(context)!.aboutPerson,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
         ),
         const SizedBox(height: 8),
         Text(
@@ -286,8 +291,8 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   Widget _buildLogTable() {
     final p = widget.person;
     final data = [
-      {'label': 'مسجل منذ', 'value': _formatCreatedAt(p.createdAt)},
-      {'label': 'تاريخ آخر زيادة', 'value': _formatLastSeen(p.lastSeen)},
+      {'label': AppLocalizations.of(context)!.registeredSince, 'value': _formatCreatedAt(p.createdAt)},
+      {'label': AppLocalizations.of(context)!.lastVisitDate, 'value': _formatLastSeen(p.lastSeen)},
     ];
 
     return Container(
@@ -303,6 +308,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         ],
       ),
       child: Column(
+        textDirection: LocalizationService.instance.textDirection,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
@@ -312,15 +318,15 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
             ),
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Padding(
-              padding: EdgeInsets.only(right: 15),
-              child: const Text(
-                'تاريخ السجل',
+              padding: EdgeInsetsDirectional.only(start: 15),
+              child: Text(
+                AppLocalizations.of(context)!.historyRecord,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
               ),
             ),
           ),
@@ -332,8 +338,18 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    textDirection: LocalizationService.instance.textDirection,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      Text(
+                        item['label']!,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Spacer(),
                       Container(
                         width: 150.w,
                         padding: const EdgeInsets.symmetric(
@@ -350,14 +366,6 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
-                        ),
-                      ),
-                      Text(
-                        item['label']!,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
@@ -374,15 +382,15 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   Widget _buildDataTable() {
     final p = widget.person;
     final data = [
-      {'label': 'الجنسيه', 'value': p.attribute.nationality},
-      {'label': 'الاقامه', 'value': p.attribute.city},
-      {'label': 'المدينه', 'value': p.attribute.city},
-      {'label': 'نوع الزواج', 'value': p.attribute.typeOfMarriage},
-      {'label': 'الحاله الاجتماعيه', 'value': p.attribute.maritalStatus},
-      {'label': 'عدد الاطفال', 'value': p.attribute.children.toString()},
-      {'label': 'لون البشره', 'value': p.attribute.skinColor},
-      {'label': 'الطول', 'value': "${p.attribute.height} سم"},
-      {'label': 'الوزن', 'value': "${p.attribute.weight} كجم"},
+      {'label': AppLocalizations.of(context)!.nationality, 'value': p.attribute.nationality},
+      {'label': AppLocalizations.of(context)!.residence, 'value': p.attribute.city},
+      {'label': AppLocalizations.of(context)!.city, 'value': p.attribute.city},
+      {'label': AppLocalizations.of(context)!.typeOfMarriage, 'value': p.attribute.typeOfMarriage},
+      {'label': AppLocalizations.of(context)!.maritalStatus, 'value': p.attribute.maritalStatus},
+      {'label': AppLocalizations.of(context)!.numberOfChildren, 'value': p.attribute.children.toString()},
+      {'label': AppLocalizations.of(context)!.skinColor, 'value': p.attribute.skinColor},
+      {'label': AppLocalizations.of(context)!.height, 'value': "${p.attribute.height} ${AppLocalizations.of(context)!.cm}"},
+      {'label': AppLocalizations.of(context)!.weight, 'value': "${p.attribute.weight} ${AppLocalizations.of(context)!.kg}"},
     ];
 
     return Container(
@@ -398,7 +406,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -407,26 +415,37 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               borderRadius: BorderRadius.circular(2),
             ),
             alignment: Alignment.centerRight,
-            child: const Text(
-              'المعلومات',
+            child: Text(
+              AppLocalizations.of(context)!.information,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              textDirection: LocalizationService.instance.textDirection,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: data.map((item) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    textDirection: LocalizationService.instance.textDirection,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      Text(
+                        item['label']!,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Spacer(),
                       Container(
                         width: 150.w,
                         padding: const EdgeInsets.symmetric(
@@ -443,14 +462,6 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
-                        ),
-                      ),
-                      Text(
-                        item['label']!,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],

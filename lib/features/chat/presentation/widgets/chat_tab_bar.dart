@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class ChatTabBar extends StatefulWidget {
   final Function(int) onTabChanged;
@@ -19,7 +21,10 @@ class ChatTabBar extends StatefulWidget {
 }
 
 class _ChatTabBarState extends State<ChatTabBar> {
-  final List tabs = ['الكل', 'القائمة المفضلة'];
+  List<String> get tabs => [
+    AppLocalizations.of(context)!.selectAll,
+    AppLocalizations.of(context)!.favoritesList
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +37,7 @@ class _ChatTabBarState extends State<ChatTabBar> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         children: List.generate(tabs.length, (index) {
           final bool isSelected = index == widget.selectedIndex;
           return GestureDetector(

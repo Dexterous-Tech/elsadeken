@@ -1,6 +1,7 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -25,7 +26,7 @@ class _MembersProfileTabBarState extends State<MembersProfileTabBar> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         children: List.generate(tabs.length, (index) {
           final bool isSelected = index == selectedIndex;
           return GestureDetector(

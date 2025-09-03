@@ -9,6 +9,7 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/dialog/custom_dialog.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,7 +28,7 @@ Future<void> deleteImageDialog(BuildContext context) async {
           builder: (context, state) {
             if (state is DeleteImageLoading) {
               // Show loading lottie
-              return _loadingDeleteImage();
+              return _loadingDeleteImage(context);
             } else if (state is DeleteImageFailure) {
               // Show error message
               return _errorDeleteImage(context, state.error);
@@ -36,7 +37,7 @@ Future<void> deleteImageDialog(BuildContext context) async {
               Future.delayed(Duration(milliseconds: 1500), () {
                 if (context.mounted) context.pop(); // Close dialog
               });
-              return _successDeleteImage();
+              return _successDeleteImage(context);
             } else {
               // Show delete confirmation dialog
               return _deleteImageContent(context);
@@ -48,7 +49,8 @@ Future<void> deleteImageDialog(BuildContext context) async {
   );
 }
 
-Widget _loadingDeleteImage() {
+Widget _loadingDeleteImage(BuildContext context) {
+  final tr = AppLocalizations.of(context)!;
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +58,7 @@ Widget _loadingDeleteImage() {
       Lottie.asset(AppLottie.loadingLottie),
       verticalSpace(16),
       Text(
-        'جاري حذف الصورة...',
+        tr.deleteImageLoading,
         textDirection: TextDirection.rtl,
         style: AppTextStyles.font16BlackSemiBoldLamaSans,
       ),
@@ -72,7 +74,7 @@ Widget _errorDeleteImage(BuildContext context, String error) {
       Lottie.asset(AppLottie.errorLottie, width: 100.w, height: 100.h),
       verticalSpace(24),
       Text(
-        'خطأ في حذف الصورة',
+        AppLocalizations.of(context)!.deleteImageError,
         textDirection: TextDirection.rtl,
         style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
           color: AppColors.darkBlue,
@@ -93,7 +95,7 @@ Widget _errorDeleteImage(BuildContext context, String error) {
           onPressed: () {
             context.pop(); // Close dialog
           },
-          textButton: 'إغلاق',
+          textButton: AppLocalizations.of(context)!.close,
           verticalPadding: 12,
           backgroundColor: AppColors.brightRed,
           radius: 8,
@@ -103,7 +105,8 @@ Widget _errorDeleteImage(BuildContext context, String error) {
   );
 }
 
-Widget _successDeleteImage() {
+Widget _successDeleteImage(BuildContext context) {
+  final tr = AppLocalizations.of(context)!;
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.center,
@@ -111,7 +114,7 @@ Widget _successDeleteImage() {
       Lottie.asset(AppLottie.successLottie, width: 150.w, height: 150.h),
       verticalSpace(24),
       Text(
-        'تم حذف الصورة بنجاح',
+        tr.deleteImageSuccess,
         textDirection: TextDirection.rtl,
         style: AppTextStyles.font16BlackSemiBoldLamaSans,
       ),
@@ -120,6 +123,7 @@ Widget _successDeleteImage() {
 }
 
 Widget _deleteImageContent(BuildContext context) {
+  final tr = AppLocalizations.of(context)!;
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.center,
@@ -131,7 +135,7 @@ Widget _deleteImageContent(BuildContext context) {
       ),
       verticalSpace(24),
       Text(
-        'هل انت متاكد؟',
+        tr.areYouSure,
         textDirection: TextDirection.rtl,
         style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
           color: AppColors.darkBlue,
@@ -140,7 +144,7 @@ Widget _deleteImageContent(BuildContext context) {
       ),
       verticalSpace(4),
       Text(
-        'هل تريد حذف صورة الملف الشخصي؟',
+        tr.deleteImageConfirm,
         textDirection: TextDirection.rtl,
         style: AppTextStyles.font14LightGrayRegularLamaSans,
       ),
@@ -155,7 +159,7 @@ Widget _deleteImageContent(BuildContext context) {
               onPressed: () {
                 context.pop();
               },
-              textButton: 'الغاء',
+              textButton: tr.cancel,
               verticalPadding: 12,
               backgroundColor: AppColors.darkSunray,
               radius: 8,
@@ -168,7 +172,7 @@ Widget _deleteImageContent(BuildContext context) {
               context.read<ProfileCubit>().deleteImage();
             },
             child: Text(
-              'حذف الصورة',
+              tr.deleteImage,
               style: AppTextStyles.font14LightGrayRegularLamaSans.copyWith(
                 fontWeight: FontWeightHelper.semiBold,
                 color: AppColors.brightRed,

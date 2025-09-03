@@ -7,6 +7,7 @@ import 'package:elsadeken/features/profile/profile_details/presentation/manager/
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class ProfileDetailsLogo extends StatelessWidget {
   const ProfileDetailsLogo({super.key});
@@ -20,9 +21,9 @@ class ProfileDetailsLogo extends StatelessWidget {
           state is GetProfileDetailsFailure,
       builder: (context, state) {
         String image = ''; // Default image
-        String name = 'لا يوجد';
-        String status = 'لا يوجد';
-        String age = 'لا يوجد';
+        String name = AppLocalizations.of(context)!.noData;
+        String status = AppLocalizations.of(context)!.noData;
+        String age = AppLocalizations.of(context)!.noData;
         bool isLoading = state is GetProfileDetailsLoading;
         bool isFeatured = false;
 
@@ -36,12 +37,14 @@ class ProfileDetailsLogo extends StatelessWidget {
             if (userData.email != null && userData.email!.contains('@')) {
               name = '@${userData.email!.split('@')[0]}';
             } else {
-              name = userData.name ?? 'لا يوجد';
+              name = userData.name ?? AppLocalizations.of(context)!.noData;
             }
 
             // Get status (you might need to add this field to your model)
-            status = userData.attribute?.maritalStatus ?? 'غير معروف';
-            age = userData.attribute?.age.toString() ?? 'غير معروف';
+            status = userData.attribute?.maritalStatus ??
+                AppLocalizations.of(context)!.unknown;
+            age = userData.attribute?.age.toString() ??
+                AppLocalizations.of(context)!.unknown;
 
             // Check if user is featured
             isFeatured = userData.isFeatured == 1;
@@ -126,7 +129,7 @@ class ProfileDetailsLogo extends StatelessWidget {
                       ),
                     )
                   : Text(
-                      '$status - $ageسنة ',
+                      '$status - $age ${AppLocalizations.of(context)?.year ?? 'سنة'}',
                       style: AppTextStyles.font13BlackMediumLamaSans
                           .copyWith(color: AppColors.philippineBronze),
                     ),

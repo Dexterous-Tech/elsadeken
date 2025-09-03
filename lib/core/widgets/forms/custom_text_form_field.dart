@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -87,7 +88,7 @@ class CustomTextFormField extends StatelessWidget {
         maxLines: maxLines ?? 1,
         inputFormatters: inputFormatters,
         decoration: InputDecoration(
-          hintTextDirection: TextDirection.rtl,
+          hintTextDirection: LocalizationService.instance.textDirection,
 
           hintText: hintText,
           hintStyle: hintStyle ??

@@ -3,6 +3,7 @@ import 'package:elsadeken/features/members/members_section/view/widgets/menu_ite
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../Health_statuses/presentation/view/health_statuses_view.dart';
 import '../../new_members/presentation/view/new_members_screen.dart';
@@ -13,33 +14,33 @@ import '../../viewers/presentation/view/viewers_screen.dart';
 class MembersScreen extends StatelessWidget {
   const MembersScreen({Key? key}) : super(key: key);
 
-  static const List<Map<String, dynamic>> _menuItems = [
+  List<Map<String, dynamic>> _getMenuItems(BuildContext context) => [
     {
-      'title': 'المتواجدون الان',
+      'title': AppLocalizations.of(context)!.onlineMembers,
       'backgroundColor': AppColors.beige,
       'avatarAsset': 'assets/images/members/menu_items/member_item1.png',
       'screen': 'online_members_screen',
     },
     {
-      'title': 'من زار بياناتي',
+      'title': AppLocalizations.of(context)!.profileVisitors,
       'backgroundColor': AppColors.beige,
       'avatarAsset': 'assets/images/members/menu_items/member_item2.png',
       'screen': 'profile_visitors_screen',
     },
     {
-      'title': 'اعضاء جدد',
+      'title': AppLocalizations.of(context)!.newMembers,
       'backgroundColor': AppColors.beige,
       'avatarAsset': 'assets/images/members/menu_items/member_item3.png',
       'screen': 'new_members_screen',
     },
     {
-      'title': 'الاعضاء المميزين',
+      'title': AppLocalizations.of(context)!.premiumMembers,
       'backgroundColor': AppColors.beige,
       'avatarAsset': 'assets/images/members/menu_items/member_item4.png',
       'screen': 'premium_members_screen',
     },
     {
-      'title': 'الحالات الصحية',
+      'title': AppLocalizations.of(context)!.healthStatuses,
       'backgroundColor': AppColors.beige,
       'avatarAsset': 'assets/images/members/menu_items/member_item5.png',
       'screen': 'health_status_screen',
@@ -107,7 +108,7 @@ class MembersScreen extends StatelessWidget {
                       children: [
                         Center(
                           child: Text(
-                            'الاعضاء',
+                            AppLocalizations.of(context)!.members,
                             style: TextStyle(
                                 fontSize: 26,
                                 color: Colors.black,
@@ -120,11 +121,11 @@ class MembersScreen extends StatelessWidget {
                   const SizedBox(height: 30),
                   Expanded(
                     child: ListView.separated(
-                      itemCount: _menuItems.length,
+                      itemCount: _getMenuItems(context).length,
                       separatorBuilder: (context, index) =>
                           const SizedBox(height: 18),
                       itemBuilder: (context, index) {
-                        final item = _menuItems[index];
+                        final item = _getMenuItems(context)[index];
                         return MenuItemWidget(
                           title: item['title'],
                           backgroundColor: item['backgroundColor'],

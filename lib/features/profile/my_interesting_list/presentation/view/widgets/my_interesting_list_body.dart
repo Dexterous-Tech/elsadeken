@@ -1,5 +1,7 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/widgets/my_interesting_list_items.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../../core/theme/spacing.dart';
@@ -14,9 +16,9 @@ class MyInterestingListBody extends StatelessWidget {
     return CustomProfileBody(
       contentBody: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         children: [
-          ProfileHeader(title: 'من يهتم بي'),
+          ProfileHeader(title: AppLocalizations.of(context)!.whoInterestsMe),
           verticalSpace(42),
           ContainerSuccessWay(),
           verticalSpace(32),

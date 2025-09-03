@@ -26,7 +26,7 @@ class LoginBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsetsGeometry.only(left: 34.w, right: 31.w, top: 32.13.h),
+        padding: EdgeInsetsDirectional.only(end: 34.w, start: 31.w, top: 32.13.h),
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
@@ -34,7 +34,7 @@ class LoginBody extends StatelessWidget {
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Show back arrow only when NOT coming from logout or splash
                       GestureDetector(

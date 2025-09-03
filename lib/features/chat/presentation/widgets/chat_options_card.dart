@@ -6,6 +6,7 @@ import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class ChatOptionsCard extends StatelessWidget {
   final ChatListCubit chatListCubit;
@@ -37,7 +38,7 @@ class ChatOptionsCard extends StatelessWidget {
           // Message Settings
           _buildOptionItem(
             image_icon: AppImages.settingsIcon,
-            text: 'إعدادات الرسائل',
+            text: AppLocalizations.of(context)!.messageSettings,
             iconColor: Colors.grey.shade100,
             onTap: () {
               Navigator.pushNamed(context, AppRoutes.chatSettingsScreen);
@@ -49,7 +50,7 @@ class ChatOptionsCard extends StatelessWidget {
           // Delete Chats
           _buildOptionItem(
             image_icon: AppImages.deleteChatIcon,
-            text: 'حذف جميع المحادثات',
+            text: AppLocalizations.of(context)!.deleteAllChats,
             iconColor: Colors.blue,
             onTap: () {
               _showDeleteAllChatsConfirmationDialog(context);
@@ -61,7 +62,7 @@ class ChatOptionsCard extends StatelessWidget {
           // Mark All as Read
           _buildOptionItem(
             image_icon: AppImages.readChatIcon,
-            text: 'وضع علامة مقروء على جميع المحادثات',
+            text: AppLocalizations.of(context)!.markAllAsRead,
             iconColor: Colors.green,
             onTap: () {
               // Show confirmation dialog

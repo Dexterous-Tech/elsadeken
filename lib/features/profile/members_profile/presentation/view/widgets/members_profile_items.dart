@@ -1,13 +1,12 @@
 import 'dart:developer';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
-import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:elsadeken/features/profile/members_profile/presentation/manager/members_profile_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../core/theme/app_color.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/spacing.dart';
-import '../../../../widgets/container_item/container_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -78,8 +77,8 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
     final city = member.attribute?.city?.trim();
 
     final location = [
-      country?.isNotEmpty == true ? country : 'لا يوجد',
-      city?.isNotEmpty == true ? city : 'لا يوجد',
+      country?.isNotEmpty == true ? country : AppLocalizations.of(context)!.noDataAvailable,
+      city?.isNotEmpty == true ? city : AppLocalizations.of(context)!.noDataAvailable,
     ].join(' , ');
 
     return GestureDetector(
@@ -190,7 +189,7 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
                     foregroundColor: Colors.white,
                   ),
                   child: Text(
-                    'إعادة المحاولة',
+                    AppLocalizations.of(context)!.retry,
                     style: TextStyle(fontSize: 14.sp),
                   ),
                 ),
@@ -205,7 +204,7 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
           if (membersList.isEmpty) {
             return Center(
               child: Text(
-                '0 عضو',
+                AppLocalizations.of(context)!.zeroMembers,
                 style: AppTextStyles.font20LightOrangeMediumLamaSans
                     .copyWith(color: AppColors.jet),
               ),
@@ -229,7 +228,7 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
                           ),
                           SizedBox(height: 8.h),
                           Text(
-                            'جاري تحميل المزيد...',
+                            AppLocalizations.of(context)!.loadingMore,
                             style: AppTextStyles.font12JetRegularLamaSans
                                 .copyWith(color: AppColors.beer),
                             textDirection: TextDirection.rtl,

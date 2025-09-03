@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:flutter/material.dart';
@@ -14,14 +15,16 @@ class ManageProfileContentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      textDirection: TextDirection.rtl,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      textDirection: LocalizationService.instance.textDirection,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
           title,
           style: AppTextStyles.font18JetBoldLamaSans
               .copyWith(fontWeight: FontWeightHelper.regular),
         ),
+        Spacer(),
         itemContent,
       ],
     );

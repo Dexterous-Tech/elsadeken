@@ -56,7 +56,15 @@ class ChatDataSource {
   Future<Map<String, dynamic>> reportChat(int chatId) async {
     final response = await _apiServices.get(
       endpoint: ApiConstants.reportChatSettings(chatId.toString()),
-      queryParameters: {'action': 'report'},
+      requiresAuth: true,
+    );
+
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> unreportChat(int chatId) async {
+    final response = await _apiServices.get(
+      endpoint: ApiConstants.reportChatSettings(chatId.toString()),
       requiresAuth: true,
     );
 

@@ -4,6 +4,8 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 
 class ChatOptionsPopup extends StatelessWidget {
   final VoidCallback onDelete;
@@ -11,6 +13,7 @@ class ChatOptionsPopup extends StatelessWidget {
   final VoidCallback onBlock;
   final VoidCallback onAddToFavorites;
   final bool isChatFavorite;
+  final bool isChatReported;
 
   const ChatOptionsPopup({
     Key? key,
@@ -19,6 +22,7 @@ class ChatOptionsPopup extends StatelessWidget {
     required this.onBlock,
     required this.onAddToFavorites,
     this.isChatFavorite = false,
+    this.isChatReported = false,
   }) : super(key: key);
 
   @override
@@ -42,7 +46,7 @@ class ChatOptionsPopup extends StatelessWidget {
                 _buildOptionItem(
                   context,
                   imagePath: 'assets/images/icons/trash.png',
-                  text: 'مسح الدردشة',
+                  text: AppLocalizations.of(context)!.deleteChat,
                   onTap: () {
                     Navigator.pop(context);
                     onDelete();
@@ -57,7 +61,7 @@ class ChatOptionsPopup extends StatelessWidget {
                 _buildOptionItem(
                   context,
                   imagePath: 'assets/images/icons/mute.png',
-                  text: 'وضع الصامت',
+                  text: AppLocalizations.of(context)!.muteChat,
                   onTap: () {
                     Navigator.pop(context);
                     onMute();
@@ -68,11 +72,13 @@ class ChatOptionsPopup extends StatelessWidget {
                   height: 0.5,
                   color: AppColors.grey,
                 ),
-                // Block User
+                // Block User / Unreport User
                 _buildOptionItem(
                   context,
                   imagePath: 'assets/images/icons/block-user.png',
-                  text: 'حظر المستخدم',
+                  text: isChatReported 
+                      ? AppLocalizations.of(context)!.unreportUser 
+                      : AppLocalizations.of(context)!.blockUser,
                   onTap: () {
                     Navigator.pop(context);
                     onBlock();
@@ -87,7 +93,7 @@ class ChatOptionsPopup extends StatelessWidget {
                 _buildOptionItem(
                   context,
                   imagePath: 'assets/images/icons/heart.png',
-                  text: isChatFavorite ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة',
+                  text: isChatFavorite ? AppLocalizations.of(context)!.removeFromFavorites : AppLocalizations.of(context)!.addToFavorites,
                   onTap: () {
                     Navigator.pop(context);
                     onAddToFavorites();
@@ -103,7 +109,7 @@ class ChatOptionsPopup extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            textButton: 'الغاء',
+            textButton: AppLocalizations.of(context)!.cancel,
             height: 56.h,
             radius: 10.r,
             styleTextButton: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
@@ -135,12 +141,16 @@ class ChatOptionsPopup extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 15.w),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
                 children: [
-                  Text(
-                    text,
-                    style: AppTextStyles.font18BabyBlueRegularLamaSans,
-                    textDirection: TextDirection.rtl,
+                  Expanded(
+                    child: Text(
+                      text,
+                      style: AppTextStyles.font18BabyBlueRegularLamaSans,
+                      textDirection: LocalizationService.instance.textDirection,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                   horizontalSpace(16),
                   Image.asset(

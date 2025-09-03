@@ -20,6 +20,8 @@ import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cub
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 
 import '../../../../members/members_section/view/members_screen.dart';
 import '../../data/models/user_model.dart';
@@ -218,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('تم الإعجاب!', textAlign: TextAlign.center),
+            content: Text(AppLocalizations.of(context)!.likedMessage, textAlign: TextAlign.center),
             backgroundColor: Colors.green,
             duration: Duration(milliseconds: 800),
           ),
@@ -238,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('فشل في تسجيل الإجراء', textAlign: TextAlign.center),
+          content: Text(AppLocalizations.of(context)!.actionFailed, textAlign: TextAlign.center),
           backgroundColor: Colors.red,
           duration: Duration(milliseconds: 800),
         ),
@@ -269,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       context.read<SearchCubit>().updateUsername(value);
                       _onSearchChanged(value);
                     },
-                    hintText: '...بحث',
+                    hintText: AppLocalizations.of(context)!.search,
                     validator: (value) {},
                     suffixIcon: GestureDetector(
                       onTap: () {},
@@ -315,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text(errorMessage!),
                       ElevatedButton(
                         onPressed: _loadMatchesUsers,
-                        child: Text('حاول مرة أخرى'),
+                        child: Text(AppLocalizations.of(context)!.tryAgain),
                       ),
                     ],
                   ),
@@ -411,7 +413,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Color(0xffFFFFFF),
       body: getBody(),
       bottomNavigationBar: Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         child: BottomNavigationBar(
           elevation: 1,
           backgroundColor: Colors.white,
@@ -442,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 24.w,
                 height: 24.h,
               ),
-              label: 'الرئيسية',
+              label: AppLocalizations.of(context)!.homeLabel,
               activeIcon: Image.asset(
                 'assets/images/home/home_orange.png',
                 width: 24.w,
@@ -455,7 +457,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 24.w,
                 height: 24.h,
               ),
-              label: 'الرسائل',
+              label: AppLocalizations.of(context)!.messagesLabel,
               activeIcon: Image.asset(
                 'assets/images/home/message_orange.png',
                 width: 24.w,
@@ -468,7 +470,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 24.w,
                 height: 24.h,
               ),
-              label: 'الاعضاء',
+              label: AppLocalizations.of(context)!.membersLabel,
               activeIcon: Image.asset(
                 'assets/images/home/group_orange.png',
                 width: 24.w,
@@ -481,7 +483,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 24.w,
                 height: 24.h,
               ),
-              label: 'الحساب',
+              label: AppLocalizations.of(context)!.accountLabel,
               activeIcon: Image.asset(
                 'assets/images/home/profile_orange.png',
                 width: 24.w,

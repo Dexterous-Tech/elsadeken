@@ -1,6 +1,7 @@
 // File: lib/presentation/widgets/search_form.dart
 import 'package:elsadeken/core/networking/api_services.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/auth/signup/data/data_source/signup_data_source.dart';
@@ -12,6 +13,7 @@ import 'package:elsadeken/features/search/presentation/view/widgets/range_text_f
 import 'package:elsadeken/features/search/presentation/view/widgets/search_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import '../../cubit/search_cubit.dart';
 import 'dropdown_field.dart';
 import 'expandable_section.dart';
@@ -151,17 +153,19 @@ class _SearchFormState extends State<SearchForm> {
         }
       },
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        textDirection: LocalizationService.instance.textDirection,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           // Search Fields
           SearchTextField(
-            hintText: 'بحث بإسم المستخدم',
+            hintText: AppLocalizations.of(context)!.searchByUsername,
             onChanged: (value) =>
                 context.read<SearchCubit>().updateUsername(value),
           ),
           SizedBox(height: 16),
           SearchTextField(
-            hintText: 'البحث السريع',
+            hintText: AppLocalizations.of(context)!.quickSearch,
             onChanged: (value) =>
                 context.read<SearchCubit>().updateQuickSearch(value),
           ),
@@ -169,7 +173,7 @@ class _SearchFormState extends State<SearchForm> {
 
           // Nationality & Location Section
           ExpandableSection(
-            title: 'الجنسية والإقامة',
+            title: AppLocalizations.of(context)!.nationalityAndResidence,
             children: [
               FutureBuilder<List<NationalCountryResponseModel>>(
                 future: _nationalities, // الفيوتشر اللي بيرجع الجنسيات
@@ -179,7 +183,7 @@ class _SearchFormState extends State<SearchForm> {
                   } else if (snapshot.hasError) {
                     return Text("خطأ: ${snapshot.error}");
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Text("لا توجد جنسيات متاحة");
+                    return Text(AppLocalizations.of(context)!.noNationalitiesAvailable);
                   }
 
                   final nationalityObjects = snapshot.data!;
@@ -190,8 +194,8 @@ class _SearchFormState extends State<SearchForm> {
                       .toList();
 
                   return DropdownField(
-                    label: 'الجنسية',
-                    hint: 'اختار',
+                    label: AppLocalizations.of(context)!.nationality,
+                    hint: AppLocalizations.of(context)!.choose,
                     items: nationalities,
                     onChanged: (value) {
                       final selected = snapshot.data!
@@ -205,13 +209,7 @@ class _SearchFormState extends State<SearchForm> {
               ),
               //
               SizedBox(height: 12),
-              // DropdownField(
-              //   label: 'الدولة',
-              //   hint: 'اختار',
-              //   items: ['مصر', 'السعودية', 'الإمارات', 'الكويت'],
-              //   onChanged: (value) =>
-              //       context.read<SearchCubit>().updateCountry(value!),
-              // ),
+
 
               FutureBuilder<List<NationalCountryResponseModel>>(
                 future: _countries, // الفيوتشر اللي بيرجع الجنسيات
@@ -221,7 +219,7 @@ class _SearchFormState extends State<SearchForm> {
                   } else if (snapshot.hasError) {
                     return Text("خطأ: ${snapshot.error}");
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Text("لا توجد جنسيات متاحة");
+                    return Text(AppLocalizations.of(context)!.noNationalitiesAvailable);
                   }
 
                   final countryObjects = snapshot.data!;
@@ -232,8 +230,8 @@ class _SearchFormState extends State<SearchForm> {
                       .toList();
 
                   return DropdownField(
-                    label: 'الدولة',
-                    hint: 'اختار',
+                    label: AppLocalizations.of(context)!.country,
+                    hint: AppLocalizations.of(context)!.choose,
                     items: countries,
                     onChanged: (value) async {
                       if (value != null) {
@@ -278,7 +276,7 @@ class _SearchFormState extends State<SearchForm> {
                   } else if (snapshot.hasError) {
                     return Text("خطأ: ${snapshot.error}");
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Text("لا توجد مدن متاحة");
+                    return Text(AppLocalizations.of(context)!.noCitiesAvailable);
                   }
 
                   // ✅ تحويل الجنسيات من موديل إلى List<String>
@@ -288,8 +286,8 @@ class _SearchFormState extends State<SearchForm> {
                       .toList();
 
                   return DropdownField(
-                    label: 'المدينة',
-                    hint: 'اختار',
+                    label: AppLocalizations.of(context)!.city,
+                    hint: AppLocalizations.of(context)!.choose,
                     items: cities,
                     onChanged: (value) {
                       final selectedCity = snapshot.data!
@@ -308,11 +306,11 @@ class _SearchFormState extends State<SearchForm> {
 
           // Physical Attributes Section
           ExpandableSection(
-            title: 'تفضيلات المظهر والطول والوزن',
+            title: AppLocalizations.of(context)!.appearancePreferences,
             children: [
               DropdownField(
-                label: 'نوع الزواج',
-                hint: 'الكل',
+                label: AppLocalizations.of(context)!.typeOfMarriage,
+                hint: AppLocalizations.of(context)!.all,
                 items: typeOfMarriageMap.keys.toList(),
                 onChanged: (value) {
                   final key = typeOfMarriageMap[value];
@@ -321,8 +319,8 @@ class _SearchFormState extends State<SearchForm> {
               ),
               SizedBox(height: 12),
               DropdownField(
-                label: 'الحالة الإجتماعية',
-                hint: 'الكل',
+                label: AppLocalizations.of(context)!.maritalStatus,
+                hint: AppLocalizations.of(context)!.all,
                 items: maritalStatusMap.keys.toList(),
                 onChanged: (value) {
                   final key = maritalStatusMap[value];
@@ -331,9 +329,9 @@ class _SearchFormState extends State<SearchForm> {
               ),
               SizedBox(height: 12),
               RangeTextField(
-                  label: 'العمر',
-                  fromHint: 'من',
-                  toHint: 'الي',
+                  label: AppLocalizations.of(context)!.age,
+                  fromHint: AppLocalizations.of(context)!.from,
+                  toHint: AppLocalizations.of(context)!.to,
                   onRangeChanged: (from, to) {
                     if (from != null || to != null) {
                       context
@@ -343,9 +341,9 @@ class _SearchFormState extends State<SearchForm> {
                   }),
               SizedBox(height: 12),
               RangeTextField(
-                label: 'الطول (سم)',
-                fromHint: 'من',
-                toHint: 'إلى',
+                label: AppLocalizations.of(context)!.heightCm,
+                fromHint: AppLocalizations.of(context)!.from,
+                toHint: AppLocalizations.of(context)!.to,
                 maxLength: 3,
                 onRangeChanged: (from, to) {
                   if (from != null || to != null) {
@@ -357,9 +355,9 @@ class _SearchFormState extends State<SearchForm> {
               ),
               SizedBox(height: 12),
               RangeTextField(
-                label: 'الوزن (كم)',
-                fromHint: 'من',
-                toHint: 'إلى',
+                label: AppLocalizations.of(context)!.weightKg,
+                fromHint: AppLocalizations.of(context)!.from,
+                toHint: AppLocalizations.of(context)!.to,
                 maxLength: 3,
                 onRangeChanged: (from, to) {
                   if (from != null || to != null) {
@@ -371,10 +369,10 @@ class _SearchFormState extends State<SearchForm> {
               ),
               SizedBox(height: 12),
               DropdownField(
-                label: 'لون البشرة',
-                hint: 'الكل',
+                label: AppLocalizations.of(context)!.skinColor,
+                hint: AppLocalizations.of(context)!.all,
                 items: _isLoadingSkinColors
-                    ? ['جاري التحميل...']
+                    ? [AppLocalizations.of(context)!.loading]
                     : _skinColors
                         .map((e) => e.name ?? "")
                         .where((name) => name.isNotEmpty)
@@ -382,7 +380,7 @@ class _SearchFormState extends State<SearchForm> {
                 onChanged: (value) {
                   if (!_isLoadingSkinColors &&
                       value != null &&
-                      value != 'جاري التحميل...') {
+                      value != AppLocalizations.of(context)!.loading) {
                     final selectedSkinColor = _skinColors.firstWhere(
                       (element) => element.name == value,
                     );
@@ -394,10 +392,10 @@ class _SearchFormState extends State<SearchForm> {
               ),
               SizedBox(height: 12),
               DropdownField(
-                label: 'المؤهل التعليمي',
-                hint: 'الكل',
+                label: AppLocalizations.of(context)!.educationalQualification,
+                hint: AppLocalizations.of(context)!.all,
                 items: _isLoadingQualifications
-                    ? ['جاري التحميل...']
+                    ? [AppLocalizations.of(context)!.loading]
                     : _qualifications
                         .map((e) => e.name ?? "")
                         .where((name) => name.isNotEmpty)
@@ -405,7 +403,7 @@ class _SearchFormState extends State<SearchForm> {
                 onChanged: (value) {
                   if (!_isLoadingQualifications &&
                       value != null &&
-                      value != 'جاري التحميل...') {
+                      value != AppLocalizations.of(context)!.loading) {
                     final selectedQualification = _qualifications.firstWhere(
                       (element) => element.name == value,
                     );
@@ -420,12 +418,16 @@ class _SearchFormState extends State<SearchForm> {
 
           // Sort Section
           ExpandableSection(
-            title: 'ترتيب النتائج',
+            title: AppLocalizations.of(context)!.sortResults,
             children: [
               DropdownField(
-                label: 'الأكثر دخولاً أولاً',
+                label: AppLocalizations.of(context)!.mostVisitedFirst,
                 hint: '',
-                items: ['الأكثر دخولاً أولاً', 'الأحدث أولاً', 'الأقدم أولاً'],
+                items: [
+                  AppLocalizations.of(context)!.mostVisitedFirst,
+                  AppLocalizations.of(context)!.newestFirst,
+                  AppLocalizations.of(context)!.oldestFirst
+                ],
                 onChanged: (value) {},
               ),
             ],
@@ -443,7 +445,7 @@ class _SearchFormState extends State<SearchForm> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                       content:
-                          Text('تم العثور على ${state.results.length} نتيجة')),
+                          Text(AppLocalizations.of(context)!.foundResults(state.results.length.toString()))),
                 );
               }
             },

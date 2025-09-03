@@ -1,8 +1,5 @@
-import 'dart:developer';
 import 'package:dartz/dartz.dart';
-import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
-import 'package:elsadeken/features/chat/data/datasources/chat_data_source.dart';
 import 'package:elsadeken/features/chat/data/models/chat_conversation_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_online_setting_model.dart';
@@ -20,6 +17,7 @@ abstract class ChatRepoInterface {
 
   Future<Either<ApiErrorModel, Map<String, dynamic>>> markAllMessagesAsRead();
   Future<Either<ApiErrorModel, Map<String, dynamic>>> reportChat(int chatId);
+  Future<Either<ApiErrorModel, Map<String, dynamic>>> unreportChat(int chatId);
   Future<Either<ApiErrorModel, Map<String, dynamic>>> muteChat(int chatId);
   Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteOneChat(int chatId);
   Future<Either<ApiErrorModel, Map<String, dynamic>>> deleteAllChats();

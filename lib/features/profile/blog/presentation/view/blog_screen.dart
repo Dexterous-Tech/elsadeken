@@ -1,10 +1,12 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/services/localization_service.dart';
 import '../cubit/blog_cubit.dart';
 import '../cubit/blog_states.dart';
 
@@ -34,7 +36,8 @@ class _BlogScreenState extends State<BlogScreen> {
                 withStar: false,
                 contentBody: Column(
                   children: [
-                    ProfileHeader(title: 'مدونة الصادقون و الصادقات'),
+                    ProfileHeader(
+                        title: AppLocalizations.of(context)!.blogTitle),
                     SizedBox(height: 20.h),
                     Expanded(
                         child: const Center(
@@ -49,7 +52,7 @@ class _BlogScreenState extends State<BlogScreen> {
               contentBody: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ProfileHeader(title: 'مدونة الصادقون و الصادقات'),
+                  ProfileHeader(title: AppLocalizations.of(context)!.blogTitle),
                   SizedBox(height: 20.h),
                   Expanded(
                     child: ListView.separated(
@@ -60,7 +63,9 @@ class _BlogScreenState extends State<BlogScreen> {
                         final isExpanded = _expandedBlogs[index] ?? false;
 
                         return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12.r),
@@ -90,7 +95,8 @@ class _BlogScreenState extends State<BlogScreen> {
                             ),
                             SizedBox(height: 12.h),
                             Align(
-                              alignment: Alignment.centerRight,
+                              alignment:
+                                  LocalizationService.instance.startAlignment,
                               child: Text(
                                 blog.title,
                                 style: TextStyle(
@@ -103,7 +109,8 @@ class _BlogScreenState extends State<BlogScreen> {
                             ),
                             SizedBox(height: 8.h),
                             Align(
-                              alignment: Alignment.centerRight,
+                              alignment:
+                                  LocalizationService.instance.startAlignment,
                               child: RichText(
                                 textDirection: TextDirection.rtl,
                                 text: TextSpan(
@@ -156,7 +163,8 @@ class _BlogScreenState extends State<BlogScreen> {
                 withStar: false,
                 contentBody: Column(
                   children: [
-                    ProfileHeader(title: 'مدونة الصادقون و الصادقات'),
+                    ProfileHeader(
+                        title: AppLocalizations.of(context)!.blogTitle),
                     SizedBox(height: 20.h),
                     Expanded(child: Center(child: Text(state.message))),
                   ],
