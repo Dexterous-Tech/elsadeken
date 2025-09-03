@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
@@ -12,7 +13,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:ui';
 import 'package:elsadeken/l10n/app_localizations.dart';
-import 'package:elsadeken/core/services/localization_service.dart';
 
 Future<void> oathDialog({
   required BuildContext context,
@@ -62,7 +62,7 @@ Future<void> oathDialog({
           children: [
             Text(
               AppLocalizations.of(context)!.greetingSalam,
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
               style: AppTextStyles.font22BistreSemiBoldLamaSans,
             ),
             // verticalSpace(6),
@@ -70,7 +70,7 @@ Future<void> oathDialog({
               padding: EdgeInsets.symmetric(horizontal: 20.0.w),
               child: Text(
                 AppLocalizations.of(context)!.freeRegistration,
-                textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.font15BistreSemiBoldLamaSans
                     .copyWith(fontWeight: FontWeightHelper.medium),
@@ -82,18 +82,18 @@ Future<void> oathDialog({
               style: AppTextStyles.font15BistreSemiBoldLamaSans
                   .copyWith(color: AppColors.black),
               textAlign: TextAlign.center,
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
             ),
             Text(
               '\n\n«أقسم بالله العظيم أنني سجلت في هذا التطبيق زواجًا شرعيًا، وأن قصدي جاد وصادق في بناء أسرة قائمة على المودة والرحمة، وفقًا لأحكام الشريعة الإسلامية.',
               style: AppTextStyles.font15BistreSemiBoldLamaSans
                   .copyWith(color: AppColors.black),
               textAlign: TextAlign.center,
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
             ),
             RichText(
               textAlign: TextAlign.center,
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
               text: TextSpan(
                 style: AppTextStyles.font15BistreSemiBoldLamaSans
                     .copyWith(color: AppColors.black),
@@ -122,23 +122,32 @@ Future<void> oathDialog({
             ),
             verticalSpace(28),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.oathAcceptance,
-                  textDirection: TextDirection.rtl,
-                  style: AppTextStyles.font14PumpkinOrangeBoldLamaSans,
-                ),
-                horizontalSpace(10),
-                CustomRadio(
-                  value: value,
-                  onChanged: () {
-                    setStateDialog(() {
-                      value = !value;
-                    });
-                  },
-                ),
-              ],
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: LocalizationService.instance.textDirection,
+                              children: [
+                  CustomRadio(
+                    value: value,
+                    onChanged: () {
+                      setStateDialog(() {
+                        value = !value;
+                      });
+                    },
+                  ),
+                  horizontalSpace(10),
+                  Expanded(
+                    child: Text(
+                      AppLocalizations.of(context)!.oathAcceptance,
+                      textDirection: LocalizationService.instance.textDirection,
+                      textAlign: LocalizationService.instance.isArabic 
+                          ? TextAlign.right 
+                          : TextAlign.left,
+                      style: AppTextStyles.font14PumpkinOrangeBoldLamaSans,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ),
+                ],
             ),
             verticalSpace(48),
             CustomElevatedButton(

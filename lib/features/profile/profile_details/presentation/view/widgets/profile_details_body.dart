@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
@@ -47,8 +48,8 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
     return CustomProfileBody(
       contentBody: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          textDirection: TextDirection.ltr,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          textDirection: LocalizationService.instance.textDirection,
           children: [
             CustomArrowBack(),
             ProfileDetailsLogo(),

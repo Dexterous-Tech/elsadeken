@@ -42,8 +42,9 @@ class ProfileContentItem extends StatelessWidget {
             leading ??
                 IconButton(
                   onPressed: onPressed,
-                  icon: Icon(
-                    Icons.arrow_back_ios_new,
+                  icon:
+                  Icon(
+                    Icons.arrow_forward_ios,
                     size: 18,
                     color: AppColors.gray,
                   ),

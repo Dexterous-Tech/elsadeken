@@ -72,7 +72,7 @@ class NotificationListWidget extends StatelessWidget {
                     AppLocalizations.of(context)!.dragLoading,
                     style: AppTextStyles.font12JetRegularLamaSans
                         .copyWith(color: Colors.grey),
-                    textDirection: TextDirection.rtl,
+                    textDirection: LocalizationService.instance.textDirection,
                   ),
                 ),
               );

@@ -3,6 +3,7 @@ import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -24,15 +25,13 @@ class EmptyNotificationsWidget extends StatelessWidget {
             ),
             verticalSpace(54),
             Text(
-              LocalizationHelper.getLocalizedText('لا يوجد إشعارات حتى الآن',
-                  'There are no notifications yet.'),
+              AppLocalizations.of(context)!.noNotificationsYet,
               style: AppTextStyles.font26BlackBoldLamaSans,
               textAlign: TextAlign.center,
               textDirection: LocalizationService.instance.textDirection,
             ),
             Text(
-              LocalizationHelper.getLocalizedText('لا يوجد إشعارات حتى الآن',
-                  'Your notifications will appear here when new messages arrive.'),
+              AppLocalizations.of(context)!.notificationsWillAppearHere,
               style: AppTextStyles.font14JetRegularLamaSans
                   .copyWith(color: Color(0xff404040)),
               textAlign: TextAlign.center,

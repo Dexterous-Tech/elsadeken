@@ -3,6 +3,7 @@ import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/app_lottie.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
@@ -128,6 +129,7 @@ Widget _logoutContent(BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.center,
+    textDirection: LocalizationService.instance.textDirection,
     children: [
       Image.asset(
         AppImages.warningLogo,
@@ -137,7 +139,7 @@ Widget _logoutContent(BuildContext context) {
       verticalSpace(24),
       Text(
         AppLocalizations.of(context)!.areYouSure,
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
           color: AppColors.darkBlue,
           fontWeight: FontWeightHelper.bold,
@@ -146,7 +148,7 @@ Widget _logoutContent(BuildContext context) {
       verticalSpace(4),
       Text(
         AppLocalizations.of(context)!.doYouWantToLogout,
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         style: AppTextStyles.font14LightGrayRegularLamaSans,
       ),
       verticalSpace(24),

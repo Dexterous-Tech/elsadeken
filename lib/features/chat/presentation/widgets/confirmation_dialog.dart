@@ -54,6 +54,7 @@ class ConfirmationDialog extends StatelessWidget {
               fontSize: 14.sp,
               color: Colors.grey[600],
             ),
+            textAlign: TextAlign.center,
           ),
         ),
         TextButton(
@@ -67,6 +68,8 @@ class ConfirmationDialog extends StatelessWidget {
               fontSize: 14.sp,
               color: confirmColor,
             ),
+            textAlign: TextAlign.center,
+
           ),
         ),
       ],

@@ -64,10 +64,13 @@ class NotificationScreen extends StatelessWidget {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8).r)),
                             child: Center(
-                              child: Image.asset(
-                                AppImages.authArrowBack,
-                                width: 14.w,
-                                height: 14.h,
+                              child: Transform.rotate(
+                                angle: 3.1,
+                                child: Image.asset(
+                                  AppImages.authArrowBack,
+                                  width: 14.w,
+                                  height: 14.h,
+                                ),
                               ),
                             ),
                           ),

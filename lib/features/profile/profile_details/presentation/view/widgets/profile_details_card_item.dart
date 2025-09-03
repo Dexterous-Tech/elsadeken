@@ -25,12 +25,20 @@ class ProfileDetailsCardItem extends StatelessWidget {
         textDirection: LocalizationService.instance.textDirection,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            itemTitle,
-            textDirection: TextDirection.rtl,
-            textAlign: TextAlign.right,
-            style: AppTextStyles.font18GreyRegularLamaSans,
+          Expanded(
+            flex: 2,
+            child: Text(
+              itemTitle,
+              textDirection: LocalizationService.instance.textDirection,
+              textAlign: LocalizationService.instance.isArabic 
+                  ? TextAlign.right 
+                  : TextAlign.left,
+              style: AppTextStyles.font18GreyRegularLamaSans,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
           ),
+          SizedBox(width: 8.w),
           Container(
             width: 194.w,
             padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -54,9 +62,13 @@ class ProfileDetailsCardItem extends StatelessWidget {
                 : Center(
                     child: Text(
                       itemSubTitle,
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.right,
+                      textDirection: LocalizationService.instance.textDirection,
+                      textAlign: LocalizationService.instance.isArabic 
+                          ? TextAlign.right 
+                          : TextAlign.left,
                       style: AppTextStyles.font12PhilippineBronzeMediumLamaSans,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                     ),
                   ),
           ),

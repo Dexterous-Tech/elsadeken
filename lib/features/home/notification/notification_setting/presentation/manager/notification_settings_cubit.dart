@@ -14,7 +14,14 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
       : super(NotificationSettingsInitial());
 
   /// Load notification settings from API
-  Future<void> loadNotificationSettings() async {
+  Future<void> loadNotificationSettings({
+    String? whoAddedMeToFavorites,
+    String? profileVisits,
+    String? whoAddedMeToIgnoreList,
+    String? newMessages,
+    String? successStories,
+    String? errorMessage,
+  }) async {
     try {
       emit(NotificationSettingsLoading());
 
@@ -28,50 +35,23 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
         log('About to call toSettingsList() on: ${response.data}');
         log('Available methods: ${response.data.runtimeType.toString()}');
 
-        // Try to call the method using reflection as a fallback
-        List<Map<String, dynamic>> settingsList;
-        try {
-          settingsList = response.data!.toSettingsList();
-        } catch (e) {
-          log('Error calling toSettingsList(): $e');
-          // Fallback: create the list manually
-          settingsList = [
-            {
-              'id': 'favorite_list',
-              'title': 'من وضعني في قائمته المفضلة؟',
-              'value': response.data!.favoriteList ?? false,
-            },
-            {
-              'id': 'visit_profile',
-              'title': 'زيارات ملفي الشخصي',
-              'value': response.data!.visitProfile ?? false,
-            },
-            {
-              'id': 'ignore_list',
-              'title': 'من أضافني إلى قائمة التجاهل؟',
-              'value': response.data!.ignoreList ?? false,
-            },
-            {
-              'id': 'message',
-              'title': 'رسائل جديدة',
-              'value': response.data!.message ?? false,
-            },
-            {
-              'id': 'blog',
-              'title': 'قصص ناجحة',
-              'value': response.data!.blog ?? false,
-            },
-          ];
-        }
+        // Convert settings to list with localized titles
+        List<Map<String, dynamic>> settingsList = response.data!.toSettingsList(
+          whoAddedMeToFavorites: whoAddedMeToFavorites,
+          profileVisits: profileVisits,
+          whoAddedMeToIgnoreList: whoAddedMeToIgnoreList,
+          newMessages: newMessages,
+          successStories: successStories,
+        );
         log('Settings list: $settingsList');
         emit(NotificationSettingsLoaded(settings: settingsList));
         log('Notification settings loaded: ${settingsList.length} settings');
       } else {
-        emit(NotificationSettingsError('No notification settings found'));
+        emit(NotificationSettingsError(errorMessage ?? 'No notification settings found'));
       }
     } catch (e) {
       log('Error loading notification settings: $e');
-      emit(NotificationSettingsError('Failed to load notification settings'));
+      emit(NotificationSettingsError(errorMessage ?? 'Failed to load notification settings'));
     }
   }
 

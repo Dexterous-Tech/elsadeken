@@ -141,7 +141,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get excellencePackage => 'باقه التميز';
 
   @override
-  String get successStories => 'قصص نجاح';
+  String get successStories => 'قصص ناجحة';
 
   @override
   String get blog => 'مدونه الصادقين والصادقات';
@@ -162,7 +162,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appSettings => 'إعدادات التطبيق';
 
   @override
-  String get notifications => 'الاشعارات';
+  String get notifications => 'الإشعارات';
 
   @override
   String get deleteMyPhoto => 'مسح صورتي';
@@ -383,9 +383,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get search => 'بحث';
 
   @override
-  String searchResults(Object count) {
-    return 'تم العثور على $count نتيجة';
-  }
+  String get searchResults => 'نتائج البحث';
 
   @override
   String get noResults => 'لا توجد نتائج';
@@ -1348,4 +1346,61 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dragLoading => 'اسحب للتحميل';
+
+  @override
+  String get errorLoadingSettings => 'حدث خطأ أثناء تحميل الإعدادات';
+
+  @override
+  String get cannotUpdateSettingsBeforeLoading => 'لا يمكن تحديث الإعدادات قبل تحميلها';
+
+  @override
+  String get noChatSettingsContactSupport => 'لا توجد إعدادات محادثة - يرجى التواصل مع الدعم الفني';
+
+  @override
+  String get connectionTimeoutRetry => 'انتهت مهلة الاتصال - يرجى المحاولة مرة أخرى';
+
+  @override
+  String get requestMethodError => 'خطأ في طريقة الطلب - يرجى المحاولة مرة أخرى';
+
+  @override
+  String get sessionExpiredRelogin => 'انتهت صلاحية الجلسة - يرجى إعادة تسجيل الدخول';
+
+  @override
+  String get serverErrorTryLater => 'خطأ في الخادم - يرجى المحاولة لاحقاً';
+
+  @override
+  String get connectionTimeoutCheckInternet => 'انتهت مهلة الاتصال - يرجى التحقق من الإنترنت';
+
+  @override
+  String get settingsNotFoundContactSupport => 'الإعدادات غير موجودة - يرجى التواصل مع الدعم الفني';
+
+  @override
+  String get errorUpdatingSettings => 'حدث خطأ أثناء تحديث الإعدادات';
+
+  @override
+  String get notificationSettings => 'إعدادات الإشعارات';
+
+  @override
+  String get noNotificationsYet => 'لا يوجد إشعارات حتى الآن';
+
+  @override
+  String get notificationsWillAppearHere => 'ستظهر إشعاراتك هنا عند وصول رسائل جديدة';
+
+  @override
+  String get view => 'عرض';
+
+  @override
+  String get startSearchToShowResults => 'ابدأ البحث لعرض النتائج';
+
+  @override
+  String get yearsOld => 'سنة';
+
+  @override
+  String get whoAddedMeToFavorites => 'من وضعني في قائمته المفضلة؟';
+
+  @override
+  String get profileVisits => 'زيارات ملفي الشخصي';
+
+  @override
+  String get whoAddedMeToIgnoreList => 'من أضافني إلى قائمة التجاهل؟';
 }
