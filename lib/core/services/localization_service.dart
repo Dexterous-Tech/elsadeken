@@ -129,6 +129,7 @@ class LocalizationService extends ChangeNotifier {
   Alignment get endAlignment =>
       isArabic ? Alignment.centerLeft : Alignment.centerRight;
 
+  TextAlign get textAlignment => isArabic ? TextAlign.right : TextAlign.left;
   // Get cross axis alignment for RTL/LTR
   CrossAxisAlignment get startCrossAxisAlignment =>
       isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start;

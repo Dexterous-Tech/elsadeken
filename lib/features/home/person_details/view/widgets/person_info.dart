@@ -44,7 +44,8 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
     // Example: Show a snackbar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(AppLocalizations.of(context)!.addedToFavorites(widget.person.name)),
+        content: Text(
+            AppLocalizations.of(context)!.addedToFavorites(widget.person.name)),
         duration: const Duration(seconds: 2),
         backgroundColor: Colors.green,
       ),
@@ -52,94 +53,104 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   /// Format the createdAt date string to a readable format
-  String _formatCreatedAt(String createdAt) {
+  String _getRegisteredSince(String createdAt) {
+    if (createdAt.isEmpty) return AppLocalizations.of(context)!.notAvailable;
+
     try {
-      if (createdAt.isEmpty) return AppLocalizations.of(context)!.notSpecifiedTime;
-
-      final date = DateTime.tryParse(createdAt);
-      if (date == null) return AppLocalizations.of(context)!.notSpecifiedTime;
-
+      // Parse the createdAt date
+      final createdDate = DateTime.parse(createdAt);
       final now = DateTime.now();
-      final difference = now.difference(date);
+      final difference = now.difference(createdDate);
+      final days = difference.inDays;
 
-      if (difference.inDays == 0) {
-        return 'اليوم';
-      } else if (difference.inDays == 1) {
-        return 'أمس';
-      } else if (difference.inDays < 7) {
-        return 'منذ ${difference.inDays} أيام';
-      } else if (difference.inDays < 30) {
-        final weeks = (difference.inDays / 7).floor();
-        return 'منذ $weeks أسابيع';
-      } else if (difference.inDays < 365) {
-        final months = (difference.inDays / 30).floor();
-        return 'منذ $months أشهر';
+      if (days == 0) {
+        return AppLocalizations.of(context)!.sinceToday;
+      } else if (days == 1) {
+        return AppLocalizations.of(context)!.oneDayAgo;
+      } else if (days < 7) {
+        return AppLocalizations.of(context)!.daysAgo(days.toString());
+      } else if (days < 30) {
+        final weeks = (days / 7).floor();
+        if (weeks == 1) {
+          return AppLocalizations.of(context)!.oneWeekAgo;
+        } else {
+          return AppLocalizations.of(context)!.weeksAgo(weeks.toString());
+        }
+      } else if (days < 365) {
+        final months = (days / 30).floor();
+        if (months == 1) {
+          return AppLocalizations.of(context)!.oneMonthAgo;
+        } else {
+          return AppLocalizations.of(context)!.monthsAgo(months.toString());
+        }
       } else {
-        final years = (difference.inDays / 365).floor();
-        return 'منذ $years سنوات';
+        final years = (days / 365).floor();
+        if (years == 1) {
+          return AppLocalizations.of(context)!.oneYearAgo;
+        } else {
+          return AppLocalizations.of(context)!.yearsAgo(years.toString());
+        }
       }
     } catch (e) {
-      print('Error formatting createdAt: $e');
-      return 'غير محدد';
+      return AppLocalizations.of(context)!.notAvailable;
     }
   }
 
   /// Format the lastSeen date string to a readable format
-  String _formatLastSeen(String? lastSeen) {
-    if (lastSeen == null || lastSeen.isEmpty) return 'متواجد حاليا';
+  String _getLastVisit(String? lastSeen) {
+    if (lastSeen == null || lastSeen.isEmpty)
+      return AppLocalizations.of(context)!.currentlyOnline;
 
     try {
-      final lastSeenDate = DateTime.tryParse(lastSeen);
-      if (lastSeenDate == null) return 'متواجد حاليا';
-
+      // Parse the lastSeen date
+      final lastSeenDate = DateTime.parse(lastSeen);
       final now = DateTime.now();
       final difference = now.difference(lastSeenDate);
       final minutes = difference.inMinutes;
       final hours = difference.inHours;
       final days = difference.inDays;
 
-      // If last seen is within 5 minutes, show "متواجد حاليا"
+      // If last seen is within 5 minutes, show "currently online"
       if (minutes < 5) {
-        return 'متواجد حاليا';
+        return AppLocalizations.of(context)!.currentlyOnline;
       } else if (minutes < 60) {
-        return 'منذ $minutes دقيقة';
+        return AppLocalizations.of(context)!.minutesAgo(minutes.toString());
       } else if (hours < 24) {
         if (hours == 1) {
-          return 'منذ ساعة واحدة';
+          return AppLocalizations.of(context)!.oneHourAgo;
         } else {
-          return 'منذ $hours ساعات';
+          return AppLocalizations.of(context)!.hoursAgo(hours.toString());
         }
       } else if (days < 7) {
         if (days == 1) {
-          return 'منذ يوم واحد';
+          return AppLocalizations.of(context)!.oneDayAgo;
         } else {
-          return 'منذ $days أيام';
+          return AppLocalizations.of(context)!.daysAgo(days.toString());
         }
       } else if (days < 30) {
         final weeks = (days / 7).floor();
         if (weeks == 1) {
-          return 'منذ أسبوع واحد';
+          return AppLocalizations.of(context)!.oneWeekAgo;
         } else {
-          return 'منذ $weeks أسابيع';
+          return AppLocalizations.of(context)!.weeksAgo(weeks.toString());
         }
       } else if (days < 365) {
         final months = (days / 30).floor();
         if (months == 1) {
-          return 'منذ شهر واحد';
+          return AppLocalizations.of(context)!.oneMonthAgo;
         } else {
-          return 'منذ $months أشهر';
+          return AppLocalizations.of(context)!.monthsAgo(months.toString());
         }
       } else {
         final years = (days / 365).floor();
         if (years == 1) {
-          return 'منذ سنة واحدة';
+          return AppLocalizations.of(context)!.oneYearAgo;
         } else {
-          return 'منذ $years سنوات';
+          return AppLocalizations.of(context)!.yearsAgo(years.toString());
         }
       }
     } catch (e) {
-      print('Error formatting lastSeen: $e');
-      return AppLocalizations.of(context)!.currentlyOnline;
+      return AppLocalizations.of(context)!.notAvailable;
     }
   }
 
@@ -223,6 +234,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            textDirection: LocalizationService.instance.textDirection,
             children: [
               Text(
                 p.name,
@@ -291,8 +303,14 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   Widget _buildLogTable() {
     final p = widget.person;
     final data = [
-      {'label': AppLocalizations.of(context)!.registeredSince, 'value': _formatCreatedAt(p.createdAt)},
-      {'label': AppLocalizations.of(context)!.lastVisitDate, 'value': _formatLastSeen(p.lastSeen)},
+      {
+        'label': AppLocalizations.of(context)!.registeredSince,
+        'value': _getRegisteredSince(p.createdAt)
+      },
+      {
+        'label': AppLocalizations.of(context)!.lastVisitDate,
+        'value': _getLastVisit(p.lastSeen)
+      },
     ];
 
     return Container(
@@ -382,15 +400,39 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   Widget _buildDataTable() {
     final p = widget.person;
     final data = [
-      {'label': AppLocalizations.of(context)!.nationality, 'value': p.attribute.nationality},
-      {'label': AppLocalizations.of(context)!.residence, 'value': p.attribute.city},
+      {
+        'label': AppLocalizations.of(context)!.nationality,
+        'value': p.attribute.nationality
+      },
+      {
+        'label': AppLocalizations.of(context)!.residence,
+        'value': p.attribute.city
+      },
       {'label': AppLocalizations.of(context)!.city, 'value': p.attribute.city},
-      {'label': AppLocalizations.of(context)!.typeOfMarriage, 'value': p.attribute.typeOfMarriage},
-      {'label': AppLocalizations.of(context)!.maritalStatus, 'value': p.attribute.maritalStatus},
-      {'label': AppLocalizations.of(context)!.numberOfChildren, 'value': p.attribute.children.toString()},
-      {'label': AppLocalizations.of(context)!.skinColor, 'value': p.attribute.skinColor},
-      {'label': AppLocalizations.of(context)!.height, 'value': "${p.attribute.height} ${AppLocalizations.of(context)!.cm}"},
-      {'label': AppLocalizations.of(context)!.weight, 'value': "${p.attribute.weight} ${AppLocalizations.of(context)!.kg}"},
+      {
+        'label': AppLocalizations.of(context)!.typeOfMarriage,
+        'value': p.attribute.typeOfMarriage
+      },
+      {
+        'label': AppLocalizations.of(context)!.maritalStatus,
+        'value': p.attribute.maritalStatus
+      },
+      {
+        'label': AppLocalizations.of(context)!.numberOfChildren,
+        'value': p.attribute.children.toString()
+      },
+      {
+        'label': AppLocalizations.of(context)!.skinColor,
+        'value': p.attribute.skinColor
+      },
+      {
+        'label': AppLocalizations.of(context)!.height,
+        'value': "${p.attribute.height} ${AppLocalizations.of(context)!.cm}"
+      },
+      {
+        'label': AppLocalizations.of(context)!.weight,
+        'value': "${p.attribute.weight} ${AppLocalizations.of(context)!.kg}"
+      },
     ];
 
     return Container(

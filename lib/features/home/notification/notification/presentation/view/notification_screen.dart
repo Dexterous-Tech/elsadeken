@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/home/notification/notification_setting/presentation/view/notification_settings_page.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,13 +40,15 @@ class NotificationScreen extends StatelessWidget {
             ),
             SafeArea(
               child: Column(
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
+                crossAxisAlignment:
+                    LocalizationService.instance.startCrossAxisAlignment,
                 children: [
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                     child: Row(
-                      textDirection: TextDirection.rtl,
+                      textDirection: LocalizationService.instance.textDirection,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
@@ -69,30 +73,31 @@ class NotificationScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'الإشعارات',
+                          AppLocalizations.of(context)!.notifications,
                           style: AppTextStyles.font20WhiteBoldLamaSans
                               .copyWith(color: AppColors.black),
                         ),
                         GestureDetector(
                           onTap: () {
-                          Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NotificationSettingsPage(),
-                          ),
-                        );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    NotificationSettingsPage(),
+                              ),
+                            );
                           },
                           child: Container(
-                        width: 40.w,
-                        height: 40.h,
-                        child: Center(
-                          child: Icon(
-                            Icons.settings,
-                            size: 20.w,
-                            color: AppColors.black,
+                            width: 40.w,
+                            height: 40.h,
+                            child: Center(
+                              child: Icon(
+                                Icons.settings,
+                                size: 20.w,
+                                color: AppColors.black,
+                              ),
+                            ),
                           ),
-                        ),
-                        ),
                         ),
                       ],
                     ),

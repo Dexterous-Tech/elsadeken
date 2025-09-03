@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:elsadeken/core/di/injection_container.dart';
+import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -220,7 +221,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.likedMessage, textAlign: TextAlign.center),
+            content: Text(AppLocalizations.of(context)!.likedMessage,
+                textAlign: TextAlign.center),
             backgroundColor: Colors.green,
             duration: Duration(milliseconds: 800),
           ),
@@ -240,7 +242,8 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.actionFailed, textAlign: TextAlign.center),
+          content: Text(AppLocalizations.of(context)!.actionFailed,
+              textAlign: TextAlign.center),
           backgroundColor: Colors.red,
           duration: Duration(milliseconds: 800),
         ),
@@ -255,8 +258,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            textDirection: TextDirection.rtl,
+            crossAxisAlignment:
+                LocalizationService.instance.startCrossAxisAlignment,
+            textDirection: LocalizationService.instance.textDirection,
             children: [
               Column(
                 children: [
@@ -332,7 +336,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           size: 80.w, color: Colors.grey[400]),
                       SizedBox(height: 16.h),
                       Text(
-                        'لا توجد مطابقات جديدة',
+                        LocalizationHelper.getLocalizedText(
+                            'لا توجد مطابقات جديدة', 'No new matches'),
                         style:
                             TextStyle(fontSize: 18.sp, color: Colors.grey[600]),
                       ),

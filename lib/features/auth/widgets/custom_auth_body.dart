@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -23,7 +24,9 @@ class CustomAuthBody extends StatelessWidget {
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment:
+                        LocalizationService.instance.startCrossAxisAlignment,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: [
                       GestureDetector(
                         onTap: () {

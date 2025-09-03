@@ -1,4 +1,6 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/helper/localization_helper.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:flutter/material.dart';
@@ -15,20 +17,26 @@ class EmptyNotificationsWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            Image.asset(AppImages.emptyNotification ,width: 256.w,height: 256.h,),
-                       verticalSpace(54),
+            Image.asset(
+              AppImages.emptyNotification,
+              width: 256.w,
+              height: 256.h,
+            ),
+            verticalSpace(54),
             Text(
-              'لا يوجد إشعارات حتى الآن',
+              LocalizationHelper.getLocalizedText('لا يوجد إشعارات حتى الآن',
+                  'There are no notifications yet.'),
               style: AppTextStyles.font26BlackBoldLamaSans,
               textAlign: TextAlign.center,
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
             ),
             Text(
-              'ستظهر إشعاراتك هنا عند وصول\nرسائل جديدة',
-              style: AppTextStyles.font14JetRegularLamaSans.copyWith(color: Color(0xff404040)),
+              LocalizationHelper.getLocalizedText('لا يوجد إشعارات حتى الآن',
+                  'Your notifications will appear here when new messages arrive.'),
+              style: AppTextStyles.font14JetRegularLamaSans
+                  .copyWith(color: Color(0xff404040)),
               textAlign: TextAlign.center,
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
             ),
           ],
         ),

@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/custom_image_network.dart';
@@ -24,7 +25,10 @@ class NotificationItemWidget extends StatelessWidget {
             : Color(0xffFFFAFC),
       ),
       child: Row(
-        textDirection: TextDirection.rtl, // Keep RTL for Arabic
+        crossAxisAlignment:
+            LocalizationService.instance.startCrossAxisAlignment,
+        textDirection:
+            LocalizationService.instance.textDirection, // Keep RTL for Arabic
         children: [
           /// 👉 ICON on the right
           CustomImageNetwork(
@@ -36,18 +40,24 @@ class NotificationItemWidget extends StatelessWidget {
           /// 👉 TEXT on the left
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end, // align left
+              crossAxisAlignment:
+                  LocalizationService.instance.startCrossAxisAlignment,
+              textDirection: LocalizationService
+                  .instance.textDirection, // Keep RTL for Arabic
+// align left
               children: [
                 Text(
                   notification.title,
                   style: AppTextStyles.font14BlackSemiBoldLamaSans,
                   textAlign: TextAlign.right,
-                  textDirection: TextDirection.rtl,
+                  textDirection: LocalizationService
+                      .instance.textDirection, // Keep RTL for Arabic
                 ),
                 verticalSpace(4),
                 RichText(
-                    textAlign: TextAlign.right,
-                    textDirection: TextDirection.rtl,
+                    textAlign: LocalizationService.instance.textAlignment,
+                    textDirection: LocalizationService
+                        .instance.textDirection, // Keep RTL for Arabic
                     text: TextSpan(children: [
                       TextSpan(
                           text: '${notification.body} ',
@@ -63,8 +73,9 @@ class NotificationItemWidget extends StatelessWidget {
                   timeago.format(notification.createdAt, locale: 'ar'),
                   style: AppTextStyles.font12JetRegularLamaSans
                       .copyWith(color: Color(0xffFF6700)),
-                  textAlign: TextAlign.right,
-                  textDirection: TextDirection.rtl,
+                  textAlign: LocalizationService.instance.textAlignment,
+                  textDirection:
+                      LocalizationService.instance.textDirection, // K
                 ),
               ],
             ),

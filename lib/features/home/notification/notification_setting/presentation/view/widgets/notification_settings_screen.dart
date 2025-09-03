@@ -1,4 +1,6 @@
+import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +10,8 @@ import 'package:elsadeken/core/di/injection_container.dart';
 
 import 'package:elsadeken/features/home/notification/notification_setting/presentation/manager/notification_settings_cubit.dart'
     as home;
+
+import '../../../../../../../core/services/localization_service.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
@@ -52,11 +56,15 @@ class _NotificationSettingsContentState
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection, // K
       child: Scaffold(
         backgroundColor: AppColors.white,
         body: CustomProfileBody(
           contentBody: Column(
+            crossAxisAlignment:
+                LocalizationService.instance.startCrossAxisAlignment,
+            textDirection: LocalizationService.instance.textDirection, // K
+
             children: [
               _buildAppBar(),
               SizedBox(height: 12.h),
@@ -74,7 +82,9 @@ class _NotificationSettingsContentState
   Widget _buildAppBar() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      child: const ProfileHeader(title: 'إعدادات الإشعارات'),
+      child: ProfileHeader(
+          title: LocalizationHelper.getLocalizedText(
+              'إعدادات الإشعارات', 'Notification Setting')),
     );
   }
 
@@ -95,9 +105,11 @@ class _NotificationSettingsContentState
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              textDirection: LocalizationService.instance.textDirection, // K
               children: [
                 Text(
-                  'خطأ في تحميل الإعدادات',
+                  LocalizationHelper.getLocalizedText('خطأ في تحميل الإعدادات',
+                      'Error in loading notification'),
                   style: TextStyle(
                     fontSize: 18.sp,
                     color: Colors.red,
@@ -110,7 +122,7 @@ class _NotificationSettingsContentState
                         .read<home.NotificationSettingsCubit>()
                         .loadNotificationSettings();
                   },
-                  child: const Text('إعادة المحاولة'),
+                  child: Text(AppLocalizations.of(context)!.tryAgain),
                 ),
               ],
             ),
@@ -148,8 +160,9 @@ class _NotificationSettingsContentState
           return _buildSettingsList(state.settings);
         }
 
-        return const Center(
-          child: Text('لا توجد إعدادات'),
+        return Center(
+          child: Text(LocalizationHelper.getLocalizedText(
+              'لا توجد إعدادات', 'No settings')),
         );
       },
     );

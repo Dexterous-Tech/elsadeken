@@ -2650,6 +2650,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'kg'**
   String get kilograms;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @specialMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Special Member'**
+  String get specialMember;
+
+  /// No description provided for @dragLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to load'**
+  String get dragLoading;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1,6 +1,7 @@
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
@@ -37,6 +38,7 @@ class LoginBody extends StatelessWidget {
                 child: IntrinsicHeight(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: [
                       // Show back arrow only when NOT coming from logout or splash
                       GestureDetector(

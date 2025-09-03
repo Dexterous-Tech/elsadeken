@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:elsadeken/core/helper/localization_helper.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -249,7 +252,10 @@ class _SwipeableCardState extends State<SwipeableCard>
                                                   ),
                                                   SizedBox(height: 8),
                                                   Text(
-                                                    'لا يمكن تحميل الصورة',
+                                                    LocalizationHelper
+                                                        .getLocalizedText(
+                                                            'لا يمكن تحميل الصورة',
+                                                            'Image cannot be loaded.'),
                                                     style: TextStyle(
                                                       color: Colors.grey[600],
                                                       fontSize: 12,
@@ -287,8 +293,11 @@ class _SwipeableCardState extends State<SwipeableCard>
                                       borderRadius: BorderRadius.circular(8).r,
                                     ),
                                     child: Text(
-                                      'تطابق بنسبة ${widget.user.matchPercentage}%',
-                                      textDirection: TextDirection.rtl,
+                                      LocalizationHelper.getLocalizedText(
+                                          ' نسبة تطابق ${widget.user.matchPercentage}%',
+                                          '${widget.user.matchPercentage}% Matching percentage'),
+                                      textDirection: LocalizationService
+                                          .instance.textDirection,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -349,11 +358,15 @@ class _SwipeableCardState extends State<SwipeableCard>
                                         ),
                                         Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          textDirection: TextDirection.rtl,
+                                              LocalizationService.instance
+                                                  .startCrossAxisAlignment,
+                                          textDirection: LocalizationService
+                                              .instance.textDirection,
                                           children: [
                                             Text(
-                                              '${widget.user.name}، ${widget.user.age} سنة',
+                                              '${widget.user.name}، ${widget.user.age} ${AppLocalizations.of(context)!.year}',
+                                              textDirection: LocalizationService
+                                                  .instance.textDirection,
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 16.sp,

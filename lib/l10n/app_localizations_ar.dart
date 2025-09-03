@@ -198,7 +198,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get retry => 'إعادة المحاولة';
 
   @override
-  String get tryAgain => 'حاول مرة أخرى';
+  String get tryAgain => 'اعادة محاولة مرة اخري';
 
   @override
   String get deleteImage => 'حذف الصورة';
@@ -1339,4 +1339,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get kilograms => 'كيلو';
+
+  @override
+  String get next => 'التالي';
+
+  @override
+  String get specialMember => 'عضو مميز';
+
+  @override
+  String get dragLoading => 'اسحب للتحميل';
 }

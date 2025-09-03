@@ -602,5 +602,10 @@
   "oneHourAgo": "منذ ساعة واحدة",
   "hoursAgo": "منذ {count} ساعات",
   "centimeters": "سنتي",
-  "kilograms": "كيلو"
+  "kilograms": "كيلو",
+  "tryAgain": "اعادة محاولة مرة اخري" ,
+  "next": "التالي" ,
+  "continueButton": "استمر",
+  "specialMember" : "عضو مميز",
+  "dragLoading" : "اسحب للتحميل"
 }

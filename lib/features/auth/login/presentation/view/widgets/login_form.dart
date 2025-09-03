@@ -1,6 +1,7 @@
 import 'package:elsadeken/core/helper/app_regex.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -31,13 +32,13 @@ class _LoginFormState extends State<LoginForm> {
       key: cubit.formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start, // ✅ will flip in RTL
+        textDirection: LocalizationService.instance.textDirection,
         children: [
           Text(
             tr.hello,
             style: AppTextStyles.font27ChineseBlackBoldLamaSans,
           ),
           verticalSpace(24),
-
           Text(
             tr.email,
             style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
@@ -55,9 +56,7 @@ class _LoginFormState extends State<LoginForm> {
               return null;
             },
           ),
-
           verticalSpace(24),
-
           Text(
             tr.password,
             style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
@@ -89,9 +88,7 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
           ),
-
           verticalSpace(12),
-
           GestureDetector(
             onTap: () {
               context.pushNamed(AppRoutes.forgetPasswordScreen);
@@ -101,9 +98,7 @@ class _LoginFormState extends State<LoginForm> {
               style: AppTextStyles.font14BeerMediumLamaSans,
             ),
           ),
-
           verticalSpace(31),
-
           CustomElevatedButton(
             onPressed: () {
               if (cubit.formKey.currentState!.validate()) {
@@ -112,9 +107,7 @@ class _LoginFormState extends State<LoginForm> {
             },
             textButton: tr.login,
           ),
-
           const Spacer(),
-
           const Center(child: LoginCreateNewAccount()),
         ],
       ),

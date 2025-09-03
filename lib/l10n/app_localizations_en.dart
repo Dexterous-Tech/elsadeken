@@ -1338,4 +1338,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get kilograms => 'kg';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get specialMember => 'Special Member';
+
+  @override
+  String get dragLoading => 'Drag to load';
 }

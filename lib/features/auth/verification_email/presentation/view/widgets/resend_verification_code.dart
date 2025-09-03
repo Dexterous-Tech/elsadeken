@@ -1,4 +1,6 @@
 import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/helper/localization_helper.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/features/auth/forget_password/presentation/manager/forget_cubit.dart';
@@ -22,12 +24,16 @@ class ResendVerificationCode extends StatelessWidget {
         if (state is ForgetLoading) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Row(
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
+              crossAxisAlignment:
+                  LocalizationService.instance.startCrossAxisAlignment,
               children: [
                 Expanded(
                   child: Text(
-                    'جاري اعادة ارسالة رمز التحقق',
-                    textDirection: TextDirection.rtl,
+                    LocalizationHelper.getLocalizedText(
+                        'جاري اعادة ارسالة رمز التحقق',
+                        'Resending verification code'),
+                    textDirection: LocalizationService.instance.textDirection,
                     textAlign: TextAlign.center,
                     style:
                         AppTextStyles.font14PumpkinOrangeBoldLamaSans.copyWith(
@@ -58,7 +64,7 @@ class ResendVerificationCode extends StatelessWidget {
             SnackBar(
               content: Text(
                 state.errorMessage,
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.font14PumpkinOrangeBoldLamaSans.copyWith(
                   color: AppColors.white,
@@ -78,7 +84,7 @@ class ResendVerificationCode extends StatelessWidget {
             SnackBar(
               content: Text(
                 state.forgetResponseModel.message,
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.font14PumpkinOrangeBoldLamaSans.copyWith(
                   color: AppColors.white,
@@ -98,15 +104,18 @@ class ResendVerificationCode extends StatelessWidget {
       builder: (context, state) {
         var cubit = ForgetCubit.get(context);
         return RichText(
+          textDirection: LocalizationService.instance.textDirection,
           text: TextSpan(
             children: [
               TextSpan(
-                text: 'لم تستلم الرمز؟ ',
+                text: LocalizationHelper.getLocalizedText(
+                    'لم تستلم الرمز؟', 'Don\'t recieve code?'),
                 style: AppTextStyles.font16ChineseBlackMediumLamaSans
                     .copyWith(color: AppColors.black),
               ),
               TextSpan(
-                text: 'إعادة الإرسال',
+                text: LocalizationHelper.getLocalizedText(
+                    'إعادة الإرسال', 'Send again'),
                 style: AppTextStyles.font16ChineseBlackMediumLamaSans.copyWith(
                   color: AppColors.red,
                   fontWeight: FontWeightHelper.semiBold,

@@ -603,5 +603,13 @@
   "oneHourAgo": "One Hour Ago",
   "hoursAgo": "{count} Hours Ago",
   "centimeters": "cm",
-  "kilograms": "kg"
+  "kilograms": "kg",
+  "tryAgain": "Try Again",
+    "next": "Next" ,
+    "continueButton": "Continue" ,
+      "specialMember" : "Special Member",
+        "dragLoading" : "Drag to load"
+
+
+
 }

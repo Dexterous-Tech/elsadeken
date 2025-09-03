@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
@@ -6,6 +7,7 @@ import 'package:elsadeken/features/home/home/presentation/view/widgets/home_noti
 import 'package:elsadeken/features/home/notification/notification/presentation/manager/notification_count_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,8 +39,10 @@ class _HomeHeaderState extends State<HomeHeader> {
               if (state is ManageProfileSuccess) {
                 final profileData = state.myProfileResponseModel.data;
                 final name = profileData?.name ?? '';
-                final country = profileData?.attribute?.country ?? 'لا يوجد';
-                final city = profileData?.attribute?.city ?? 'لا يوجد';
+                final country = profileData?.attribute?.country ??
+                    AppLocalizations.of(context)!.unknown;
+                final city = profileData?.attribute?.city ??
+                    AppLocalizations.of(context)!.unknown;
                 final image = profileData?.image ?? '';
 
                 return Row(
@@ -64,10 +68,12 @@ class _HomeHeaderState extends State<HomeHeader> {
                             style: AppTextStyles.font16BlackSemiBoldLamaSans,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            textDirection: LocalizationService.instance.textDirection,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                           ),
                           Row(
-                            textDirection: LocalizationService.instance.textDirection,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                             children: [
                               Image.asset(
                                 'assets/images/home/home_location.png',
@@ -79,7 +85,8 @@ class _HomeHeaderState extends State<HomeHeader> {
                                 '$country, $city',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                textDirection: LocalizationService.instance.textDirection,
+                                textDirection:
+                                    LocalizationService.instance.textDirection,
                                 textAlign: TextAlign.right,
                                 style: AppTextStyles
                                     .font15BistreSemiBoldLamaSans
@@ -89,7 +96,6 @@ class _HomeHeaderState extends State<HomeHeader> {
                                   fontWeight: FontWeightHelper.medium,
                                 ),
                               ),
-
                             ],
                           ),
                         ],
@@ -113,7 +119,8 @@ class _HomeHeaderState extends State<HomeHeader> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            'Error loading profile',
+                            LocalizationHelper.getLocalizedText(
+                                'خطا في تحميل الحساب', 'Error loading profile'),
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 16.sp,
@@ -123,7 +130,8 @@ class _HomeHeaderState extends State<HomeHeader> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Row(
-                            textDirection: LocalizationService.instance.textDirection,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                             children: [
                               Image.asset(
                                 'assets/images/home/home_location.png',
@@ -133,7 +141,9 @@ class _HomeHeaderState extends State<HomeHeader> {
                               SizedBox(width: 10.w),
                               Expanded(
                                 child: Text(
-                                  'Location not available',
+                                  LocalizationHelper.getLocalizedText(
+                                      'الموقع غير متوفر',
+                                      'Location not available'),
                                   style: TextStyle(
                                     color: Color(0xff000000)
                                         .withValues(alpha: 0.87),
@@ -175,7 +185,8 @@ class _HomeHeaderState extends State<HomeHeader> {
                           ),
                           SizedBox(height: 8.h),
                           Row(
-                            textDirection: LocalizationService.instance.textDirection,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                             children: [
                               Image.asset(
                                 'assets/images/home/home_location.png',
