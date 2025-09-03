@@ -434,6 +434,7 @@
   "howTallAreYou": "كم طولك (سم) ؟",
   
   "premiumMembersCount": "عدد الأعضاء المميزين: {count}",
+  "noPremiumMembers": "لا يوجد أعضاء مميزين",
   "onlineMembersCount": "المتواجدون الآن : {count}",
   "whoVisitedMyProfile": "من زار بياناتي",
   "noResultsCurrently": "لا توجد نتائج حالياً",
@@ -607,5 +608,32 @@
   "next": "التالي" ,
   "continueButton": "استمر",
   "specialMember" : "عضو مميز",
-  "dragLoading" : "اسحب للتحميل"
+  "dragLoading" : "اسحب للتحميل",
+  
+  "errorLoadingSettings": "حدث خطأ أثناء تحميل الإعدادات",
+  "cannotUpdateSettingsBeforeLoading": "لا يمكن تحديث الإعدادات قبل تحميلها",
+  "noChatSettingsContactSupport": "لا توجد إعدادات محادثة - يرجى التواصل مع الدعم الفني",
+  "connectionTimeoutRetry": "انتهت مهلة الاتصال - يرجى المحاولة مرة أخرى",
+  "requestMethodError": "خطأ في طريقة الطلب - يرجى المحاولة مرة أخرى",
+  "sessionExpiredRelogin": "انتهت صلاحية الجلسة - يرجى إعادة تسجيل الدخول",
+  "serverErrorTryLater": "خطأ في الخادم - يرجى المحاولة لاحقاً",
+  "connectionTimeoutCheckInternet": "انتهت مهلة الاتصال - يرجى التحقق من الإنترنت",
+  "settingsNotFoundContactSupport": "الإعدادات غير موجودة - يرجى التواصل مع الدعم الفني",
+  "errorUpdatingSettings": "حدث خطأ أثناء تحديث الإعدادات",
+  
+  "notifications": "الإشعارات",
+  "notificationSettings": "إعدادات الإشعارات",
+  "noNotificationsYet": "لا يوجد إشعارات حتى الآن",
+  "notificationsWillAppearHere": "ستظهر إشعاراتك هنا عند وصول رسائل جديدة",
+  "view": "عرض",
+  "searchResults": "نتائج البحث",
+  "startSearchToShowResults": "ابدأ البحث لعرض النتائج",
+  "resultsCount": "عدد النتائج: {count}",
+  "yearsOld": "سنة",
+  
+  "whoAddedMeToFavorites": "من وضعني في قائمته المفضلة؟",
+  "profileVisits": "زيارات ملفي الشخصي",
+  "whoAddedMeToIgnoreList": "من أضافني إلى قائمة التجاهل؟",
+  "newMessages": "رسائل جديدة",
+  "successStories": "قصص ناجحة"
 }

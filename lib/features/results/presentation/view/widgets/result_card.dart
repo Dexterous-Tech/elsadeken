@@ -1,4 +1,6 @@
 import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class PersonCardWidget extends StatelessWidget {
@@ -28,108 +30,115 @@ class PersonCardWidget extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.grey.shade300,
-                      width: 1,
-                    ),
-                  ),
-                  child: ClipOval(
-                    child: Image.network(
-                      personData.profileImageUrl,
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        print("age: ${personData.age}");
-
-                        return Container(
-                          width: 50,
-                          height: 50,
-                          color: Colors.grey.shade200,
-                          child: const Icon(
-                            Icons.person,
-                            color: Colors.grey,
-                            size: 30,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                if (personData.isOnline)
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Image.asset(
-                      'assets/images/result/online_indicator.png',
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Directionality(
+          textDirection: LocalizationService.instance.textDirection,
+          child: Row(
+            children: [
+              Stack(
                 children: [
-                  Text(
-                    personData.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.grey.shade300,
+                        width: 1,
+                      ),
+                    ),
+                    child: ClipOval(
+                      child: Image.network(
+                        personData.profileImageUrl,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          print("age: ${personData.age}");
+
+                          return Container(
+                            width: 50,
+                            height: 50,
+                            color: Colors.grey.shade200,
+                            child: const Icon(
+                              Icons.person,
+                              color: Colors.grey,
+                              size: 30,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/images/result/locationIcon.png',
-                        width: 14,
-                        height: 14,
+                  if (personData.isOnline)
+                    Positioned(
+                      bottom: 0,
+                      right: LocalizationService.instance.isArabic ? 0 : null,
+                      left: LocalizationService.instance.isArabic ? null : 0,
+                      child: Image.asset(
+                        'assets/images/result/online_indicator.png',
+                        width: 20,
+                        height: 20,
                       ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          "${personData.country}, ${personData.city}",
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
                 ],
               ),
-            ),
-            const SizedBox(width: 16),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-              decoration: BoxDecoration(
-                color: const Color(0xFFD4AF37),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                '${personData.age} سنة',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: LocalizationService.instance.startCrossAxisAlignment,
+                  children: [
+                    Text(
+                      personData.name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                      textDirection: LocalizationService.instance.textDirection,
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/result/locationIcon.png',
+                          width: 14,
+                          height: 14,
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            "${personData.country}, ${personData.city}",
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.black,
+                            ),
+                            textDirection: LocalizationService.instance.textDirection,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ),
-            const SizedBox(width: 16),
-          ],
+              const SizedBox(width: 16),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD4AF37),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '${personData.age} ${AppLocalizations.of(context)!.yearsOld}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textDirection: LocalizationService.instance.textDirection,
+                ),
+              ),
+              const SizedBox(width: 16),
+            ],
+          ),
         ),
       ),
     );

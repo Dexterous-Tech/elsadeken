@@ -141,7 +141,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get excellencePackage => 'Excellence Package';
 
   @override
-  String get successStories => 'Success Stories';
+  String get successStories => 'Success stories';
 
   @override
   String get blog => 'Alsadiqeen & Alsadiqat Blog';
@@ -228,7 +228,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showOnlineStatus => 'Your Connection Status';
 
   @override
-  String get newMessages => 'New Messages';
+  String get newMessages => 'New messages';
 
   @override
   String get ageGroup => 'Age Group';
@@ -383,9 +383,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search => 'Search';
 
   @override
-  String searchResults(Object count) {
-    return 'Found $count results';
-  }
+  String get searchResults => 'Search Results';
 
   @override
   String get noResults => 'No results found';
@@ -1050,6 +1048,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get noPremiumMembers => 'No premium members';
+
+  @override
   String onlineMembersCount(Object count) {
     return 'Online Now: $count';
   }
@@ -1347,4 +1348,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dragLoading => 'Drag to load';
+
+  @override
+  String get errorLoadingSettings => 'Error loading settings';
+
+  @override
+  String get cannotUpdateSettingsBeforeLoading => 'Cannot update settings before loading them';
+
+  @override
+  String get noChatSettingsContactSupport => 'No chat settings - please contact technical support';
+
+  @override
+  String get connectionTimeoutRetry => 'Connection timeout - please try again';
+
+  @override
+  String get requestMethodError => 'Request method error - please try again';
+
+  @override
+  String get sessionExpiredRelogin => 'Session expired - please login again';
+
+  @override
+  String get serverErrorTryLater => 'Server error - please try later';
+
+  @override
+  String get connectionTimeoutCheckInternet => 'Connection timeout - please check your internet';
+
+  @override
+  String get settingsNotFoundContactSupport => 'Settings not found - please contact technical support';
+
+  @override
+  String get errorUpdatingSettings => 'Error updating settings';
+
+  @override
+  String get notificationSettings => 'Notification Settings';
+
+  @override
+  String get noNotificationsYet => 'There are no notifications yet';
+
+  @override
+  String get notificationsWillAppearHere => 'Your notifications will appear here when new messages arrive';
+
+  @override
+  String get view => 'View';
+
+  @override
+  String get startSearchToShowResults => 'Start searching to show results';
+
+  @override
+  String get yearsOld => 'years old';
+
+  @override
+  String get whoAddedMeToFavorites => 'Who added me to their favorites?';
+
+  @override
+  String get profileVisits => 'Profile visits';
+
+  @override
+  String get whoAddedMeToIgnoreList => 'Who added me to their ignore list?';
 }

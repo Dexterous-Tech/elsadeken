@@ -75,11 +75,23 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
   }
 
   List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
+    // Debug: Print unique gender values to help identify what the API returns
+    final uniqueGenders = allMembers.map((m) => m.gender).toSet();
+    print('🔍 Online Members - Unique gender values from API: $uniqueGenders');
+    
     switch (_activeFilter) {
       case 'males':
-        return allMembers.where((member) => member.gender == 'ذكر').toList();
+        return allMembers.where((member) {
+          final gender = member.gender?.toLowerCase();
+          // Handle both Arabic and English gender values
+          return gender == 'ذكر' || gender == 'male' || gender == 'm';
+        }).toList();
       case 'females':
-        return allMembers.where((member) => member.gender == 'انثى').toList();
+        return allMembers.where((member) {
+          final gender = member.gender?.toLowerCase();
+          // Handle both Arabic and English gender values
+          return gender == 'انثى' || gender == 'female' || gender == 'f';
+        }).toList();
       default:
         return allMembers;
     }

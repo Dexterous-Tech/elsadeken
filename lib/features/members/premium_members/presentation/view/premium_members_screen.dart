@@ -15,7 +15,9 @@ import '../../../Health_statuses/presentation/view/widgets/gender_filter.dart';
 import '../../../online_members/presentation/view/widgets/filter_buttom_sheet.dart';
 
 class PremiumMembersView extends StatefulWidget {
-  const PremiumMembersView({Key? key}) : super(key: key);
+  const PremiumMembersView({Key? key, this.countryName}) : super(key: key);
+
+  final String? countryName;
 
   @override
   State<PremiumMembersView> createState() => _PremiumMembersViewState();
@@ -23,21 +25,24 @@ class PremiumMembersView extends StatefulWidget {
 
 class _PremiumMembersViewState extends State<PremiumMembersView> {
   String _activeFilter = 'all';
-  ScrollController? _scrollController;
+  String? _selectedCountryName;
+  final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
+    _selectedCountryName = widget.countryName;
   }
 
   @override
   void dispose() {
-    _scrollController?.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  void _loadMoreUsers(BuildContext context) {
+  void _loadMoreUsers() {
     final cubit = context.read<MembersListCubit<UsersDataModel>>();
     final state = cubit.state;
 
@@ -61,26 +66,48 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
     }
   }
 
-  void _onScroll(BuildContext context) {
-    if (_scrollController?.position.pixels != null &&
-        _scrollController!.position.pixels >=
-            _scrollController!.position.maxScrollExtent - 200) {
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
       print('Scroll threshold reached, triggering pagination');
-      _loadMoreUsers(context);
+      _loadMoreUsers();
     }
   }
 
   Future<void> _onRefresh() async {
-    // We'll handle this in the build method where context is available
+    context.read<MembersListCubit<UsersDataModel>>().fetch(page: 1);
+  }
+
+  List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
+    // Debug: Print unique gender values to help identify what the API returns
+    final uniqueGenders = allMembers.map((m) => m.gender).toSet();
+    print('🔍 Premium Members - Unique gender values from API: $uniqueGenders');
+
+    switch (_activeFilter) {
+      case 'males':
+        return allMembers.where((member) {
+          final gender = member.gender?.toLowerCase();
+          // Handle both Arabic and English gender values
+          return gender == 'ذكر' || gender == 'male' || gender == 'm';
+        }).toList();
+      case 'females':
+        return allMembers.where((member) {
+          final gender = member.gender?.toLowerCase();
+          // Handle both Arabic and English gender values
+          return gender == 'انثى' || gender == 'female' || gender == 'f';
+        }).toList();
+      default:
+        return allMembers;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final cubit = MembersListCubit<UsersDataModel>(
       ({int? page}) async {
-        final response =
-            await sl<MembersRepository>().getDistinguishedMembers(page: page);
-        return response;
+        final response = await sl<MembersRepository>()
+            .getDistinguishedMembers(countryName: _selectedCountryName);
+        return response.data ?? [];
       },
     )..fetch();
 
@@ -144,13 +171,52 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                           ),
                           SizedBox(width: 20),
                           GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet(
+                            onTap: () async {
+                              final result = await showModalBottomSheet<
+                                  Map<String, dynamic>>(
                                 context: context,
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
-                                builder: (context) => const FilterBottomSheet(),
+                                builder: (context) => FilterBottomSheet(
+                                  selectedCountryId:
+                                      null, // We'll use country name instead
+                                ),
                               );
+                              if (result != null) {
+                                print(
+                                    '🔍 Premium Members Screen - Filter result: $result');
+                                setState(() {
+                                  _selectedCountryName =
+                                      result['name'] as String?;
+                                });
+                                print(
+                                    '🔍 Premium Members Screen - Selected country name: $_selectedCountryName');
+                                // Recreate cubit with country filter
+                                final newCubit =
+                                    MembersListCubit<UsersDataModel>(
+                                  ({int? page}) async {
+                                    print(
+                                        '🔍 Premium Members Screen - Creating new cubit with country: $_selectedCountryName');
+                                    final response =
+                                        await sl<MembersRepository>()
+                                            .getDistinguishedMembers(
+                                                countryName:
+                                                    _selectedCountryName);
+                                    return response.data ?? [];
+                                  },
+                                );
+                                // Push a new provider scope with updated loader
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (_) => BlocProvider<
+                                        MembersListCubit<UsersDataModel>>(
+                                      create: (_) => newCubit..fetch(),
+                                      child: PremiumMembersView(
+                                          countryName: _selectedCountryName),
+                                    ),
+                                  ),
+                                );
+                              }
                             },
                             child: Row(
                               children: [
@@ -224,17 +290,20 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                           );
                         }
                         if (state is MembersListEmpty<UsersDataModel>) {
-                          return const Expanded(
+                          return Expanded(
                             child: Center(
                               child: Text(
-                                'لايوجد اعضاء مميزين',
+                                AppLocalizations.of(context)!.noPremiumMembers,
                                 textAlign: TextAlign.center,
+                                textDirection:
+                                    LocalizationService.instance.textDirection,
                               ),
                             ),
                           );
                         }
                         if (state is MembersListLoaded<UsersDataModel>) {
-                          final items = state.items;
+                          final allMembers = state.items;
+                          final items = _getFilteredMembers(allMembers);
                           return Expanded(
                             child: Column(
                               children: [
@@ -276,9 +345,15 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                                                     strokeWidth: 2,
                                                   ),
                                                   const SizedBox(height: 8),
-                                                  const Text(
-                                                    'جاري تحميل المزيد...',
+                                                  Text(
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .loadingMore,
                                                     textAlign: TextAlign.center,
+                                                    textDirection:
+                                                        LocalizationService
+                                                            .instance
+                                                            .textDirection,
                                                     style: TextStyle(
                                                       fontSize: 12,
                                                       color: Colors.grey,

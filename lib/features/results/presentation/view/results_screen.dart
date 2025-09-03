@@ -3,6 +3,8 @@ import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
@@ -26,7 +28,7 @@ class _SearchResultsViewState extends State<SearchResultsView> {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: CustomProfileBody(
@@ -36,7 +38,7 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                 return CustomProfileBody(
                     contentBody: Column(
                   children: [
-                    ProfileHeader(title: 'نتائج البحث'),
+                    ProfileHeader(title: AppLocalizations.of(context)!.searchResults),
                     verticalSpace(42),
                     Expanded(
                         child:
@@ -47,7 +49,7 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                 final results = state.results;
                 return Column(
                   children: [
-                    ProfileHeader(title: 'نتائج البحث'),
+                    ProfileHeader(title: AppLocalizations.of(context)!.searchResults),
                     verticalSpace(42),
                     Container(
                       width: double.infinity,
@@ -55,8 +57,9 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                           horizontal: 20, vertical: 12),
                       color: Colors.white,
                       child: Text(
-                        'عدد النتائج: ${results.length}',
-                        textAlign: TextAlign.center,
+                        AppLocalizations.of(context)!.resultsCount(results.length),
+                        textAlign: LocalizationService.instance.textAlignment,
+                        textDirection: LocalizationService.instance.textDirection,
                         style: const TextStyle(
                             color: Color(0xFFD4AF37),
                             fontSize: 14,
@@ -96,7 +99,7 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                 return CustomProfileBody(
                     contentBody: Column(
                   children: [
-                    ProfileHeader(title: 'نتائج البحث'),
+                    ProfileHeader(title: AppLocalizations.of(context)!.searchResults),
                     verticalSpace(42),
                     Expanded(
                         child: Center(
@@ -109,11 +112,11 @@ class _SearchResultsViewState extends State<SearchResultsView> {
               return CustomProfileBody(
                   contentBody: Column(
                 children: [
-                  ProfileHeader(title: 'نتائج البحث'),
+                  ProfileHeader(title: AppLocalizations.of(context)!.searchResults),
                   verticalSpace(42),
                   Expanded(
-                      child:
-                          const Center(child: Text("ابدأ البحث لعرض النتائج"))),
+                      child: Center(
+                          child: Text(AppLocalizations.of(context)!.startSearchToShowResults))),
                 ],
               ));
             },

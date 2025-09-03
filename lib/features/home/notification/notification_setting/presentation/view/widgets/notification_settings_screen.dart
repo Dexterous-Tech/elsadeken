@@ -1,4 +1,3 @@
-import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +47,13 @@ class _NotificationSettingsContentState
       if (mounted) {
         context
             .read<home.NotificationSettingsCubit>()
-            .loadNotificationSettings();
+            .loadNotificationSettings(
+              whoAddedMeToFavorites: AppLocalizations.of(context)!.whoAddedMeToFavorites,
+              profileVisits: AppLocalizations.of(context)!.profileVisits,
+              whoAddedMeToIgnoreList: AppLocalizations.of(context)!.whoAddedMeToIgnoreList,
+              newMessages: AppLocalizations.of(context)!.newMessages,
+              successStories: AppLocalizations.of(context)!.successStories,
+            );
       }
     });
   }
@@ -81,10 +86,9 @@ class _NotificationSettingsContentState
   // Top Bar with background
   Widget _buildAppBar() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      child: ProfileHeader(
-          title: LocalizationHelper.getLocalizedText(
-              'إعدادات الإشعارات', 'Notification Setting')),
+      padding: EdgeInsetsDirectional.symmetric(horizontal: 16.w, vertical: 12.h),
+      child:         ProfileHeader(
+            title: AppLocalizations.of(context)!.notificationSettings),
     );
   }
 
@@ -108,19 +112,25 @@ class _NotificationSettingsContentState
               textDirection: LocalizationService.instance.textDirection, // K
               children: [
                 Text(
-                  LocalizationHelper.getLocalizedText('خطأ في تحميل الإعدادات',
-                      'Error in loading notification'),
+                  AppLocalizations.of(context)!.errorLoadingSettings,
                   style: TextStyle(
                     fontSize: 18.sp,
                     color: Colors.red,
                   ),
+                  textDirection: LocalizationService.instance.textDirection,
                 ),
                 SizedBox(height: 16.h),
                 ElevatedButton(
                   onPressed: () {
                     context
                         .read<home.NotificationSettingsCubit>()
-                        .loadNotificationSettings();
+                        .loadNotificationSettings(
+                          whoAddedMeToFavorites: AppLocalizations.of(context)!.whoAddedMeToFavorites,
+                          profileVisits: AppLocalizations.of(context)!.profileVisits,
+                          whoAddedMeToIgnoreList: AppLocalizations.of(context)!.whoAddedMeToIgnoreList,
+                          newMessages: AppLocalizations.of(context)!.newMessages,
+                          successStories: AppLocalizations.of(context)!.successStories,
+                        );
                   },
                   child: Text(AppLocalizations.of(context)!.tryAgain),
                 ),
@@ -161,8 +171,10 @@ class _NotificationSettingsContentState
         }
 
         return Center(
-          child: Text(LocalizationHelper.getLocalizedText(
-              'لا توجد إعدادات', 'No settings')),
+          child: Text(
+            AppLocalizations.of(context)!.noData,
+            textDirection: LocalizationService.instance.textDirection,
+          ),
         );
       },
     );
@@ -202,6 +214,7 @@ class _NotificationSettingsContentState
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
                 ),
+                textDirection: LocalizationService.instance.textDirection,
               ),
               value: setting['value'] ?? false,
               onChanged: (bool newValue) {

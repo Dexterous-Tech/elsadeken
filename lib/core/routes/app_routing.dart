@@ -22,7 +22,6 @@ import 'package:elsadeken/features/profile/members_profile/presentation/view/mem
 import 'package:elsadeken/features/profile/my_excellence/presentation/view/my_excellence_screen.dart';
 import 'package:elsadeken/features/profile/my_image/presentation/view/my_image_screen.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/view/my_interesting_list_screen.dart';
-import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/profile_details_screen.dart';
 import 'package:elsadeken/features/profile/success_stories/presentation/cubit/success_story_cubit.dart';
 import 'package:elsadeken/features/profile/success_stories/presentation/view/success_story_screen.dart';
@@ -36,10 +35,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/chat/presentation/view/screen/chat_conversation_screen.dart';
 import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
+import 'package:elsadeken/features/chat/presentation/view/screen/chat_settings_screen_example.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 
 import '../../features/profile/my_ignoring_list/presentation/view/my_ignoring_list_screen.dart';
 import 'package:elsadeken/features/profile/terms_conditions/presentation/view/terms_and_conditions_screen.dart';
@@ -62,23 +63,23 @@ class AppRouting {
           final initialStep = arguments['initialStep'] as int? ?? 0;
           return MaterialPageRoute(
               builder: (_) => SignupScreen(
-                    gender: gender,
-                    initialStep: initialStep,
-                  ));
+                gender: gender,
+                initialStep: initialStep,
+              ));
         } else if (arguments is String) {
           // Handle case when coming from other places with just gender
           return MaterialPageRoute(
               builder: (_) => SignupScreen(
-                    gender: arguments,
-                    initialStep: 0,
-                  ));
+                gender: arguments,
+                initialStep: 0,
+              ));
         } else {
           // Fallback with default values
           return MaterialPageRoute(
               builder: (_) => SignupScreen(
-                    gender: 'male',
-                    initialStep: 0,
-                  ));
+                gender: 'male',
+                initialStep: 0,
+              ));
         }
       case AppRoutes.loginScreen:
         return MaterialPageRoute(builder: (_) => LoginScreen());
@@ -87,15 +88,15 @@ class AppRouting {
       case AppRoutes.verificationEmailScreen:
         return MaterialPageRoute(
             builder: (_) => VerificationEmailScreen(
-                  email: arguments as String,
-                ));
+              email: arguments as String,
+            ));
       case AppRoutes.newPasswordScreen:
         return MaterialPageRoute(
             builder: (_) => NewPasswordScreen(
-                  email: arguments as String,
-                ));
-      // case AppRoutes.profileScreen:
-      //   return MaterialPageRoute(builder: (_) => ProfileScreen());
+              email: arguments as String,
+            ));
+    // case AppRoutes.profileScreen:
+    //   return MaterialPageRoute(builder: (_) => ProfileScreen());
       case AppRoutes.manageProfileScreen:
         return MaterialPageRoute(builder: (_) => ManageProfileScreen());
       case AppRoutes.searchScreen:
@@ -120,13 +121,13 @@ class AppRouting {
       case AppRoutes.homeScreen:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
-                  create: (context) => SearchCubit(sl<SearchUseCase>()),
-                  child: HomeScreenWrapper(),
-                ));
+              create: (context) => SearchCubit(sl<SearchUseCase>()),
+              child: HomeScreenWrapper(),
+            ));
       case AppRoutes.notificationScreen:
         return MaterialPageRoute(builder: (_) => NotificationScreen());
       case AppRoutes.profileDetailsScreen:
-        // Handle both UsersDataModel and int arguments
+      // Handle both UsersDataModel and int arguments
         if (arguments is UsersDataModel) {
           return MaterialPageRoute(
               builder: (_) => ProfileDetailsScreen(user: arguments));
@@ -148,9 +149,9 @@ class AppRouting {
         final imageUrl = args['imageUrl'] as String;
         return MaterialPageRoute(
             builder: (_) => PersonDetailsView(
-                  personId: personId,
-                  imageUrl: imageUrl,
-                ));
+              personId: personId,
+              imageUrl: imageUrl,
+            ));
       case AppRoutes.profileAboutUsScreen:
         return MaterialPageRoute(builder: (_) => AboutUsScreen());
       case AppRoutes.profileExcellencePackageScreen:
@@ -174,9 +175,9 @@ class AppRouting {
       case AppRoutes.successStoriesScreen:
         return MaterialPageRoute(
             builder: (_) => BlocProvider.value(
-                  value: sl<SuccessStoryCubit>()..loadStories(),
-                  child: SuccessStoriesScreen(),
-                ));
+              value: sl<SuccessStoryCubit>()..loadStories(),
+              child: SuccessStoriesScreen(),
+            ));
       case AppRoutes.blogScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider.value(
@@ -196,12 +197,14 @@ class AppRouting {
               BlocProvider(create: (context) => sl<PusherCubit>()),
               BlocProvider(create: (context) => sl<ChatListCubit>()),
               BlocProvider(create: (context) => sl<ProfileDetailsCubit>()),
-              BlocProvider(create: (context) => sl<ManageProfileCubit>()),
             ],
             child: ChatConversationScreen(chatRoom: chatRoom),
           ),
         );
-
+      case AppRoutes.chatSettingsScreen:
+        return MaterialPageRoute(
+          builder: (_) => const ChatSettingsScreenWrapper(),
+        );
       case AppRoutes.termsAndConditionsScreen:
         return MaterialPageRoute(builder: (_) => TermsAndConditionsScreen());
       default:

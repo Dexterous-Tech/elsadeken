@@ -435,6 +435,7 @@
   "howTallAreYou": "How tall are you (cm)?",
   
   "premiumMembersCount": "Premium Members Count: {count}",
+  "noPremiumMembers": "No premium members",
   "onlineMembersCount": "Online Now: {count}",
   "whoVisitedMyProfile": "Who Visited My Profile",
   "noResultsCurrently": "No results currently",
@@ -608,7 +609,34 @@
     "next": "Next" ,
     "continueButton": "Continue" ,
       "specialMember" : "Special Member",
-        "dragLoading" : "Drag to load"
+        "dragLoading" : "Drag to load",
+  
+  "errorLoadingSettings": "Error loading settings",
+  "cannotUpdateSettingsBeforeLoading": "Cannot update settings before loading them",
+  "noChatSettingsContactSupport": "No chat settings - please contact technical support",
+  "connectionTimeoutRetry": "Connection timeout - please try again",
+  "requestMethodError": "Request method error - please try again",
+  "sessionExpiredRelogin": "Session expired - please login again",
+  "serverErrorTryLater": "Server error - please try later",
+  "connectionTimeoutCheckInternet": "Connection timeout - please check your internet",
+  "settingsNotFoundContactSupport": "Settings not found - please contact technical support",
+  "errorUpdatingSettings": "Error updating settings",
+  
+  "notifications": "Notifications",
+  "notificationSettings": "Notification Settings",
+  "noNotificationsYet": "There are no notifications yet",
+  "notificationsWillAppearHere": "Your notifications will appear here when new messages arrive",
+  "view": "View",
+  "searchResults": "Search Results",
+  "startSearchToShowResults": "Start searching to show results",
+  "resultsCount": "Results Count: {count}",
+  "yearsOld": "years old",
+  
+  "whoAddedMeToFavorites": "Who added me to their favorites?",
+  "profileVisits": "Profile visits",
+  "whoAddedMeToIgnoreList": "Who added me to their ignore list?",
+  "newMessages": "New messages",
+  "successStories": "Success stories"
 
 
 

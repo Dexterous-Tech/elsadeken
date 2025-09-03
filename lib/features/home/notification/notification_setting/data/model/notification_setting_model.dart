@@ -105,32 +105,38 @@ class NotificationSettingDataModel {
     return map;
   }
 
-  /// Convert settings to a list format for UI display
-  List<Map<String, dynamic>> toSettingsList() {
+  /// Convert settings to a list format for UI display with localized titles
+  List<Map<String, dynamic>> toSettingsList({
+    String? whoAddedMeToFavorites,
+    String? profileVisits,
+    String? whoAddedMeToIgnoreList,
+    String? newMessages,
+    String? successStories,
+  }) {
     return [
       {
         'id': 'favorite_list',
-        'title': 'من وضعني في قائمته المفضلة؟',
+        'title': whoAddedMeToFavorites ?? 'من وضعني في قائمته المفضلة؟',
         'value': favoriteList ?? false,
       },
       {
         'id': 'visit_profile',
-        'title': 'زيارات ملفي الشخصي',
+        'title': profileVisits ?? 'زيارات ملفي الشخصي',
         'value': visitProfile ?? false,
       },
       {
         'id': 'ignore_list',
-        'title': 'من أضافني إلى قائمة التجاهل؟',
+        'title': whoAddedMeToIgnoreList ?? 'من أضافني إلى قائمة التجاهل؟',
         'value': ignoreList ?? false,
       },
       {
         'id': 'message',
-        'title': 'رسائل جديدة',
+        'title': newMessages ?? 'رسائل جديدة',
         'value': message ?? false,
       },
       {
         'id': 'blog',
-        'title': 'قصص ناجحة',
+        'title': successStories ?? 'قصص ناجحة',
         'value': blog ?? false,
       },
     ];

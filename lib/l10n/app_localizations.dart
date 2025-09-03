@@ -362,7 +362,7 @@ abstract class AppLocalizations {
   /// No description provided for @successStories.
   ///
   /// In en, this message translates to:
-  /// **'Success Stories'**
+  /// **'Success stories'**
   String get successStories;
 
   /// No description provided for @blog.
@@ -536,7 +536,7 @@ abstract class AppLocalizations {
   /// No description provided for @newMessages.
   ///
   /// In en, this message translates to:
-  /// **'New Messages'**
+  /// **'New messages'**
   String get newMessages;
 
   /// No description provided for @ageGroup.
@@ -830,8 +830,8 @@ abstract class AppLocalizations {
   /// No description provided for @searchResults.
   ///
   /// In en, this message translates to:
-  /// **'Found {count} results'**
-  String searchResults(Object count);
+  /// **'Search Results'**
+  String get searchResults;
 
   /// No description provided for @noResults.
   ///
@@ -2111,6 +2111,12 @@ abstract class AppLocalizations {
   /// **'Premium Members Count: {count}'**
   String premiumMembersCount(Object count);
 
+  /// No description provided for @noPremiumMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'No premium members'**
+  String get noPremiumMembers;
+
   /// No description provided for @onlineMembersCount.
   ///
   /// In en, this message translates to:
@@ -2668,6 +2674,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Drag to load'**
   String get dragLoading;
+
+  /// No description provided for @errorLoadingSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading settings'**
+  String get errorLoadingSettings;
+
+  /// No description provided for @cannotUpdateSettingsBeforeLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot update settings before loading them'**
+  String get cannotUpdateSettingsBeforeLoading;
+
+  /// No description provided for @noChatSettingsContactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'No chat settings - please contact technical support'**
+  String get noChatSettingsContactSupport;
+
+  /// No description provided for @connectionTimeoutRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection timeout - please try again'**
+  String get connectionTimeoutRetry;
+
+  /// No description provided for @requestMethodError.
+  ///
+  /// In en, this message translates to:
+  /// **'Request method error - please try again'**
+  String get requestMethodError;
+
+  /// No description provided for @sessionExpiredRelogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Session expired - please login again'**
+  String get sessionExpiredRelogin;
+
+  /// No description provided for @serverErrorTryLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Server error - please try later'**
+  String get serverErrorTryLater;
+
+  /// No description provided for @connectionTimeoutCheckInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection timeout - please check your internet'**
+  String get connectionTimeoutCheckInternet;
+
+  /// No description provided for @settingsNotFoundContactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings not found - please contact technical support'**
+  String get settingsNotFoundContactSupport;
+
+  /// No description provided for @errorUpdatingSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Error updating settings'**
+  String get errorUpdatingSettings;
+
+  /// No description provided for @notificationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get notificationSettings;
+
+  /// No description provided for @noNotificationsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no notifications yet'**
+  String get noNotificationsYet;
+
+  /// No description provided for @notificationsWillAppearHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Your notifications will appear here when new messages arrive'**
+  String get notificationsWillAppearHere;
+
+  /// No description provided for @view.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get view;
+
+  /// No description provided for @startSearchToShowResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Start searching to show results'**
+  String get startSearchToShowResults;
+
+  /// No description provided for @yearsOld.
+  ///
+  /// In en, this message translates to:
+  /// **'years old'**
+  String get yearsOld;
+
+  /// No description provided for @whoAddedMeToFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Who added me to their favorites?'**
+  String get whoAddedMeToFavorites;
+
+  /// No description provided for @profileVisits.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile visits'**
+  String get profileVisits;
+
+  /// No description provided for @whoAddedMeToIgnoreList.
+  ///
+  /// In en, this message translates to:
+  /// **'Who added me to their ignore list?'**
+  String get whoAddedMeToIgnoreList;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -174,47 +174,53 @@ class ChatOptionsCard extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                AppLocalizations.of(context)!.cancel,
-                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                  color: Colors.grey[600],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    AppLocalizations.of(context)!.cancel,
+                    style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                      color: Colors.grey[600],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            TextButton(
-                              onPressed: () {
-                  Navigator.of(context).pop();
-                  // Call the cubit method to mark all as read
-                  chatListCubit.markAllMessagesAsRead();
-                  
-                  // Show success snackbar
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content:  Text(
-                        AppLocalizations.of(context)!.doneReadCont,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // Call the cubit method to mark all as read
+                    chatListCubit.markAllMessagesAsRead();
+
+                    // Show success snackbar
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:  Text(
+                          AppLocalizations.of(context)!.doneReadCont,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        backgroundColor: Colors.green,
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      backgroundColor: Colors.green,
-                      duration: const Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                    );
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.confirm,
+                    style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                      color: Colors.green,
                     ),
-                  );
-                },
-              child: Text(
-                AppLocalizations.of(context)!.confirm,
-                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                  color: Colors.green,
+                  ),
                 ),
-              ),
-            ),
+              ],
+            )
           ],
         );
       },
@@ -241,47 +247,56 @@ class ChatOptionsCard extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                AppLocalizations.of(context)!.cancel,
-                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                  color: Colors.grey[600],
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                // Call the cubit method to delete all chats
-                chatListCubit.deleteAllChats();
-
-                // Show success snackbar
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content:  Text(
-                      AppLocalizations.of(context)!.delteDone,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    AppLocalizations.of(context)!.cancel,
+                    style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                      color: Colors.grey[600],
                     ),
-                    backgroundColor: Colors.red,
-                    duration: const Duration(seconds: 3),
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    textAlign: TextAlign.center,
                   ),
-                );
-              },
-              child: Text(
-                AppLocalizations.of(context)!.delete,
-                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                  color: Colors.red,
                 ),
-              ),
-            ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // Call the cubit method to delete all chats
+                    chatListCubit.deleteAllChats();
+
+                    // Show success snackbar
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:  Text(
+                          AppLocalizations.of(context)!.delteDone,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        backgroundColor: Colors.red,
+                        duration: const Duration(seconds: 3),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.delete,
+                    style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                      color: Colors.red,
+                    ),
+                    textAlign: TextAlign.center,
+
+                  ),
+                ),
+              ],
+            )
           ],
         );
       },

@@ -50,7 +50,7 @@ class ApiUserModel {
       name: name,
       age: age,
       profession: job,
-      location: '$city, $country',
+      location: '$country, $city',
       imageUrl: image,
       matchPercentage: matchPercentage,
       isFavorite: isFavorite,
