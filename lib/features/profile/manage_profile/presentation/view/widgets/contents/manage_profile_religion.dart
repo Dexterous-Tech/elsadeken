@@ -59,7 +59,7 @@ class ManageProfileReligion extends StatelessWidget {
             ),
           ),
         // Show hijab for females only
-        if (profileData?.gender == 'female' || profileData?.gender == 'أنثى')
+        if (profileData?.gender != 'male' && profileData?.gender != 'ذكر')
           ManageProfileContentItem(
             title: 'الحجاب',
             itemContent: ManageProfileContentText(
@@ -127,7 +127,7 @@ class ManageProfileReligion extends StatelessWidget {
             options: beardOptions.values.toList(),
           ),
         // Show hijab for females only
-        if (profileData?.gender == 'female' || profileData?.gender == 'أنثى')
+        if (profileData?.gender != 'male' && profileData?.gender != 'ذكر')
           ManageProfileField(
             label: 'الحجاب',
             hint: 'اختر حالة الحجاب',

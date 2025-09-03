@@ -102,7 +102,7 @@ class _SignupJobState extends State<SignupJob> {
                     CustomTextFormField(
                       controller: cubit.incomeController,
                       keyboardType: TextInputType.number,
-                      hintText: '5000',
+                      hintText: '0',
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly, // ✅ Only digits
                         LengthLimitingTextInputFormatter(
@@ -116,6 +116,9 @@ class _SignupJobState extends State<SignupJob> {
                         final income = int.tryParse(value);
                         if (income == null) {
                           return 'يرجى إدخال رقم صحيح';
+                        }
+                        if (income < 0) {
+                          return 'لا يمكن ان يقل الدخل الشهري عن 0';
                         }
 
                         return null;

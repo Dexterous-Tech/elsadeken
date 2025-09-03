@@ -393,7 +393,7 @@ class ProfileDetailsData extends StatelessWidget {
     if (state is GetProfileDetailsSuccess) {
       final income = state.profileDetailsResponseModel.data?.attribute?.income;
       if (income == null) return 'لا يوجد';
-      return '$income جنية';
+      return '$income';
     }
     return 'لا يوجد';
   }

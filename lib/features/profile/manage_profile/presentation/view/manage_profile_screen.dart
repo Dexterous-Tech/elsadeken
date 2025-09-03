@@ -18,7 +18,12 @@ class ManageProfileScreen extends StatelessWidget {
         BlocProvider(create: (context) => sl<UpdateProfileCubit>()),
         BlocProvider(create: (context) => sl<SignUpListsCubit>()),
       ],
-      child: Scaffold(body: ManageProfileBody()),
+      child: Scaffold(
+          body: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus(); // Close keyboard
+              },
+              child: ManageProfileBody())),
     );
   }
 }

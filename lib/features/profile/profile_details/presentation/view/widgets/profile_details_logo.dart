@@ -22,6 +22,7 @@ class ProfileDetailsLogo extends StatelessWidget {
         String image = ''; // Default image
         String name = 'لا يوجد';
         String status = 'لا يوجد';
+        String age = 'لا يوجد';
         bool isLoading = state is GetProfileDetailsLoading;
         bool isFeatured = false;
 
@@ -40,6 +41,7 @@ class ProfileDetailsLogo extends StatelessWidget {
 
             // Get status (you might need to add this field to your model)
             status = userData.attribute?.maritalStatus ?? 'غير معروف';
+            age = userData.attribute?.age.toString() ?? 'غير معروف';
 
             // Check if user is featured
             isFeatured = userData.isFeatured == 1;
@@ -57,15 +59,45 @@ class ProfileDetailsLogo extends StatelessWidget {
                         color: AppColors.philippineBronze,
                       ),
                     )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: CustomImageNetwork(
-                        image: image,
-                        width: 145.w,
-                        height: 145.h,
-                      ),
+                  : Stack(
+                      alignment: Alignment.bottomCenter,
+                      clipBehavior: Clip.none,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: CustomImageNetwork(
+                            image: image,
+                            width: 145.w,
+                            height: 145.h,
+                          ),
+                        ),
+                        if (isFeatured)
+                          Positioned(
+                            top: 0,
+                            bottom: -130,
+                            child: Container(
+                              width: 170.w,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  // fit: BoxFit.cover,
+                                  image: AssetImage(AppImages.ribbonProfile),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'عضو مميز',
+                                  style: AppTextStyles.font14JetRegularLamaSans
+                                      .copyWith(
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-              verticalSpace(30),
+              verticalSpace(isFeatured ? 32 : 16),
               isLoading
                   ? SizedBox(
                       width: 20.w,
@@ -94,19 +126,10 @@ class ProfileDetailsLogo extends StatelessWidget {
                       ),
                     )
                   : Text(
-                      status,
-                      style: AppTextStyles.font13BlackMediumLamaSans,
+                      '$status - $ageسنة ',
+                      style: AppTextStyles.font13BlackMediumLamaSans
+                          .copyWith(color: AppColors.philippineBronze),
                     ),
-              if (isFeatured) ...[
-                verticalSpace(8),
-                Text(
-                  'عضو مميز',
-                  style: AppTextStyles.font14JetRegularLamaSans.copyWith(
-                    color: AppColors.philippineBronze,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
             ],
           ),
         );

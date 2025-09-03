@@ -8,6 +8,8 @@ import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
+import 'package:elsadeken/core/widgets/forms/custom_country_code_picker.dart';
 
 class ManageProfileLoginData extends StatelessWidget {
   const ManageProfileLoginData({
@@ -43,7 +45,7 @@ class ManageProfileLoginData extends StatelessWidget {
         ManageProfileContentItem(
           title: 'رقم الهاتف',
           itemContent: ManageProfileContentText(
-            text: profileData?.phone ?? '',
+            text: _formatPhoneNumber(),
             isLoading: isLoading,
           ),
         ),
@@ -111,6 +113,25 @@ class ManageProfileLoginData extends StatelessWidget {
     }
   }
 
+  String _formatPhoneNumber() {
+    final countryCode = profileData?.countryCode ?? '';
+    final phone = profileData?.phone ?? '';
+
+    if (countryCode.isEmpty && phone.isEmpty) {
+      return '';
+    }
+
+    if (countryCode.isEmpty) {
+      return phone;
+    }
+
+    if (phone.isEmpty) {
+      return countryCode;
+    }
+
+    return '$countryCode $phone';
+  }
+
   void _showLoginDataEditDialog(BuildContext context) {
     final updateProfileCubit = context.read<UpdateProfileCubit>();
 
@@ -130,8 +151,10 @@ class ManageProfileLoginData extends StatelessWidget {
         ManageProfileField(
           label: 'رقم الهاتف',
           hint: 'أدخل رقم الهاتف',
-          currentValue: profileData?.phone ?? '',
-          type: ManageProfileFieldType.text,
+          currentValue:
+              '${profileData?.countryCode ?? '+966'} ${profileData?.phone ?? ''}'
+                  .trim(),
+          type: ManageProfileFieldType.phoneWithCountryCode,
           keyboardType: TextInputType.phone,
         ),
         ManageProfileField(

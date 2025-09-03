@@ -4,6 +4,7 @@ import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/repo/manage_profile_repo.dart';
 import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
+import 'dart:io';
 
 part 'manage_profile_state.dart';
 
@@ -61,6 +62,11 @@ class ManageProfileCubit extends Cubit<ManageProfileState> {
         bool isBlocked = r.data!.isBlocked == 1;
         await SharedPreferencesHelper.setBool(
             SharedPreferencesKey.isBlocked, isBlocked);
+
+        // If user is blocked, delete shared preferences and close app
+        if (isBlocked) {
+          await _handleBlockedUser();
+        }
       }
 
       emit(ManageProfileSuccess(r));
@@ -77,5 +83,20 @@ class ManageProfileCubit extends Cubit<ManageProfileState> {
       // await DioFactory.resetDio();
       emit(DeleteProfileSuccess(deleteProfile));
     });
+  }
+
+  /// Handles blocked users by deleting shared preferences and closing the app
+  Future<void> _handleBlockedUser() async {
+    try {
+      // Delete all shared preferences including token
+      await SharedPreferencesHelper.clearAllAppState();
+
+      // Close the app
+      exit(0);
+    } catch (e) {
+      print('Error handling blocked user: $e');
+      // Force exit even if there's an error
+      exit(0);
+    }
   }
 }

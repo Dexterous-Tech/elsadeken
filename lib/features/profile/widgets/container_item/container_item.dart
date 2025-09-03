@@ -15,10 +15,14 @@ class ContainerItem extends StatelessWidget {
     super.key,
     this.isTime = false,
     this.favUser,
+    this.isSpecial = false,
+    this.time = '',
   });
 
   final bool isTime;
   final UsersDataModel? favUser;
+  final bool isSpecial;
+  final String time;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +54,7 @@ class ContainerItem extends StatelessWidget {
           children: [
             ProfileListsItemLogo(
               image: favUser?.image,
+              isSpecial: isSpecial,
             ),
             horizontalSpace(16),
             Expanded(
@@ -65,39 +70,40 @@ class ContainerItem extends StatelessWidget {
                     style: AppTextStyles.font14BeerMediumLamaSans
                         .copyWith(color: Color(0xff7D7D7D)),
                   ),
-                  isTime
-                      ? Text(
-                          'Okay then lets meet in 15 mi.. ',
-                          maxLines: 1,
+                  if (isTime) ...[
+                    Text(
+                      time,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.font12JetRegularLamaSans
+                          .copyWith(color: AppColors.pumpkinOrange),
+                    ),
+                  ],
+                  Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      Image.asset(
+                        AppImages.homeLocation,
+                        width: 12.5.w,
+                        height: 15.h,
+                      ),
+                      // horizontalSpace(3),
+                      Expanded(
+                        child: Text(
+                          location,
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.font12JetRegularLamaSans
-                              .copyWith(color: AppColors.pumpkinOrange),
-                        )
-                      : Row(
-                          textDirection: TextDirection.rtl,
-                          children: [
-                            Image.asset(
-                              AppImages.homeLocation,
-                              width: 12.5.w,
-                              height: 15.h,
+                          textAlign: TextAlign.right,
+                          style:
+                              AppTextStyles.font13BlackMediumLamaSans.copyWith(
+                            color: AppColors.black.withValues(
+                              alpha: 0.87,
                             ),
-                            // horizontalSpace(3),
-                            Expanded(
-                              child: Text(
-                                location,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.right,
-                                style: AppTextStyles.font13BlackMediumLamaSans
-                                    .copyWith(
-                                  color: AppColors.black.withValues(
-                                    alpha: 0.87,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -111,7 +117,9 @@ class ContainerItem extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  '56 سنه',
+                  favUser?.attribute?.age != null
+                      ? '${favUser!.attribute!.age} سنه'
+                      : 'لا يوجد',
                   textDirection: TextDirection.rtl,
                   textAlign: TextAlign.right,
                   style: AppTextStyles.font14BlackSemiBoldLamaSans

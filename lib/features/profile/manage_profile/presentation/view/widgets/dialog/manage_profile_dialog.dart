@@ -8,6 +8,7 @@ import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
 import 'package:elsadeken/core/widgets/forms/custom_drop_down_menu.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
+import 'package:elsadeken/core/widgets/forms/custom_country_code_picker.dart';
 
 import 'package:elsadeken/features/auth/signup/data/models/cities_models.dart';
 import 'package:elsadeken/features/auth/signup/data/models/general_info_models.dart';
@@ -15,6 +16,7 @@ import 'package:elsadeken/features/auth/signup/data/models/national_country_mode
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -82,6 +84,7 @@ enum ManageProfileFieldType {
   text,
   dropdown,
   password,
+  phoneWithCountryCode,
 }
 
 enum ManageProfileFieldDataType {
@@ -112,6 +115,7 @@ Future<void> manageProfileDialog(
   return customDialog(
     context: context,
     backgroundColor: AppColors.white,
+    showFilter: false,
     dialogContent: data.cubit != null
         ? MultiBlocProvider(
             providers: [
@@ -500,6 +504,69 @@ class _ManageProfileDialogContentState
     }
   }
 
+  void _showSnackBarAboveDialog(
+      BuildContext context, String message, Color backgroundColor) {
+    // Show snackbar at the top of the screen using Overlay
+    OverlayEntry? overlayEntry;
+
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top +
+            20, // Position below status bar
+        left: 16,
+        right: 16,
+        child: Material(
+          elevation: 8,
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    message,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.close, color: Colors.white, size: 20),
+                  onPressed: () {
+                    overlayEntry?.remove();
+                  },
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(minWidth: 24, minHeight: 24),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // Insert the overlay
+    Overlay.of(context).insert(overlayEntry);
+
+    // Auto-remove after 3 seconds
+    Future.delayed(Duration(seconds: 3), () {
+      overlayEntry?.remove();
+    });
+  }
+
   void _handleUpdateProfileState(
       BuildContext context, UpdateProfileState state) {
     if (state is UpdateProfileLoginDataLoading ||
@@ -584,25 +651,86 @@ class _ManageProfileDialogContentState
 
       // If password is entered, confirm password is required
       if (password.isNotEmpty && passwordConfirmation.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('يرجى تأكيد كلمة المرور'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        _showSnackBarAboveDialog(context, 'يرجى تأكيد كلمة المرور', Colors.red);
         return;
       }
 
       // If both password fields are filled, validate they match
       if (password.isNotEmpty && passwordConfirmation.isNotEmpty) {
         if (password != passwordConfirmation) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('كلمة المرور وتأكيد كلمة المرور غير متطابقين'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          _showSnackBarAboveDialog(context,
+              'كلمة المرور وتأكيد كلمة المرور غير متطابقين', Colors.red);
           return;
+        }
+      }
+
+      // Additional validation for login data fields
+      if (widget.data.dialogType == ManageProfileDialogType.loginData) {
+        final name = widget.controllers['اسم المستخدم']?.text ?? '';
+        final email = widget.controllers['البريد الإلكتروني']?.text ?? '';
+        final phone = widget.controllers['رقم الهاتف']?.text ?? '';
+
+        // Validate name
+        if (name.trim().length < 2) {
+          _showSnackBarAboveDialog(
+              context, 'اسم المستخدم يجب أن يكون على الأقل حرفين', Colors.red);
+          return;
+        }
+
+        if (name.trim().length > 50) {
+          _showSnackBarAboveDialog(
+              context, 'اسم المستخدم لا يمكن أن يتجاوز 50 حرف', Colors.red);
+          return;
+        }
+
+        // Validate email
+        if (email.isNotEmpty) {
+          final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+          if (!emailRegex.hasMatch(email.trim())) {
+            _showSnackBarAboveDialog(
+                context, 'يرجى إدخال بريد إلكتروني صحيح', Colors.red);
+            return;
+          }
+        }
+
+        // Validate phone
+        if (phone.isNotEmpty) {
+          final cleanPhone = phone.replaceAll(RegExp(r'[^\d]'), '');
+          if (cleanPhone.length < 8 || cleanPhone.length > 15) {
+            _showSnackBarAboveDialog(
+                context, 'رقم الهاتف يجب أن يكون بين 8 و 15 رقم', Colors.red);
+            return;
+          }
+        }
+
+        // Validate password if provided
+        if (password.isNotEmpty) {
+          if (password.length < 6) {
+            _showSnackBarAboveDialog(context,
+                'كلمة المرور يجب أن تحتوي على 6 أحرف على الأقل', Colors.red);
+            return;
+          }
+
+          final hasNumber = RegExp(r'[0-9]').hasMatch(password);
+          final hasSymbol =
+              RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+          if (!hasNumber && !hasSymbol) {
+            _showSnackBarAboveDialog(
+                context,
+                'كلمة المرور يجب أن تحتوي على رقم واحد (0-9) أو رمز على الأقل',
+                Colors.red);
+            return;
+          }
+
+          final hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
+          final hasLowercase = RegExp(r'[a-z]').hasMatch(password);
+          if (!hasUppercase || !hasLowercase) {
+            _showSnackBarAboveDialog(
+                context,
+                'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير على الأقل',
+                Colors.red);
+            return;
+          }
         }
       }
 
@@ -621,10 +749,25 @@ class _ManageProfileDialogContentState
         final email = widget.controllers['البريد الإلكتروني']?.text ?? '';
         final phone = widget.controllers['رقم الهاتف']?.text ?? '';
 
+        // Extract country code and phone number from the phone field
+        String? countryCode;
+        String? phoneNumber;
+
+        if (phone.isNotEmpty) {
+          final parts = phone.split(' ');
+          if (parts.length >= 2) {
+            countryCode = parts[0];
+            phoneNumber = parts.sublist(1).join(' ');
+          } else {
+            phoneNumber = phone;
+          }
+        }
+
         widget.data.cubit!.updateProfileLoginData(
           name: name.isNotEmpty ? name : null,
           email: email.isNotEmpty ? email : null,
-          phone: phone.isNotEmpty ? phone : null,
+          phone: phoneNumber?.isNotEmpty == true ? phoneNumber : null,
+          countryCode: countryCode?.isNotEmpty == true ? countryCode : null,
           password: password.isNotEmpty ? password : null,
           passwordConfirmation:
               passwordConfirmation.isNotEmpty ? passwordConfirmation : null,
@@ -663,12 +806,8 @@ class _ManageProfileDialogContentState
         } else {
           print('DEBUG: Some IDs are null, showing error message');
           // Show error message if any required field is missing
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('يرجى اختيار جميع الحقول المطلوبة'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          _showSnackBarAboveDialog(
+              context, 'يرجى اختيار جميع الحقول المطلوبة', Colors.red);
         }
         break;
 
@@ -681,6 +820,21 @@ class _ManageProfileDialogContentState
         final monthlyIncomeStr = widget.controllers['الدخل الشهري']?.text ?? '';
         final healthConditionName =
             widget.controllers['الحالة الصحية']?.text ?? '';
+
+        // Validate income - must be greater than 0
+        if (monthlyIncomeStr.isNotEmpty) {
+          final income = int.tryParse(monthlyIncomeStr);
+          if (income == null) {
+            _showSnackBarAboveDialog(
+                context, 'يرجى إدخال رقم صحيح للدخل الشهري', Colors.red);
+            return;
+          }
+          if (income <= 0) {
+            _showSnackBarAboveDialog(
+                context, 'الدخل الشهري يجب أن يكون أكبر من صفر', Colors.red);
+            return;
+          }
+        }
 
         // Debug: Print collected values
         print('DEBUG: Collected Job Values:');
@@ -729,6 +883,36 @@ class _ManageProfileDialogContentState
         final typeOfMarriage = widget.controllers['نوع الزواج']?.text ?? '';
         final ageStr = widget.controllers['العمر']?.text ?? '';
         final childrenStr = widget.controllers['عدد الأطفال']?.text ?? '';
+
+        // Validate age
+        if (ageStr.isNotEmpty) {
+          final age = int.tryParse(ageStr);
+          if (age == null) {
+            _showSnackBarAboveDialog(
+                context, 'يرجى إدخال رقم صحيح للعمر', Colors.red);
+            return;
+          }
+          if (age > 99 || age < 18) {
+            _showSnackBarAboveDialog(
+                context, 'العمر يجب ان يتراوح بين 18 - 99', Colors.red);
+            return;
+          }
+        }
+
+        // Validate children number
+        if (childrenStr.isNotEmpty) {
+          final children = int.tryParse(childrenStr);
+          if (children == null) {
+            _showSnackBarAboveDialog(
+                context, 'يرجى إدخال رقم صحيح لعدد الأطفال', Colors.red);
+            return;
+          }
+          if (children > 99 || children < 0) {
+            _showSnackBarAboveDialog(
+                context, 'عدد الاطفال يجب ان يتراوح بين 0 - 99', Colors.red);
+            return;
+          }
+        }
 
         // Convert Arabic text to API values
         String? maritalStatusValue;
@@ -808,6 +992,38 @@ class _ManageProfileDialogContentState
         final heightStr = widget.controllers['الطول']?.text ?? '';
         final skinColorName = widget.controllers['لون البشرة']?.text ?? '';
         final physiqueName = widget.controllers['البنية الجسدية']?.text ?? '';
+
+        // Validate weight
+        if (weightStr.isNotEmpty) {
+          final weight = int.tryParse(weightStr);
+          if (weight == null) {
+            _showSnackBarAboveDialog(
+                context, 'يرجى إدخال رقم صحيح للوزن', Colors.red);
+            return;
+          }
+          if (weight > 300 || weight < 30) {
+            _showSnackBarAboveDialog(context,
+                'الوزن لا يمكن أن يتجاوز 300 ولا يقل عن 30', Colors.red);
+            return;
+          }
+        }
+
+        // Validate height
+        if (heightStr.isNotEmpty) {
+          final height = int.tryParse(heightStr);
+          if (height == null) {
+            _showSnackBarAboveDialog(
+                context, 'يرجى إدخال رقم صحيح للطول', Colors.red);
+            return;
+          }
+          if (height > 250 || height < 50) {
+            _showSnackBarAboveDialog(
+                context,
+                'لا يمكن ان يصل الطول الي اكثر من 250 او اقل من 50',
+                Colors.red);
+            return;
+          }
+        }
 
         // Convert string values to integers
         int? weight = weightStr.isNotEmpty ? int.tryParse(weightStr) : null;
@@ -1189,6 +1405,7 @@ class _ManageProfileDialogContentState
               hintText: field.hint,
               controller: controller,
               obscureText: true,
+              inputFormatters: _getInputFormattersForField(field.label),
               validator: (value) {
                 // Password fields are optional, so no validation needed here
                 // The validation logic is handled in the save button onPressed
@@ -1210,6 +1427,118 @@ class _ManageProfileDialogContentState
             initialValue: selectedValue,
           );
         }
+
+      case ManageProfileFieldType.phoneWithCountryCode:
+        return _buildPhoneWithCountryCodeField(
+            field, controller, selectedValue, onChanged);
+    }
+  }
+
+  Widget _buildPhoneWithCountryCodeField(
+    ManageProfileField field,
+    TextEditingController controller,
+    String? selectedValue,
+    Function(String?) onChanged,
+  ) {
+    // Extract country code from the current value if it exists
+    String currentCountryCode = '+966'; // Default to Saudi Arabia
+    String currentPhone = '';
+
+    if (selectedValue != null && selectedValue.isNotEmpty) {
+      // Try to parse the current value to extract country code and phone
+      final parts = selectedValue.split(' ');
+      if (parts.length >= 2) {
+        currentCountryCode = parts[0];
+        currentPhone = parts.sublist(1).join(' ');
+      } else {
+        currentPhone = selectedValue;
+      }
+    }
+
+    // Create a ValueNotifier for the country code
+    final countryCodeNotifier = ValueNotifier<String>(currentCountryCode);
+
+    // Update the controller when country code changes
+    countryCodeNotifier.addListener(() {
+      final currentPhoneText = controller.text;
+      if (currentPhoneText.isNotEmpty) {
+        // Update the controller with new country code + phone
+        final parts = currentPhoneText.split(' ');
+        if (parts.length >= 2) {
+          // Replace the country code part
+          parts[0] = countryCodeNotifier.value;
+          controller.text = parts.join(' ');
+        } else {
+          // If only phone number exists, add country code
+          controller.text = '${countryCodeNotifier.value} $currentPhoneText';
+        }
+      }
+    });
+
+    // Initialize the controller with country code + phone if it's empty
+    if (controller.text.isEmpty && currentPhone.isNotEmpty) {
+      controller.text = '$currentCountryCode $currentPhone';
+    } else if (controller.text.isEmpty) {
+      controller.text = currentCountryCode;
+    }
+
+    return Column(
+      textDirection: TextDirection.rtl,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          field.label,
+          style: AppTextStyles.font18JetMediumLamaSans,
+          textAlign: TextAlign.right,
+        ),
+        verticalSpace(2),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: CustomTextFormField(
+                hintText: field.hint,
+                controller: controller,
+                keyboardType: TextInputType.phone,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                validator: (value) {
+                  if (field.isRequired && (value == null || value.isEmpty)) {
+                    return 'هذا الحقل مطلوب';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            horizontalSpace(8),
+            SizedBox(
+              height: 50.h, // Match the height of CustomTextFormField
+              child: CustomCountryCodePicker(code: countryCodeNotifier),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  List<TextInputFormatter>? _getInputFormattersForField(String label) {
+    switch (label) {
+      case 'رقم الهاتف':
+        return [FilteringTextInputFormatter.digitsOnly];
+      case 'رمز الدولة':
+        return [FilteringTextInputFormatter.digitsOnly];
+      case 'العمر':
+        return [FilteringTextInputFormatter.digitsOnly];
+      case 'عدد الأطفال':
+        return [FilteringTextInputFormatter.digitsOnly];
+      case 'الوزن':
+        return [FilteringTextInputFormatter.digitsOnly];
+      case 'الطول':
+        return [FilteringTextInputFormatter.digitsOnly];
+      case 'الدخل الشهري':
+        return [FilteringTextInputFormatter.digitsOnly];
+      default:
+        return null;
     }
   }
 }

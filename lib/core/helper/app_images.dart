@@ -102,11 +102,14 @@ class AppImages {
   static String success1Blog = '${AppConstants.blogPath}success1.png';
   static String success2Blog = '${AppConstants.blogPath}success2.png';
   static String userBlog = '${AppConstants.blogPath}user.png';
+  static const String successCard = '${AppConstants.blogPath}success_card.png';
 
   // chat
   static const String emptyChatImage = 'assets/images/chat/empty_chat.png';
-  static const String settingsIcon = '${AppConstants.chatPath}chat_settings.png';
-  static const String deleteChatIcon = '${AppConstants.chatPath}chat_delete.png';
+  static const String settingsIcon =
+      '${AppConstants.chatPath}chat_settings.png';
+  static const String deleteChatIcon =
+      '${AppConstants.chatPath}chat_delete.png';
   static const String readChatIcon = '${AppConstants.chatPath}read.png';
 
   //Profile Details

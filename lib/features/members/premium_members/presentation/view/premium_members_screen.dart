@@ -1,9 +1,9 @@
 import 'package:elsadeken/core/theme/app_color.dart';
-import 'package:elsadeken/features/members/premium_members/presentation/view/widgets/premium_members_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/di/injection_container.dart';
-import 'package:elsadeken/features/members/data/models/members.dart';
+import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
+import 'package:elsadeken/features/profile/widgets/container_item/container_item.dart';
 import 'package:elsadeken/features/members/data/repositories/members_repository.dart';
 import 'package:elsadeken/features/members/logic/cubit/members_cubit.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,11 +21,65 @@ class PremiumMembersView extends StatefulWidget {
 
 class _PremiumMembersViewState extends State<PremiumMembersView> {
   String _activeFilter = 'الكل';
+  final ScrollController _scrollController = ScrollController();
+  bool _isLoadingMore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _loadMoreUsers() {
+    final cubit = context.read<MembersListCubit<UsersDataModel>>();
+    final state = cubit.state;
+
+    if (state is MembersListLoaded<UsersDataModel> &&
+        state.hasNextPage &&
+        !_isLoadingMore) {
+      final nextPage = state.currentPage + 1;
+      print(
+          'Loading more premium members: current page ${state.currentPage}, next page $nextPage');
+      setState(() {
+        _isLoadingMore = true;
+      });
+      cubit.fetch(page: nextPage).then((_) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = false;
+          });
+          print('Pagination loading completed');
+        }
+      });
+    }
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      print('Scroll threshold reached, triggering pagination');
+      _loadMoreUsers();
+    }
+  }
+
+  Future<void> _onRefresh() async {
+    context.read<MembersListCubit<UsersDataModel>>().fetch(page: 1);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cubit = MembersListCubit<Member>(
-      () => sl<MembersRepository>().getDistinguishedMembers(),
+    final cubit = MembersListCubit<UsersDataModel>(
+      ({int? page}) async {
+        final response =
+            await sl<MembersRepository>().getDistinguishedMembers();
+        return response.data ?? [];
+      },
     )..fetch();
 
     return Directionality(
@@ -70,161 +124,187 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
               ),
             ),
             SafeArea(
-              child: BlocProvider<MembersListCubit<Member>>(
+              child: BlocProvider<MembersListCubit<UsersDataModel>>(
                 create: (_) => cubit,
                 child: Column(
                   children: [
-              Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'الأعضاء المميزون',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (context) => const FilterBottomSheet(),
-                        );
-                      },
+                    Padding(
+                      padding: const EdgeInsets.all(24.0),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'فلترة',
-                            style: TextStyle(
-                                color: Color(0xFFD4AF37), fontSize: 18),
+                            'الأعضاء المميزون',
+                            style: TextStyle(fontSize: 18),
                           ),
-                          SizedBox(width: 6),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                            color: Color(0xFFD4AF37)
+                          SizedBox(width: 20),
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => const FilterBottomSheet(),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  'فلترة',
+                                  style: TextStyle(
+                                      color: Color(0xFFD4AF37), fontSize: 18),
+                                ),
+                                SizedBox(width: 6),
+                                Icon(Icons.arrow_forward_ios,
+                                    size: 16, color: Color(0xFFD4AF37)),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5F1E8),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GenderFilter(
-                      text: 'الكل',
-                      isActive: _activeFilter == 'الكل',
-                      onTap: () => setState(() => _activeFilter = 'الكل'),
-                    ),
-                    const SizedBox(width: 2),
-                    GenderFilter(
-                      text: 'الذكور',
-                      isActive: _activeFilter == 'الذكور',
-                      onTap: () => setState(() => _activeFilter = 'الذكور'),
-                    ),
-                    const SizedBox(width: 2),
-                    GenderFilter(
-                      text: 'الإناث',
-                      isActive: _activeFilter == 'الإناث',
-                      onTap: () => setState(() => _activeFilter = 'الإناث'),
-                    ),
-                  ],
-                ),
-              ),
-              BlocBuilder<MembersListCubit<Member>, MembersListState<Member>>(
-                builder: (context, state) {
-                  if (state is MembersListLoading<Member>) {
-                    return const Padding(
-                      padding: EdgeInsets.only(top: 24),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                  if (state is MembersListError<Member>) {
-                    return Expanded(
-                      child: Center(
-                        child: Text(
-                          state.message,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.red),
-                        ),
+                    SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5F1E8),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                    );
-                  }
-                  if (state is MembersListEmpty<Member>) {
-                    return const Expanded(
-                      child: Center(
-                        child: Text(
-                          'لا توجد نتائج حالياً',
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    );
-                  }
-                  if (state is MembersListLoaded<Member>) {
-                    final items = state.items;
-                    return Expanded(
-                      child: Column(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 12),
-                            color: Colors.white,
-                            child: Text(
-                              'عدد الأعضاء المميزين: ${items.length}',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Color(0xFFD4AF37),
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
+                          GenderFilter(
+                            text: 'الكل',
+                            isActive: _activeFilter == 'الكل',
+                            onTap: () => setState(() => _activeFilter = 'الكل'),
+                          ),
+                          const SizedBox(width: 6),
+                          GenderFilter(
+                            text: 'الذكور',
+                            isActive: _activeFilter == 'الذكور',
+                            onTap: () =>
+                                setState(() => _activeFilter = 'الذكور'),
+                          ),
+                          const SizedBox(width: 6),
+                          GenderFilter(
+                            text: 'الإناث',
+                            isActive: _activeFilter == 'الإناث',
+                            onTap: () =>
+                                setState(() => _activeFilter = 'الإناث'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    BlocBuilder<MembersListCubit<UsersDataModel>,
+                        MembersListState<UsersDataModel>>(
+                      builder: (context, state) {
+                        if (state is MembersListLoading<UsersDataModel>) {
+                          return Padding(
+                            padding: EdgeInsets.only(top: 24),
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              color: AppColors.beer,
+                            )),
+                          );
+                        }
+                        if (state is MembersListError<UsersDataModel>) {
+                          return Expanded(
+                            child: Center(
+                              child: Text(
+                                state.message,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.red),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Expanded(
-                            child: ListView.builder(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16),
-                              itemCount: items.length,
-                              itemBuilder: (context, index) {
-                                final m = items[index];
-                                final data = PremiumPersonData(
-                                  id: m.id,
-                                  name: m.name,
-                                  age: m.attribute?.age ?? 0,
-                                  location:
-                                      '${m.attribute?.country ?? ''}، ${m.attribute?.city ?? ''}',
-                                  profileImageUrl: m.image,
-                                );
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.only(bottom: 12),
-                                  child: PremiumMemberCard(
-                                    personData: data,
-                                  ),
-                                );
-                              },
+                          );
+                        }
+                        if (state is MembersListEmpty<UsersDataModel>) {
+                          return const Expanded(
+                            child: Center(
+                              child: Text(
+                                'لايوجد اعضاء مميزين',
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ],
+                          );
+                        }
+                        if (state is MembersListLoaded<UsersDataModel>) {
+                          final items = state.items;
+                          return Expanded(
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 12),
+                                  color: Colors.white,
+                                  child: Text(
+                                    'عدد الأعضاء المميزين: ${items.length}',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Color(0xFFD4AF37),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Expanded(
+                                  child: RefreshIndicator(
+                                    onRefresh: _onRefresh,
+                                    child: ListView.builder(
+                                      controller: _scrollController,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      itemCount: items.length +
+                                          (_isLoadingMore ? 1 : 0),
+                                      itemBuilder: (context, index) {
+                                        if (index == items.length &&
+                                            _isLoadingMore) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: Center(
+                                              child: Column(
+                                                children: [
+                                                  CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  const Text(
+                                                    'جاري تحميل المزيد...',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }
+
+                                        final m = items[index];
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 12),
+                                          child: ContainerItem(
+                                            favUser: m,
+                                            isSpecial: true,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -233,20 +313,4 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
       ),
     );
   }
-}
-
-class PremiumPersonData {
-  final int? id;
-  final String name;
-  final int age;
-  final String location;
-  final String profileImageUrl;
-
-  PremiumPersonData({
-    this.id,
-    required this.name,
-    required this.age,
-    required this.location,
-    required this.profileImageUrl,
-  });
 }

@@ -80,6 +80,8 @@ class UsersDataModel {
     this.createdAt,
     this.lastSeen,
     this.attribute,
+    this.visitedAtDate,
+    this.visitedAtTime,
   });
 
   UsersDataModel.fromJson(dynamic json) {
@@ -95,6 +97,8 @@ class UsersDataModel {
     isFeatured = json['is_featured'];
     createdAt = json['created_at'];
     lastSeen = json['last_seen'];
+    visitedAtDate = json['visited_at_date'];
+    visitedAtTime = json['visited_at_time'];
     attribute = json['attribute'] != null
         ? UsersAttributeModel.fromJson(json['attribute'])
         : null;
@@ -111,6 +115,8 @@ class UsersDataModel {
   int? isFeatured;
   String? createdAt;
   String? lastSeen;
+  String? visitedAtDate;
+  String? visitedAtTime;
   UsersAttributeModel? attribute;
 
   Map<String, dynamic> toJson() {
@@ -127,8 +133,46 @@ class UsersDataModel {
     map['is_featured'] = isFeatured;
     map['created_at'] = createdAt;
     map['last_seen'] = lastSeen;
+    map['visited_at_date'] = visitedAtDate;
+    map['visited_at_time'] = visitedAtTime;
     map['attribute'] = attribute;
     return map;
+  }
+
+  UsersDataModel copyWith({
+    int? id,
+    String? name,
+    String? email,
+    String? countryCode,
+    String? phone,
+    String? gender,
+    String? image,
+    dynamic fcmToken,
+    dynamic token,
+    int? isFeatured,
+    String? createdAt,
+    String? lastSeen,
+    String? visitedAtDate,
+    String? visitedAtTime,
+    UsersAttributeModel? attribute,
+  }) {
+    return UsersDataModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      countryCode: countryCode ?? this.countryCode,
+      phone: phone ?? this.phone,
+      gender: gender ?? this.gender,
+      image: image ?? this.image,
+      fcmToken: fcmToken ?? this.fcmToken,
+      token: token ?? this.token,
+      isFeatured: isFeatured ?? this.isFeatured,
+      createdAt: createdAt ?? this.createdAt,
+      lastSeen: lastSeen ?? this.lastSeen,
+      visitedAtDate: visitedAtDate ?? this.visitedAtDate,
+      visitedAtTime: visitedAtTime ?? this.visitedAtTime,
+      attribute: attribute ?? this.attribute,
+    );
   }
 }
 

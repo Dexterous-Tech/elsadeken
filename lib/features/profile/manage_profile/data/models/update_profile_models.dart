@@ -3,6 +3,7 @@ class UpdateProfileLoginDataRequestModel {
     this.name,
     this.email,
     this.phone,
+    this.countryCode,
     this.password,
     this.passwordConfirmation,
   });
@@ -11,12 +12,14 @@ class UpdateProfileLoginDataRequestModel {
     name = json['name'];
     email = json['email'];
     phone = json['phone'];
+    countryCode = json['country_code'];
     password = json['password'];
     passwordConfirmation = json['password_confirmation'];
   }
   String? name;
   String? email;
   String? phone;
+  String? countryCode;
   String? password;
   String? passwordConfirmation;
 
@@ -25,6 +28,8 @@ class UpdateProfileLoginDataRequestModel {
     if (name != null && name!.isNotEmpty) map['name'] = name;
     if (email != null && email!.isNotEmpty) map['email'] = email;
     if (phone != null && phone!.isNotEmpty) map['phone'] = phone;
+    if (countryCode != null && countryCode!.isNotEmpty)
+      map['country_code'] = countryCode;
     if (password != null && password!.isNotEmpty) map['password'] = password;
     if (passwordConfirmation != null && passwordConfirmation!.isNotEmpty) {
       map['password_confirmation'] = passwordConfirmation;

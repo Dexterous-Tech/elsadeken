@@ -29,7 +29,13 @@ class MyImageCubit extends Cubit<MyImageState> {
         emit(MyImageImageSelected(image!));
       }
     } catch (e) {
-      emit(MyImageFailure('فشل في اختيار الصورة من المعرض'));
+      print('Gallery pick error: $e');
+      if (e.toString().contains('permission')) {
+        emit(MyImageFailure(
+            'يرجى منح إذن الوصول إلى المعرض في إعدادات التطبيق'));
+      } else {
+        emit(MyImageFailure('فشل في اختيار الصورة من المعرض: ${e.toString()}'));
+      }
     }
   }
 
@@ -45,7 +51,17 @@ class MyImageCubit extends Cubit<MyImageState> {
         emit(MyImageImageSelected(image!));
       }
     } catch (e) {
-      emit(MyImageFailure('فشل في التقاط الصورة من الكاميرا'));
+      print('Camera pick error: $e');
+      if (e.toString().contains('permission')) {
+        emit(MyImageFailure(
+            'يرجى منح إذن الوصول إلى الكاميرا في إعدادات التطبيق'));
+      } else if (e.toString().contains('camera')) {
+        emit(MyImageFailure(
+            'فشل في فتح الكاميرا. تأكد من أن الكاميرا تعمل بشكل صحيح'));
+      } else {
+        emit(MyImageFailure(
+            'فشل في التقاط الصورة من الكاميرا: ${e.toString()}'));
+      }
     }
   }
 

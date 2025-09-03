@@ -1,12 +1,13 @@
 import 'package:elsadeken/core/di/injection_container.dart';
-import 'package:elsadeken/features/members/data/models/members.dart';
+import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
+import 'package:elsadeken/features/profile/widgets/container_item/container_item.dart';
 import 'package:elsadeken/features/members/data/repositories/members_repository.dart';
-import 'package:elsadeken/features/members/new_members/presentation/view/widgets/new_members_card.dart';
 import 'package:elsadeken/features/members/logic/cubit/members_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/members/online_members/presentation/view/widgets/filter_buttom_sheet.dart';
 
+import '../../../../../core/theme/app_color.dart';
 import '../../../Health_statuses/presentation/view/widgets/gender_filter.dart';
 
 class NewMembersView extends StatefulWidget {
@@ -21,9 +22,59 @@ class NewMembersView extends StatefulWidget {
 class _NewMembersViewState extends State<NewMembersView> {
   String _activeFilter = 'الكل';
   int? _selectedCountryId;
-  List<Member> _allMembers = [];
+  List<UsersDataModel> _allMembers = [];
+  final ScrollController _scrollController = ScrollController();
+  bool _isLoadingMore = false;
 
-  List<Member> _getFilteredMembers(List<Member> allMembers) {
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _loadMoreUsers() {
+    final cubit = context.read<MembersListCubit<UsersDataModel>>();
+    final state = cubit.state;
+
+    if (state is MembersListLoaded<UsersDataModel> &&
+        state.hasNextPage &&
+        !_isLoadingMore) {
+      final nextPage = state.currentPage + 1;
+      print(
+          'Loading more new members: current page ${state.currentPage}, next page $nextPage');
+      setState(() {
+        _isLoadingMore = true;
+      });
+      cubit.fetch(page: nextPage).then((_) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = false;
+          });
+          print('Pagination loading completed');
+        }
+      });
+    }
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      print('Scroll threshold reached, triggering pagination');
+      _loadMoreUsers();
+    }
+  }
+
+  Future<void> _onRefresh() async {
+    context.read<MembersListCubit<UsersDataModel>>().fetch(page: 1);
+  }
+
+  List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
     switch (_activeFilter) {
       case 'الذكور':
         return allMembers.where((member) => member.gender == 'ذكر').toList();
@@ -36,8 +87,12 @@ class _NewMembersViewState extends State<NewMembersView> {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = MembersListCubit<Member>(
-      () => sl<MembersRepository>().getNewMembers(countryId: widget.countryId),
+    final cubit = MembersListCubit<UsersDataModel>(
+      ({int? page}) async {
+        final response = await sl<MembersRepository>()
+            .getNewMembers(countryId: widget.countryId);
+        return response.data ?? [];
+      },
     )..fetch();
 
     return Directionality(
@@ -69,7 +124,7 @@ class _NewMembersViewState extends State<NewMembersView> {
           ),
         ),
         body: SafeArea(
-          child: BlocProvider<MembersListCubit<Member>>(
+          child: BlocProvider<MembersListCubit<UsersDataModel>>(
             create: (_) => cubit,
             child: Column(
               children: [
@@ -89,7 +144,7 @@ class _NewMembersViewState extends State<NewMembersView> {
                           setState(() => _activeFilter = 'الكل');
                         },
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: 6),
                       GenderFilter(
                         text: 'الذكور',
                         isActive: _activeFilter == 'الذكور',
@@ -97,7 +152,7 @@ class _NewMembersViewState extends State<NewMembersView> {
                           setState(() => _activeFilter = 'الذكور');
                         },
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: 6),
                       GenderFilter(
                         text: 'الإناث',
                         isActive: _activeFilter == 'الإناث',
@@ -127,15 +182,18 @@ class _NewMembersViewState extends State<NewMembersView> {
                             _selectedCountryId = result['id'] as int?;
                           });
                           // Recreate cubit with country filter
-                          final newCubit = MembersListCubit<Member>(
-                            () => sl<MembersRepository>()
-                                .getNewMembers(countryId: _selectedCountryId),
+                          final newCubit = MembersListCubit<UsersDataModel>(
+                            ({int? page}) async {
+                              final response = await sl<MembersRepository>()
+                                  .getNewMembers(countryId: _selectedCountryId);
+                              return response.data ?? [];
+                            },
                           );
                           // Push a new provider scope with updated loader
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                              builder: (_) =>
-                                  BlocProvider<MembersListCubit<Member>>(
+                              builder: (_) => BlocProvider<
+                                  MembersListCubit<UsersDataModel>>(
                                 create: (_) => newCubit..fetch(),
                                 child: NewMembersView(
                                   countryId: _selectedCountryId,
@@ -161,15 +219,19 @@ class _NewMembersViewState extends State<NewMembersView> {
                     ),
                   ),
                 ),
-                BlocBuilder<MembersListCubit<Member>, MembersListState<Member>>(
+                BlocBuilder<MembersListCubit<UsersDataModel>,
+                    MembersListState<UsersDataModel>>(
                   builder: (context, state) {
-                    if (state is MembersListLoading<Member>) {
-                      return const Padding(
+                    if (state is MembersListLoading<UsersDataModel>) {
+                      return Padding(
                         padding: EdgeInsets.only(top: 24),
-                        child: Center(child: CircularProgressIndicator()),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: AppColors.beer,
+                        )),
                       );
                     }
-                    if (state is MembersListError<Member>) {
+                    if (state is MembersListError<UsersDataModel>) {
                       return Expanded(
                         child: Center(
                           child: Text(
@@ -180,7 +242,7 @@ class _NewMembersViewState extends State<NewMembersView> {
                         ),
                       );
                     }
-                    if (state is MembersListEmpty<Member>) {
+                    if (state is MembersListEmpty<UsersDataModel>) {
                       return const Expanded(
                         child: Center(
                           child: Text(
@@ -190,7 +252,7 @@ class _NewMembersViewState extends State<NewMembersView> {
                         ),
                       );
                     }
-                    if (state is MembersListLoaded<Member>) {
+                    if (state is MembersListLoaded<UsersDataModel>) {
                       _allMembers = state.items;
                       final items = _getFilteredMembers(_allMembers);
                       return Expanded(
@@ -213,28 +275,49 @@ class _NewMembersViewState extends State<NewMembersView> {
                             ),
                             const SizedBox(height: 8),
                             Expanded(
-                              child: ListView.builder(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                itemCount: items.length,
-                                itemBuilder: (context, index) {
-                                  final m = items[index];
-                                  final data = NewMemberData(
-                                    id: m.id,
-                                    name: m.name,
-                                    age: m.attribute?.age ?? 0,
-                                    location:
-                                        '${m.attribute?.country ?? 'لا يوجد'}، ${m.attribute?.city ?? 'لا يوجد'}',
-                                    profileImageUrl: m.image,
-                                    isOnline: false,
-                                  );
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 12),
-                                    child: NewMemberCard(
-                                      memberData: data,
-                                    ),
-                                  );
-                                },
+                              child: RefreshIndicator(
+                                onRefresh: _onRefresh,
+                                child: ListView.builder(
+                                  controller: _scrollController,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  itemCount:
+                                      items.length + (_isLoadingMore ? 1 : 0),
+                                  itemBuilder: (context, index) {
+                                    if (index == items.length &&
+                                        _isLoadingMore) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Center(
+                                          child: Column(
+                                            children: [
+                                              CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                              ),
+                                              const SizedBox(height: 8),
+                                              const Text(
+                                                'جاري تحميل المزيد...',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 12),
+                                      child: ContainerItem(
+                                        favUser: items[index],
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ],
@@ -251,22 +334,4 @@ class _NewMembersViewState extends State<NewMembersView> {
       ),
     );
   }
-}
-
-class NewMemberData {
-  final int? id;
-  final String name;
-  final int age;
-  final String location;
-  final String profileImageUrl;
-  final bool isOnline;
-
-  NewMemberData({
-    this.id,
-    required this.name,
-    required this.age,
-    required this.location,
-    required this.profileImageUrl,
-    required this.isOnline,
-  });
 }

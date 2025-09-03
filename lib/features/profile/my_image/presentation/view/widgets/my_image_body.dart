@@ -27,7 +27,7 @@ class MyImageBody extends StatefulWidget {
 
 class _MyImageBodyState extends State<MyImageBody> {
   // Default selection: "لا احد" (No one)
-  String selectedPrivacyOption = 'no_one';
+  String selectedPrivacyOption = 'all_members';
   String? userGender;
   bool isLoadingGender = true;
 
@@ -59,9 +59,19 @@ class _MyImageBodyState extends State<MyImageBody> {
       final savedPrivacyOption = await SharedPreferencesHelper.getSecuredString(
           SharedPreferencesKey.privacySetting);
       log(savedPrivacyOption);
-      setState(() {
-        selectedPrivacyOption = savedPrivacyOption;
-      });
+
+      if (savedPrivacyOption.isNotEmpty) {
+        setState(() {
+          selectedPrivacyOption = savedPrivacyOption;
+        });
+      } else {
+        // First time → force default = all_members
+        setState(() {
+          selectedPrivacyOption = 'all_members';
+        });
+        // Save it so next time it persists
+        _savePrivacySetting('all_members');
+      }
     } catch (e) {
       log('Error loading privacy setting: $e');
     }
@@ -106,12 +116,14 @@ class _MyImageBodyState extends State<MyImageBody> {
                   current is MyImageLoading ||
                   current is MyImageFailure ||
                   current is MyImageSuccess ||
-                  current is MyImageImageSelected,
+                  current is MyImageImageSelected ||
+                  current is MyImageInitial,
               listenWhen: (previous, current) =>
                   current is MyImageLoading ||
                   current is MyImageFailure ||
                   current is MyImageSuccess ||
-                  current is MyImageImageSelected,
+                  current is MyImageImageSelected ||
+                  current is MyImageInitial,
               listener: (context, state) {
                 if (state is MyImageLoading) {
                   loadingDialog(context);
@@ -135,6 +147,9 @@ class _MyImageBodyState extends State<MyImageBody> {
                       Navigator.pop(context, true);
                     },
                   );
+                } else if (state is MyImageInitial) {
+                  // Image was deleted, no need to show any dialog
+                  // The UI will automatically rebuild to show the camera icon
                 }
               },
               builder: (context, state) {

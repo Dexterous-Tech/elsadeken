@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:elsadeken/core/networking/api_services.dart';
-import 'package:elsadeken/core/networking/api_constants.dart';
-import 'package:elsadeken/core/di/injection_container.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
+import 'package:elsadeken/features/auth/signup/data/models/national_country_models.dart';
+
+import '../../../../../../core/di/injection_container.dart';
 
 class FilterBottomSheet extends StatefulWidget {
+  final int? selectedCountryId;
+  final String? selectedCountryName;
+
   const FilterBottomSheet({
     Key? key,
+    this.selectedCountryId,
+    this.selectedCountryName,
   }) : super(key: key);
 
   @override
@@ -13,9 +20,9 @@ class FilterBottomSheet extends StatefulWidget {
 }
 
 class _FilterBottomSheetState extends State<FilterBottomSheet> {
-  List<_Country> _countries = const [];
+  List<_Country> _countries = const [const _Country(id: 0, name: 'الكل')];
   int _selectedCountryIndex = 0;
-  bool _isLoadingCountries = true;
+  bool _hasInitializedSelection = false;
 
   static const Color kMuted = Color(0xFF9E9E9E);
   static const Color kClearRed = Color(0xFFF04438);
@@ -29,162 +36,208 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     ],
   );
 
+  List<_Country> _parseCountries(
+      List<NationalCountryResponseModel> countriesList) {
+    final parsed = countriesList
+        .map((e) {
+          final id = e.id;
+          final name = e.name ?? '';
+          if (id == null || name.isEmpty) return null;
+          return _Country(id: id, name: name);
+        })
+        .whereType<_Country>()
+        .toList();
+
+    return [const _Country(id: 0, name: 'الكل'), ...parsed];
+  }
+
+  void _updateSelectedIndex() {
+    print(
+        '_updateSelectedIndex called with selectedCountryId: ${widget.selectedCountryId}, countries length: ${_countries.length}');
+    if (widget.selectedCountryId != null &&
+        widget.selectedCountryId != 0 &&
+        _countries.length > 1) {
+      final index = _countries
+          .indexWhere((country) => country.id == widget.selectedCountryId);
+      print('Found country at index: $index');
+      if (index != -1) {
+        setState(() {
+          _selectedCountryIndex = index;
+          _hasInitializedSelection = true;
+        });
+        print('Updated _selectedCountryIndex to: $_selectedCountryIndex');
+      } else {
+        print(
+            'Country with ID ${widget.selectedCountryId} not found in countries list');
+      }
+    } else {
+      print(
+          '_updateSelectedIndex conditions not met: selectedCountryId: ${widget.selectedCountryId}, countries length: ${_countries.length}');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _loadCountries();
+    // Initialize the selected index based on the passed country ID
+    if (widget.selectedCountryId != null && widget.selectedCountryId != 0) {
+      // We'll set this when countries are loaded
+      _hasInitializedSelection = false;
+    } else {
+      _hasInitializedSelection = true;
+    }
   }
 
-  Future<void> _loadCountries() async {
-    try {
-      final api = sl<ApiServices>();
-      final res = await api.get(
-          endpoint: ApiConstants.listCountries, requiresAuth: false);
-      final raw = res.data;
-      List list;
-      if (raw is List) {
-        list = raw;
-      } else if (raw is Map && raw['data'] is List) {
-        list = raw['data'] as List;
-      } else if (raw is Map &&
-          raw['data'] is Map &&
-          raw['data']['countries'] is List) {
-        list = raw['data']['countries'] as List;
+  @override
+  void didUpdateWidget(covariant FilterBottomSheet oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedCountryId != widget.selectedCountryId) {
+      if (widget.selectedCountryId != null && widget.selectedCountryId != 0) {
+        _hasInitializedSelection = false;
       } else {
-        list = const [];
+        _hasInitializedSelection = true;
+        _selectedCountryIndex = 0;
       }
-      final parsed = list
-          .map((e) {
-            final map = e as Map<String, dynamic>;
-            final id = (map['id'] ?? map['country_id']) as int?;
-            final name = (map['name_ar'] ??
-                    map['name'] ??
-                    map['title'] ??
-                    map['country_name_ar'] ??
-                    '')
-                .toString();
-            if (id == null || name.isEmpty) return null;
-            return _Country(id: id, name: name);
-          })
-          .whereType<_Country>()
-          .toList();
-      setState(() {
-        _countries = [const _Country(id: 0, name: 'الكل'), ...parsed];
-        _isLoadingCountries = false;
-      });
-    } catch (_) {
-      // fallback to just All
-      setState(() {
-        _countries = const [
-          _Country(id: 0, name: 'الكل'),
-        ];
-        _isLoadingCountries = false;
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: SafeArea(
-        top: false,
-        child: Container(
-          constraints: BoxConstraints(
-            maxHeight: media.size.height * 0.5,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 8, 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'فلترة المتواجدين',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      icon: const Icon(Icons.close, color: kMuted),
-                      tooltip: 'إغلاق',
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+    return BlocProvider(
+      create: (context) => sl<SignUpListsCubit>(),
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: SafeArea(
+          top: false,
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: media.size.height * 0.5,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 8, 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (_isLoadingCountries)
-                        const Center(
-                            child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 24),
-                          child: CircularProgressIndicator(),
-                        ))
-                      else
-                        _Section(
-                          title: 'فلترة بواسطة الدولة',
-                          options: _countries.map((e) => e.name).toList(),
-                          selectedIndex: _selectedCountryIndex,
-                          onSelect: (i) =>
-                              setState(() => _selectedCountryIndex = i),
+                      Text(
+                        'فلترة المتواجدين',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
                         ),
-                      const SizedBox(height: 20),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).maybePop(),
+                        icon: const Icon(Icons.close, color: kMuted),
+                        tooltip: 'إغلاق',
+                      ),
                     ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _GradientButton(
-                        label: 'تطبيق الفلترة',
-                        gradient: _applyGradient,
-                        onTap: () {
-                          final selected = (_selectedCountryIndex >= 0 &&
-                                  _selectedCountryIndex < _countries.length)
-                              ? _countries[_selectedCountryIndex]
-                              : const _Country(id: 0, name: 'الكل');
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        BlocBuilder<SignUpListsCubit, SignUpListsState>(
+                          builder: (context, state) {
+                            print('BlocBuilder state: $state');
+                            // If this is the initial state, trigger countries loading
+                            if (state is SignUpListsStateInitial) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                context.read<SignUpListsCubit>().getCountries();
+                              });
+                            }
 
-                          // Return the filter data to the parent screen
-                          Navigator.of(context).maybePop({
-                            'id': selected.id == 0 ? null : selected.id,
-                            'name': selected.name,
-                          });
-                        },
-                      ),
+                            if (state is CountriesLoading) {
+                              return const Center(
+                                  child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 24),
+                                child: CircularProgressIndicator(),
+                              ));
+                            } else if (state is CountriesSuccess) {
+                              _countries = _parseCountries(state.countriesList);
+                              print(
+                                  'Countries loaded: ${_countries.map((e) => '${e.id}:${e.name}').toList()}');
+                              // Update selected index after countries are loaded if we haven't initialized selection yet
+                              if (!_hasInitializedSelection) {
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  _updateSelectedIndex();
+                                });
+                              }
+                            } else if (state is CountriesFailure) {
+                              // Keep the default list on failure
+                              _countries = const [
+                                const _Country(id: 0, name: 'الكل')
+                              ];
+                            }
+
+                            print(
+                                'Building _Section with selectedIndex: $_selectedCountryIndex, countries: ${_countries.map((e) => '${e.id}:${e.name}').toList()}');
+                            return _Section(
+                              title: 'فلترة بواسطة الدولة',
+                              options: _countries.map((e) => e.name).toList(),
+                              selectedIndex: _selectedCountryIndex,
+                              onSelect: (i) =>
+                                  setState(() => _selectedCountryIndex = i),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _OutlinedActionButton(
-                        label: 'مسح',
-                        color: kClearRed,
-                        onTap: () {
-                          setState(() {
-                            _selectedCountryIndex = 0;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _GradientButton(
+                          label: 'تطبيق الفلترة',
+                          gradient: _applyGradient,
+                          onTap: () {
+                            final selected = (_selectedCountryIndex >= 0 &&
+                                    _selectedCountryIndex < _countries.length)
+                                ? _countries[_selectedCountryIndex]
+                                : const _Country(id: 0, name: 'الكل');
+
+                            // Return the filter data to the parent screen
+                            Navigator.of(context).maybePop({
+                              'id': selected.id == 0 ? null : selected.id,
+                              'name': selected.name,
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _OutlinedActionButton(
+                          label: 'مسح',
+                          color: kClearRed,
+                          onTap: () {
+                            setState(() {
+                              _selectedCountryIndex = 0;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -225,6 +278,8 @@ class _Section extends StatelessWidget {
         const SizedBox(height: 12),
         ...List.generate(options.length, (i) {
           final selected = i == selectedIndex;
+          print(
+              '_Section: option $i (${options[i]}) selected: $selected, selectedIndex: $selectedIndex');
           return Column(
             children: [
               InkWell(
@@ -307,12 +362,12 @@ class _GradientButton extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(32),
           onTap: onTap,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 14),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
             child: Center(
               child: Text(
-                'فلتره',
-                style: TextStyle(
+                label,
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
@@ -373,5 +428,6 @@ class _OutlinedActionButton extends StatelessWidget {
 class _Country {
   final int id;
   final String name;
+
   const _Country({required this.id, required this.name});
 }

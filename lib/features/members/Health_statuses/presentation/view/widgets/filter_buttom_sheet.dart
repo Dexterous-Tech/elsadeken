@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
+import 'package:elsadeken/features/auth/signup/data/models/national_country_models.dart';
+import 'package:elsadeken/features/auth/signup/data/models/general_info_models.dart';
+import '../../../../../../core/di/injection_container.dart';
 
 class FilterHealthStatues extends StatefulWidget {
   const FilterHealthStatues({
@@ -10,21 +15,10 @@ class FilterHealthStatues extends StatefulWidget {
 }
 
 class _FilterHealthStatuesState extends State<FilterHealthStatues> {
-  final List<String> _healthOptions = const [
-    'الكل',
-    'اعاقه حركيه',
-    'اعاقه فكريه',
-    'اكتئاب',
-    'انفصام شخصيه',
+  List<_HealthOption> _healthOptions = const [
+    const _HealthOption(id: 0, name: 'الكل')
   ];
-
-  final List<String> _countryOptions = const [
-    'الكل',
-    'الاردن',
-    'الامارات',
-    'الجزائر',
-    'السعوديه',
-  ];
+  List<_Country> _countries = const [const _Country(id: 0, name: 'الكل')];
 
   int _selectedHealthIndex = 0;
   int _selectedCountryIndex = 0;
@@ -41,95 +35,204 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
     ],
   );
 
+  List<_HealthOption> _parseHealthConditions(
+      List<GeneralInfoResponseModels> healthList) {
+    final parsed = healthList
+        .map((e) {
+          final id = e.id;
+          final name = e.name ?? '';
+          if (id == null || name.isEmpty) return null;
+          return _HealthOption(id: id, name: name);
+        })
+        .whereType<_HealthOption>()
+        .toList();
+
+    return [const _HealthOption(id: 0, name: 'الكل'), ...parsed];
+  }
+
+  List<_Country> _parseCountries(
+      List<NationalCountryResponseModel> countriesList) {
+    final parsed = countriesList
+        .map((e) {
+          final id = e.id;
+          final name = e.name ?? '';
+          if (id == null || name.isEmpty) return null;
+          return _Country(id: id, name: name);
+        })
+        .whereType<_Country>()
+        .toList();
+
+    return [const _Country(id: 0, name: 'الكل'), ...parsed];
+  }
+
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: SafeArea(
-        top: false,
-        child: Container(
-          constraints: BoxConstraints(
-            maxHeight: media.size.height * 0.7,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 8, 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconButton(
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      icon: const Icon(Icons.close, color: kMuted),
-                      tooltip: 'إغلاق',
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+    return BlocProvider(
+      create: (context) => sl<SignUpListsCubit>(),
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: SafeArea(
+          top: false,
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: media.size.height * 0.7,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 8, 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      _Section(
-                        title: 'فلتره بواسطه الحاله الصحيه',
-                        options: _healthOptions,
-                        selectedIndex: _selectedHealthIndex,
-                        onSelect: (i) => setState(() => _selectedHealthIndex = i),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).maybePop(),
+                        icon: const Icon(Icons.close, color: kMuted),
+                        tooltip: 'إغلاق',
                       ),
-                      const SizedBox(height: 20),
-                      _Section(
-                        title: 'فلتره بواسطه الدوله',
-                        options: _countryOptions,
-                        selectedIndex: _selectedCountryIndex,
-                        onSelect: (i) => setState(() => _selectedCountryIndex = i),
-                      ),
-                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _GradientButton(
-                        label: 'فلتره',
-                        gradient: _applyGradient,
-                        onTap: () {
-                          Navigator.of(context).maybePop();
-                        },
-                      ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        BlocBuilder<SignUpListsCubit, SignUpListsState>(
+                          builder: (context, state) {
+                            // If this is the initial state, trigger data loading
+                            if (state is SignUpListsStateInitial) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                final cubit = context.read<SignUpListsCubit>();
+                                cubit.getHealthConditions();
+                                cubit.getCountries();
+                              });
+                            }
+
+                            // Handle both states independently
+                            if (state is HealthConditionsSuccess) {
+                              _healthOptions =
+                                  _parseHealthConditions(state.generalList);
+                              print(
+                                  'Health conditions loaded: ${_healthOptions.map((e) => '${e.id}:${e.name}').toList()}');
+                            }
+
+                            if (state is CountriesSuccess) {
+                              _countries = _parseCountries(state.countriesList);
+                              print(
+                                  'Countries loaded: ${_countries.map((e) => '${e.id}:${e.name}').toList()}');
+                            }
+
+                            return Column(
+                              children: [
+                                _Section(
+                                  title: 'فلتره بواسطه الحاله الصحيه',
+                                  options: _healthOptions
+                                      .map((e) => e.name)
+                                      .toList(),
+                                  selectedIndex: _selectedHealthIndex,
+                                  onSelect: (i) =>
+                                      setState(() => _selectedHealthIndex = i),
+                                ),
+                                const SizedBox(height: 20),
+                                _Section(
+                                  title: 'فلتره بواسطه الدوله',
+                                  options:
+                                      _countries.map((e) => e.name).toList(),
+                                  selectedIndex: _selectedCountryIndex,
+                                  onSelect: (i) =>
+                                      setState(() => _selectedCountryIndex = i),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _OutlinedActionButton(
-                        label: 'مسح',
-                        color: kClearRed,
-                        onTap: () {
-                          setState(() {
-                            _selectedHealthIndex = 0;
-                            _selectedCountryIndex = 0;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _GradientButton(
+                          label: 'فلتره',
+                          gradient: _applyGradient,
+                          onTap: () {
+                            final selectedHealth = (_selectedHealthIndex >= 0 &&
+                                    _selectedHealthIndex <
+                                        _healthOptions.length)
+                                ? _healthOptions[_selectedHealthIndex]
+                                : const _HealthOption(id: 0, name: 'الكل');
+
+                            final selectedCountry = (_selectedCountryIndex >=
+                                        0 &&
+                                    _selectedCountryIndex < _countries.length)
+                                ? _countries[_selectedCountryIndex]
+                                : const _Country(id: 0, name: 'الكل');
+
+                            // Return the filter data to the parent screen
+                            Navigator.of(context).maybePop({
+                              'health': {
+                                'id': selectedHealth.id == 0
+                                    ? null
+                                    : selectedHealth.id,
+                                'name': selectedHealth.name,
+                              },
+                              'country': {
+                                'id': selectedCountry.id == 0
+                                    ? null
+                                    : selectedCountry.id,
+                                'name': selectedCountry.name,
+                              },
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _OutlinedActionButton(
+                          label: 'مسح',
+                          color: kClearRed,
+                          onTap: () {
+                            setState(() {
+                              _selectedHealthIndex = 0;
+                              _selectedCountryIndex = 0;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+}
+
+class _HealthOption {
+  final int id;
+  final String name;
+  const _HealthOption({required this.id, required this.name});
+}
+
+class _Country {
+  final int id;
+  final String name;
+  const _Country({required this.id, required this.name});
 }
 
 class _Section extends StatelessWidget {
@@ -217,9 +320,8 @@ class _SquareCheck extends StatelessWidget {
           width: 1.4,
         ),
       ),
-      child: value
-          ? const Icon(Icons.check, size: 16, color: Colors.white)
-          : null,
+      child:
+          value ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
     );
   }
 }
@@ -248,12 +350,12 @@ class _GradientButton extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(32),
           onTap: onTap,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 14),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
             child: Center(
               child: Text(
-                'فلتره',
-                style: TextStyle(
+                label,
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
                   fontWeight: FontWeight.w700,

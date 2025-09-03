@@ -1,9 +1,5 @@
-import 'package:elsadeken/core/helper/app_images.dart';
-import 'package:elsadeken/core/helper/extensions.dart';
-import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
-import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
@@ -143,24 +139,24 @@ class ContactUsBody extends StatelessWidget {
                                 textButton: 'ارســــــــل',
                               ),
                               verticalSpace(13),
-                              GestureDetector(
-                                onTap: () {
-                                  context.pushNamed(
-                                      AppRoutes.profileTechnicalSupportScreen);
-                                },
-                                child: Row(
-                                  textDirection: TextDirection.rtl,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      AppImages.contactHeadphoneProfile,
-                                      width: 17.w,
-                                      height: 17.h,
-                                    ),
-                                  
-                                  ],
-                                ),
-                              ),
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     context.pushNamed(
+                              //         AppRoutes.profileTechnicalSupportScreen);
+                              //   },
+                              //   child: Row(
+                              //     textDirection: TextDirection.rtl,
+                              //     mainAxisAlignment: MainAxisAlignment.center,
+                              //     children: [
+                              //       Image.asset(
+                              //         AppImages.contactHeadphoneProfile,
+                              //         width: 17.w,
+                              //         height: 17.h,
+                              //       ),
+                              //
+                              //     ],
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
