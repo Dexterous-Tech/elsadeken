@@ -434,6 +434,7 @@
   "howTallAreYou": "كم طولك (سم) ؟",
   
   "premiumMembersCount": "عدد الأعضاء المميزين: {count}",
+  "noPremiumMembers": "لا يوجد أعضاء مميزين",
   "onlineMembersCount": "المتواجدون الآن : {count}",
   "whoVisitedMyProfile": "من زار بياناتي",
   "noResultsCurrently": "لا توجد نتائج حالياً",

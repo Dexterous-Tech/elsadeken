@@ -2111,6 +2111,12 @@ abstract class AppLocalizations {
   /// **'Premium Members Count: {count}'**
   String premiumMembersCount(Object count);
 
+  /// No description provided for @noPremiumMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'No premium members'**
+  String get noPremiumMembers;
+
   /// No description provided for @onlineMembersCount.
   ///
   /// In en, this message translates to:

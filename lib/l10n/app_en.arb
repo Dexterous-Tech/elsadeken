@@ -435,6 +435,7 @@
   "howTallAreYou": "How tall are you (cm)?",
   
   "premiumMembersCount": "Premium Members Count: {count}",
+  "noPremiumMembers": "No premium members",
   "onlineMembersCount": "Online Now: {count}",
   "whoVisitedMyProfile": "Who Visited My Profile",
   "noResultsCurrently": "No results currently",

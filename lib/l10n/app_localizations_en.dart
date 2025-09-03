@@ -1048,6 +1048,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get noPremiumMembers => 'No premium members';
+
+  @override
   String onlineMembersCount(Object count) {
     return 'Online Now: $count';
   }

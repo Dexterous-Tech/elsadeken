@@ -220,6 +220,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                                 ? _countries[_selectedCountryIndex]
                                 : const _Country(id: 0, name: 'all');
 
+                            print('🔍 FilterBottomSheet - Selected country: ${selected.name} (ID: ${selected.id})');
+                            
                             // Return the filter data to the parent screen
                             Navigator.of(context).maybePop({
                               'id': selected.id == 0 ? null : selected.id,

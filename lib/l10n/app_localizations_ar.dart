@@ -1049,6 +1049,9 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get noPremiumMembers => 'لا يوجد أعضاء مميزين';
+
+  @override
   String onlineMembersCount(Object count) {
     return 'المتواجدون الآن : $count';
   }
