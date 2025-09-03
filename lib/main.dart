@@ -27,6 +27,9 @@ void main() async {
 
     // Check notification permissions for debugging
     await FirebaseNotificationService.instance.checkNotificationPermissions();
+
+    // Test foreground notification (remove this in production)
+    // await FirebaseNotificationService.instance.testForegroundNotification();
   } catch (e) {
     log("Error initializing Firebase: $e");
     // Continue without Firebase if it fails

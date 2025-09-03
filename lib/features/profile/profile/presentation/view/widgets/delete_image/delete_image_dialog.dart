@@ -16,37 +16,50 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 Future<void> deleteImageDialog(BuildContext context) async {
-  return customDialog(
-    context: context,
-    backgroundColor: AppColors.white,
-    radius: 16,
-    height: 311.h,
-    dialogContent: BlocProvider.value(
-      value: sl<ProfileCubit>(),
-      child: Builder(builder: (context) {
-        return BlocBuilder<ProfileCubit, ProfileState>(
-          builder: (context, state) {
-            if (state is DeleteImageLoading) {
-              // Show loading lottie
-              return _loadingDeleteImage(context);
-            } else if (state is DeleteImageFailure) {
-              // Show error message
-              return _errorDeleteImage(context, state.error);
-            } else if (state is DeleteImageSuccess) {
-              // Show success message briefly then close
-              Future.delayed(Duration(milliseconds: 1500), () {
-                if (context.mounted) context.pop(); // Close dialog
-              });
-              return _successDeleteImage(context);
-            } else {
-              // Show delete confirmation dialog
-              return _deleteImageContent(context);
-            }
-          },
-        );
-      }),
-    ),
-  );
+  try {
+    return customDialog(
+      context: context,
+      backgroundColor: AppColors.white,
+      radius: 16,
+      height: null, // Make height flexible to prevent overflow
+      dialogContent: BlocProvider.value(
+        value: sl<ProfileCubit>(),
+        child: Builder(builder: (context) {
+          return BlocBuilder<ProfileCubit, ProfileState>(
+            builder: (context, state) {
+              if (state is DeleteImageLoading) {
+                // Show loading lottie
+                return _loadingDeleteImage(context);
+              } else if (state is DeleteImageFailure) {
+                // Show error message
+                return _errorDeleteImage(context, state.error);
+              } else if (state is DeleteImageSuccess) {
+                // Show success message briefly then close
+                Future.delayed(Duration(milliseconds: 1500), () {
+                  if (context.mounted) {
+                    try {
+                      context.pop(); // Close dialog
+                    } catch (e) {
+                      // Handle any overflow when closing dialog
+                    }
+                  }
+                });
+                return _successDeleteImage(context);
+              } else {
+                // Show delete confirmation dialog
+                return _deleteImageContent(context);
+              }
+            },
+          );
+        }),
+      ),
+    );
+  } catch (e) {
+    // Handle any overflow or error in dialog creation
+    if (context.mounted) {
+      context.pop();
+    }
+  }
 }
 
 Widget _loadingDeleteImage(BuildContext context) {
@@ -67,7 +80,8 @@ Widget _loadingDeleteImage(BuildContext context) {
 }
 
 Widget _errorDeleteImage(BuildContext context, String error) {
-  return Column(
+  return SingleChildScrollView(
+      child: Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
@@ -93,7 +107,9 @@ Widget _errorDeleteImage(BuildContext context, String error) {
         width: 200.w,
         child: CustomElevatedButton(
           onPressed: () {
-            context.pop(); // Close dialog
+            if (context.mounted) {
+              context.pop(); // Close dialog
+            }
           },
           textButton: AppLocalizations.of(context)!.close,
           verticalPadding: 12,
@@ -102,7 +118,7 @@ Widget _errorDeleteImage(BuildContext context, String error) {
         ),
       ),
     ],
-  );
+  ));
 }
 
 Widget _successDeleteImage(BuildContext context) {
@@ -124,63 +140,77 @@ Widget _successDeleteImage(BuildContext context) {
 
 Widget _deleteImageContent(BuildContext context) {
   final tr = AppLocalizations.of(context)!;
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Image.asset(
-        AppImages.warningLogo,
-        width: 101.w,
-        height: 101.h,
-      ),
-      verticalSpace(24),
-      Text(
-        tr.areYouSure,
-        textDirection: TextDirection.rtl,
-        style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
-          color: AppColors.darkBlue,
-          fontWeight: FontWeightHelper.bold,
+  return SingleChildScrollView(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          AppImages.warningLogo,
+          width: 101.w,
+          height: 101.h,
         ),
-      ),
-      verticalSpace(4),
-      Text(
-        tr.deleteImageConfirm,
-        textDirection: TextDirection.rtl,
-        style: AppTextStyles.font14LightGrayRegularLamaSans,
-      ),
-      verticalSpace(24),
-      Row(
-        textDirection: TextDirection.rtl,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 115.w,
-            child: CustomElevatedButton(
-              onPressed: () {
-                context.pop();
-              },
-              textButton: tr.cancel,
-              verticalPadding: 12,
-              backgroundColor: AppColors.darkSunray,
-              radius: 8,
-            ),
+        verticalSpace(24),
+        Text(
+          tr.areYouSure,
+          textDirection: TextDirection.rtl,
+          style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+            color: AppColors.darkBlue,
+            fontWeight: FontWeightHelper.bold,
           ),
-          horizontalSpace(12),
-          GestureDetector(
-            onTap: () {
-              // Trigger delete image
-              context.read<ProfileCubit>().deleteImage();
-            },
-            child: Text(
-              tr.deleteImage,
-              style: AppTextStyles.font14LightGrayRegularLamaSans.copyWith(
-                fontWeight: FontWeightHelper.semiBold,
-                color: AppColors.brightRed,
+        ),
+        verticalSpace(4),
+        Text(
+          tr.deleteImageConfirm,
+          textDirection: TextDirection.rtl,
+          style: AppTextStyles.font14LightGrayRegularLamaSans,
+        ),
+        verticalSpace(24),
+        Row(
+          textDirection: TextDirection.rtl,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 115.w,
+              child: CustomElevatedButton(
+                onPressed: () {
+                  if (context.mounted) {
+                    context.pop();
+                  }
+                },
+                textButton: tr.cancel,
+                verticalPadding: 12,
+                backgroundColor: AppColors.darkSunray,
+                radius: 8,
               ),
             ),
-          ),
-        ],
-      ),
-    ],
+            horizontalSpace(12),
+            GestureDetector(
+              onTap: () {
+                // Trigger delete image and handle overflow
+                try {
+                  if (context.mounted) {
+                    context.read<ProfileCubit>().deleteImage();
+                  }
+                } catch (e) {
+                  // Handle any overflow or error
+                  if (context.mounted) {
+                    context.pop(); // Close dialog on error
+                  }
+                }
+              },
+              child: Text(
+                tr.deleteImage,
+                style: AppTextStyles.font14LightGrayRegularLamaSans.copyWith(
+                  fontWeight: FontWeightHelper.semiBold,
+                  color: AppColors.brightRed,
+                ),
+              ),
+            ),
+          ],
+        ),
+        verticalSpace(16), // Add bottom padding for better spacing
+      ],
+    ),
   );
 }

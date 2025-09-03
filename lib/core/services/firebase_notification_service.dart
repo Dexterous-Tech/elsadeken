@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,6 +36,9 @@ class FirebaseNotificationService {
     'High Importance Notifications',
     description: 'This channel is used for important notifications.',
     importance: Importance.high,
+    playSound: true,
+    enableVibration: true,
+    showBadge: true,
   );
 
   // Global variable to handle background messages
@@ -244,9 +248,10 @@ class FirebaseNotificationService {
       // Check if notifications are enabled before showing
       bool enabled = await isNotificationEnabled();
       if (enabled) {
+        log("🔔 Showing foreground notification: ${message.notification?.title}");
         _showLocalNotification(message);
       } else {
-        log("Notifications disabled, not showing foreground notification");
+        log("❌ Notifications disabled, not showing foreground notification");
       }
 
       // Always trigger chat refresh when Firebase notification is received
@@ -295,22 +300,43 @@ class FirebaseNotificationService {
   /// Show local notification
   void _showLocalNotification(RemoteMessage message) {
     RemoteNotification? notification = message.notification;
-    AndroidNotification? android = message.notification?.android;
 
-    if (notification != null && android != null) {
-      _localNotifications.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            channelDescription: channel.description,
-            icon: android.smallIcon ?? '@mipmap/ic_launcher',
+    if (notification != null) {
+      // For Android, use Android-specific settings
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        AndroidNotification? android = message.notification?.android;
+        _localNotifications.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channelDescription: channel.description,
+              icon: android?.smallIcon ?? '@mipmap/ic_launcher',
+              // Add these for better foreground notification display
+              importance: Importance.high,
+              priority: Priority.high,
+              showWhen: true,
+              enableVibration: true,
+              playSound: true,
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        // For iOS and other platforms
+        _localNotifications.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(),
+        );
+      }
+
+      log("✅ Foreground notification displayed: ${notification.title}");
+    } else {
+      log("⚠️ No notification data to display");
     }
   }
 
@@ -548,8 +574,55 @@ class FirebaseNotificationService {
       final notificationsEnabled =
           prefs.getBool('notifications_enabled') ?? true;
       log('⚙️ Local notifications enabled: $notificationsEnabled');
+
+      // Check Android notification channel
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        log('🤖 Android notification channel: ${channel.id}');
+        log('🤖 Channel importance: ${channel.importance}');
+        log('🤖 Channel playSound: ${channel.playSound}');
+        log('🤖 Channel enableVibration: ${channel.enableVibration}');
+      }
     } catch (e) {
       log("❌ Error checking notification permissions: $e");
+    }
+  }
+
+  /// Test foreground notification manually (for debugging)
+  Future<void> testForegroundNotification() async {
+    try {
+      log("🧪 Testing foreground notification...");
+
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        await _localNotifications.show(
+          999999, // Use a unique ID for test
+          '🧪 Test Notification',
+          'This is a test notification while app is in foreground',
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channelDescription: channel.description,
+              icon: '@mipmap/ic_launcher',
+              importance: Importance.high,
+              priority: Priority.high,
+              showWhen: true,
+              enableVibration: true,
+              playSound: true,
+            ),
+          ),
+        );
+        log("✅ Test notification sent successfully");
+      } else {
+        await _localNotifications.show(
+          999999,
+          '🧪 Test Notification',
+          'This is a test notification while app is in foreground',
+          NotificationDetails(),
+        );
+        log("✅ Test notification sent successfully");
+      }
+    } catch (e) {
+      log("❌ Error sending test notification: $e");
     }
   }
 }

@@ -26,10 +26,12 @@ class LoginBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsetsDirectional.only(end: 34.w, start: 31.w, top: 32.13.h),
+        padding:
+            EdgeInsetsDirectional.only(end: 34.w, start: 31.w, top: 32.13.h),
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
