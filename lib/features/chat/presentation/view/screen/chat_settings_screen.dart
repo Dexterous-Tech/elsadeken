@@ -53,7 +53,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
       if (mounted) {
         setState(() {
           _selectedAgeCategory = AppLocalizations.of(context)!.anyPerson;
-          _selectedNationalities = AppLocalizations.of(context)!.allNationalities;
+          _selectedNationalities =
+              AppLocalizations.of(context)!.allNationalities;
           _selectedCountries = AppLocalizations.of(context)!.allCountries;
         });
         print(
@@ -159,7 +160,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          AppLocalizations.of(context)!.settingsLoadedSuccessfully,
+                          AppLocalizations.of(context)!
+                              .settingsLoadedSuccessfully,
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -270,7 +272,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          AppLocalizations.of(context)!.connectionStatusUpdatedSuccessfully,
+                          AppLocalizations.of(context)!
+                              .connectionStatusUpdatedSuccessfully,
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -379,8 +382,6 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     );
   }
 
-
-
   PreferredSizeWidget _buildAppBar() {
     return PreferredSize(
       preferredSize: Size.fromHeight(80.h),
@@ -393,7 +394,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             decoration: BoxDecoration(
               color: AppColors.white,
             ),
-            child: ProfileHeader(title: AppLocalizations.of(context)!.messageSettings),
+            child: ProfileHeader(
+                title: AppLocalizations.of(context)!.messageSettings),
           ),
           // Decorative background image above header but non-interactive
           IgnorePointer(
@@ -471,28 +473,17 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF0F0).withOpacity(0.5),
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildConnectionStatusSection(),
-                SizedBox(height: 50.h),
-                _buildDivider(),
-                SizedBox(height: 50.h),
-                _buildWhoCanSendSection(),
-                SizedBox(height: 50.h),
-                _buildDivider(),
-                SizedBox(height: 50.h),
-                // _buildNotificationSettingsSection(),
-              ],
-            ),
+        Padding(
+          padding: EdgeInsets.all(20.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildConnectionStatusSection(),
+              SizedBox(height: 50.h),
+              _buildWhoCanSendSection(),
+              SizedBox(height: 50.h),
+              // _buildNotificationSettingsSection(),
+            ],
           ),
         ),
         Spacer(),
@@ -503,86 +494,110 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   }
 
   Widget _buildConnectionStatusSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          AppLocalizations.of(context)!.showOnlineStatus,
-          style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        SizedBox(height: 16.h),
-        BlocBuilder<ChatOnlineSettingCubit, ChatOnlineSettingState>(
-          builder: (context, state) {
-            return _buildSettingRow(
-              title: _isOnline ? AppLocalizations.of(context)!.onlineStatus : AppLocalizations.of(context)!.offlineStatus,
-              subtitle: AppLocalizations.of(context)!.showOnlineStatus,
-              showGreenDot: true,
-              trailing: Transform.scale(
-                scale: 0.8,
-                child: Switch(
-                  value: _isOnline,
-                  onChanged: (value) {
-                    // Immediately update the UI
-                    setState(() {
-                      _isOnline = value;
-                    });
-                    // Call the cubit to update online status
-                    context.read<ChatOnlineSettingCubit>().setOnline();
-                  },
-                  activeColor: Colors.orangeAccent,
-                  activeTrackColor: Colors.black,
-                  inactiveThumbColor: Colors.red,
-                  inactiveTrackColor: Colors.white,
-                ),
-              ),
-            );
-          },
-        )
-      ],
-    );
-  }
-
-  Widget _buildWhoCanSendSection() {
     return Container(
       child: Column(
-        textDirection: LocalizationService.instance.textDirection,
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            textDirection: LocalizationService.instance.textDirection,
-            AppLocalizations.of(context)!.whoCanSendMessages,
+            AppLocalizations.of(context)!.showOnlineStatus,
             style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
           SizedBox(height: 16.h),
-          _buildSettingRow(
-            title: AppLocalizations.of(context)!.ageGroup,
-            subtitle: _selectedAgeCategory,
-            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-            onTap: _showAgeCategoryDialog,
-          ),
-          SizedBox(height: 4.h),
-          _buildSettingRow(
-            title: AppLocalizations.of(context)!.nationalities,
-            subtitle: _selectedNationalities,
-            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-            onTap: _showNationalitiesDialog,
-          ),
-          SizedBox(height: 4.h),
-          _buildSettingRow(
-            title: AppLocalizations.of(context)!.countries,
-            subtitle: _selectedCountries,
-            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-            onTap: _showCountriesDialog,
-          ),
+          BlocBuilder<ChatOnlineSettingCubit, ChatOnlineSettingState>(
+            builder: (context, state) {
+              return Container(
+                // padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFfbecef).withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: _buildSettingRow(
+                  title: _isOnline
+                      ? AppLocalizations.of(context)!.onlineStatus
+                      : AppLocalizations.of(context)!.offlineStatus,
+                  subtitle: AppLocalizations.of(context)!.showOnlineStatus,
+                  showGreenDot: true,
+                  trailing: Transform.scale(
+                    scale: 0.8,
+                    child: Switch(
+                      value: _isOnline,
+                      onChanged: (value) {
+                        // Immediately update the UI
+                        setState(() {
+                          _isOnline = value;
+                        });
+                        // Call the cubit to update online status
+                        context.read<ChatOnlineSettingCubit>().setOnline();
+                      },
+                      activeColor: Colors.orangeAccent,
+                      activeTrackColor: Colors.black,
+                      inactiveThumbColor: Colors.red,
+                      inactiveTrackColor: Colors.white,
+                    ),
+                  ),
+                ),
+              );
+            },
+          )
         ],
       ),
+    );
+  }
+
+  Widget _buildWhoCanSendSection() {
+    return Column(
+      textDirection: LocalizationService.instance.textDirection,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          textDirection: LocalizationService.instance.textDirection,
+          AppLocalizations.of(context)!.whoCanSendMessages,
+          style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(height: 16.h),
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+          decoration: BoxDecoration(
+            color: const Color(0xFFfbecef).withOpacity(0.3),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            textDirection: LocalizationService.instance.textDirection,
+            children: [
+              _buildSettingRow(
+                title: AppLocalizations.of(context)!.ageGroup,
+                subtitle: _selectedAgeCategory,
+                trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+                onTap: _showAgeCategoryDialog,
+              ),
+              SizedBox(height: 8.h),
+              _buildDivider(),
+              _buildSettingRow(
+                title: AppLocalizations.of(context)!.nationalities,
+                subtitle: _selectedNationalities,
+                trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+                onTap: _showNationalitiesDialog,
+              ),
+              SizedBox(height: 8.h),
+              _buildDivider(),
+              _buildSettingRow(
+                title: AppLocalizations.of(context)!.countries,
+                subtitle: _selectedCountries,
+                trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+                onTap: _showCountriesDialog,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -628,21 +643,17 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     VoidCallback? onTap,
     bool showGreenDot = false, // Add this flag
   }) {
-    return InkWell(
-      splashColor: Colors.blue.withOpacity(0.3),
-      highlightColor: Colors.blue.withOpacity(0.1),
-      onTap: onTap != null
-          ? () {
-              print('Tapped on: $title'); // Debug print
-              onTap();
-            }
-          : null,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-        decoration: BoxDecoration(
-          color: const Color(0xFFfbecef).withOpacity(0.3),
-          borderRadius: BorderRadius.circular(12.r),
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+      child: InkWell(
+        splashColor: Colors.blue.withOpacity(0.3),
+        highlightColor: Colors.blue.withOpacity(0.1),
+        onTap: onTap != null
+            ? () {
+                print('Tapped on: $title'); // Debug print
+                onTap();
+              }
+            : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -694,6 +705,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
 
   Widget _buildDivider() {
     return Container(
+      margin: EdgeInsetsDirectional.symmetric(horizontal: 20.w),
       height: 1.h,
       color: Colors.grey[300],
     );
@@ -723,7 +735,9 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             onPressed: (isLoading || !hasSettings || !hasChanges)
                 ? () {}
                 : _saveSettings,
-            textButton: isLoading ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.save,
+            textButton: isLoading
+                ? AppLocalizations.of(context)!.saving
+                : AppLocalizations.of(context)!.save,
             height: 56.h,
             radius: 28.r,
             styleTextButton: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
@@ -873,9 +887,11 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Option for "All Nationalities"
-                      _buildDialogOption(AppLocalizations.of(context)!.allNationalities, () {
+                      _buildDialogOption(
+                          AppLocalizations.of(context)!.allNationalities, () {
                         setState(() {
-                          _selectedNationalities = AppLocalizations.of(context)!.allNationalities;
+                          _selectedNationalities =
+                              AppLocalizations.of(context)!.allNationalities;
                           _nationalityId = 0;
                         });
                         Navigator.pop(context);
@@ -913,7 +929,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                       const SizedBox(height: 8),
                       Text(
                         AppLocalizations.of(context)!.pleaseWait,
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                     ],
                   ),
@@ -932,7 +949,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                       const Icon(Icons.error_outline,
                           color: Colors.red, size: 48),
                       const SizedBox(height: 16),
-                      Text(AppLocalizations.of(context)!.errorLoadingNationalities),
+                      Text(AppLocalizations.of(context)!
+                          .errorLoadingNationalities),
                       const SizedBox(height: 8),
                       Text(
                         currentState.message,
@@ -954,7 +972,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               );
             } else {
               print('[ChatSettingsScreen] Unknown state: $currentState');
-              return  SizedBox(
+              return SizedBox(
                 height: 200,
                 child: Center(
                   child: Column(
@@ -1014,9 +1032,11 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Option for "All Countries"
-                      _buildDialogOption(AppLocalizations.of(context)!.allCountries, () {
+                      _buildDialogOption(
+                          AppLocalizations.of(context)!.allCountries, () {
                         setState(() {
-                          _selectedCountries = AppLocalizations.of(context)!.allCountries;
+                          _selectedCountries =
+                              AppLocalizations.of(context)!.allCountries;
                           _countryId = 0;
                         });
                         Navigator.pop(context);
@@ -1041,7 +1061,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             } else if (currentState is ListsLoading ||
                 currentState is ListsInitial) {
               print('[ChatSettingsScreen] Lists are loading...');
-              return  SizedBox(
+              return SizedBox(
                 height: 200,
                 child: Center(
                   child: Column(
@@ -1095,7 +1115,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               );
             } else {
               print('[ChatSettingsScreen] Unknown state: $currentState');
-              return  SizedBox(
+              return SizedBox(
                 height: 200,
                 child: Center(
                   child: Column(
