@@ -3232,6 +3232,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error occurred while updating status'**
   String get errorUpdatingStatus;
+
+  /// No description provided for @messageSentSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message has been sent successfully'**
+  String get messageSentSuccessfully;
+
+  /// No description provided for @premiumCardDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'If you purchased a premium card from a local agent, you will receive a number to activate the premium package. Enter it in the field below and your account will be upgraded to premium membership immediately'**
+  String get premiumCardDescription;
+
+  /// No description provided for @yourEmailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email address'**
+  String get yourEmailAddress;
+
+  /// No description provided for @pleaseEnterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email'**
+  String get pleaseEnterEmail;
+
+  /// No description provided for @messageSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Message subject'**
+  String get messageSubject;
+
+  /// No description provided for @pleaseEnterMessageSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the message subject'**
+  String get pleaseEnterMessageSubject;
+
+  /// No description provided for @writeYourMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your message'**
+  String get writeYourMessage;
+
+  /// No description provided for @pleaseEnterMessageContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the message content'**
+  String get pleaseEnterMessageContent;
+
+  /// No description provided for @messageMustBeMoreThan10Chars.
+  ///
+  /// In en, this message translates to:
+  /// **'Message must be more than 10 characters'**
+  String get messageMustBeMoreThan10Chars;
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

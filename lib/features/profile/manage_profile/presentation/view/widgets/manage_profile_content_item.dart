@@ -18,7 +18,6 @@ class ManageProfileContentItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       textDirection: LocalizationService.instance.textDirection,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
           flex: 2,
@@ -30,7 +29,7 @@ class ManageProfileContentItem extends StatelessWidget {
             maxLines: 2,
           ),
         ),
-        SizedBox(width: 8.w),
+        Spacer(),
         Expanded(
           flex: 3,
           child: itemContent,

@@ -228,12 +228,8 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                                       color: Color(0xFFD4AF37), fontSize: 18),
                                 ),
                                 SizedBox(width: 6),
-                                Icon(
-                                    LocalizationService.instance.isArabic
-                                        ? Icons.arrow_forward_ios
-                                        : Icons.arrow_back_ios,
-                                    size: 16,
-                                    color: Color(0xFFD4AF37)),
+                                Icon(Icons.arrow_forward_ios,
+                                    size: 16, color: Color(0xFFD4AF37)),
                               ],
                             ),
                           ),

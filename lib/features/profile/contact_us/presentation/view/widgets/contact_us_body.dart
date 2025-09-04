@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
@@ -13,6 +14,7 @@ import 'package:elsadeken/core/widgets/dialog/success_dialog.dart'
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:elsadeken/features/profile/contact_us/presentation/manager/contact_us_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,7 +32,7 @@ class ContactUsBody extends StatelessWidget {
           Navigator.pop(context); // Close loading dialog
           success_dialog.successDialog(
             context: context,
-            message: 'تم إرسال رسالتك بنجاح',
+            message: AppLocalizations.of(context)!.messageSentSuccessfully,
             onPressed: () {
               Navigator.pop(context);
               Navigator.pop(context);
@@ -53,10 +55,10 @@ class ContactUsBody extends StatelessWidget {
             child: Form(
               key: ContactUsCubit.get(context).formKey,
               child: Column(
-                textDirection: TextDirection.rtl,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                textDirection: LocalizationService.instance.textDirection,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ProfileHeader(title: 'إتصل بنا'),
+                  ProfileHeader(title: AppLocalizations.of(context)!.contactUs),
                   verticalSpace(50),
                   Container(
                     padding: EdgeInsets.only(
@@ -70,12 +72,13 @@ class ContactUsBody extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'في حالة قمت بشراء بطاقة الصادقون و الصادقات من الوكيل المحلي ، فسيرسل لك رقم لتفعيل باقة التميز ، قم بإدخاله في الخانة اسفله و سيتم ترقية حسابك الى عضوية مميزة مباشرة',
+                          AppLocalizations.of(context)!.premiumCardDescription,
                           style: AppTextStyles.font13BlackMediumLamaSans
                               .copyWith(
                                   fontWeight: FontWeightHelper.regular,
                                   color: AppColors.jet),
-                          textDirection: TextDirection.rtl,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
                           textAlign: TextAlign.center,
                         ),
                         verticalSpace(32),
@@ -86,15 +89,18 @@ class ContactUsBody extends StatelessWidget {
                               CustomTextFormField(
                                 controller:
                                     ContactUsCubit.get(context).emailController,
-                                hintText: 'البريد الإلكتروني الخاص بك',
+                                hintText: AppLocalizations.of(context)!
+                                    .yourEmailAddress,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'يرجى إدخال البريد الإلكتروني';
+                                    return AppLocalizations.of(context)!
+                                        .pleaseEnterEmail;
                                   }
                                   if (!RegExp(
                                           r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
                                       .hasMatch(value)) {
-                                    return 'يرجى إدخال بريد إلكتروني صحيح';
+                                    return AppLocalizations.of(context)!
+                                        .pleaseEnterValidEmail;
                                   }
                                   return null;
                                 },
@@ -104,10 +110,12 @@ class ContactUsBody extends StatelessWidget {
                               CustomTextFormField(
                                 controller:
                                     ContactUsCubit.get(context).titleController,
-                                hintText: 'موضوع الرسالة',
+                                hintText: AppLocalizations.of(context)!
+                                    .messageSubject,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'يرجى إدخال موضوع الرسالة';
+                                    return AppLocalizations.of(context)!
+                                        .pleaseEnterMessageSubject;
                                   }
                                   return null;
                                 },
@@ -117,13 +125,16 @@ class ContactUsBody extends StatelessWidget {
                               CustomTextFormField(
                                 controller: ContactUsCubit.get(context)
                                     .descriptionController,
-                                hintText: 'اكتب رسالتك',
+                                hintText: AppLocalizations.of(context)!
+                                    .writeYourMessage,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'يرجى إدخال محتوى الرسالة';
+                                    return AppLocalizations.of(context)!
+                                        .pleaseEnterMessageContent;
                                   }
                                   if (value.length < 10) {
-                                    return 'يجب أن تكون الرسالة أكثر من 10 أحرف';
+                                    return AppLocalizations.of(context)!
+                                        .messageMustBeMoreThan10Chars;
                                   }
                                   return null;
                                 },
@@ -136,7 +147,7 @@ class ContactUsBody extends StatelessWidget {
                                 onPressed: () {
                                   ContactUsCubit.get(context).contactUs();
                                 },
-                                textButton: 'ارســــــــل',
+                                textButton: AppLocalizations.of(context)!.send,
                               ),
                               verticalSpace(13),
                               // GestureDetector(

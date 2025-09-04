@@ -1627,4 +1627,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorUpdatingStatus => 'Error occurred while updating status';
+
+  @override
+  String get messageSentSuccessfully => 'Your message has been sent successfully';
+
+  @override
+  String get premiumCardDescription => 'If you purchased a premium card from a local agent, you will receive a number to activate the premium package. Enter it in the field below and your account will be upgraded to premium membership immediately';
+
+  @override
+  String get yourEmailAddress => 'Your email address';
+
+  @override
+  String get pleaseEnterEmail => 'Please enter your email';
+
+  @override
+  String get messageSubject => 'Message subject';
+
+  @override
+  String get pleaseEnterMessageSubject => 'Please enter the message subject';
+
+  @override
+  String get writeYourMessage => 'Write your message';
+
+  @override
+  String get pleaseEnterMessageContent => 'Please enter the message content';
+
+  @override
+  String get messageMustBeMoreThan10Chars => 'Message must be more than 10 characters';
+
+  @override
+  String get send => 'Send';
 }

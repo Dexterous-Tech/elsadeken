@@ -755,6 +755,18 @@
     "noObjectionToPolygamy": "لا مانع من تعدل الزوجات",
     "errorUpdatingStatus": "حدث خطأ اثناء تحديث الحالة",
     "onlineNow": "متصل الآن",
-    "offline": "غير متصل"
+    "offline": "غير متصل",
+    "messageSentSuccessfully": "تم إرسال رسالتك بنجاح",
+    "contactUs": "إتصل بنا",
+    "premiumCardDescription": "في حالة قمت بشراء بطاقة الصادقون و الصادقات من الوكيل المحلي ، فسيرسل لك رقم لتفعيل باقة التميز ، قم بإدخاله في الخانة اسفله و سيتم ترقية حسابك الى عضوية مميزة مباشرة",
+    "yourEmailAddress": "البريد الإلكتروني الخاص بك",
+    "pleaseEnterEmail": "يرجى إدخال البريد الإلكتروني",
+    "pleaseEnterValidEmail": "يرجى إدخال بريد إلكتروني صحيح",
+    "messageSubject": "موضوع الرسالة",
+    "pleaseEnterMessageSubject": "يرجى إدخال موضوع الرسالة",
+    "writeYourMessage": "اكتب رسالتك",
+    "pleaseEnterMessageContent": "يرجى إدخال محتوى الرسالة",
+    "messageMustBeMoreThan10Chars": "يجب أن تكون الرسالة أكثر من 10 أحرف",
+    "send": "ارســــــــل"
 
 }

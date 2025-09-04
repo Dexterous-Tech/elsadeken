@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
@@ -44,6 +45,9 @@ class ManageProfileContentText extends StatelessWidget {
 
     return Text(
       text.isEmpty ? AppLocalizations.of(context)!.notSpecified : text,
+
+      textDirection: LocalizationService.instance.textDirection,
+      textAlign: LocalizationService.instance.convertTextAlignment,
       style: textStyle ??
           AppTextStyles.font18PhilippineBronzeRegularLamaSans.copyWith(
             color: textColor,

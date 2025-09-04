@@ -153,7 +153,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shareApp => 'مشاركه التطبيق';
 
   @override
-  String get contactUs => 'اتصل بنا';
+  String get contactUs => 'إتصل بنا';
 
   @override
   String get personalInfo => 'معلومات شخصية';
@@ -1249,7 +1249,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get usernameMaxLength => 'اسم المستخدم لا يمكن أن يتجاوز 50 حرف';
 
   @override
-  String get pleaseEnterValidEmail => 'يرجى ادخال بريد الكتروني صحيح';
+  String get pleaseEnterValidEmail => 'يرجى إدخال بريد إلكتروني صحيح';
 
   @override
   String get phoneNumberLength => 'رقم الهاتف يجب أن يكون بين 8 و 15 رقم';
@@ -1628,4 +1628,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorUpdatingStatus => 'حدث خطأ اثناء تحديث الحالة';
+
+  @override
+  String get messageSentSuccessfully => 'تم إرسال رسالتك بنجاح';
+
+  @override
+  String get premiumCardDescription => 'في حالة قمت بشراء بطاقة الصادقون و الصادقات من الوكيل المحلي ، فسيرسل لك رقم لتفعيل باقة التميز ، قم بإدخاله في الخانة اسفله و سيتم ترقية حسابك الى عضوية مميزة مباشرة';
+
+  @override
+  String get yourEmailAddress => 'البريد الإلكتروني الخاص بك';
+
+  @override
+  String get pleaseEnterEmail => 'يرجى إدخال البريد الإلكتروني';
+
+  @override
+  String get messageSubject => 'موضوع الرسالة';
+
+  @override
+  String get pleaseEnterMessageSubject => 'يرجى إدخال موضوع الرسالة';
+
+  @override
+  String get writeYourMessage => 'اكتب رسالتك';
+
+  @override
+  String get pleaseEnterMessageContent => 'يرجى إدخال محتوى الرسالة';
+
+  @override
+  String get messageMustBeMoreThan10Chars => 'يجب أن تكون الرسالة أكثر من 10 أحرف';
+
+  @override
+  String get send => 'ارســــــــل';
 }
