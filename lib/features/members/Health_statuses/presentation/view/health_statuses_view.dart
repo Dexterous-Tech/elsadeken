@@ -131,7 +131,7 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
@@ -258,19 +258,22 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                               GenderFilter(
                                 text: AppLocalizations.of(context)!.all,
                                 isActive: _activeFilter == 'all',
-                                onTap: () => setState(() => _activeFilter = 'all'),
+                                onTap: () =>
+                                    setState(() => _activeFilter = 'all'),
                               ),
                               const SizedBox(width: 6),
                               GenderFilter(
                                 text: AppLocalizations.of(context)!.males,
                                 isActive: _activeFilter == 'males',
-                                onTap: () => setState(() => _activeFilter = 'males'),
+                                onTap: () =>
+                                    setState(() => _activeFilter = 'males'),
                               ),
                               const SizedBox(width: 6),
                               GenderFilter(
                                 text: AppLocalizations.of(context)!.females,
                                 isActive: _activeFilter == 'females',
-                                onTap: () => setState(() => _activeFilter = 'females'),
+                                onTap: () =>
+                                    setState(() => _activeFilter = 'females'),
                               ),
                             ],
                           ),

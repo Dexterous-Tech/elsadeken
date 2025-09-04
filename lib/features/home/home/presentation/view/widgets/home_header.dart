@@ -62,6 +62,8 @@ class _HomeHeaderState extends State<HomeHeader> {
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         children: [
                           Text(
                             name,
@@ -173,7 +175,9 @@ class _HomeHeaderState extends State<HomeHeader> {
                     SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         children: [
                           Container(
                             width: 100.w,

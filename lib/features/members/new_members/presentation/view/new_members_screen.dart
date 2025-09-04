@@ -110,7 +110,7 @@ class _NewMembersViewState extends State<NewMembersView> {
     )..fetch();
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -190,7 +190,7 @@ class _NewMembersViewState extends State<NewMembersView> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12),
                       child: Align(
-                        alignment: Alignment.centerLeft,
+                        alignment: LocalizationService.instance.endAlignment,
                         child: GestureDetector(
                           onTap: () async {
                             final result = await showModalBottomSheet<
@@ -229,6 +229,8 @@ class _NewMembersViewState extends State<NewMembersView> {
                           },
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                             children: [
                               Text(
                                 AppLocalizations.of(context)!.filter,
@@ -236,8 +238,12 @@ class _NewMembersViewState extends State<NewMembersView> {
                                     color: Color(0xFFD4AF37), fontSize: 16),
                               ),
                               SizedBox(width: 6),
-                              Icon(Icons.arrow_forward_ios,
-                                  size: 16, color: Color(0xFFD4AF37)),
+                              Icon(
+                                  LocalizationService.instance.isArabic
+                                      ? Icons.arrow_forward_ios
+                                      : Icons.arrow_back_ios,
+                                  size: 16,
+                                  color: Color(0xFFD4AF37)),
                             ],
                           ),
                         ),

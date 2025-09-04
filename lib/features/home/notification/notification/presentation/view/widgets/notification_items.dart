@@ -35,7 +35,7 @@ class NotificationItemWidget extends StatelessWidget {
             image: notification.icon ?? '',
           ),
 
-          SizedBox(width: 10.w),
+          SizedBox(width: 16.w),
 
           /// 👉 TEXT on the left
           Expanded(

@@ -137,7 +137,7 @@ class _ViewersViewState extends State<ViewersView> {
     )..fetch();
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
