@@ -105,82 +105,155 @@ class _SignupPageViewState extends State<SignupPageView>
         return SignupPersonalInfo(
           gender: widget.gender,
           key: const ValueKey(0),
-          onNextPressed: () => widget.onStepChanged(1),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(1);
+          },
         );
 
       case 1:
         return SignupPasswords(
           key: const ValueKey(1),
-          onNextPressed: () => widget.onStepChanged(2),
-          onPreviousPressed: () => widget.onStepChanged(0),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(2);
+          },
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(0);
+          },
         );
       case 2:
         return SignupNational(
           key: const ValueKey(2),
-          onNextPressed: () => widget.onStepChanged(3),
-          onPreviousPressed: () => widget.onStepChanged(1),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(3);
+          },
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(1);
+          },
         );
       case 3:
         return SignupCountry(
           key: const ValueKey(3),
-          onNextPressed: () => widget.onStepChanged(4),
-          onPreviousPressed: () => widget.onStepChanged(2),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(4);
+          },
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(2);
+          },
         );
       case 4:
         return SignupCity(
           key: const ValueKey(4),
-          onNextPressed: () => widget.onStepChanged(5),
-          onPreviousPressed: () => widget.onStepChanged(3),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(5);
+          },
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(3);
+          },
         );
       case 5:
         return SignupSocialStatus(
           key: const ValueKey(5),
           gender: widget.gender,
-          onNextPressed: () => widget.onStepChanged(6),
-          onPreviousPressed: () => widget.onStepChanged(4),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(6);
+          },
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(4);
+          },
         );
       case 6:
         return SignupGeneralInfo(
           key: const ValueKey(6),
-          onNextPressed: () => widget.onStepChanged(7),
-          onPreviousPressed: () => widget.onStepChanged(5),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(7);
+          },
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(5);
+          },
         );
       case 7:
         return SignupBodyShape(
           key: const ValueKey(7),
-          onNextPressed: () => widget.onStepChanged(8),
-          onPreviousPressed: () => widget.onStepChanged(6),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(8);
+          },
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(6);
+          },
         );
       case 8:
         return SignupReligion(
           key: const ValueKey(8),
-          onNextPressed: () => widget.onStepChanged(9),
-          onPreviousPressed: () => widget.onStepChanged(7),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(9);
+          },
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(7);
+          },
         );
       case 9:
         return SignupAdditions(
           key: const ValueKey(9),
-          onNextPressed: () => widget.onStepChanged(10),
-          onPreviousPressed: () => widget.onStepChanged(8),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(10);
+          },
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(8);
+          },
           gender: widget.gender,
         );
       case 10:
         return SignupEducation(
           key: const ValueKey(10),
-          onNextPressed: () => widget.onStepChanged(11),
-          onPreviousPressed: () => widget.onStepChanged(9),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(11);
+          },
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(9);
+          },
         );
       case 11:
         return SignupJob(
           key: const ValueKey(11),
-          onNextPressed: () => widget.onStepChanged(12),
-          onPreviousPressed: () => widget.onStepChanged(10),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(12);
+          },
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(10);
+          },
         );
       case 12:
         return SignupDescriptions(
           key: const ValueKey(12),
-          onPreviousPressed: () => widget.onStepChanged(11),
+          onPreviousPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(11);
+          },
           onNextPressed: () {
+            FocusScope.of(context).unfocus();
             // This is handled inside the SignupDescriptions widget
           },
         );
@@ -188,7 +261,10 @@ class _SignupPageViewState extends State<SignupPageView>
         return SignupPersonalInfo(
           gender: widget.gender,
           key: const ValueKey(0),
-          onNextPressed: () => widget.onStepChanged(1),
+          onNextPressed: () {
+            FocusScope.of(context).unfocus();
+            widget.onStepChanged(1);
+          },
         );
     }
   }

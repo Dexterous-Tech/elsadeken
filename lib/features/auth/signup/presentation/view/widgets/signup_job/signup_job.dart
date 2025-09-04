@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 
+import '../../../../../../../core/services/localization_service.dart';
 import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../../core/theme/spacing.dart';
 import '../../../../../../../core/widgets/forms/custom_text_form_field.dart';
@@ -62,16 +63,18 @@ class _SignupJobState extends State<SignupJob> {
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
                     child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  textDirection: LocalizationService.instance.textDirection,
                   children: [
                     Text(AppLocalizations.of(context)!.whatIsYourJob,
-                        textDirection: TextDirection.rtl,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
                       controller: cubit.jobController,
                       keyboardType: TextInputType.text,
-                      hintText: 'وظيفة',
+                      hintText: AppLocalizations.of(context)!.jobHint,
                       inputFormatters: [
                         // Allow only Arabic & English letters and spaces (no numbers or links)
                         FilteringTextInputFormatter.allow(
@@ -96,14 +99,15 @@ class _SignupJobState extends State<SignupJob> {
                     verticalSpace(40),
 
                     Text(AppLocalizations.of(context)!.whatIsYourMonthlyIncome,
-                        textDirection: TextDirection.rtl,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     // Income field
                     CustomTextFormField(
                       controller: cubit.incomeController,
                       keyboardType: TextInputType.number,
-                      hintText: '0',
+                      hintText: '',
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly, // ✅ Only digits
                         LengthLimitingTextInputFormatter(
@@ -111,15 +115,17 @@ class _SignupJobState extends State<SignupJob> {
                       ],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'يجب إدخال الدخل';
+                          return AppLocalizations.of(context)!.incomeRequired;
                         }
 
                         final income = int.tryParse(value);
                         if (income == null) {
-                          return 'يرجى إدخال رقم صحيح';
+                          return AppLocalizations.of(context)!
+                              .pleaseEnterValidNumber;
                         }
                         if (income < 0) {
-                          return 'لا يمكن ان يقل الدخل الشهري عن 0';
+                          return AppLocalizations.of(context)!
+                              .incomeCannotBeNegative;
                         }
 
                         return null;
@@ -131,12 +137,14 @@ class _SignupJobState extends State<SignupJob> {
                     // Health Condition Selection
                     if (isLoadingHealth)
                       SignupChoiceLoading(
-                        title: 'ما هي الحاله الصحيه؟',
+                        title: AppLocalizations.of(context)!
+                            .whatIsYourHealthStatus,
                       )
                     else
                       SignupMultiChoice(
-                        height: 100.h,
-                        title: 'ما هي الحاله الصحيه؟',
+                        height: 170.h,
+                        title: AppLocalizations.of(context)!
+                            .whatIsYourHealthStatus,
                         options: _healthOptions
                             .map((health) => health.name ?? '')
                             .toList(),
@@ -159,8 +167,7 @@ class _SignupJobState extends State<SignupJob> {
                         },
                       ),
 
-                    verticalSpace(50),
-                    Spacer(),
+                    Expanded(child: verticalSpace(50)),
 
                     CustomNextAndPreviousButton(
                       onNextPressed: widget.onNextPressed,

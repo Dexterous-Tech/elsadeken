@@ -35,7 +35,7 @@ class _LoginFormState extends State<LoginForm> {
         textDirection: LocalizationService.instance.textDirection,
         children: [
           Text(
-            tr.hello,
+            tr.login,
             style: AppTextStyles.font27ChineseBlackBoldLamaSans,
           ),
           verticalSpace(24),

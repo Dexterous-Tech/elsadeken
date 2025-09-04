@@ -860,7 +860,7 @@ abstract class AppLocalizations {
   /// No description provided for @confirmPasswordRequired.
   ///
   /// In en, this message translates to:
-  /// **'Please confirm password'**
+  /// **'You must confirm the password'**
   String get confirmPasswordRequired;
 
   /// No description provided for @selectAllRequiredFields.
@@ -926,7 +926,7 @@ abstract class AppLocalizations {
   /// No description provided for @onlyWife.
   ///
   /// In en, this message translates to:
-  /// **'Only Wife'**
+  /// **'Only wife'**
   String get onlyWife;
 
   /// No description provided for @noPolygamy.
@@ -980,13 +980,13 @@ abstract class AppLocalizations {
   /// No description provided for @phoneNumber.
   ///
   /// In en, this message translates to:
-  /// **'Phone Number'**
+  /// **'Phone number'**
   String get phoneNumber;
 
   /// No description provided for @financialStatus.
   ///
   /// In en, this message translates to:
-  /// **'Financial Status'**
+  /// **'Financial status?'**
   String get financialStatus;
 
   /// No description provided for @job.
@@ -2036,7 +2036,7 @@ abstract class AppLocalizations {
   /// No description provided for @prayer.
   ///
   /// In en, this message translates to:
-  /// **'Prayer'**
+  /// **'Prayer?'**
   String get prayer;
 
   /// No description provided for @smoking.
@@ -2048,13 +2048,13 @@ abstract class AppLocalizations {
   /// No description provided for @hijab.
   ///
   /// In en, this message translates to:
-  /// **'Hijab'**
+  /// **'hijab'**
   String get hijab;
 
   /// No description provided for @beard.
   ///
   /// In en, this message translates to:
-  /// **'Beard'**
+  /// **'beard'**
   String get beard;
 
   /// No description provided for @editReligiousInfo.
@@ -2156,13 +2156,13 @@ abstract class AppLocalizations {
   /// No description provided for @withoutBeard.
   ///
   /// In en, this message translates to:
-  /// **'Without beard'**
+  /// **'without Beard'**
   String get withoutBeard;
 
   /// No description provided for @notHijab.
   ///
   /// In en, this message translates to:
-  /// **'Not wearing hijab'**
+  /// **'Not Hijab'**
   String get notHijab;
 
   /// No description provided for @hijabFaceVisible.
@@ -2432,7 +2432,7 @@ abstract class AppLocalizations {
   /// No description provided for @passwordsDoNotMatch.
   ///
   /// In en, this message translates to:
-  /// **'Password and confirm password do not match'**
+  /// **'Passwords do not match'**
   String get passwordsDoNotMatch;
 
   /// No description provided for @passwordOptional.
@@ -2612,7 +2612,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutMe.
   ///
   /// In en, this message translates to:
-  /// **'About Me'**
+  /// **'Talk about yourself'**
   String get aboutMe;
 
   /// No description provided for @writeAboutYourself.
@@ -2890,6 +2890,342 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Who added me to their ignore list?'**
   String get whoAddedMeToIgnoreList;
+
+  /// No description provided for @whatIsYourNationality.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your nationality'**
+  String get whatIsYourNationality;
+
+  /// No description provided for @whatIsYourCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your country'**
+  String get whatIsYourCountry;
+
+  /// No description provided for @whatIsYourCity.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your city'**
+  String get whatIsYourCity;
+
+  /// No description provided for @thereIsNoResult.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no result'**
+  String get thereIsNoResult;
+
+  /// No description provided for @thereIsNoAvailableNationality.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no available nationality'**
+  String get thereIsNoAvailableNationality;
+
+  /// No description provided for @thereIsNoAvailableCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no available country'**
+  String get thereIsNoAvailableCountry;
+
+  /// No description provided for @thereIsNoAvailableCity.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no available city'**
+  String get thereIsNoAvailableCity;
+
+  /// No description provided for @thereIsError.
+  ///
+  /// In en, this message translates to:
+  /// **'There is error'**
+  String get thereIsError;
+
+  /// No description provided for @previous.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previous;
+
+  /// No description provided for @yesIam.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yesIam;
+
+  /// No description provided for @noIam.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get noIam;
+
+  /// No description provided for @hijabAndVeil.
+  ///
+  /// In en, this message translates to:
+  /// **'Hijab and Veil'**
+  String get hijabAndVeil;
+
+  /// No description provided for @hijab_face.
+  ///
+  /// In en, this message translates to:
+  /// **'Hijab Face'**
+  String get hijab_face;
+
+  /// No description provided for @smokingAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Smoking ?'**
+  String get smokingAsk;
+
+  /// No description provided for @hijabAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Hijab ?'**
+  String get hijabAsk;
+
+  /// No description provided for @beardAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Beard ?'**
+  String get beardAsk;
+
+  /// No description provided for @whatIsYourSkinColor.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your skin color'**
+  String get whatIsYourSkinColor;
+
+  /// No description provided for @whatIsYourBodyShape.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your body shape'**
+  String get whatIsYourBodyShape;
+
+  /// No description provided for @youShouldChooseCityFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'You should choose city first'**
+  String get youShouldChooseCityFirst;
+
+  /// No description provided for @youShouldChooseCountryFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'You should choose country first'**
+  String get youShouldChooseCountryFirst;
+
+  /// No description provided for @youShouldChooseNationalityFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'You should choose nationality first'**
+  String get youShouldChooseNationalityFirst;
+
+  /// No description provided for @aboutPartner.
+  ///
+  /// In en, this message translates to:
+  /// **'What are the specifications of your life partner that you would like to marry?'**
+  String get aboutPartner;
+
+  /// No description provided for @writeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write'**
+  String get writeHint;
+
+  /// No description provided for @textCannotContainNumbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Text cannot contain numbers'**
+  String get textCannotContainNumbers;
+
+  /// No description provided for @cannotEnterPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot enter phone number here'**
+  String get cannotEnterPhoneNumber;
+
+  /// No description provided for @textCannotContainLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Text cannot contain links'**
+  String get textCannotContainLinks;
+
+  /// No description provided for @agreeToTermsAndConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the terms and conditions'**
+  String get agreeToTermsAndConditions;
+
+  /// No description provided for @whatIsYourEducationalQualification.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your educational qualification?'**
+  String get whatIsYourEducationalQualification;
+
+  /// No description provided for @ageRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Age is required'**
+  String get ageRequired;
+
+  /// No description provided for @pleaseEnterValidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid number'**
+  String get pleaseEnterValidNumber;
+
+  /// No description provided for @numberOfChildrenRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of children is required'**
+  String get numberOfChildrenRequired;
+
+  /// No description provided for @weightRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight is required'**
+  String get weightRequired;
+
+  /// No description provided for @heightRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Height is required'**
+  String get heightRequired;
+
+  /// No description provided for @jobHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Job'**
+  String get jobHint;
+
+  /// No description provided for @incomeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Income is required'**
+  String get incomeRequired;
+
+  /// No description provided for @incomeCannotBeNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly income cannot be less than 0'**
+  String get incomeCannotBeNegative;
+
+  /// No description provided for @whatIsYourHealthStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your health status?'**
+  String get whatIsYourHealthStatus;
+
+  /// No description provided for @registrationSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration successful'**
+  String get registrationSuccessful;
+
+  /// No description provided for @passwordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'You must enter a password'**
+  String get passwordRequired;
+
+  /// No description provided for @passwordMinLengthValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get passwordMinLengthValidation;
+
+  /// No description provided for @passwordNumberSymbolValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Must use one number (0-9) and symbol (@#\$& .... )'**
+  String get passwordNumberSymbolValidation;
+
+  /// No description provided for @passwordCaseValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Must use at least one uppercase and lowercase letter'**
+  String get passwordCaseValidation;
+
+  /// No description provided for @phoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'You must enter your phone number'**
+  String get phoneRequired;
+
+  /// No description provided for @phoneMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number must be more than 8 digits'**
+  String get phoneMinLength;
+
+  /// No description provided for @whatIsYourName.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your name?'**
+  String get whatIsYourName;
+
+  /// No description provided for @yourName.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get yourName;
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'You must enter your name'**
+  String get nameRequired;
+
+  /// No description provided for @whatIsYourEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your email?'**
+  String get whatIsYourEmail;
+
+  /// No description provided for @yourEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email'**
+  String get yourEmail;
+
+  /// No description provided for @emailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'You must enter your email'**
+  String get emailRequired;
+
+  /// No description provided for @whatIsYourPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your phone number?'**
+  String get whatIsYourPhoneNumber;
+
+  /// No description provided for @whatIsYourReligiousCommitment.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your religious commitment?'**
+  String get whatIsYourReligiousCommitment;
+
+  /// No description provided for @singleMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Single'**
+  String get singleMale;
+
+  /// No description provided for @divorcedMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Divorced'**
+  String get divorcedMale;
+
+  /// No description provided for @widower.
+  ///
+  /// In en, this message translates to:
+  /// **'Widower'**
+  String get widower;
+
+  /// No description provided for @widow.
+  ///
+  /// In en, this message translates to:
+  /// **'Widow'**
+  String get widow;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

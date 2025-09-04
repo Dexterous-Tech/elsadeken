@@ -4,11 +4,13 @@ import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
+import '../../../../../../core/services/localization_service.dart';
 import '../../manager/sign_up_lists_cubit.dart';
 
 enum ListType { nationality, country, city }
@@ -96,30 +98,30 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
   String get _title {
     switch (widget.listType) {
       case ListType.nationality:
-        return 'ما هي جنسيتك ؟';
+        return AppLocalizations.of(context)!.whatIsYourNationality;
       case ListType.country:
-        return 'ما هي دولتك ؟';
+        return AppLocalizations.of(context)!.whatIsYourCountry;
       case ListType.city:
-        return 'ما هي مديتنك ؟';
+        return AppLocalizations.of(context)!.whatIsYourCity;
     }
   }
 
   String get _noResultsMessage {
-    return 'لا توجد نتائج للبحث "${_searchController.text}"';
+    return '${_searchController.text} ${AppLocalizations.of(context)!.thereIsError}';
   }
 
   String get _noItemsMessage {
     switch (widget.listType) {
       case ListType.nationality:
-        return 'لا توجد جنسيات متاحة';
+        return AppLocalizations.of(context)!.thereIsNoAvailableNationality;
       case ListType.country:
-        return 'لا توجد دول متاحة';
+        return AppLocalizations.of(context)!.thereIsNoAvailableCountry;
       case ListType.city:
-        return 'لا توجد مدن متاحة';
+        return AppLocalizations.of(context)!.thereIsNoAvailableCity;
     }
   }
 
-  String get _retryButtonText => 'إعادة المحاولة';
+  String get _retryButtonText => AppLocalizations.of(context)!.tryAgain;
 
   @override
   Widget build(BuildContext context) {
@@ -144,12 +146,13 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
       },
       builder: (context, state) {
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          textDirection: LocalizationService.instance.textDirection,
           children: [
             // Title
             Text(
               _title,
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
               style: AppTextStyles.font23ChineseBlackBoldLamaSans,
             ),
             verticalSpace(16),
@@ -157,7 +160,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
             CustomTextFormField(
               controller: _searchController,
               keyboardType: TextInputType.text,
-              hintText: 'بحث..',
+              hintText: AppLocalizations.of(context)!.search,
               validator: (value) {},
               suffixIcon: Icon(
                 Icons.search,
@@ -225,7 +228,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
             ),
             verticalSpace(8),
             Text(
-              errorMessage ?? 'حدث خطأ',
+              errorMessage ?? AppLocalizations.of(context)!.thereIsError,
               style: AppTextStyles.font16PaleBrownRegularLamaSans,
               textAlign: TextAlign.center,
             ),
@@ -257,7 +260,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
 
     if (isSuccess && _filteredItems.isNotEmpty) {
       return Directionality(
-        textDirection: TextDirection.ltr,
+        textDirection: LocalizationService.instance.textDirection,
         child: VsScrollbar(
           controller: _scrollController,
           showTrackOnHover: true,
@@ -287,11 +290,11 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
                       : Colors.transparent,
                 ),
                 child: Directionality(
-                  textDirection: TextDirection.rtl,
+                  textDirection: LocalizationService.instance.textDirection,
                   child: ListTile(
                     title: Text(
                       item.name ?? '',
-                      textDirection: TextDirection.rtl,
+                      textDirection: LocalizationService.instance.textDirection,
                       style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
                         color: AppColors.chineseBlack,
                         fontWeight: FontWeightHelper.bold,
@@ -321,7 +324,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
         child: Text(
           _noResultsMessage,
           style: AppTextStyles.font16PaleBrownRegularLamaSans,
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
         ),
       );
     }
@@ -330,7 +333,7 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
       child: Text(
         _noItemsMessage,
         style: AppTextStyles.font16PaleBrownRegularLamaSans,
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
       ),
     );
   }

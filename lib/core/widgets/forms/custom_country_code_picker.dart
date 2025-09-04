@@ -1,4 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -33,16 +34,19 @@ class _CustomCountryCodePickerState extends State<CustomCountryCodePicker> {
           side: BorderSide(color: AppColors.brown),
         ),
       ),
-      child: CountryCodePicker(
-        padding: EdgeInsets.zero,
-        onChanged: (code) {
-          widget.code.value = code.dialCode ?? '';
-        },
-        initialSelection: 'SA',
-        favorite: ['+966', 'SA'],
-        showCountryOnly: false,
-        showOnlyCountryWhenClosed: false,
-        alignLeft: false,
+      child: Directionality(
+        textDirection: LocalizationService.instance.textDirection,
+        child: CountryCodePicker(
+          padding: EdgeInsets.zero,
+          onChanged: (code) {
+            widget.code.value = code.dialCode ?? '';
+          },
+          initialSelection: 'SA',
+          favorite: ['+966', 'SA'],
+          showCountryOnly: false,
+          showOnlyCountryWhenClosed: false,
+          alignLeft: false,
+        ),
       ),
     );
   }

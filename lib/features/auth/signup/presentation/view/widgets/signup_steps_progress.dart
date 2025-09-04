@@ -2,6 +2,8 @@ import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../core/services/localization_service.dart';
+
 class SignupStepsProgress extends StatelessWidget {
   const SignupStepsProgress({
     super.key,
@@ -17,7 +19,7 @@ class SignupStepsProgress extends StatelessWidget {
     final progress = currentStep / totalSteps;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(100).r,
         child: LinearProgressIndicator(

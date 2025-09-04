@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 
+import '../../../../../../../core/services/localization_service.dart';
 import '../../../../../../../core/theme/spacing.dart';
 import '../../../manager/signup_cubit.dart';
 import '../custom_next_and_previous_button.dart';
@@ -26,34 +27,34 @@ class SignupSocialStatus extends StatefulWidget {
 
 class _SignupSocialStatusState extends State<SignupSocialStatus> {
   // Marital status options - different for male and female
-  Map<String, String> get maritalStatusOptions {
+  Map<String, String> maritalStatusOptions(BuildContext context) {
     if (widget.gender.toLowerCase() == 'male') {
       return {
-        'single': 'عازب',
-        'married': 'متزوج',
-        'divorced': 'مطلق',
-        'widower': 'أرمل',
+        'single': AppLocalizations.of(context)!.singleMale,
+        'married': AppLocalizations.of(context)!.married,
+        'divorced': AppLocalizations.of(context)!.divorcedMale,
+        'widower': AppLocalizations.of(context)!.widower,
       };
     } else {
       return {
-        'single': 'آنسة',
-        'divorced': 'مطلقة',
-        'widower': 'أرملة',
+        'single': AppLocalizations.of(context)!.singleFemale,
+        'divorced': AppLocalizations.of(context)!.divorcedFemale,
+        'widower': AppLocalizations.of(context)!.widow,
       };
     }
   }
 
   // Type of marriage options
-  Map<String, String> get typeOfMarriageOptions {
+  Map<String, String> typeOfMarriageOptions(BuildContext context) {
     if (widget.gender.toLowerCase() == 'male') {
       return {
-        'only_one': 'زوجة اولي',
-        'multi': 'زوجة ثانية',
+        'only_one': AppLocalizations.of(context)!.firstWife,
+        'multi': AppLocalizations.of(context)!.secondWife,
       };
     } else {
       return {
-        'only_one': 'الزوجة الوحيدة',
-        'multi': 'لا مانع من تعدل الزوجات',
+        'only_one': AppLocalizations.of(context)!.onlyWife,
+        'multi': AppLocalizations.of(context)!.noObjectionToPolygamy,
       };
     }
   }
@@ -69,18 +70,19 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: IntrinsicHeight(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                textDirection: LocalizationService.instance.textDirection,
                 children: [
                   // Marital Status
                   SignupMultiChoice(
-                    height: 220.h,
+                    height: 225.h,
                     title: AppLocalizations.of(context)!.whatIsMaritalStatus,
-                    options: maritalStatusOptions.values.toList(),
-                    selected: maritalStatusOptions[
+                    options: maritalStatusOptions(context).values.toList(),
+                    selected: maritalStatusOptions(context)[
                         cubit.maritalStatusController.text],
                     onChanged: (newStatus) {
-                      // Find the key for the selected Arabic text
-                      String? selectedKey = maritalStatusOptions.entries
+                      // Find the key for the selected text
+                      String? selectedKey = maritalStatusOptions(context).entries
                           .firstWhere((entry) => entry.value == newStatus,
                               orElse: () => const MapEntry('', ''))
                           .key;
@@ -98,12 +100,12 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
                   SignupMultiChoice(
                     height: 110.h,
                     title: AppLocalizations.of(context)!.whatIsMarriageType,
-                    options: typeOfMarriageOptions.values.toList(),
-                    selected: typeOfMarriageOptions[
+                    options: typeOfMarriageOptions(context).values.toList(),
+                    selected: typeOfMarriageOptions(context)[
                         cubit.typeOfMarriageController.text],
                     onChanged: (newType) {
-                      // Find the key for the selected Arabic text
-                      String? selectedKey = typeOfMarriageOptions.entries
+                      // Find the key for the selected text
+                      String? selectedKey = typeOfMarriageOptions(context).entries
                           .firstWhere((entry) => entry.value == newType,
                               orElse: () => const MapEntry('', ''))
                           .key;
@@ -136,11 +138,11 @@ class _SignupSocialStatusState extends State<SignupSocialStatus> {
   bool _canProceedToNext(SignupCubit cubit) {
     // Must select marital status
     bool hasMaritalStatus = cubit.maritalStatusController.text.isNotEmpty &&
-        maritalStatusOptions.containsKey(cubit.maritalStatusController.text);
+        maritalStatusOptions(context).containsKey(cubit.maritalStatusController.text);
 
     // Must also select type of marriage (required for both genders)
     bool hasTypeOfMarriage = cubit.typeOfMarriageController.text.isNotEmpty &&
-        typeOfMarriageOptions.containsKey(cubit.typeOfMarriageController.text);
+        typeOfMarriageOptions(context).containsKey(cubit.typeOfMarriageController.text);
 
     return hasMaritalStatus && hasTypeOfMarriage;
   }

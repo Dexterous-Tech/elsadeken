@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -73,19 +74,20 @@ class _SignupMultiChoiceState extends State<SignupMultiChoice> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         // Title
         Text(
           widget.title,
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
         ),
         verticalSpace(16),
 
         // Options with scrollbar
         Directionality(
-          textDirection: TextDirection.ltr,
+          textDirection: LocalizationService.instance.textDirection,
           child: VsScrollbar(
             controller: _scrollController,
             showTrackOnHover: true,
@@ -99,7 +101,7 @@ class _SignupMultiChoiceState extends State<SignupMultiChoice> {
               color: AppColors.desire.withValues(alpha: 0.474),
             ),
             child: Padding(
-              padding: EdgeInsets.only(right: _needsScroll ? 16.w : 0),
+              padding: EdgeInsets.only(right: 0),
               child: SizedBox(
                 height: widget.height ?? 220.h,
                 child: SingleChildScrollView(
@@ -126,7 +128,8 @@ class _SignupMultiChoiceState extends State<SignupMultiChoice> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Row(
-                            textDirection: TextDirection.rtl,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(option,

@@ -1,10 +1,12 @@
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/widgets/custom_radio.dart';
 import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,41 +90,46 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: IntrinsicHeight(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  textDirection: LocalizationService.instance.textDirection,
                   children: [
                     // name
-                    Text('ما هي مواصفات شريكه حياتك التي ترغب الارتباط بها ؟',
-                        textDirection: TextDirection.rtl,
+                    Text(AppLocalizations.of(context)!.aboutPartner,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
 
                     CustomTextFormField(
                       controller: cubit.aboutMeController,
                       keyboardType: TextInputType.text,
-                      hintText: 'اكتب',
+                      hintText: AppLocalizations.of(context)!.writeHint,
                       maxLines: 5,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'هذا الحقل مطلوب';
+                          return AppLocalizations.of(context)!.fieldRequired;
                         }
 
                         final trimmedValue = value.trim();
 
                         // Block numbers
                         if (RegExp(r'\d').hasMatch(trimmedValue)) {
-                          return 'لا يمكن أن يحتوي النص على أرقام';
+                          return AppLocalizations.of(context)!
+                              .textCannotContainNumbers;
                         }
 
                         // Block anything that looks like a phone number (8–15 consecutive digits)
                         if (RegExp(r'\d{8,15}').hasMatch(trimmedValue)) {
-                          return 'لا يمكن إدخال رقم هاتف هنا';
+                          return AppLocalizations.of(context)!
+                              .cannotEnterPhoneNumber;
                         }
 
                         // Block links
                         if (RegExp(r'(https?://|www\.|\.com|\.net|\.org)',
                                 caseSensitive: false)
                             .hasMatch(trimmedValue)) {
-                          return 'لا يمكن أن يحتوي النص على روابط';
+                          return AppLocalizations.of(context)!
+                              .textCannotContainLinks;
                         }
 
                         return null;
@@ -132,37 +139,41 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                     verticalSpace(40),
 
                     // email
-                    Text('تحدث عن نفسك',
-                        textDirection: TextDirection.rtl,
+                    Text(AppLocalizations.of(context)!.aboutMe,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
                       controller: cubit.lifePartnerController,
                       keyboardType: TextInputType.emailAddress,
-                      hintText: 'اكتب',
+                      hintText: AppLocalizations.of(context)!.writeHint,
                       maxLines: 5,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'هذا الحقل مطلوب';
+                          return AppLocalizations.of(context)!.fieldRequired;
                         }
 
                         final trimmedValue = value.trim();
 
                         // Block numbers
                         if (RegExp(r'\d').hasMatch(trimmedValue)) {
-                          return 'لا يمكن أن يحتوي النص على أرقام';
+                          return AppLocalizations.of(context)!
+                              .textCannotContainNumbers;
                         }
 
                         // Block anything that looks like a phone number (8–15 consecutive digits)
                         if (RegExp(r'\d{8,15}').hasMatch(trimmedValue)) {
-                          return 'لا يمكن إدخال رقم هاتف هنا';
+                          return AppLocalizations.of(context)!
+                              .cannotEnterPhoneNumber;
                         }
 
                         // Block links
                         if (RegExp(r'(https?://|www\.|\.com|\.net|\.org)',
                                 caseSensitive: false)
                             .hasMatch(trimmedValue)) {
-                          return 'لا يمكن أن يحتوي النص على روابط';
+                          return AppLocalizations.of(context)!
+                              .textCannotContainLinks;
                         }
 
                         return null;
@@ -172,7 +183,7 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                     verticalSpace(50),
 
                     Row(
-                      textDirection: TextDirection.rtl,
+                      textDirection: LocalizationService.instance.textDirection,
                       children: [
                         CustomRadio(
                           value: agreedToTerms,
@@ -189,8 +200,10 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                                 .pushNamed(AppRoutes.termsAndConditionsScreen);
                           },
                           child: Text(
-                            'أوافق على الشروط والأحكام',
-                            textDirection: TextDirection.rtl,
+                            AppLocalizations.of(context)!
+                                .agreeToTermsAndConditions,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                             style:
                                 AppTextStyles.font14PumpkinOrangeBoldLamaSans,
                           ),
@@ -202,7 +215,7 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                     BlocBuilder<SignupCubit, SignupState>(
                       builder: (context, state) {
                         return CustomNextAndPreviousButton(
-                          textButton: 'تسجيل الدخول',
+                          textButton: AppLocalizations.of(context)!.login,
                           onNextPressed: () {
                             if (state is! SignupLoading &&
                                 state is! RegisterInformationLoading &&

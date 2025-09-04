@@ -46,10 +46,14 @@ class LoginBody extends StatelessWidget {
                           context
                               .pushReplacementNamed(AppRoutes.onBoardingScreen);
                         },
-                        child: Image.asset(
-                          AppImages.authArrowBack,
-                          width: 14.w,
-                          height: 14.h,
+                        child: Transform.rotate(
+                          angle:
+                              LocalizationService.instance.isArabic ? 0 : 3.14,
+                          child: Image.asset(
+                            AppImages.authArrowBack,
+                            width: 14.w,
+                            height: 14.h,
+                          ),
                         ),
                       ),
                       verticalSpace(33.74.h),

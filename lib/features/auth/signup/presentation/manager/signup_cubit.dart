@@ -278,7 +278,7 @@ class SignupCubit extends Cubit<SignupState> {
     bool isMale =
         genderController.text == 'male' || genderController.text == 'ذكر';
     bool isFemale =
-        genderController.text == 'female' || genderController.text == 'أنثى';
+        genderController.text != 'male' && genderController.text != 'ذكر';
 
     if (isMale && beardController.text.isEmpty) {
       emit(RegisterInformationFailure("الرجاء اختيار حالة اللحية"));

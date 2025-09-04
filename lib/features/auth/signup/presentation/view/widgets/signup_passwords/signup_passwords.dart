@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../../core/services/localization_service.dart';
 import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../../core/theme/spacing.dart';
 import '../../../../../../../core/widgets/forms/custom_text_form_field.dart';
@@ -93,7 +94,7 @@ class _SignupPasswordsState extends State<SignupPasswords> {
           context.pop(); // Close loading dialog
           successDialog(
             context: context,
-            message: 'تم التسجيل بنجاح',
+            message: AppLocalizations.of(context)!.registrationSuccessful,
             onPressed: () {
               Navigator.pop(context); // Close success dialog
               widget.onNextPressed(); // Move to next step
@@ -110,11 +111,13 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                 child: Form(
                   key: cubit.passwordsFormKey,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: [
                       // password
                       Text(AppLocalizations.of(context)!.createPassword,
-                          textDirection: TextDirection.rtl,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
                           style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                       verticalSpace(16),
                       CustomTextFormField(
@@ -124,19 +127,22 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                         hintText: '********',
                         validator: (value) {
                           if (value.isNullOrEmpty()) {
-                            return 'يجب عليك ادخال كلمة المرور';
+                            return AppLocalizations.of(context)!
+                                .passwordRequired;
                           }
 
                           final result = validatePasswordDisplay(value!);
 
                           if (!result.hasMinLength) {
-                            return 'كلمة المرور يجب أن تحتوي على 6 أحرف على الأقل';
+                            return AppLocalizations.of(context)!
+                                .passwordMinLength;
                           }
                           if (!result.hasNumberOrSymbol) {
-                            return 'كلمة المرور يجب أن تحتوي على رقم واحد (0-9) أو رمز على الأقل';
+                            return AppLocalizations.of(context)!
+                                .passwordNumberOrSymbol;
                           }
                           if (!result.hasUpperAndLower) {
-                            return 'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير على الأقل';
+                            return AppLocalizations.of(context)!.passwordCase;
                           }
 
                           return null; // ✅ كل الشروط متحققة
@@ -185,20 +191,24 @@ class _SignupPasswordsState extends State<SignupPasswords> {
 
                       verticalSpace(12),
                       buildValidationItem(
-                          result.hasMinLength, 'كلمه المرور لا تقل عن ٦ احرف'),
+                          result.hasMinLength,
+                          AppLocalizations.of(context)!
+                              .passwordMinLengthValidation),
                       buildValidationItem(
                         result.hasNumberOrSymbol,
-                        'يجب استخدام رقم واحد (0,9) و رمز (@#\$& .... )',
+                        AppLocalizations.of(context)!
+                            .passwordNumberSymbolValidation,
                       ),
                       buildValidationItem(
                         result.hasUpperAndLower,
-                        'يجب استخدام حرف كبير و حرف صغير علي الاقل',
+                        AppLocalizations.of(context)!.passwordCaseValidation,
                       ),
                       verticalSpace(40),
 
                       // confirm password
                       Text(AppLocalizations.of(context)!.confirmPasswordField,
-                          textDirection: TextDirection.rtl,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
                           style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                       verticalSpace(16),
                       CustomTextFormField(
@@ -208,10 +218,12 @@ class _SignupPasswordsState extends State<SignupPasswords> {
                         hintText: '********',
                         validator: (value) {
                           if (value.isNullOrEmpty()) {
-                            return 'يجب عليك تأكيد كلمة المرور';
+                            return AppLocalizations.of(context)!
+                                .confirmPasswordRequired;
                           }
                           if (value != cubit.passwordController.text) {
-                            return 'كلمة المرور غير متطابقة';
+                            return AppLocalizations.of(context)!
+                                .passwordsDoNotMatch;
                           }
                           return null;
                         },
@@ -265,20 +277,21 @@ class _SignupPasswordsState extends State<SignupPasswords> {
 
   Widget buildValidationItem(bool isValid, String text) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      // mainAxisAlignment: MainAxisAlignment.start,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
+        Image.asset(
+          isValid ? AppImages.checkCorrect : AppImages.checkPoint,
+          width: 18.w,
+          height: 18.h,
+        ),
+        horizontalSpace(8),
         Text(
           text,
           textDirection: TextDirection.rtl,
           style: AppTextStyles.font12SilverPinkMediumLamaSans.copyWith(
             color: isValid ? AppColors.yellowGreen : AppColors.silverPink,
           ),
-        ),
-        horizontalSpace(8),
-        Image.asset(
-          isValid ? AppImages.checkCorrect : AppImages.checkPoint,
-          width: 18.w,
-          height: 18.h,
         ),
       ],
     );

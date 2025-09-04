@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 
+import '../../../../../../../core/services/localization_service.dart';
 import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../../core/theme/spacing.dart';
 import '../../../../../../../core/widgets/forms/custom_text_form_field.dart';
@@ -36,30 +37,33 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
               child: Form(
                 key: cubit.generalInfoKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  textDirection: LocalizationService.instance.textDirection,
                   children: [
                     Text(AppLocalizations.of(context)!.howOldAreYou,
-                        textDirection: TextDirection.rtl,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
                       controller: cubit.ageController,
                       keyboardType: TextInputType.number,
-                      hintText: '25',
+                      hintText: '',
                       inputFormatters: [
                         FilteringTextInputFormatter
                             .digitsOnly, // ✅ Only numbers
                       ],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'العمر مطلوب';
+                          return AppLocalizations.of(context)!.ageRequired;
                         }
                         final age = int.tryParse(value);
                         if (age == null) {
-                          return 'يرجى إدخال رقم صحيح';
+                          return AppLocalizations.of(context)!
+                              .pleaseEnterValidNumber;
                         }
                         if (age > 99 || age < 18) {
-                          return 'العمر يجب ان يتراوح بين 18 - 99';
+                          return AppLocalizations.of(context)!.ageRange;
                         }
                         return null;
                       },
@@ -69,28 +73,31 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                     ),
                     verticalSpace(40),
                     Text(AppLocalizations.of(context)!.howManyChildren,
-                        textDirection: TextDirection.rtl,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
                       controller: cubit.childrenNumberController,
                       keyboardType: TextInputType.number,
-                      hintText: '0',
+                      hintText: '',
                       inputFormatters: [
                         FilteringTextInputFormatter
                             .digitsOnly, // ✅ Only numbers
                       ],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'عدد الأطفال مطلوب';
+                          return AppLocalizations.of(context)!
+                              .numberOfChildrenRequired;
                         }
                         final children = int.tryParse(value);
 
                         if (children == null) {
-                          return 'يرجى إدخال رقم صحيح';
+                          return AppLocalizations.of(context)!
+                              .pleaseEnterValidNumber;
                         }
                         if (children > 99 || children < 0) {
-                          return 'عدد الاطفال يجب ان يتراوح بين 0 - 99';
+                          return AppLocalizations.of(context)!.childrenRange;
                         }
                         return null;
                       },
@@ -100,27 +107,29 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                     ),
                     verticalSpace(40),
                     Text(AppLocalizations.of(context)!.howMuchDoYouWeigh,
-                        textDirection: TextDirection.rtl,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
                       controller: cubit.weightController,
                       keyboardType: TextInputType.number,
-                      hintText: '70',
+                      hintText: '',
                       inputFormatters: [
                         FilteringTextInputFormatter
                             .digitsOnly, // ✅ Only numbers
                       ],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'الوزن مطلوب';
+                          return AppLocalizations.of(context)!.weightRequired;
                         }
                         final weight = int.tryParse(value);
                         if (weight == null) {
-                          return 'يرجى إدخال رقم صحيح';
+                          return AppLocalizations.of(context)!
+                              .pleaseEnterValidNumber;
                         }
                         if (weight > 300 || weight < 30) {
-                          return 'الوزن لا يمكن أن يتجاوز 300 ولا يقل عن 30';
+                          return AppLocalizations.of(context)!.weightRange;
                         }
 
                         return null;
@@ -131,27 +140,29 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
                     ),
                     verticalSpace(40),
                     Text(AppLocalizations.of(context)!.howTallAreYou,
-                        textDirection: TextDirection.rtl,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
                       controller: cubit.heightController,
                       keyboardType: TextInputType.number,
-                      hintText: '180',
+                      hintText: '',
                       inputFormatters: [
                         FilteringTextInputFormatter
                             .digitsOnly, // ✅ Only numbers
                       ],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'الطول مطلوب';
+                          return AppLocalizations.of(context)!.heightRequired;
                         }
                         final height = int.tryParse(value);
                         if (height == null) {
-                          return 'يرجى إدخال رقم صحيح';
+                          return AppLocalizations.of(context)!
+                              .pleaseEnterValidNumber;
                         }
                         if (height > 250 || height < 50) {
-                          return 'لا يمكن ان يصل الطول الي اكثر من 250 او اقل من 50';
+                          return AppLocalizations.of(context)!.heightRange;
                         }
                         return null;
                       },

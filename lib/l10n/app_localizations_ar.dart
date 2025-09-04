@@ -398,7 +398,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get passwordsNotMatch => 'كلمة المرور وتأكيد كلمة المرور غير متطابقين';
 
   @override
-  String get confirmPasswordRequired => 'يرجى تأكيد كلمة المرور';
+  String get confirmPasswordRequired => 'يجب عليك تأكيد كلمة المرور';
 
   @override
   String get selectAllRequiredFields => 'يرجى اختيار جميع الحقول المطلوبة';
@@ -458,10 +458,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get username => 'اسم المستخدم';
 
   @override
-  String get phoneNumber => 'رقم الهاتف';
+  String get phoneNumber => 'رقم الجوال';
 
   @override
-  String get financialStatus => 'الوضع المادي';
+  String get financialStatus => 'الوضع المادي ؟';
 
   @override
   String get job => 'الوظيفة';
@@ -1008,16 +1008,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get religiousCommitment => 'الإتزام الديني';
 
   @override
-  String get prayer => 'الصلاة';
+  String get prayer => 'الصلاه ؟';
 
   @override
   String get smoking => 'التدخين';
 
   @override
-  String get hijab => 'الحجاب';
+  String get hijab => 'محجبه(كشف الوجه)';
 
   @override
-  String get beard => 'اللحية';
+  String get beard => 'ملتحي';
 
   @override
   String get editReligiousInfo => 'تعديل المعلومات الدينية';
@@ -1041,28 +1041,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get irreligious => 'غير متدين';
 
   @override
-  String get littleReligious => 'متدين قليلاً';
+  String get littleReligious => 'متدين قليلا';
 
   @override
   String get religious => 'متدين';
 
   @override
-  String get muchReligious => 'متدين كثيراً';
+  String get muchReligious => 'متدين كثيرا';
 
   @override
-  String get dontSay => 'أفضل ألا أقول';
+  String get dontSay => 'أفضل الا اقول';
 
   @override
-  String get prayAlways => 'أصلي دائماً';
+  String get prayAlways => 'اصلي دائما';
 
   @override
-  String get prayMostTimes => 'أصلي أغلب الأوقات';
+  String get prayMostTimes => 'اصلي اغلب الاوقات';
 
   @override
-  String get praySometimes => 'أصلي أحياناً';
+  String get praySometimes => 'اصلي بعض الاحيان';
 
   @override
-  String get noPray => 'لا أصلي';
+  String get noPray => 'لا اصلي';
 
   @override
   String get withBeard => 'ملتحي';
@@ -1071,7 +1071,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get withoutBeard => 'بدون لحية';
 
   @override
-  String get notHijab => 'غير محجبة';
+  String get notHijab => 'غير محجبه';
 
   @override
   String get hijabFaceVisible => 'محجبة (كشف الوجه)';
@@ -1228,7 +1228,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pleaseConfirmPassword => 'يرجى تأكيد كلمة المرور';
 
   @override
-  String get passwordsDoNotMatch => 'كلمة المرور وتأكيد كلمة المرور غير متطابقين';
+  String get passwordsDoNotMatch => 'كلمة المرور غير متطابقة';
 
   @override
   String get passwordOptional => 'كلمة المرور (اختياري)';
@@ -1249,7 +1249,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get usernameMaxLength => 'اسم المستخدم لا يمكن أن يتجاوز 50 حرف';
 
   @override
-  String get pleaseEnterValidEmail => 'يرجى إدخال بريد إلكتروني صحيح';
+  String get pleaseEnterValidEmail => 'يرجى ادخال بريد الكتروني صحيح';
 
   @override
   String get phoneNumberLength => 'رقم الهاتف يجب أن يكون بين 8 و 15 رقم';
@@ -1318,7 +1318,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get writeAboutLifePartner => 'اكتب عن مواصفات شريك حياتك';
 
   @override
-  String get aboutMe => 'نبذة عني';
+  String get aboutMe => 'تحدث عن نفسك';
 
   @override
   String get writeAboutYourself => 'اكتب عن نفسك';
@@ -1457,4 +1457,172 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get whoAddedMeToIgnoreList => 'من أضافني إلى قائمة التجاهل؟';
+
+  @override
+  String get whatIsYourNationality => 'ما هي جنسيتك ؟';
+
+  @override
+  String get whatIsYourCountry => 'ما هي دولتك ؟';
+
+  @override
+  String get whatIsYourCity => 'ما هي مديتنك ؟';
+
+  @override
+  String get thereIsNoResult => 'لا توجد نتائج للبحث';
+
+  @override
+  String get thereIsNoAvailableNationality => 'لا توجد جنسيات متاحة';
+
+  @override
+  String get thereIsNoAvailableCountry => 'لا توجد بلاد متاحة';
+
+  @override
+  String get thereIsNoAvailableCity => 'لا توجد مدن متاحة';
+
+  @override
+  String get thereIsError => 'حدث خطأ';
+
+  @override
+  String get previous => 'السابق';
+
+  @override
+  String get yesIam => 'نعم';
+
+  @override
+  String get noIam => 'لا';
+
+  @override
+  String get hijabAndVeil => 'محجبه (النقاب)';
+
+  @override
+  String get hijab_face => 'محجبه (غطاء الوجه)';
+
+  @override
+  String get smokingAsk => 'التدخين ؟';
+
+  @override
+  String get hijabAsk => 'الحجاب ؟';
+
+  @override
+  String get beardAsk => 'اللحية ؟';
+
+  @override
+  String get whatIsYourSkinColor => 'ما هي لون بشرتك ؟';
+
+  @override
+  String get whatIsYourBodyShape => 'ما هي بنيه الجسم ؟';
+
+  @override
+  String get youShouldChooseCityFirst => 'يرجى اختيار المدينة أولاً';
+
+  @override
+  String get youShouldChooseCountryFirst => 'يرجى اختيار الدولة أولاً';
+
+  @override
+  String get youShouldChooseNationalityFirst => 'يرجى اختيار الجنسية أولاً';
+
+  @override
+  String get aboutPartner => 'ما هي مواصفات شريكه حياتك التي ترغب الارتباط بها ؟';
+
+  @override
+  String get writeHint => 'اكتب';
+
+  @override
+  String get textCannotContainNumbers => 'لا يمكن أن يحتوي النص على أرقام';
+
+  @override
+  String get cannotEnterPhoneNumber => 'لا يمكن إدخال رقم هاتف هنا';
+
+  @override
+  String get textCannotContainLinks => 'لا يمكن أن يحتوي النص على روابط';
+
+  @override
+  String get agreeToTermsAndConditions => 'أوافق على الشروط والأحكام';
+
+  @override
+  String get whatIsYourEducationalQualification => 'ما هو المؤهل التعليمي ؟';
+
+  @override
+  String get ageRequired => 'العمر مطلوب';
+
+  @override
+  String get pleaseEnterValidNumber => 'يرجى إدخال رقم صحيح';
+
+  @override
+  String get numberOfChildrenRequired => 'عدد الأطفال مطلوب';
+
+  @override
+  String get weightRequired => 'الوزن مطلوب';
+
+  @override
+  String get heightRequired => 'الطول مطلوب';
+
+  @override
+  String get jobHint => 'وظيفة';
+
+  @override
+  String get incomeRequired => 'يجب إدخال الدخل';
+
+  @override
+  String get incomeCannotBeNegative => 'لا يمكن ان يقل الدخل الشهري عن 0';
+
+  @override
+  String get whatIsYourHealthStatus => 'ما هي الحاله الصحيه؟';
+
+  @override
+  String get registrationSuccessful => 'تم التسجيل بنجاح';
+
+  @override
+  String get passwordRequired => 'يجب عليك ادخال كلمة المرور';
+
+  @override
+  String get passwordMinLengthValidation => 'كلمه المرور لا تقل عن ٦ احرف';
+
+  @override
+  String get passwordNumberSymbolValidation => 'يجب استخدام رقم واحد (0,9) و رمز (@#\$& .... )';
+
+  @override
+  String get passwordCaseValidation => 'يجب استخدام حرف كبير و حرف صغير علي الاقل';
+
+  @override
+  String get phoneRequired => 'يجب عليك ادخال رقم الجوال';
+
+  @override
+  String get phoneMinLength => 'رقم الجوال يجب أن يكون أكثر من 8 أرقام';
+
+  @override
+  String get whatIsYourName => 'ما هو اسمك ؟';
+
+  @override
+  String get yourName => 'اسمك';
+
+  @override
+  String get nameRequired => 'يجب عليك ادخال اسمك';
+
+  @override
+  String get whatIsYourEmail => 'ما هو بريدك الالكتروني ؟';
+
+  @override
+  String get yourEmail => 'بريدك الالكتروني';
+
+  @override
+  String get emailRequired => 'يجب عليك ادخال بريدك الالكتروني';
+
+  @override
+  String get whatIsYourPhoneNumber => 'ما هو رقم جوالك ؟';
+
+  @override
+  String get whatIsYourReligiousCommitment => 'ما هي التزامك الديني ؟';
+
+  @override
+  String get singleMale => 'عازب';
+
+  @override
+  String get divorcedMale => 'مطلق';
+
+  @override
+  String get widower => 'أرمل';
+
+  @override
+  String get widow => 'أرملة';
 }

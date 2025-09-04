@@ -398,7 +398,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordsNotMatch => 'Password and confirm password do not match';
 
   @override
-  String get confirmPasswordRequired => 'Please confirm password';
+  String get confirmPasswordRequired => 'You must confirm the password';
 
   @override
   String get selectAllRequiredFields => 'Please select all required fields';
@@ -431,7 +431,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get divorcedFemale => 'Divorced';
 
   @override
-  String get onlyWife => 'Only Wife';
+  String get onlyWife => 'Only wife';
 
   @override
   String get noPolygamy => 'No Polygamy Allowed';
@@ -458,10 +458,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get username => 'Username';
 
   @override
-  String get phoneNumber => 'Phone Number';
+  String get phoneNumber => 'Phone number';
 
   @override
-  String get financialStatus => 'Financial Status';
+  String get financialStatus => 'Financial status?';
 
   @override
   String get job => 'Job';
@@ -1007,16 +1007,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get religiousCommitment => 'Religious Commitment';
 
   @override
-  String get prayer => 'Prayer';
+  String get prayer => 'Prayer?';
 
   @override
   String get smoking => 'Smoking';
 
   @override
-  String get hijab => 'Hijab';
+  String get hijab => 'hijab';
 
   @override
-  String get beard => 'Beard';
+  String get beard => 'beard';
 
   @override
   String get editReligiousInfo => 'Edit Religious Information';
@@ -1067,10 +1067,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get withBeard => 'With beard';
 
   @override
-  String get withoutBeard => 'Without beard';
+  String get withoutBeard => 'without Beard';
 
   @override
-  String get notHijab => 'Not wearing hijab';
+  String get notHijab => 'Not Hijab';
 
   @override
   String get hijabFaceVisible => 'Hijab (face visible)';
@@ -1227,7 +1227,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pleaseConfirmPassword => 'Please confirm password';
 
   @override
-  String get passwordsDoNotMatch => 'Password and confirm password do not match';
+  String get passwordsDoNotMatch => 'Passwords do not match';
 
   @override
   String get passwordOptional => 'Password (optional)';
@@ -1317,7 +1317,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get writeAboutLifePartner => 'Write about your life partner\'s characteristics';
 
   @override
-  String get aboutMe => 'About Me';
+  String get aboutMe => 'Talk about yourself';
 
   @override
   String get writeAboutYourself => 'Write about yourself';
@@ -1456,4 +1456,172 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whoAddedMeToIgnoreList => 'Who added me to their ignore list?';
+
+  @override
+  String get whatIsYourNationality => 'What is your nationality';
+
+  @override
+  String get whatIsYourCountry => 'What is your country';
+
+  @override
+  String get whatIsYourCity => 'What is your city';
+
+  @override
+  String get thereIsNoResult => 'There is no result';
+
+  @override
+  String get thereIsNoAvailableNationality => 'There is no available nationality';
+
+  @override
+  String get thereIsNoAvailableCountry => 'There is no available country';
+
+  @override
+  String get thereIsNoAvailableCity => 'There is no available city';
+
+  @override
+  String get thereIsError => 'There is error';
+
+  @override
+  String get previous => 'Previous';
+
+  @override
+  String get yesIam => 'Yes';
+
+  @override
+  String get noIam => 'No';
+
+  @override
+  String get hijabAndVeil => 'Hijab and Veil';
+
+  @override
+  String get hijab_face => 'Hijab Face';
+
+  @override
+  String get smokingAsk => 'Smoking ?';
+
+  @override
+  String get hijabAsk => 'Hijab ?';
+
+  @override
+  String get beardAsk => 'Beard ?';
+
+  @override
+  String get whatIsYourSkinColor => 'What is your skin color';
+
+  @override
+  String get whatIsYourBodyShape => 'What is your body shape';
+
+  @override
+  String get youShouldChooseCityFirst => 'You should choose city first';
+
+  @override
+  String get youShouldChooseCountryFirst => 'You should choose country first';
+
+  @override
+  String get youShouldChooseNationalityFirst => 'You should choose nationality first';
+
+  @override
+  String get aboutPartner => 'What are the specifications of your life partner that you would like to marry?';
+
+  @override
+  String get writeHint => 'Write';
+
+  @override
+  String get textCannotContainNumbers => 'Text cannot contain numbers';
+
+  @override
+  String get cannotEnterPhoneNumber => 'Cannot enter phone number here';
+
+  @override
+  String get textCannotContainLinks => 'Text cannot contain links';
+
+  @override
+  String get agreeToTermsAndConditions => 'I agree to the terms and conditions';
+
+  @override
+  String get whatIsYourEducationalQualification => 'What is your educational qualification?';
+
+  @override
+  String get ageRequired => 'Age is required';
+
+  @override
+  String get pleaseEnterValidNumber => 'Please enter a valid number';
+
+  @override
+  String get numberOfChildrenRequired => 'Number of children is required';
+
+  @override
+  String get weightRequired => 'Weight is required';
+
+  @override
+  String get heightRequired => 'Height is required';
+
+  @override
+  String get jobHint => 'Job';
+
+  @override
+  String get incomeRequired => 'Income is required';
+
+  @override
+  String get incomeCannotBeNegative => 'Monthly income cannot be less than 0';
+
+  @override
+  String get whatIsYourHealthStatus => 'What is your health status?';
+
+  @override
+  String get registrationSuccessful => 'Registration successful';
+
+  @override
+  String get passwordRequired => 'You must enter a password';
+
+  @override
+  String get passwordMinLengthValidation => 'Password must be at least 6 characters';
+
+  @override
+  String get passwordNumberSymbolValidation => 'Must use one number (0-9) and symbol (@#\$& .... )';
+
+  @override
+  String get passwordCaseValidation => 'Must use at least one uppercase and lowercase letter';
+
+  @override
+  String get phoneRequired => 'You must enter your phone number';
+
+  @override
+  String get phoneMinLength => 'Phone number must be more than 8 digits';
+
+  @override
+  String get whatIsYourName => 'What is your name?';
+
+  @override
+  String get yourName => 'Your name';
+
+  @override
+  String get nameRequired => 'You must enter your name';
+
+  @override
+  String get whatIsYourEmail => 'What is your email?';
+
+  @override
+  String get yourEmail => 'Your email';
+
+  @override
+  String get emailRequired => 'You must enter your email';
+
+  @override
+  String get whatIsYourPhoneNumber => 'What is your phone number?';
+
+  @override
+  String get whatIsYourReligiousCommitment => 'What is your religious commitment?';
+
+  @override
+  String get singleMale => 'Single';
+
+  @override
+  String get divorcedMale => 'Divorced';
+
+  @override
+  String get widower => 'Widower';
+
+  @override
+  String get widow => 'Widow';
 }

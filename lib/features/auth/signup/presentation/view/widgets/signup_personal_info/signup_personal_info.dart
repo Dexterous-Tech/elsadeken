@@ -7,9 +7,12 @@ import 'package:elsadeken/core/widgets/forms/custom_country_code_picker.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../../../core/services/localization_service.dart';
 
 class SignupPersonalInfo extends StatefulWidget {
   const SignupPersonalInfo(
@@ -47,9 +50,9 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
   void _validatePhone(String? value) {
     setState(() {
       if (value.isNullOrEmpty()) {
-        phoneErrorMessage = 'يجب عليك ادخال رقم الجوال';
+        phoneErrorMessage = AppLocalizations.of(context)!.phoneRequired;
       } else if (value!.length < 8) {
-        phoneErrorMessage = 'رقم الجوال يجب أن يكون أكثر من 8 أرقام';
+        phoneErrorMessage = AppLocalizations.of(context)!.phoneMinLength;
       } else {
         phoneErrorMessage = null;
       }
@@ -86,24 +89,26 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
               child: Form(
                 key: cubit.personalInfoFormKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  textDirection: LocalizationService.instance.textDirection,
                   children: [
                     // name
-                    Text('ما هو اسمك ؟',
-                        textDirection: TextDirection.rtl,
+                    Text(AppLocalizations.of(context)!.whatIsYourName,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
                       controller: cubit.nameController,
                       keyboardType: TextInputType.text,
-                      hintText: 'اسمك',
+                      hintText: AppLocalizations.of(context)!.yourName,
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(
                             RegExp(r'[a-zA-Z\u0600-\u06FF\s]')),
                       ],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'يجب عليك ادخال اسمك';
+                          return AppLocalizations.of(context)!.nameRequired;
                         }
                         return null;
                       },
@@ -111,14 +116,15 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                     verticalSpace(40),
 
                     // email
-                    Text('ما هو بريدك الالكتروني ؟',
-                        textDirection: TextDirection.rtl,
+                    Text(AppLocalizations.of(context)!.whatIsYourEmail,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
                       controller: cubit.emailController,
                       keyboardType: TextInputType.emailAddress,
-                      hintText: 'بريدك الالكتروني',
+                      hintText: AppLocalizations.of(context)!.yourEmail,
                       inputFormatters: [
                         // Allow only characters valid in an email address
                         FilteringTextInputFormatter.allow(
@@ -127,10 +133,11 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                       ],
                       validator: (value) {
                         if (value.isNullOrEmpty()) {
-                          return 'يجب عليك ادخال بريدك الالكتروني';
+                          return AppLocalizations.of(context)!.emailRequired;
                         }
                         if (!AppRegex.isEmailValid(value!)) {
-                          return 'يرجى ادخال بريد الكتروني صحيح';
+                          return AppLocalizations.of(context)!
+                              .pleaseEnterValidEmail;
                         }
                         return null;
                       },
@@ -138,24 +145,31 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                     verticalSpace(40),
 
                     // email
-                    Text('ما هو رقم جوالك ؟',
-                        textDirection: TextDirection.rtl,
+                    Text(AppLocalizations.of(context)!.whatIsYourPhoneNumber,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      textDirection: LocalizationService.instance.textDirection,
                       children: [
                         SizedBox(
                           height: 54.h,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                             children: [
+                              CustomCountryCodePicker(code: countryCode),
+                              horizontalSpace(8),
                               Expanded(
                                 child: CustomTextFormField(
                                   controller: cubit.phoneController,
                                   keyboardType: TextInputType.phone,
-                                  hintText: 'رقم الجوال',
+                                  hintText:
+                                      AppLocalizations.of(context)!.phoneNumber,
                                   onChanged: _validatePhone,
                                   inputFormatters: [
                                     FilteringTextInputFormatter
@@ -169,8 +183,6 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                                       null, // Empty validator to prevent height changes
                                 ),
                               ),
-                              horizontalSpace(8),
-                              CustomCountryCodePicker(code: countryCode),
                             ],
                           ),
                         ),
@@ -189,15 +201,15 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                           ),
                       ],
                     ),
-                    verticalSpace(40),
-                    Spacer(),
+                    Expanded(child: verticalSpace(20)),
+                    // Spacer(),
                     CustomElevatedButton(
                       onPressed: () {
                         if (_validateForm()) {
                           widget.onNextPressed();
                         }
                       },
-                      textButton: 'التالي',
+                      textButton: AppLocalizations.of(context)!.next,
                     ),
                   ],
                 ),

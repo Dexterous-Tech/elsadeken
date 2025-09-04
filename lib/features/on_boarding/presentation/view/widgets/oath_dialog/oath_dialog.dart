@@ -46,7 +46,8 @@ Future<void> oathDialog({
               borderRadius: BorderRadius.circular(20).r,
               child: Container(
                 width: 370.w,
-                padding: EdgeInsetsGeometry.symmetric(vertical: 70.h, horizontal: 30.w),
+                padding: EdgeInsetsGeometry.symmetric(
+                    vertical: 70.h, horizontal: 30.w),
                 decoration: ShapeDecoration(
                   color: Color(0xFFFFF9F2).withValues(alpha: 0.721),
                   shape: RoundedRectangleBorder(
@@ -57,135 +58,149 @@ Future<void> oathDialog({
                 child: StatefulBuilder(
                   builder: (context, setStateDialog) {
                     return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.greetingSalam,
-              textDirection: LocalizationService.instance.textDirection,
-              style: AppTextStyles.font22BistreSemiBoldLamaSans,
-            ),
-            // verticalSpace(6),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-              child: Text(
-                AppLocalizations.of(context)!.freeRegistration,
-              textDirection: LocalizationService.instance.textDirection,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.font15BistreSemiBoldLamaSans
-                    .copyWith(fontWeight: FontWeightHelper.medium),
-              ),
-            ),
-            verticalSpace(48),
-            Text(
-              AppLocalizations.of(context)!.oathFormat,
-              style: AppTextStyles.font15BistreSemiBoldLamaSans
-                  .copyWith(color: AppColors.black),
-              textAlign: TextAlign.center,
-              textDirection: LocalizationService.instance.textDirection,
-            ),
-            Text(
-              '\n\n«أقسم بالله العظيم أنني سجلت في هذا التطبيق زواجًا شرعيًا، وأن قصدي جاد وصادق في بناء أسرة قائمة على المودة والرحمة، وفقًا لأحكام الشريعة الإسلامية.',
-              style: AppTextStyles.font15BistreSemiBoldLamaSans
-                  .copyWith(color: AppColors.black),
-              textAlign: TextAlign.center,
-              textDirection: LocalizationService.instance.textDirection,
-            ),
-            RichText(
-              textAlign: TextAlign.center,
-              textDirection: LocalizationService.instance.textDirection,
-              text: TextSpan(
-                style: AppTextStyles.font15BistreSemiBoldLamaSans
-                    .copyWith(color: AppColors.black),
-                children: [
-                  const TextSpan(
-                    text: '\n\nوأتعهد بالالتزام الكامل ',
-                  ),
-                  TextSpan(
-                    text: 'بشروط وقوانين',
-                    style:
-                        AppTextStyles.font14PumpkinOrangeBoldLamaSans.copyWith(
-                      decoration: TextDecoration.underline,
-                      decorationColor: Color(0xFFC86D22),
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        context.pushNamed(AppRoutes.termsAndConditionsScreen);
-                      },
-                  ),
-                  const TextSpan(
-                    text:
-                        ' هذا التطبيق، وعدم استخدامه لأي غرض يسيء للدين أو الأخلاق أو يخالف ما وضع له من أهداف، والله على ما أقول شهيد.».',
-                  ),
-                ],
-              ),
-            ),
-            verticalSpace(28),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              textDirection: LocalizationService.instance.textDirection,
-                              children: [
-                  CustomRadio(
-                    value: value,
-                    onChanged: () {
-                      setStateDialog(() {
-                        value = !value;
-                      });
-                    },
-                  ),
-                  horizontalSpace(10),
-                  Expanded(
-                    child: Text(
-                      AppLocalizations.of(context)!.oathAcceptance,
-                      textDirection: LocalizationService.instance.textDirection,
-                      textAlign: LocalizationService.instance.isArabic 
-                          ? TextAlign.right 
-                          : TextAlign.left,
-                      style: AppTextStyles.font14PumpkinOrangeBoldLamaSans,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                    ),
-                  ),
-                ],
-            ),
-            verticalSpace(48),
-            CustomElevatedButton(
-              height: 45.63711166381836.h,
-              onPressed: value
-                  ? () async {
-                      // Mark onboarding as completed
-                      await SharedPreferencesHelper.setIsOnboardingCompleted(
-                          true);
-                      context.pushNamed(AppRoutes.signupScreen,
-                          arguments: 'male');
-                    }
-                  : () {},
-              // verticalPadding: 17.32.h,
-              textButton: AppLocalizations.of(context)!.registerMaleFree,
-              backgroundColor: AppColors.darkSunray,
-            ),
-            verticalSpace(14),
-            CustomElevatedButton(
-              height: 45.63711166381836.h,
-              onPressed: value
-                  ? () async {
-                      // Mark onboarding as completed
-                      await SharedPreferencesHelper.setIsOnboardingCompleted(
-                          true);
-                      context.pushNamed(AppRoutes.signupScreen,
-                          arguments: 'female');
-                    }
-                  : () {},
-              // verticalPadding: 17.32.h,
-              textButton: AppLocalizations.of(context)!.registerFemaleFree,
-              backgroundColor: AppColors.desire.withValues(alpha: 0.474),
-              border: Border.all(color: AppColors.white),
-            ),
-          ],
-        );
-      },
-    ),
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.greetingSalam,
+                          textAlign: TextAlign.center,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                          style: AppTextStyles.font22BistreSemiBoldLamaSans,
+                        ),
+                        // verticalSpace(6),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+                          child: Text(
+                            AppLocalizations.of(context)!.freeRegistration,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.font15BistreSemiBoldLamaSans
+                                .copyWith(fontWeight: FontWeightHelper.medium),
+                          ),
+                        ),
+                        verticalSpace(48),
+                        Text(
+                          AppLocalizations.of(context)!.oathFormat,
+                          style: AppTextStyles.font15BistreSemiBoldLamaSans
+                              .copyWith(color: AppColors.black),
+                          textAlign: TextAlign.center,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                        ),
+                        Text(
+                          '\n\n«أقسم بالله العظيم أنني سجلت في هذا التطبيق زواجًا شرعيًا، وأن قصدي جاد وصادق في بناء أسرة قائمة على المودة والرحمة، وفقًا لأحكام الشريعة الإسلامية.',
+                          style: AppTextStyles.font15BistreSemiBoldLamaSans
+                              .copyWith(color: AppColors.black),
+                          textAlign: TextAlign.center,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                        ),
+                        RichText(
+                          textAlign: TextAlign.center,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                          text: TextSpan(
+                            style: AppTextStyles.font15BistreSemiBoldLamaSans
+                                .copyWith(color: AppColors.black),
+                            children: [
+                              const TextSpan(
+                                text: '\n\nوأتعهد بالالتزام الكامل ',
+                              ),
+                              TextSpan(
+                                text: 'بشروط وقوانين',
+                                style: AppTextStyles
+                                    .font14PumpkinOrangeBoldLamaSans
+                                    .copyWith(
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Color(0xFFC86D22),
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    context.pushNamed(
+                                        AppRoutes.termsAndConditionsScreen);
+                                  },
+                              ),
+                              const TextSpan(
+                                text:
+                                    ' هذا التطبيق، وعدم استخدامه لأي غرض يسيء للدين أو الأخلاق أو يخالف ما وضع له من أهداف، والله على ما أقول شهيد.».',
+                              ),
+                            ],
+                          ),
+                        ),
+                        verticalSpace(28),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                          children: [
+                            CustomRadio(
+                              value: value,
+                              onChanged: () {
+                                setStateDialog(() {
+                                  value = !value;
+                                });
+                              },
+                            ),
+                            horizontalSpace(10),
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!.oathAcceptance,
+                                textDirection:
+                                    LocalizationService.instance.textDirection,
+                                textAlign: LocalizationService.instance.isArabic
+                                    ? TextAlign.right
+                                    : TextAlign.left,
+                                style: AppTextStyles
+                                    .font14PumpkinOrangeBoldLamaSans,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                            ),
+                          ],
+                        ),
+                        verticalSpace(48),
+                        CustomElevatedButton(
+                          height: 45.63711166381836.h,
+                          onPressed: value
+                              ? () async {
+                                  // Mark onboarding as completed
+                                  await SharedPreferencesHelper
+                                      .setIsOnboardingCompleted(true);
+                                  context.pushNamed(AppRoutes.signupScreen,
+                                      arguments: 'male');
+                                }
+                              : () {},
+                          // verticalPadding: 17.32.h,
+                          textButton:
+                              AppLocalizations.of(context)!.registerMaleFree,
+                          backgroundColor: AppColors.darkSunray,
+                        ),
+                        verticalSpace(14),
+                        CustomElevatedButton(
+                          height: 45.63711166381836.h,
+                          onPressed: value
+                              ? () async {
+                                  // Mark onboarding as completed
+                                  await SharedPreferencesHelper
+                                      .setIsOnboardingCompleted(true);
+                                  context.pushNamed(AppRoutes.signupScreen,
+                                      arguments: 'female');
+                                }
+                              : () {},
+                          // verticalPadding: 17.32.h,
+                          textButton:
+                              AppLocalizations.of(context)!.registerFemaleFree,
+                          backgroundColor:
+                              AppColors.desire.withValues(alpha: 0.474),
+                          border: Border.all(color: AppColors.white),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           ),

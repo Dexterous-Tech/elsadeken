@@ -1,9 +1,11 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_choice_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../../core/theme/spacing.dart';
+import '../../../../../../../l10n/app_localizations.dart';
 import '../../../../data/models/general_info_models.dart';
 import '../../../manager/sign_up_lists_cubit.dart';
 import '../../../manager/signup_cubit.dart';
@@ -75,17 +77,20 @@ class _SignupBodyShapeState extends State<SignupBodyShape> {
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: [
                       // Skin Color Selection
                       if (_isLoadingSkinColors)
                         SignupChoiceLoading(
-                          title: 'ما هي لون بشرتك ؟',
+                          title:
+                              AppLocalizations.of(context)!.whatIsYourSkinColor,
                         )
                       else
                         SignupMultiChoice(
-                          height: 220.h,
-                          title: 'ما هي لون بشرتك ؟',
+                          height: 170.h,
+                          title:
+                              AppLocalizations.of(context)!.whatIsYourSkinColor,
                           options: _skinColors
                               .map((skin) => skin.name ?? '')
                               .toList(),
@@ -113,12 +118,14 @@ class _SignupBodyShapeState extends State<SignupBodyShape> {
                       // Body Physique Selection
                       if (_isLoadingPhysiques)
                         SignupChoiceLoading(
-                          title: 'ما هي بنيه الجسم ؟',
+                          title:
+                              AppLocalizations.of(context)!.whatIsYourBodyShape,
                         )
                       else
                         SignupMultiChoice(
-                          height: 120.h,
-                          title: 'ما هي بنيه الجسم ؟',
+                          height: 170.h,
+                          title:
+                              AppLocalizations.of(context)!.whatIsYourBodyShape,
                           options: _physiques
                               .map((physique) => physique.name ?? '')
                               .toList(),
