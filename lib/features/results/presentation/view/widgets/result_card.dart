@@ -33,6 +33,9 @@ class PersonCardWidget extends StatelessWidget {
         child: Directionality(
           textDirection: LocalizationService.instance.textDirection,
           child: Row(
+            textDirection: LocalizationService.instance.textDirection,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Stack(
                 children: [
@@ -85,7 +88,7 @@ class PersonCardWidget extends StatelessWidget {
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
-                  crossAxisAlignment: LocalizationService.instance.startCrossAxisAlignment,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       personData.name,

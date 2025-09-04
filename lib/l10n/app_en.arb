@@ -426,8 +426,29 @@
   "chooseReligiousCommitmentLevel": "Choose religious commitment level",
   "choosePrayerStatus": "Choose prayer status",
   "chooseSmokingStatus": "Choose smoking status",
+  "chooseBeardStatus": "Choose beard status",
+  "chooseHijabStatus": "Choose hijab status",
   "yes": "Yes",
   "no": "No",
+  
+  "irreligious": "Not religious",
+  "littleReligious": "A little religious",
+  "religious": "Religious",
+  "muchReligious": "Very religious",
+  "dontSay": "Prefer not to say",
+  
+  "prayAlways": "I always pray",
+  "prayMostTimes": "I pray most of the time",
+  "praySometimes": "I pray sometimes",
+  "noPray": "I don't pray",
+  
+  "withBeard": "With beard",
+  "withoutBeard": "Without beard",
+  
+  "notHijab": "Not wearing hijab",
+  "hijabFaceVisible": "Hijab (face visible)",
+  "hijabWithVeil": "Hijab with veil",
+  "hijabFaceCovered": "Hijab (face covered)",
   
   "howOldAreYou": "How old are you?",
   "howManyChildren": "How many children do you have?",

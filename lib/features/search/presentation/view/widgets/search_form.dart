@@ -40,28 +40,50 @@ class _SearchFormState extends State<SearchForm> {
   bool _isLoadingSkinColors = true;
   bool _isLoadingQualifications = true;
 
-  final Map<String, String> maritalStatusMaleMap = {
-    'أعزب': 'single',
-    'متزوج': 'married',
-    'مطلق': 'divorced',
-    'أرمل': 'widower',
-  };
+  Map<String, String> get _maritalStatusMaleMap {
+    final l10n = AppLocalizations.of(context)!;
+    return {
+      l10n.single: 'single',
+      l10n.married: 'married',
+      l10n.divorced: 'divorced',
+      l10n.widowed: 'widower',
+    };
+  }
 
-  final Map<String, String> maritalStatusFemaleMap = {
-    'عزباء': 'single',
-    'مطلقة': 'divorced',
-    'أرملة': 'widower',
-  };
+  Map<String, String> get _maritalStatusFemaleMap {
+    final l10n = AppLocalizations.of(context)!;
+    return {
+      l10n.singleFemale: 'single',
+      l10n.divorcedFemale: 'divorced',
+      l10n.widowedFemale: 'widower',
+    };
+  }
 
-  final Map<String, String> typeOfMarriageMaleMap = {
-    'الزوجة الوحيدة': 'only_one',
-    'لا مانع من تعدد الزوجات': 'multi',
-  };
+  Map<String, String> get _typeOfMarriageMaleMap {
+    final l10n = AppLocalizations.of(context)!;
+    return {
+      l10n.onlyWife: 'only_one',
+      l10n.noObjectionToPolygamy: 'multi',
+    };
+  }
 
-  final Map<String, String> typeOfMarriageFemaleMap = {
-    'زوجة اولي': 'only_one',
-    ' زوجة ثانية': 'multi',
-  };
+  Map<String, String> get _typeOfMarriageFemaleMap {
+    final l10n = AppLocalizations.of(context)!;
+    return {
+      l10n.firstWife: 'only_one',
+      l10n.secondWife: 'multi',
+    };
+  }
+
+  bool get _isMale {
+    final value = (userGender ?? '').trim().toLowerCase();
+    return value == 'male' || value == 'm' || value == 'ذكر';
+  }
+
+  bool get _isFemale {
+    final value = (userGender ?? '').trim().toLowerCase();
+    return value == 'female' || value == 'f' || value == 'أنثى' || value == 'انثى';
+  }
 
   @override
   void initState() {
@@ -108,24 +130,24 @@ class _SearchFormState extends State<SearchForm> {
 
   // Get the appropriate marital status map based on gender
   Map<String, String> get maritalStatusMap {
-    if (userGender == 'ذكر' || userGender == 'male') {
-      return maritalStatusFemaleMap;
-    } else if (userGender == 'أنثى' || userGender == 'female') {
-      return maritalStatusMaleMap;
+    if (_isMale) {
+      return _maritalStatusFemaleMap;
+    } else if (_isFemale) {
+      return _maritalStatusMaleMap;
     }
     // Default to male map if gender is not determined
-    return maritalStatusMaleMap;
+    return _maritalStatusMaleMap;
   }
 
   // Get the appropriate marriage type map based on gender
   Map<String, String> get typeOfMarriageMap {
-    if (userGender == 'ذكر' || userGender == 'male') {
-      return typeOfMarriageFemaleMap;
-    } else if (userGender == 'أنثى' || userGender == 'female') {
-      return typeOfMarriageMaleMap;
+    if (_isMale) {
+      return _typeOfMarriageFemaleMap;
+    } else if (_isFemale) {
+      return _typeOfMarriageMaleMap;
     }
     // Default to male map if gender is not determined
-    return typeOfMarriageMaleMap;
+    return _typeOfMarriageMaleMap;
   }
 
   @override
@@ -314,7 +336,9 @@ class _SearchFormState extends State<SearchForm> {
                 items: typeOfMarriageMap.keys.toList(),
                 onChanged: (value) {
                   final key = typeOfMarriageMap[value];
-                  context.read<SearchCubit>().updateTypeOfMarriage(key!);
+                  if (key != null) {
+                    context.read<SearchCubit>().updateTypeOfMarriage(key);
+                  }
                 },
               ),
               SizedBox(height: 12),
@@ -324,7 +348,9 @@ class _SearchFormState extends State<SearchForm> {
                 items: maritalStatusMap.keys.toList(),
                 onChanged: (value) {
                   final key = maritalStatusMap[value];
-                  context.read<SearchCubit>().updateMaritalStatus(key!);
+                  if (key != null) {
+                    context.read<SearchCubit>().updateMaritalStatus(key);
+                  }
                 },
               ),
               SizedBox(height: 12),

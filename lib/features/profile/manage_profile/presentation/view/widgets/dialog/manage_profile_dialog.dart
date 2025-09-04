@@ -1096,13 +1096,11 @@ class _ManageProfileDialogContentState
 
       case ManageProfileDialogType.religion:
         final religiousCommitment =
-            widget.controllers['الإلتزام الديني']?.text ?? '';
-        final prayer = widget.controllers['الصلاة']?.text ?? '';
-        final smokingStr = widget.controllers['التدخين']?.text ?? '';
-        final hijab = widget.controllers['هل تريد شريك حياتك بحجاب ؟']?.text ??
-            widget.controllers['الحجاب']?.text ??
-            '';
-        final beard = widget.controllers['اللحية']?.text ?? '';
+            widget.controllers[AppLocalizations.of(context)!.religiousCommitment]?.text ?? '';
+        final prayer = widget.controllers[AppLocalizations.of(context)!.prayer]?.text ?? '';
+        final smokingStr = widget.controllers[AppLocalizations.of(context)!.smoking]?.text ?? '';
+        final hijab = widget.controllers[AppLocalizations.of(context)!.hijab]?.text ?? '';
+        final beard = widget.controllers[AppLocalizations.of(context)!.beard]?.text ?? '';
 
         // Debug: Print collected values
         print('DEBUG: Collected Religious Commitment: "$religiousCommitment"');
@@ -1111,85 +1109,127 @@ class _ManageProfileDialogContentState
         print('DEBUG: Collected Hijab: "$hijab"');
         print('DEBUG: Collected Beard: "$beard"');
 
-        // Convert Arabic text to API values
+        // Convert localized text to API values
         String? religiousCommitmentValue;
         if (religiousCommitment.isNotEmpty) {
-          switch (religiousCommitment) {
-            case 'غير متدين':
-              religiousCommitmentValue = 'irreligious';
-              break;
-            case 'متدين قليلا':
-              religiousCommitmentValue = 'little_religious';
-              break;
-            case 'متدين':
-              religiousCommitmentValue = 'religious';
-              break;
-            case 'متدين كثيرا':
-              religiousCommitmentValue = 'much_religious';
-              break;
-            case 'أفضل الا اقول':
-              religiousCommitmentValue = 'dont_say';
-              break;
+          // Check if it's already an API value
+          if (['irreligious', 'little_religious', 'religious', 'much_religious', 'dont_say'].contains(religiousCommitment)) {
+            religiousCommitmentValue = religiousCommitment;
+          } else {
+            // Map localized values to API values
+            switch (religiousCommitment) {
+              case 'غير متدين':
+              case 'Not religious':
+                religiousCommitmentValue = 'irreligious';
+                break;
+              case 'متدين قليلاً':
+              case 'A little religious':
+              case 'Little religious':
+                religiousCommitmentValue = 'little_religious';
+                break;
+              case 'متدين':
+              case 'Religious':
+                religiousCommitmentValue = 'religious';
+                break;
+              case 'متدين كثيراً':
+              case 'Very religious':
+                religiousCommitmentValue = 'much_religious';
+                break;
+              case 'أفضل ألا أقول':
+              case 'Prefer not to say':
+                religiousCommitmentValue = 'dont_say';
+                break;
+            }
           }
         }
 
         String? prayerValue;
         if (prayer.isNotEmpty) {
-          switch (prayer) {
-            case 'اصلي دائما':
-              prayerValue = 'always';
-              break;
-            case 'اصلي اغلب الاوقات':
-              prayerValue = 'most_times';
-              break;
-            case 'اصلي بعض الاحيان':
-              prayerValue = 'sometimes';
-              break;
-            case 'لا اصلي':
-              prayerValue = 'no_pray';
-              break;
-            case 'أفضل الا اقول':
-              prayerValue = 'dont_say';
-              break;
+          // Check if it's already an API value
+          if (['always', 'most_times', 'sometimes', 'no_pray', 'dont_say'].contains(prayer)) {
+            prayerValue = prayer;
+          } else {
+            // Map localized values to API values
+            switch (prayer) {
+              case 'أصلي دائماً':
+              case 'I always pray':
+                prayerValue = 'always';
+                break;
+              case 'أصلي أغلب الأوقات':
+              case 'I pray most of the time':
+                prayerValue = 'most_times';
+                break;
+              case 'أصلي أحياناً':
+              case 'I pray sometimes':
+                prayerValue = 'sometimes';
+                break;
+              case 'لا أصلي':
+              case 'I don\'t pray':
+                prayerValue = 'no_pray';
+                break;
+              case 'أفضل ألا أقول':
+              case 'Prefer not to say':
+                prayerValue = 'dont_say';
+                break;
+            }
           }
         }
 
-        // Convert smoking string to int (0 for "لا", 1 for "نعم")
+        // Convert smoking string to int (0 for "لا"/"No", 1 for "نعم"/"Yes")
         int? smoking;
         if (smokingStr.isNotEmpty) {
-          smoking = smokingStr == 'نعم' ? 1 : 0;
+          smoking = (smokingStr == 'نعم' || smokingStr == 'Yes') ? 1 : 0;
         }
 
         String? hijabValue;
         if (hijab.isNotEmpty) {
-          switch (hijab) {
-            case 'غير محجبه':
-              hijabValue = 'not_hijab';
-              break;
-            case 'محجبه(كشف الوجه)':
-              hijabValue = 'hijab';
-              break;
-            case 'محجبه (النقاب)':
-              hijabValue = 'hijab_and_veil';
-              break;
-            case 'محجبه (غطاء الوجه)':
-              hijabValue = 'hijab_face';
-              break;
-            case 'افضل الا اقول':
-              hijabValue = 'dont_say';
-              break;
+          // Check if it's already an API value
+          if (['not_hijab', 'hijab', 'hijab_and_veil', 'hijab_face', 'dont_say'].contains(hijab)) {
+            hijabValue = hijab;
+          } else {
+            // Map localized values to API values
+            switch (hijab) {
+              case 'غير محجبة':
+              case 'Not wearing hijab':
+                hijabValue = 'not_hijab';
+                break;
+              case 'محجبة (كشف الوجه)':
+              case 'Hijab (face visible)':
+                hijabValue = 'hijab';
+                break;
+              case 'محجبة (النقاب)':
+              case 'Hijab with veil':
+                hijabValue = 'hijab_and_veil';
+                break;
+              case 'محجبة (غطاء الوجه)':
+              case 'Hijab (face covered)':
+                hijabValue = 'hijab_face';
+                break;
+              case 'أفضل ألا أقول':
+              case 'Prefer not to say':
+                hijabValue = 'dont_say';
+                break;
+            }
           }
         }
 
         String? beardValue;
         if (beard.isNotEmpty) {
-          switch (beard) {
-            case 'ملتحي':
-              beardValue = 'beard';
-              break;
-            case 'بدون لحية':
-              beardValue = 'without_beard';
-              break;
+          // Check if it's already an API value
+          if (['beard', 'without_beard'].contains(beard)) {
+            beardValue = beard;
+          } else {
+            // Map localized values to API values
+            switch (beard) {
+              case 'ملتحي':
+              case 'With beard':
+                beardValue = 'beard';
+                break;
+              case 'بدون لحية':
+              case 'Without beard':
+                beardValue = 'without_beard';
+                break;
+            }
           }
         }
 
@@ -1243,7 +1283,9 @@ class _ManageProfileDialogContentState
           Text(
             field.label,
             style: AppTextStyles.font18JetMediumLamaSans,
-            textAlign: TextAlign.right,
+            textAlign: LocalizationService.instance.isArabic
+                ? TextAlign.right
+                : TextAlign.left,
           ),
           verticalSpace(2),
           CustomDropDownMenu(
@@ -1328,13 +1370,15 @@ class _ManageProfileDialogContentState
         }
 
         return Column(
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               field.label,
               style: AppTextStyles.font18JetMediumLamaSans,
-              textAlign: TextAlign.right,
+              textAlign: LocalizationService.instance.isArabic
+                  ? TextAlign.right
+                  : TextAlign.left,
             ),
             verticalSpace(2),
             isLoading
@@ -1380,7 +1424,9 @@ class _ManageProfileDialogContentState
             Text(
               field.label,
               style: AppTextStyles.font18JetMediumLamaSans,
-              textAlign: TextAlign.right,
+              textAlign: LocalizationService.instance.isArabic
+                  ? TextAlign.right
+                  : TextAlign.left,
             ),
             verticalSpace(2),
             CustomTextFormField(
@@ -1406,7 +1452,9 @@ class _ManageProfileDialogContentState
             Text(
               field.label,
               style: AppTextStyles.font18JetMediumLamaSans,
-              textAlign: TextAlign.right,
+              textAlign: LocalizationService.instance.isArabic
+                  ? TextAlign.right
+                  : TextAlign.left,
             ),
             verticalSpace(2),
             CustomTextFormField(
@@ -1497,7 +1545,9 @@ class _ManageProfileDialogContentState
         Text(
           field.label,
           style: AppTextStyles.font18JetMediumLamaSans,
-          textAlign: TextAlign.right,
+          textAlign: LocalizationService.instance.isArabic
+              ? TextAlign.right
+              : TextAlign.left,
         ),
         verticalSpace(2),
         Row(

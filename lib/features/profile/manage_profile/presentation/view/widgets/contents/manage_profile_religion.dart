@@ -2,6 +2,7 @@ import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
@@ -23,29 +24,29 @@ class ManageProfileReligion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ManageProfileContentItem(
-          title: 'الإلتزام الديني',
+          title: AppLocalizations.of(context)!.religiousCommitment,
           itemContent: ManageProfileContentText(
-            text: profileData?.attribute?.religiousCommitment ?? '',
+            text: _mapReligionToDisplay(context, profileData?.attribute?.religiousCommitment),
             isLoading: isLoading,
           ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'الصلاة',
+          title: AppLocalizations.of(context)!.prayer,
           itemContent: ManageProfileContentText(
-            text: profileData?.attribute?.prayer ?? '',
+            text: _mapPrayerToDisplay(context, profileData?.attribute?.prayer),
             isLoading: isLoading,
           ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'التدخين',
+          title: AppLocalizations.of(context)!.smoking,
           itemContent: ManageProfileContentText(
-            text: profileData?.attribute?.smoking?.toString() ?? '',
+            text: _getSmokingDisplayValue(context, profileData?.attribute?.smoking),
             isLoading: isLoading,
           ),
         ),
@@ -53,18 +54,18 @@ class ManageProfileReligion extends StatelessWidget {
         // Show beard for males only
         if (profileData?.gender == 'male' || profileData?.gender == 'ذكر')
           ManageProfileContentItem(
-            title: 'اللحية',
+            title: AppLocalizations.of(context)!.beard,
             itemContent: ManageProfileContentText(
-              text: profileData?.attribute?.beard ?? '',
+              text: _mapBeardToDisplay(context, profileData?.attribute?.beard),
               isLoading: isLoading,
             ),
           ),
         // Show hijab for females only
         if (profileData?.gender != 'male' && profileData?.gender != 'ذكر')
           ManageProfileContentItem(
-            title: 'الحجاب',
+            title: AppLocalizations.of(context)!.hijab,
             itemContent: ManageProfileContentText(
-              text: profileData?.attribute?.hijab ?? '',
+              text: _mapHijabToDisplay(context, profileData?.attribute?.hijab),
               isLoading: isLoading,
             ),
           ),
@@ -96,22 +97,21 @@ class ManageProfileReligion extends StatelessWidget {
           label: AppLocalizations.of(context)!.religiousCommitment,
           hint: AppLocalizations.of(context)!.chooseReligiousCommitmentLevel,
           currentValue: _mapReligionToDisplay(
-              profileData?.attribute?.religiousCommitment),
+              context, profileData?.attribute?.religiousCommitment),
           type: ManageProfileFieldType.dropdown,
-          options: religionOptions.values.toList(),
+          options: _getReligionOptions(context),
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.prayer,
           hint: AppLocalizations.of(context)!.choosePrayerStatus,
-          currentValue: _mapPrayerToDisplay(profileData?.attribute?.prayer),
+          currentValue: _mapPrayerToDisplay(context, profileData?.attribute?.prayer),
           type: ManageProfileFieldType.dropdown,
-          options: prayerOptions.values.toList(),
+          options: _getPrayerOptions(context),
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.smoking,
           hint: AppLocalizations.of(context)!.chooseSmokingStatus,
-          currentValue:
-              _getSmokingDisplayValue(profileData?.attribute?.smoking),
+          currentValue: _getSmokingDisplayValue(context, profileData?.attribute?.smoking),
           type: ManageProfileFieldType.dropdown,
           options: [
             AppLocalizations.of(context)!.yes,
@@ -121,20 +121,20 @@ class ManageProfileReligion extends StatelessWidget {
         // Show beard for males only
         if (profileData?.gender == 'male' || profileData?.gender == 'ذكر')
           ManageProfileField(
-            label: 'اللحية',
-            hint: 'اختر حالة اللحية',
-            currentValue: _mapBeardToDisplay(profileData?.attribute?.beard),
+            label: AppLocalizations.of(context)!.beard,
+            hint: AppLocalizations.of(context)!.chooseBeardStatus,
+            currentValue: _mapBeardToDisplay(context, profileData?.attribute?.beard),
             type: ManageProfileFieldType.dropdown,
-            options: beardOptions.values.toList(),
+            options: _getBeardOptions(context),
           ),
         // Show hijab for females only
         if (profileData?.gender != 'male' && profileData?.gender != 'ذكر')
           ManageProfileField(
-            label: 'الحجاب',
-            hint: 'اختر حالة الحجاب',
-            currentValue: _mapHijabToDisplay(profileData?.attribute?.hijab),
+            label: AppLocalizations.of(context)!.hijab,
+            hint: AppLocalizations.of(context)!.chooseHijabStatus,
+            currentValue: _mapHijabToDisplay(context, profileData?.attribute?.hijab),
             type: ManageProfileFieldType.dropdown,
-            options: scarfOptions.values.toList(),
+            options: _getHijabOptions(context),
           ),
       ],
     );
@@ -142,116 +142,188 @@ class ManageProfileReligion extends StatelessWidget {
     manageProfileDialog(context, dialogData);
   }
 
-  /// Helper method to convert smoking API value to display text
-  String _getSmokingDisplayValue(String? smoking) {
+  /// Helper method to convert smoking API value to localized display text
+  String _getSmokingDisplayValue(BuildContext context, String? smoking) {
     if (smoking == null || smoking.isEmpty) return '';
 
     // Handle both string and numeric values
-    if (smoking == '1' || smoking == 'نعم') return 'نعم';
-    if (smoking == '0' || smoking == 'لا') return 'لا';
+    String smokingValue = smoking.toString().toLowerCase().trim();
+    
+    if (smokingValue == '1' || smokingValue == 'نعم' || smokingValue == 'true' || smokingValue == 'yes' || smokingValue == 'smoking') {
+      return AppLocalizations.of(context)!.yes;
+    }
+    if (smokingValue == '0' || smokingValue == 'لا' || smokingValue == 'false' || smokingValue == 'no' || smokingValue == 'not smoking') {
+      return AppLocalizations.of(context)!.no;
+    }
 
-    // Default case
-    return '';
+    // If it's already a display value, return as is
+    if (smokingValue == 'نعم') {
+      return AppLocalizations.of(context)!.yes;
+    }
+    if (smokingValue == 'لا') {
+      return AppLocalizations.of(context)!.no;
+    }
+
+    // Default case - return the original value if we can't map it
+    return smoking;
   }
 
-  /// Religion options mapping
-  Map<String, String> get religionOptions {
-    return {
-      'irreligious': 'غير متدين',
-      'little_religious': 'متدين قليلا',
-      'religious': 'متدين',
-      'much_religious': 'متدين كثيرا',
-      'dont_say': 'أفضل الا اقول',
-    };
+  /// Get localized religion options
+  List<String> _getReligionOptions(BuildContext context) {
+    return [
+      AppLocalizations.of(context)!.irreligious,
+      AppLocalizations.of(context)!.littleReligious,
+      AppLocalizations.of(context)!.religious,
+      AppLocalizations.of(context)!.muchReligious,
+      AppLocalizations.of(context)!.dontSay,
+    ];
   }
 
-  /// Prayer options mapping
-  Map<String, String> get prayerOptions {
-    return {
-      'always': 'اصلي دائما',
-      'most_times': 'اصلي اغلب الاوقات',
-      'sometimes': 'اصلي بعض الاحيان',
-      'no_pray': 'لا اصلي',
-      'dont_say': 'أفضل الا اقول',
-    };
+  /// Get localized prayer options
+  List<String> _getPrayerOptions(BuildContext context) {
+    return [
+      AppLocalizations.of(context)!.prayAlways,
+      AppLocalizations.of(context)!.prayMostTimes,
+      AppLocalizations.of(context)!.praySometimes,
+      AppLocalizations.of(context)!.noPray,
+      AppLocalizations.of(context)!.dontSay,
+    ];
   }
 
-  /// Beard options mapping
-  Map<String, String> get beardOptions {
-    return {
-      'beard': 'ملتحي',
-      'without_beard': 'بدون لحية',
-    };
+  /// Get localized beard options
+  List<String> _getBeardOptions(BuildContext context) {
+    return [
+      AppLocalizations.of(context)!.withBeard,
+      AppLocalizations.of(context)!.withoutBeard,
+    ];
   }
 
-  /// Scarf/Hijab options mapping
-  Map<String, String> get scarfOptions {
-    return {
-      'not_hijab': 'غير محجبه',
-      'hijab': 'محجبه(كشف الوجه)',
-      'hijab_and_veil': 'محجبه (النقاب)',
-      'hijab_face': 'محجبه (غطاء الوجه)',
-      'dont_say': 'افضل الا اقول',
-    };
+  /// Get localized hijab options
+  List<String> _getHijabOptions(BuildContext context) {
+    return [
+      AppLocalizations.of(context)!.notHijab,
+      AppLocalizations.of(context)!.hijabFaceVisible,
+      AppLocalizations.of(context)!.hijabWithVeil,
+      AppLocalizations.of(context)!.hijabFaceCovered,
+      AppLocalizations.of(context)!.dontSay,
+    ];
   }
 
   /// Helper method to map API religion values to display values
-  String _mapReligionToDisplay(String? apiValue) {
+  String _mapReligionToDisplay(BuildContext context, String? apiValue) {
     if (apiValue == null || apiValue.isEmpty) return '';
 
-    final value = apiValue.trim();
-
-    // Check if the value is already in Arabic (display format)
-    if (religionOptions.values.contains(value)) {
-      return value;
+    // If it's already a display value, return as is
+    if (['غير متدين', 'متدين قليلاً', 'متدين', 'متدين كثيراً', 'أفضل ألا أقول'].contains(apiValue)) {
+      return apiValue;
     }
 
     // Map API values to display values
-    return religionOptions[value] ?? value;
+    switch (apiValue.toLowerCase().trim()) {
+      case 'irreligious':
+      case 'user.irreligious':
+      case 'not religious':
+        return AppLocalizations.of(context)!.irreligious;
+      case 'little_religious':
+      case 'user.little_religious':
+      case 'little religious':
+        return AppLocalizations.of(context)!.littleReligious;
+      case 'religious':
+      case 'user.religious':
+        return AppLocalizations.of(context)!.religious;
+      case 'much_religious':
+      case 'user.much_religious':
+      case 'very religious':
+        return AppLocalizations.of(context)!.muchReligious;
+      case 'dont_say':
+      case 'user.dont_say':
+        return AppLocalizations.of(context)!.dontSay;
+      default:
+        return apiValue;
+    }
   }
 
   /// Helper method to map API prayer values to display values
-  String _mapPrayerToDisplay(String? apiValue) {
+  String _mapPrayerToDisplay(BuildContext context, String? apiValue) {
     if (apiValue == null || apiValue.isEmpty) return '';
 
-    final value = apiValue.trim();
-
-    // Check if the value is already in Arabic (display format)
-    if (prayerOptions.values.contains(value)) {
-      return value;
+    // If it's already a display value, return as is
+    if (['أصلي دائماً', 'أصلي أغلب الأوقات', 'أصلي أحياناً', 'لا أصلي', 'أفضل ألا أقول'].contains(apiValue)) {
+      return apiValue;
     }
 
     // Map API values to display values
-    return prayerOptions[value] ?? value;
+    switch (apiValue.toLowerCase().trim()) {
+      case 'always':
+      case 'user.always':
+        return AppLocalizations.of(context)!.prayAlways;
+      case 'most_times':
+      case 'user.most_times':
+        return AppLocalizations.of(context)!.prayMostTimes;
+      case 'sometimes':
+      case 'user.sometimes':
+        return AppLocalizations.of(context)!.praySometimes;
+      case 'no_pray':
+      case 'user.no_pray':
+        return AppLocalizations.of(context)!.noPray;
+      case 'dont_say':
+      case 'user.dont_say':
+        return AppLocalizations.of(context)!.dontSay;
+      default:
+        return apiValue;
+    }
   }
 
   /// Helper method to map API beard values to display values
-  String _mapBeardToDisplay(String? apiValue) {
+  String _mapBeardToDisplay(BuildContext context, String? apiValue) {
     if (apiValue == null || apiValue.isEmpty) return '';
 
-    final value = apiValue.trim();
-
-    // Check if the value is already in Arabic (display format)
-    if (beardOptions.values.contains(value)) {
-      return value;
+    // If it's already a display value, return as is
+    if (['ملتحي', 'بدون لحية'].contains(apiValue)) {
+      return apiValue;
     }
 
     // Map API values to display values
-    return beardOptions[value] ?? value;
+    switch (apiValue.toLowerCase().trim()) {
+      case 'beard':
+      case 'user.beard':
+        return AppLocalizations.of(context)!.withBeard;
+      case 'without_beard':
+      case 'user.without_beard':
+        return AppLocalizations.of(context)!.withoutBeard;
+      default:
+        return apiValue;
+    }
   }
 
   /// Helper method to map API hijab values to display values
-  String _mapHijabToDisplay(String? apiValue) {
+  String _mapHijabToDisplay(BuildContext context, String? apiValue) {
     if (apiValue == null || apiValue.isEmpty) return '';
 
-    final value = apiValue.trim();
-
-    // Check if the value is already in Arabic (display format)
-    if (scarfOptions.values.contains(value)) {
-      return value;
+    // If it's already a display value, return as is
+    if (['غير محجبة', 'محجبة (كشف الوجه)', 'محجبة (النقاب)', 'محجبة (غطاء الوجه)', 'أفضل ألا أقول'].contains(apiValue)) {
+      return apiValue;
     }
 
     // Map API values to display values
-    return scarfOptions[value] ?? value;
+    switch (apiValue.toLowerCase().trim()) {
+      case 'not_hijab':
+      case 'user.not_hijab':
+        return AppLocalizations.of(context)!.notHijab;
+      case 'hijab':
+      case 'user.hijab':
+        return AppLocalizations.of(context)!.hijabFaceVisible;
+      case 'hijab_and_veil':
+      case 'user.hijab_and_veil':
+        return AppLocalizations.of(context)!.hijabWithVeil;
+      case 'hijab_face':
+      case 'user.hijab_face':
+        return AppLocalizations.of(context)!.hijabFaceCovered;
+      case 'dont_say':
+      case 'user.dont_say':
+        return AppLocalizations.of(context)!.dontSay;
+      default:
+        return apiValue;
+    }
   }
 }

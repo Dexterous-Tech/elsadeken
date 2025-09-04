@@ -1031,6 +1031,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseSmokingStatus => 'Choose smoking status';
 
   @override
+  String get chooseBeardStatus => 'Choose beard status';
+
+  @override
+  String get chooseHijabStatus => 'Choose hijab status';
+
+  @override
+  String get irreligious => 'Not religious';
+
+  @override
+  String get littleReligious => 'A little religious';
+
+  @override
+  String get religious => 'Religious';
+
+  @override
+  String get muchReligious => 'Very religious';
+
+  @override
+  String get dontSay => 'Prefer not to say';
+
+  @override
+  String get prayAlways => 'I always pray';
+
+  @override
+  String get prayMostTimes => 'I pray most of the time';
+
+  @override
+  String get praySometimes => 'I pray sometimes';
+
+  @override
+  String get noPray => 'I don\'t pray';
+
+  @override
+  String get withBeard => 'With beard';
+
+  @override
+  String get withoutBeard => 'Without beard';
+
+  @override
+  String get notHijab => 'Not wearing hijab';
+
+  @override
+  String get hijabFaceVisible => 'Hijab (face visible)';
+
+  @override
+  String get hijabWithVeil => 'Hijab with veil';
+
+  @override
+  String get hijabFaceCovered => 'Hijab (face covered)';
+
+  @override
   String get howOldAreYou => 'How old are you?';
 
   @override

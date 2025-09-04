@@ -47,7 +47,9 @@ class _ChatScreenState extends State<ChatScreen>
     final chatListCubit = context.read<ChatListCubit>();
     chatListCubit.setCurrentTabIndex(_selectedTabIndex);
 
-    chatListCubit.getChatList();
+    chatListCubit.getChatList().then((_) {
+      _hasLoadedInitially = true;
+    });
     _setupRealTimeListeners();
   }
 
@@ -79,13 +81,22 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    // Real-time updates handle everything automatically - no manual refresh needed
+    
+    // Refresh chat list when app comes back to foreground to ensure consistency
+    if (state == AppLifecycleState.resumed && _hasLoadedInitially) {
+      print('🔄 [ChatScreen] App resumed, refreshing chat list');
+      context.read<ChatListCubit>().silentRefreshChatList();
+    }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // No manual refresh needed - real-time updates handle everything automatically
+    // Refresh chat list when returning to this screen to ensure consistency
+    if (_hasLoadedInitially) {
+      print('🔄 [ChatScreen] Refreshing chat list on didChangeDependencies');
+      context.read<ChatListCubit>().silentRefreshChatList();
+    }
   }
 
   @override
@@ -215,9 +226,7 @@ class _ChatScreenState extends State<ChatScreen>
                     arguments: {"chatRoom": chat.toChatRoomModel()},
                   );
                 },
-                onLongPress: () {
-                  _showChatOptions(context, chat);
-                },
+                onLongPress: null, // Let ChatRoomItem handle its own long press
               );
             },
           );
@@ -260,32 +269,5 @@ class _ChatScreenState extends State<ChatScreen>
     }
   }
 
-  /// 🔹 Show Chat Options
 
-  void _showChatOptions(BuildContext context, dynamic chatRoom) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.delete, color: Colors.red),
-              title: const Text(
-                'مسح الدردشة',
-                style: TextStyle(color: Colors.red),
-              ),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.block),
-              title: Text(AppLocalizations.of(context)!.blockUser),
-              onTap: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

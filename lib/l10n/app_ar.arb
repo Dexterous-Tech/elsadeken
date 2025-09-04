@@ -425,8 +425,29 @@
   "chooseReligiousCommitmentLevel": "اختر مستوى الالتزام الديني",
   "choosePrayerStatus": "اختر حالة الصلاة",
   "chooseSmokingStatus": "اختر حالة التدخين",
+  "chooseBeardStatus": "اختر حالة اللحية",
+  "chooseHijabStatus": "اختر حالة الحجاب",
   "yes": "نعم",
   "no": "لا",
+  
+  "irreligious": "غير متدين",
+  "littleReligious": "متدين قليلاً",
+  "religious": "متدين",
+  "muchReligious": "متدين كثيراً",
+  "dontSay": "أفضل ألا أقول",
+  
+  "prayAlways": "أصلي دائماً",
+  "prayMostTimes": "أصلي أغلب الأوقات",
+  "praySometimes": "أصلي أحياناً",
+  "noPray": "لا أصلي",
+  
+  "withBeard": "ملتحي",
+  "withoutBeard": "بدون لحية",
+  
+  "notHijab": "غير محجبة",
+  "hijabFaceVisible": "محجبة (كشف الوجه)",
+  "hijabWithVeil": "محجبة (النقاب)",
+  "hijabFaceCovered": "محجبة (غطاء الوجه)",
   
   "howOldAreYou": "كم عمرك ؟",
   "howManyChildren": "كم عدد الاطفال ؟",

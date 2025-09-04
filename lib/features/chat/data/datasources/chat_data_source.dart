@@ -11,13 +11,23 @@ class ChatDataSource {
   ChatDataSource(this._apiServices);
 
   Future<ChatListModel> getAllChatList() async {
+    print('🌐 [ChatDataSource] Calling getAllChatList API...');
     var response = await _apiServices.get(
       endpoint: ApiConstants.getChatsList,
       queryParameters: {'favorite': '0'}, // Only get non-favorite chats
       requiresAuth: true,
     );
 
-    return ChatListModel.fromJson(response.data);
+    final chatList = ChatListModel.fromJson(response.data);
+    print('🌐 [ChatDataSource] getAllChatList response: ${chatList.data.length} chats');
+    
+    // Debug: Print all chat IDs and names
+    for (int i = 0; i < chatList.data.length; i++) {
+      final chat = chatList.data[i];
+      print('🌐 [ChatDataSource] Chat $i: ID=${chat.id}, Name=${chat.otherUser.name}');
+    }
+    
+    return chatList;
   }
 
   Future<ChatMessagesConversation> getChatMessages(String chatId) async {
@@ -82,7 +92,8 @@ class ChatDataSource {
   }
 
   Future<Map<String, dynamic>> deleteOneChat(int chatId) async {
-    print('🌐 [ChatDataSource] Calling delete API for chat ID: $chatId');
+    final timestamp = DateTime.now().toIso8601String();
+    print('🌐 [ChatDataSource] Calling delete API for chat ID: $chatId at $timestamp');
     print(
         '🌐 [ChatDataSource] Endpoint: ${ApiConstants.deleteOneChatSettings(chatId.toString())}');
 

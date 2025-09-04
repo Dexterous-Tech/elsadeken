@@ -2081,6 +2081,108 @@ abstract class AppLocalizations {
   /// **'Choose smoking status'**
   String get chooseSmokingStatus;
 
+  /// No description provided for @chooseBeardStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose beard status'**
+  String get chooseBeardStatus;
+
+  /// No description provided for @chooseHijabStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose hijab status'**
+  String get chooseHijabStatus;
+
+  /// No description provided for @irreligious.
+  ///
+  /// In en, this message translates to:
+  /// **'Not religious'**
+  String get irreligious;
+
+  /// No description provided for @littleReligious.
+  ///
+  /// In en, this message translates to:
+  /// **'A little religious'**
+  String get littleReligious;
+
+  /// No description provided for @religious.
+  ///
+  /// In en, this message translates to:
+  /// **'Religious'**
+  String get religious;
+
+  /// No description provided for @muchReligious.
+  ///
+  /// In en, this message translates to:
+  /// **'Very religious'**
+  String get muchReligious;
+
+  /// No description provided for @dontSay.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer not to say'**
+  String get dontSay;
+
+  /// No description provided for @prayAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'I always pray'**
+  String get prayAlways;
+
+  /// No description provided for @prayMostTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'I pray most of the time'**
+  String get prayMostTimes;
+
+  /// No description provided for @praySometimes.
+  ///
+  /// In en, this message translates to:
+  /// **'I pray sometimes'**
+  String get praySometimes;
+
+  /// No description provided for @noPray.
+  ///
+  /// In en, this message translates to:
+  /// **'I don\'t pray'**
+  String get noPray;
+
+  /// No description provided for @withBeard.
+  ///
+  /// In en, this message translates to:
+  /// **'With beard'**
+  String get withBeard;
+
+  /// No description provided for @withoutBeard.
+  ///
+  /// In en, this message translates to:
+  /// **'Without beard'**
+  String get withoutBeard;
+
+  /// No description provided for @notHijab.
+  ///
+  /// In en, this message translates to:
+  /// **'Not wearing hijab'**
+  String get notHijab;
+
+  /// No description provided for @hijabFaceVisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Hijab (face visible)'**
+  String get hijabFaceVisible;
+
+  /// No description provided for @hijabWithVeil.
+  ///
+  /// In en, this message translates to:
+  /// **'Hijab with veil'**
+  String get hijabWithVeil;
+
+  /// No description provided for @hijabFaceCovered.
+  ///
+  /// In en, this message translates to:
+  /// **'Hijab (face covered)'**
+  String get hijabFaceCovered;
+
   /// No description provided for @howOldAreYou.
   ///
   /// In en, this message translates to:

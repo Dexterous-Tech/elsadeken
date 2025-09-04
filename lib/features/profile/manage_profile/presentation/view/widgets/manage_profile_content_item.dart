@@ -19,13 +19,21 @@ class ManageProfileContentItem extends StatelessWidget {
       textDirection: LocalizationService.instance.textDirection,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: AppTextStyles.font18JetBoldLamaSans
-              .copyWith(fontWeight: FontWeightHelper.regular),
+        Expanded(
+          flex: 2,
+          child: Text(
+            title,
+            style: AppTextStyles.font18JetBoldLamaSans
+                .copyWith(fontWeight: FontWeightHelper.regular),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+          ),
         ),
-        Spacer(),
-        itemContent,
+        SizedBox(width: 8),
+        Expanded(
+          flex: 3,
+          child: itemContent,
+        ),
       ],
     );
   }

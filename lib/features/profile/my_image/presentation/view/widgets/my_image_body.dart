@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -95,13 +96,13 @@ class _MyImageBodyState extends State<MyImageBody> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
           children: [
             ProfileHeader(title: AppLocalizations.of(context)!.myImage),
             verticalSpace(30),
             Text(
               AppLocalizations.of(context)!.importantInformation,
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
               style: AppTextStyles.font20LightOrangeMediumLamaSans.copyWith(
                 color: Color(0xffF9F9F9),
               ),
@@ -454,8 +455,8 @@ class _MyImageBodyState extends State<MyImageBody> {
           ),
           title: Text(
             AppLocalizations.of(context)!.chooseImageSource,
-            textDirection: TextDirection.rtl,
-            textAlign: TextAlign.center,
+            textDirection: LocalizationService.instance.textDirection,
+            textAlign: LocalizationService.instance.textAlignment,
             style: AppTextStyles.font16BlackSemiBoldLamaSans,
           ),
           content: Column(
@@ -465,7 +466,7 @@ class _MyImageBodyState extends State<MyImageBody> {
                 leading: Icon(Icons.camera_alt, color: AppColors.primaryOrange),
                 title: Text(
                   AppLocalizations.of(context)!.takePhotoFromCamera,
-                  textDirection: TextDirection.rtl,
+                  textDirection: LocalizationService.instance.textDirection,
                   style: AppTextStyles.font14BlackRegularLamaSans,
                 ),
                 onTap: () {
@@ -478,7 +479,7 @@ class _MyImageBodyState extends State<MyImageBody> {
                     Icon(Icons.photo_library, color: AppColors.primaryOrange),
                 title: Text(
                   AppLocalizations.of(context)!.chooseFromGallery,
-                  textDirection: TextDirection.rtl,
+                  textDirection: LocalizationService.instance.textDirection,
                   style: AppTextStyles.font14BlackRegularLamaSans,
                 ),
                 onTap: () {
@@ -495,9 +496,9 @@ class _MyImageBodyState extends State<MyImageBody> {
 
   Widget informationItem(String info) {
     return Padding(
-      padding: EdgeInsets.only(right: 16.w, bottom: 16.h),
+      padding: EdgeInsetsDirectional.only(start: 16.w, bottom: 16.h),
       child: Row(
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -512,8 +513,8 @@ class _MyImageBodyState extends State<MyImageBody> {
           Expanded(
             child: Text(
               info,
-              textDirection: TextDirection.rtl,
-              textAlign: TextAlign.right,
+              textDirection: LocalizationService.instance.textDirection,
+              textAlign: LocalizationService.instance.textAlignment,
               style: AppTextStyles.font19JetRegularLamaSans,
             ),
           )

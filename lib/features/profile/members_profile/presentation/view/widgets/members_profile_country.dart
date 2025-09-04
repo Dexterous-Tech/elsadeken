@@ -8,6 +8,7 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 import 'package:elsadeken/features/profile/members_profile/presentation/manager/members_profile_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -54,7 +55,7 @@ class _MembersProfileCountryState extends State<MembersProfileCountry> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'الدولة',
+            AppLocalizations.of(context)!.country,
             style: AppTextStyles.font20LightOrangeMediumLamaSans.copyWith(
               color: Color(0xff2D2D2D),
             ),
@@ -94,7 +95,7 @@ class _MembersProfileCountryState extends State<MembersProfileCountry> {
                       Text(
                         selectedCountry.isNotEmpty
                             ? selectedCountry
-                            : 'اختر الدولة',
+                            : AppLocalizations.of(context)!.chooseCountry,
                         style: AppTextStyles.font18GreyRegularLamaSans.copyWith(
                             color: AppColors.darkSunray,
                             fontFamily: FontFamilyHelper.plexSansArabic),
@@ -123,7 +124,7 @@ class _MembersProfileCountryState extends State<MembersProfileCountry> {
         return AlertDialog(
           backgroundColor: Colors.white,
           title: Text(
-            'اختر الدولة',
+            AppLocalizations.of(context)!.chooseCountry,
             textAlign: TextAlign.center,
             style: AppTextStyles.font18GreyRegularLamaSans.copyWith(
                 color: AppColors.darkSunray,

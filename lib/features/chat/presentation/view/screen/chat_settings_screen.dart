@@ -395,14 +395,18 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             ),
             child: ProfileHeader(title: AppLocalizations.of(context)!.messageSettings),
           ),
-          Positioned(
-            top: 0,
-            left: -20,
-            child: Image.asset(
-              AppImages.starProfile,
-              width: 400.w,
-              height: 250.h,
-              fit: BoxFit.cover,
+          // Decorative background image above header but non-interactive
+          IgnorePointer(
+            ignoring: true,
+            child: Positioned(
+              top: 0,
+              left: -20,
+              child: Image.asset(
+                AppImages.starProfile,
+                width: 400.w,
+                height: 250.h,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ],

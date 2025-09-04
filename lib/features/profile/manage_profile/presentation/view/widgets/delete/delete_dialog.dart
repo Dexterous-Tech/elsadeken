@@ -130,6 +130,7 @@ Widget _deleteContent(BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.center,
+    textDirection: LocalizationService.instance.textDirection,
     children: [
       Image.asset(
         AppImages.warningLogo,

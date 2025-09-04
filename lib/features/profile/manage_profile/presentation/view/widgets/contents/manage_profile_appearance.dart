@@ -27,6 +27,7 @@ class ManageProfileAppearance extends StatelessWidget {
     return Column(
       textDirection: LocalizationService.instance.textDirection,
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         ManageProfileContentItem(
           title: AppLocalizations.of(context)!.weightKg,
