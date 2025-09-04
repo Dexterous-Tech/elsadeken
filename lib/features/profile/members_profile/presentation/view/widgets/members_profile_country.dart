@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
@@ -51,7 +52,7 @@ class _MembersProfileCountryState extends State<MembersProfileCountry> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.w),
       child: Row(
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(

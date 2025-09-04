@@ -1532,7 +1532,7 @@ abstract class AppLocalizations {
   /// No description provided for @onlineNow.
   ///
   /// In en, this message translates to:
-  /// **'Online Now'**
+  /// **'Online now'**
   String get onlineNow;
 
   /// No description provided for @offline.
@@ -3226,6 +3226,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Widow'**
   String get widow;
+
+  /// No description provided for @errorUpdatingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Error occurred while updating status'**
+  String get errorUpdatingStatus;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

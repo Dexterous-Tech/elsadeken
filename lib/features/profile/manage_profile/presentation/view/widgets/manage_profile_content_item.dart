@@ -2,6 +2,7 @@ import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ManageProfileContentItem extends StatelessWidget {
   const ManageProfileContentItem({
@@ -17,7 +18,7 @@ class ManageProfileContentItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       textDirection: LocalizationService.instance.textDirection,
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
           flex: 2,
@@ -29,7 +30,7 @@ class ManageProfileContentItem extends StatelessWidget {
             maxLines: 2,
           ),
         ),
-        SizedBox(width: 8),
+        SizedBox(width: 8.w),
         Expanded(
           flex: 3,
           child: itemContent,

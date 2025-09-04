@@ -734,7 +734,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectionStatusUpdatedSuccessfully => 'Connection status updated successfully';
 
   @override
-  String get onlineNow => 'Online Now';
+  String get onlineNow => 'Online now';
 
   @override
   String get offline => 'Offline';
@@ -1624,4 +1624,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get widow => 'Widow';
+
+  @override
+  String get errorUpdatingStatus => 'Error occurred while updating status';
 }

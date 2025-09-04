@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/profile/members_profile/presentation/manager/members_profile_cubit.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -77,8 +78,12 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
     final city = member.attribute?.city?.trim();
 
     final location = [
-      country?.isNotEmpty == true ? country : AppLocalizations.of(context)!.noDataAvailable,
-      city?.isNotEmpty == true ? city : AppLocalizations.of(context)!.noDataAvailable,
+      country?.isNotEmpty == true
+          ? country
+          : AppLocalizations.of(context)!.noDataAvailable,
+      city?.isNotEmpty == true
+          ? city
+          : AppLocalizations.of(context)!.noDataAvailable,
     ].join(' , ');
 
     return GestureDetector(
@@ -86,7 +91,8 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
         context.pushNamed(AppRoutes.profileDetailsScreen, arguments: member.id);
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
+        padding:
+            EdgeInsetsDirectional.symmetric(vertical: 10.h, horizontal: 8.w),
         decoration: BoxDecoration(
             color: AppColors.white,
             borderRadius: BorderRadius.circular(6).r,
@@ -98,7 +104,7 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
               ),
             ]),
         child: Row(
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
           children: [
             CircleAvatar(
               radius: 25.r,
@@ -113,7 +119,7 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
               flex: 2,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
                 children: [
                   Text(
                     member.name ?? '',
@@ -123,7 +129,7 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
                         .copyWith(color: Color(0xff7D7D7D)),
                   ),
                   Row(
-                    textDirection: TextDirection.rtl,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: [
                       Icon(
                         Icons.location_on,
@@ -135,7 +141,9 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
                           location,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.right,
+                          textAlign: LocalizationService.instance.textAlignment,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
                           style:
                               AppTextStyles.font13BlackMediumLamaSans.copyWith(
                             color: AppColors.black.withValues(

@@ -754,7 +754,10 @@
     "firstWife": "First wife",
     "secondWife": "Second wife",
     "onlyWife": "Only wife",
-    "noObjectionToPolygamy": "No objection to polygamy"
+    "noObjectionToPolygamy": "No objection to polygamy",
+    "errorUpdatingStatus": "Error occurred while updating status",
+    "onlineNow": "Online now",
+    "offline": "Offline"
 
 
 }

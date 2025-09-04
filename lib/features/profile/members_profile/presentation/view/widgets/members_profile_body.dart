@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/profile/members_profile/presentation/view/widgets/members_profile_country.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
@@ -15,8 +16,8 @@ class MembersProfileBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomProfileBody(
       contentBody: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        textDirection: TextDirection.rtl,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        textDirection: LocalizationService.instance.textDirection,
         children: [
           ProfileHeader(title: AppLocalizations.of(context)!.membersPhotos),
           verticalSpace(42),

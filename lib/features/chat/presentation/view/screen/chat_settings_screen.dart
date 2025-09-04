@@ -494,56 +494,54 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   }
 
   Widget _buildConnectionStatusSection() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            AppLocalizations.of(context)!.showOnlineStatus,
-            style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          AppLocalizations.of(context)!.showOnlineStatus,
+          style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
           ),
-          SizedBox(height: 16.h),
-          BlocBuilder<ChatOnlineSettingCubit, ChatOnlineSettingState>(
-            builder: (context, state) {
-              return Container(
-                // padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFfbecef).withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: _buildSettingRow(
-                  title: _isOnline
-                      ? AppLocalizations.of(context)!.onlineStatus
-                      : AppLocalizations.of(context)!.offlineStatus,
-                  subtitle: AppLocalizations.of(context)!.showOnlineStatus,
-                  showGreenDot: true,
-                  trailing: Transform.scale(
-                    scale: 0.8,
-                    child: Switch(
-                      value: _isOnline,
-                      onChanged: (value) {
-                        // Immediately update the UI
-                        setState(() {
-                          _isOnline = value;
-                        });
-                        // Call the cubit to update online status
-                        context.read<ChatOnlineSettingCubit>().setOnline();
-                      },
-                      activeColor: Colors.orangeAccent,
-                      activeTrackColor: Colors.black,
-                      inactiveThumbColor: Colors.red,
-                      inactiveTrackColor: Colors.white,
-                    ),
+        ),
+        SizedBox(height: 16.h),
+        BlocBuilder<ChatOnlineSettingCubit, ChatOnlineSettingState>(
+          builder: (context, state) {
+            return Container(
+              // padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFFfbecef).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: _buildSettingRow(
+                title: _isOnline
+                    ? AppLocalizations.of(context)!.onlineStatus
+                    : AppLocalizations.of(context)!.offlineStatus,
+                subtitle: AppLocalizations.of(context)!.showOnlineStatus,
+                showGreenDot: true,
+                trailing: Transform.scale(
+                  scale: 0.8,
+                  child: Switch(
+                    value: _isOnline,
+                    onChanged: (value) {
+                      // Immediately update the UI
+                      setState(() {
+                        _isOnline = value;
+                      });
+                      // Call the cubit to update online status
+                      context.read<ChatOnlineSettingCubit>().setOnline();
+                    },
+                    activeColor: Colors.orangeAccent,
+                    activeTrackColor: Colors.black,
+                    inactiveThumbColor: Colors.red,
+                    inactiveTrackColor: Colors.white,
                   ),
                 ),
-              );
-            },
-          )
-        ],
-      ),
+              ),
+            );
+          },
+        )
+      ],
     );
   }
 

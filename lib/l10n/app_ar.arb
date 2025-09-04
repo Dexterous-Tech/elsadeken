@@ -752,6 +752,9 @@
     "firstWife": "زوجة اولي",
     "secondWife": "زوجة ثانية",
     "onlyWife": "الزوجة الوحيدة",
-    "noObjectionToPolygamy": "لا مانع من تعدل الزوجات"
+    "noObjectionToPolygamy": "لا مانع من تعدل الزوجات",
+    "errorUpdatingStatus": "حدث خطأ اثناء تحديث الحالة",
+    "onlineNow": "متصل الآن",
+    "offline": "غير متصل"
 
 }

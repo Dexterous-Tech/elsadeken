@@ -1625,4 +1625,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get widow => 'أرملة';
+
+  @override
+  String get errorUpdatingStatus => 'حدث خطأ اثناء تحديث الحالة';
 }

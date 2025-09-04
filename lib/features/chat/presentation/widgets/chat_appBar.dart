@@ -1,12 +1,14 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
-import 'package:elsadeken/features/chat/presentation/manager/chat_online_setting_cubit/chat_online_setting_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
 
 import '../../../../core/di/injection_container.dart';
+import '../manager/chat_messages/cubit/chat_messages_state.dart';
 
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String chatRoomId;
@@ -33,19 +35,22 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: const Color(0xfffef6ee),
       elevation: 0,
       leading: CustomArrowBack(onPressed: onBack),
-      title: BlocProvider<ChatOnlineSettingCubit>(
-        create: (context) => sl<ChatOnlineSettingCubit>()..getOnline(),
+      title: BlocProvider<ChatMessagesCubit>(
+        create: (context) =>
+            sl<ChatMessagesCubit>()..getChatMessages(chatRoomId),
         child: Builder(builder: (context) {
           return Row(
             children: [
               GestureDetector(
-                onTap: receiverId != null ? () {
-                  Navigator.pushNamed(
-                    context,
-                    AppRoutes.profileDetailsScreen,
-                    arguments: receiverId!,
-                  );
-                } : null,
+                onTap: receiverId != null
+                    ? () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.profileDetailsScreen,
+                          arguments: receiverId!,
+                        );
+                      }
+                    : null,
                 child: CircleAvatar(
                   radius: 20,
                   backgroundImage: NetworkImage(chatRoomImage),
@@ -68,23 +73,20 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                       Row(
                         textDirection: TextDirection.rtl,
                         children: [
-                          BlocBuilder<ChatOnlineSettingCubit,
-                              ChatOnlineSettingState>(
+                          BlocBuilder<ChatMessagesCubit, ChatMessagesState>(
                             buildWhen: (previous, current) =>
-                                current is ChatOnlineSettingGetSuccess ||
-                                current is ChatOnlineSettingGetFailure ||
-                                current is ChatOnlineSettingGetLoading,
+                                current is ChatMessagesLoaded ||
+                                current is ChatMessagesError ||
+                                current is ChatMessagesLoading,
                             builder: (context, state) {
-                              if (state is ChatOnlineSettingGetSuccess) {
-                                final status = state.chatOnlineSettingModel.data
-                                        ?.enableOnline ==
-                                    1;
+                              if (state is ChatMessagesLoaded) {
+                                final status = state.chatMessages.isOnline;
                                 return Container(
                                   width: 6,
                                   height: 6,
                                   decoration: BoxDecoration(
                                     color: status
-                                        ? AppColors.primaryOrange
+                                        ? AppColors.green
                                         : AppColors.red,
                                     shape: BoxShape.circle,
                                   ),
@@ -102,31 +104,31 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                             },
                           ),
                           const SizedBox(width: 4),
-                          BlocBuilder<ChatOnlineSettingCubit,
-                              ChatOnlineSettingState>(
+                          BlocBuilder<ChatMessagesCubit, ChatMessagesState>(
                             buildWhen: (previous, current) =>
-                                current is ChatOnlineSettingGetSuccess ||
-                                current is ChatOnlineSettingGetFailure ||
-                                current is ChatOnlineSettingGetLoading,
+                                current is ChatMessagesLoaded ||
+                                current is ChatMessagesError ||
+                                current is ChatMessagesLoading,
                             builder: (context, state) {
-                              if (state is ChatOnlineSettingGetFailure) {
+                              if (state is ChatMessagesError) {
                                 return Text(
-                                  'حدث خطأ اثناء تحديث الحالة',
+                                  AppLocalizations.of(context)!
+                                      .errorUpdatingStatus,
                                   style: TextStyle(
                                     color: Colors.red,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 );
-                              } else if (state is ChatOnlineSettingGetSuccess) {
-                                final status = state.chatOnlineSettingModel.data
-                                        ?.enableOnline ==
-                                    1;
+                              } else if (state is ChatMessagesLoaded) {
+                                final status = state.chatMessages.isOnline;
                                 return Text(
-                                  status ? 'متصل الآن' : 'غير متصل',
+                                  status
+                                      ? AppLocalizations.of(context)!.onlineNow
+                                      : AppLocalizations.of(context)!.offline,
                                   style: TextStyle(
                                     color: status
-                                        ? AppColors.primaryOrange
+                                        ? AppColors.green
                                         : AppColors.red,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
