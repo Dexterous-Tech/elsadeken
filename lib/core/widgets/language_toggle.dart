@@ -1,4 +1,6 @@
+import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../services/localization_service.dart';
 import '../helper/localization_helper.dart';
 
@@ -14,7 +16,7 @@ class LanguageToggle extends StatelessWidget {
         final isArabic = localizationService.isArabic;
 
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric( vertical: 8),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
@@ -29,6 +31,8 @@ class LanguageToggle extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: [
+              Image.asset('assets/images/icons/globe.png',width: 44.w, height: 44.h),
+              SizedBox(width: 16.w,),
               Text(
                 LocalizationHelper.getLocalizedText('اللغة', 'Language'),
                 style: const TextStyle(
@@ -38,23 +42,34 @@ class LanguageToggle extends StatelessWidget {
                 ),
               ),
               Spacer(),
-              _buildLanguageOption(
-                context,
-                'عربي',
-                'AR',
-                'ar',
-                isArabic,
-                localizationService,
-              ),
-              const SizedBox(width: 4),
-              _buildLanguageOption(
-                context,
-                'EN',
-                'EN',
-                'en',
-                !isArabic,
-                localizationService,
-              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadiusGeometry.circular(8),
+                  color: AppColors.lavenderBlush,
+
+                ),
+                child: Row(
+                  children: [
+                    _buildLanguageOption(
+                      context,
+                      'ع',
+                      'AR',
+                      'ar',
+                      isArabic,
+                      localizationService,
+                    ),
+                    const SizedBox(width: 4),
+                    _buildLanguageOption(
+                      context,
+                      'EN',
+                      'EN',
+                      'en',
+                      !isArabic,
+                      localizationService,
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         );
@@ -81,17 +96,14 @@ class LanguageToggle extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue : Colors.grey[100],
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(
-            color: isSelected ? Colors.blue : Colors.grey[300]!,
-            width: 1,
-          ),
+          color: isSelected ? AppColors.philippineBronze : AppColors.lavenderBlush,
+          borderRadius: BorderRadius.circular(15),
+
         ),
         child: Text(
           LocalizationHelper.getLocalizedText(arabicText, englishText),
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.grey[700],
+            color: isSelected ? Colors.orangeAccent : Colors.orangeAccent,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             fontSize: 12,
           ),
