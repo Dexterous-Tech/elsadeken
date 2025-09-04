@@ -1053,6 +1053,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dontSay => 'أفضل الا اقول';
 
   @override
+  String get irreligiousFemale => 'غير متدينة';
+
+  @override
+  String get littleReligiousFemale => 'متدينة قليلاً';
+
+  @override
+  String get religiousFemale => 'متدينة';
+
+  @override
+  String get muchReligiousFemale => 'متدينة كثيراً';
+
+  @override
   String get prayAlways => 'اصلي دائما';
 
   @override

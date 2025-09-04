@@ -1052,6 +1052,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dontSay => 'Prefer not to say';
 
   @override
+  String get irreligiousFemale => 'Not religious';
+
+  @override
+  String get littleReligiousFemale => 'A little religious';
+
+  @override
+  String get religiousFemale => 'Religious';
+
+  @override
+  String get muchReligiousFemale => 'Very religious';
+
+  @override
   String get prayAlways => 'I always pray';
 
   @override

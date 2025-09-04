@@ -436,7 +436,10 @@
   "religious": "Religious",
   "muchReligious": "Very religious",
   "dontSay": "Prefer not to say",
-  
+   "irreligiousFemale": "Not religious",
+      "littleReligiousFemale": "A little religious",
+      "religiousFemale": "Religious",
+      "muchReligiousFemale": "Very religious",
   "prayAlways": "I always pray",
   "prayMostTimes": "I pray most of the time",
   "praySometimes": "I pray sometimes",

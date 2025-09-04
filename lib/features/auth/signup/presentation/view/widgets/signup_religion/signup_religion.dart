@@ -14,10 +14,12 @@ class SignupReligion extends StatefulWidget {
     super.key,
     required this.onNextPressed,
     required this.onPreviousPressed,
+    required this.gender,
   });
 
   final void Function() onNextPressed;
   final void Function() onPreviousPressed;
+  final String gender;
 
   @override
   State<SignupReligion> createState() => _SignupReligionState();
@@ -25,13 +27,23 @@ class SignupReligion extends StatefulWidget {
 
 class _SignupReligionState extends State<SignupReligion> {
   Map<String, String> religionOptions(BuildContext context) {
-    return {
-      'irreligious': AppLocalizations.of(context)!.irreligious,
-      'little_religious': AppLocalizations.of(context)!.littleReligious,
-      'religious': AppLocalizations.of(context)!.religious,
-      'much_religious': AppLocalizations.of(context)!.muchReligious,
-      'dont_say': AppLocalizations.of(context)!.dontSay,
-    };
+    if (widget.gender == 'male' || widget.gender == 'ّذكر') {
+      return {
+        'irreligious': AppLocalizations.of(context)!.irreligious,
+        'little_religious': AppLocalizations.of(context)!.littleReligious,
+        'religious': AppLocalizations.of(context)!.religious,
+        'much_religious': AppLocalizations.of(context)!.muchReligious,
+        'dont_say': AppLocalizations.of(context)!.dontSay,
+      };
+    } else {
+      return {
+        'irreligious': '',
+        'little_religious': AppLocalizations.of(context)!.littleReligiousFemale,
+        'religious': AppLocalizations.of(context)!.religiousFemale,
+        'much_religious': AppLocalizations.of(context)!.muchReligiousFemale,
+        'dont_say': AppLocalizations.of(context)!.dontSay,
+      };
+    }
   }
 
   Map<String, String> prayerOptions(BuildContext context) {

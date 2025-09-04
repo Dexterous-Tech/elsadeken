@@ -435,6 +435,10 @@
   "religious": "متدين",
   "muchReligious": "متدين كثيراً",
   "dontSay": "أفضل ألا أقول",
+  "irreligiousFemale": "غير متدينة",
+    "littleReligiousFemale": "متدينة قليلاً",
+    "religiousFemale": "متدينة",
+    "muchReligiousFemale": "متدينة كثيراً",
   
   "prayAlways": "أصلي دائماً",
   "prayMostTimes": "أصلي أغلب الأوقات",

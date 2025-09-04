@@ -198,6 +198,7 @@ class _SignupPageViewState extends State<SignupPageView>
         );
       case 8:
         return SignupReligion(
+          gender: widget.gender,
           key: const ValueKey(8),
           onNextPressed: () {
             FocusScope.of(context).unfocus();

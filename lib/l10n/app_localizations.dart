@@ -2123,6 +2123,30 @@ abstract class AppLocalizations {
   /// **'Prefer not to say'**
   String get dontSay;
 
+  /// No description provided for @irreligiousFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Not religious'**
+  String get irreligiousFemale;
+
+  /// No description provided for @littleReligiousFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'A little religious'**
+  String get littleReligiousFemale;
+
+  /// No description provided for @religiousFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Religious'**
+  String get religiousFemale;
+
+  /// No description provided for @muchReligiousFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Very religious'**
+  String get muchReligiousFemale;
+
   /// No description provided for @prayAlways.
   ///
   /// In en, this message translates to:
