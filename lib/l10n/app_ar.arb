@@ -767,6 +767,8 @@
     "writeYourMessage": "اكتب رسالتك",
     "pleaseEnterMessageContent": "يرجى إدخال محتوى الرسالة",
     "messageMustBeMoreThan10Chars": "يجب أن تكون الرسالة أكثر من 10 أحرف",
-    "send": "ارســــــــل"
+    "send": "ارســــــــل",
+        "chatSetting" : "اعدادات الرسائل"
+
 
 }

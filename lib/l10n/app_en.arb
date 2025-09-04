@@ -769,7 +769,8 @@
     "writeYourMessage": "Write your message",
     "pleaseEnterMessageContent": "Please enter the message content",
     "messageMustBeMoreThan10Chars": "Message must be more than 10 characters",
-    "send": "Send"
+    "send": "Send",
+    "chatSetting" : "Chat Settings"
 
 
 }

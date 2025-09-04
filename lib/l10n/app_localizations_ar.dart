@@ -1658,4 +1658,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get send => 'ارســــــــل';
+
+  @override
+  String get chatSetting => 'اعدادات الرسائل';
 }

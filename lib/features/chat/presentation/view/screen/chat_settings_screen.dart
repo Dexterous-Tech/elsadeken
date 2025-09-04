@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/chat/data/models/chat_settings_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_settings_request_model.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/chat_settings_cubit.dart';
@@ -140,243 +141,230 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     return Directionality(
       textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
-        appBar: _buildAppBar(),
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: MultiBlocListener(
-            listeners: [
-              BlocListener<ChatSettingsCubit, ChatSettingsState>(
-                listener: (context, state) {
-                  print(
-                      '[ChatSettingsScreen] ChatSettingsCubit state changed to: ${state.runtimeType}');
-
-                  if (state is ChatSettingsLoaded && mounted) {
-                    print(
-                        '[ChatSettingsScreen] Settings loaded: ID=${state.chatSettings.id}, fromAge=${state.chatSettings.fromAge}, toAge=${state.chatSettings.toAge}');
-                    _loadSettingsFromApi(state.chatSettings);
-                    setState(() {});
-
-                    // Show loading success message (optional - can be removed if not needed)
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          AppLocalizations.of(context)!
-                              .settingsLoadedSuccessfully,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.blue,
-                        duration: const Duration(seconds: 2),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-                  } else if (state is ChatSettingsUpdated && mounted) {
-                    // Update original values to reflect the successful update
-                    _originalFromAge = _fromAge;
-                    _originalToAge = _toAge;
-                    _originalNationalityId = _nationalityId;
-                    _originalCountryId = _countryId;
-
-                    // Show success snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          state.message,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.green,
-                        duration: const Duration(seconds: 3),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-
-                    // Trigger UI update to reflect the new "no changes" state
-                    setState(() {});
-                  } else if (state is ChatSettingsUpdateError && mounted) {
-                    // Show error snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          state.message,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.red,
-                        duration: const Duration(seconds: 4),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-                  } else if (state is ChatSettingsError && mounted) {
-                    // Show loading error snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          state.message,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.red,
-                        duration: const Duration(seconds: 4),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-                  }
-                },
-                listenWhen: (previous, current) {
-                  // Always listen to state changes
-                  return true;
-                },
+        // appBar: _buildAppBar(),
+        backgroundColor: Colors.white,
+        body: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Positioned(
+              top: -10,
+              left: -20,
+              child: Image.asset(
+                AppImages.starProfile,
+                width: 488.w,
+                height: 325.h,
               ),
-              BlocListener<ListsCubit, ListsState>(
-                listener: (context, state) {
-                  if (state is ListsLoaded && mounted) {
-                    // Lists loaded, update the UI text
-                    setState(() {
-                      _updateNationalitiesText();
-                      _updateCountriesText();
-                    });
-                  }
-                },
-              ),
-              BlocListener<ChatOnlineSettingCubit, ChatOnlineSettingState>(
-                listener: (context, state) {
-                  if (state is ChatOnlineSettingGetSuccess && mounted) {
-                    // Update online status based on API response
-                    setState(() {
-                      _isOnline =
-                          state.chatOnlineSettingModel.data?.enableOnline == 1;
-                    });
-                  } else if (state is ChatOnlineSettingSetSuccess && mounted) {
-                    // Show success message when online status is updated
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          AppLocalizations.of(context)!
-                              .connectionStatusUpdatedSuccessfully,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.green,
-                        duration: const Duration(seconds: 2),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-                    // Refresh the online status after setting
-                    context.read<ChatOnlineSettingCubit>().getOnline();
-                  } else if (state is ChatOnlineSettingGetFailure && mounted) {
-                    // Show error message when getting online status fails
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          state.error,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.red,
-                        duration: const Duration(seconds: 4),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-                  } else if (state is ChatOnlineSettingSetFailure && mounted) {
-                    // Show error message when setting online status fails
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          state.error,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.red,
-                        duration: const Duration(seconds: 4),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ],
-            child: BlocBuilder<ChatSettingsCubit, ChatSettingsState>(
-              builder: (context, state) {
-                return Stack(
-                  children: [
-                    // Background image should be behind content
-                    /* Positioned(
-                    top: 100.h,
-                    right: -100.w,
-                    child: _buildBackgroundImage(),
-                  ),*/
-                    // Fallback background decoration
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: Container(
-                        width: 300.w,
-                        height: 300.h,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFF0F0).withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(150),
-                        ),
-                      ),
-                    ),
-                    // Content should be on top and interactive
-                    Column(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              image: DecorationImage(
-                                image: AssetImage(
-                                  'assets/images/chat/mail 1.png',
-                                ),
+            ),
+            SafeArea(
+              child: MultiBlocListener(
+                listeners: [
+                  BlocListener<ChatSettingsCubit, ChatSettingsState>(
+                    listener: (context, state) {
+                      print(
+                          '[ChatSettingsScreen] ChatSettingsCubit state changed to: ${state.runtimeType}');
+
+                      if (state is ChatSettingsLoaded && mounted) {
+                        print(
+                            '[ChatSettingsScreen] Settings loaded: ID=${state.chatSettings.id}, fromAge=${state.chatSettings.fromAge}, toAge=${state.chatSettings.toAge}');
+                        _loadSettingsFromApi(state.chatSettings);
+                        setState(() {});
+
+                        // Show loading success message (optional - can be removed if not needed)
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              AppLocalizations.of(context)!
+                                  .settingsLoadedSuccessfully,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                            child: _buildBody(state),
+                            backgroundColor: Colors.blue,
+                            duration: const Duration(seconds: 2),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        );
+                      } else if (state is ChatSettingsUpdated && mounted) {
+                        // Update original values to reflect the successful update
+                        _originalFromAge = _fromAge;
+                        _originalToAge = _toAge;
+                        _originalNationalityId = _nationalityId;
+                        _originalCountryId = _countryId;
+
+                        // Show success snackbar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              state.message,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            backgroundColor: Colors.green,
+                            duration: const Duration(seconds: 3),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        );
+
+                        // Trigger UI update to reflect the new "no changes" state
+                        setState(() {});
+                      } else if (state is ChatSettingsUpdateError && mounted) {
+                        // Show error snackbar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              state.message,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 4),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        );
+                      } else if (state is ChatSettingsError && mounted) {
+                        // Show loading error snackbar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              state.message,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 4),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    listenWhen: (previous, current) {
+                      // Always listen to state changes
+                      return true;
+                    },
+                  ),
+                  BlocListener<ListsCubit, ListsState>(
+                    listener: (context, state) {
+                      if (state is ListsLoaded && mounted) {
+                        // Lists loaded, update the UI text
+                        setState(() {
+                          _updateNationalitiesText();
+                          _updateCountriesText();
+                        });
+                      }
+                    },
+                  ),
+                  BlocListener<ChatOnlineSettingCubit, ChatOnlineSettingState>(
+                    listener: (context, state) {
+                      if (state is ChatOnlineSettingGetSuccess && mounted) {
+                        // Update online status based on API response
+                        setState(() {
+                          _isOnline =
+                              state.chatOnlineSettingModel.data?.enableOnline ==
+                                  1;
+                        });
+                      } else if (state is ChatOnlineSettingSetSuccess &&
+                          mounted) {
+                        // Show success message when online status is updated
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              AppLocalizations.of(context)!
+                                  .connectionStatusUpdatedSuccessfully,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            backgroundColor: Colors.green,
+                            duration: const Duration(seconds: 2),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        );
+                        // Refresh the online status after setting
+                        context.read<ChatOnlineSettingCubit>().getOnline();
+                      } else if (state is ChatOnlineSettingGetFailure &&
+                          mounted) {
+                        // Show error message when getting online status fails
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              state.error,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 4),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        );
+                      } else if (state is ChatOnlineSettingSetFailure &&
+                          mounted) {
+                        // Show error message when setting online status fails
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              state.error,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 4),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ],
+                child: BlocBuilder<ChatSettingsCubit, ChatSettingsState>(
+                  builder: (context, state) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                            'assets/images/chat/mail 1.png',
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                );
-              },
+                      ),
+                      child: _buildBody(state),
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -473,6 +461,12 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+          padding: EdgeInsets.all(20.w),
+          child:
+              ProfileHeader(title: AppLocalizations.of(context)!.chatSetting),
+        ),
+        verticalSpace(32),
         Padding(
           padding: EdgeInsets.all(20.w),
           child: Column(
