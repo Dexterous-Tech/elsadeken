@@ -110,6 +110,7 @@ class ChatRoomItem extends StatelessWidget {
                   TimeFormatter.formatChatTime(
                     DateTime.tryParse(chat.lastMessage?.createdAt ?? '') ??
                         DateTime.now(),
+                    context,
                   ),
                   style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                     fontSize: 12.sp,
