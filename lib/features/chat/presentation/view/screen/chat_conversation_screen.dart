@@ -505,6 +505,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           chatRoomId: widget.chatRoom.id,
           chatRoomName: widget.chatRoom.name,
           chatRoomImage: widget.chatRoom.image,
+          receiverId: widget.chatRoom.receiverId,
           onBack: () {
             // Stop auto-refresh when navigating back using stored cubit reference
             if (!widget.chatRoom.id.startsWith('temp_') &&
