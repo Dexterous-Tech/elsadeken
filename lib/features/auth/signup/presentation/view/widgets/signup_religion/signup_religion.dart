@@ -37,7 +37,7 @@ class _SignupReligionState extends State<SignupReligion> {
       };
     } else {
       return {
-        'irreligious': '',
+        'irreligious': AppLocalizations.of(context)!.irreligiousFemale,
         'little_religious': AppLocalizations.of(context)!.littleReligiousFemale,
         'religious': AppLocalizations.of(context)!.religiousFemale,
         'much_religious': AppLocalizations.of(context)!.muchReligiousFemale,
