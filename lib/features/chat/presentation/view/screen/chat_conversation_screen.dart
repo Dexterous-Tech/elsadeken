@@ -505,6 +505,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           chatRoomId: widget.chatRoom.id,
           chatRoomName: widget.chatRoom.name,
           chatRoomImage: widget.chatRoom.image,
+          receiverId: widget.chatRoom.receiverId,
           onBack: () {
             // Stop auto-refresh when navigating back using stored cubit reference
             if (!widget.chatRoom.id.startsWith('temp_') &&
@@ -772,20 +773,33 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
             child: ListView.builder(
               controller: _scrollController,
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              itemCount: _messages.length + 1,
+              itemCount: _messages.length,
               itemBuilder: (context, index) {
-                if (index == 0) {
-                  return _buildDaySeparator();
-                }
-
-                final messageIndex = index - 1;
-                final message = _messages[messageIndex];
+                final message = _messages[index];
                 final isCurrentUser =
                     message.senderId == _currentUserId.toString();
 
-                return ChatMessageBubble(
-                  message: message,
-                  isCurrentUser: isCurrentUser,
+                // Insert a day separator when the day changes or for the first message
+                final bool showDaySeparator;
+                if (index == 0) {
+                  showDaySeparator = true;
+                } else {
+                  final prev = _messages[index - 1].timestamp;
+                  final curr = message.timestamp;
+                  showDaySeparator =
+                      prev.year != curr.year ||
+                      prev.month != curr.month ||
+                      prev.day != curr.day;
+                }
+
+                return Column(
+                  children: [
+                    if (showDaySeparator) _buildDaySeparatorFor(message.timestamp),
+                    ChatMessageBubble(
+                      message: message,
+                      isCurrentUser: isCurrentUser,
+                    ),
+                  ],
                 );
               },
             ),
@@ -795,7 +809,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     );
   }
 
-  Widget _buildDaySeparator() {
+  Widget _buildDaySeparatorFor(DateTime date) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 16.h),
       child: Row(
@@ -814,7 +828,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Text(
-                _getCurrentDayText(),
+                _formatDayLabel(date),
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontSize: 17.sp,
@@ -835,36 +849,24 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     );
   }
 
-  String _getCurrentDayText() {
-    final now = DateTime.now();
+  String _formatDayLabel(DateTime date) {
     final today = DateTime.now();
+    final isSameDay =
+        date.year == today.year && date.month == today.month && date.day == today.day;
     final yesterday = today.subtract(const Duration(days: 1));
+    final isYesterday =
+        date.year == yesterday.year && date.month == yesterday.month && date.day == yesterday.day;
 
-    if (now.year == today.year &&
-        now.month == today.month &&
-        now.day == today.day) {
-      return 'اليوم';
-    } else if (now.year == yesterday.year &&
-        now.month == yesterday.month &&
-        now.day == yesterday.day) {
-      return 'أمس';
-    } else {
-      final months = [
-        'يناير',
-        'فبراير',
-        'مارس',
-        'أبريل',
-        'مايو',
-        'يونيو',
-        'يوليو',
-        'أغسطس',
-        'سبتمبر',
-        'أكتوبر',
-        'نوفمبر',
-        'ديسمبر'
-      ];
-      return '${now.day} ${months[now.month - 1]}';
+    if (isSameDay) {
+      return AppLocalizations.of(context)!.today;
     }
+    if (isYesterday) {
+      // Fallback to explicit Arabic if yesterday key is missing; otherwise add when available
+      return AppLocalizations.of(context)!.oneDayAgo;
+    }
+
+    // Format as localized date string (e.g., 12 Oct)
+    return MaterialLocalizations.of(context).formatMediumDate(date);
   }
 
   Widget _buildMessageInput() {

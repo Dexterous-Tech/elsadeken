@@ -4,6 +4,7 @@ import 'package:elsadeken/features/chat/presentation/manager/chat_online_setting
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/core/routes/app_routes.dart';
 
 import '../../../../core/di/injection_container.dart';
 
@@ -11,6 +12,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String chatRoomId;
   final String chatRoomName;
   final String chatRoomImage;
+  final int? receiverId;
   final VoidCallback onBack;
 
   const ChatAppBar({
@@ -18,6 +20,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.chatRoomId,
     required this.chatRoomName,
     required this.chatRoomImage,
+    this.receiverId,
     required this.onBack,
   });
 
@@ -35,9 +38,18 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Builder(builder: (context) {
           return Row(
             children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(chatRoomImage),
+              GestureDetector(
+                onTap: receiverId != null ? () {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.profileDetailsScreen,
+                    arguments: receiverId!,
+                  );
+                } : null,
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(chatRoomImage),
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(

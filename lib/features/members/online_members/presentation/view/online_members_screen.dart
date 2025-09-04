@@ -171,7 +171,7 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
     )..fetch();
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
@@ -236,6 +236,9 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                               ),
                               SizedBox(width: 20),
                               Row(
+                                textDirection:
+                                LocalizationService.instance.textDirection,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   GestureDetector(
                                     onTap: () async {
