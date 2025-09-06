@@ -61,52 +61,84 @@ Future<void> oathDialog({
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          AppLocalizations.of(context)!.greetingSalam,
+                        RichText(
                           textAlign: TextAlign.center,
                           textDirection:
                               LocalizationService.instance.textDirection,
-                          style: AppTextStyles.font22BistreSemiBoldLamaSans,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text:
+                                    AppLocalizations.of(context)!.greetingSalam,
+                                style: AppTextStyles
+                                    .font22BistreSemiBoldLamaSans
+                                    .copyWith(fontSize: 25.sp),
+                              ),
+                            ],
+                          ),
                         ),
                         // verticalSpace(6),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-                          child: Text(
-                            AppLocalizations.of(context)!.freeRegistration,
+                          child: RichText(
                             textDirection:
                                 LocalizationService.instance.textDirection,
                             textAlign: TextAlign.center,
-                            style: AppTextStyles.font15BistreSemiBoldLamaSans
-                                .copyWith(fontWeight: FontWeightHelper.medium),
+                            text: TextSpan(children: [
+                              TextSpan(
+                                text: AppLocalizations.of(context)!
+                                    .freeRegistration,
+                                style: AppTextStyles
+                                    .font15BistreSemiBoldLamaSans
+                                    .copyWith(
+                                        fontWeight: FontWeightHelper.medium,
+                                        fontSize: 18.sp),
+                              ),
+                            ]),
                           ),
                         ),
                         verticalSpace(48),
-                        Text(
-                          AppLocalizations.of(context)!.oathFormat,
-                          style: AppTextStyles.font15BistreSemiBoldLamaSans
-                              .copyWith(color: AppColors.black),
+                        RichText(
+                            textAlign: TextAlign.center,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
+                            text: TextSpan(children: [
+                              TextSpan(
+                                text: AppLocalizations.of(context)!.oathFormat,
+                                style: AppTextStyles
+                                    .font15BistreSemiBoldLamaSans
+                                    .copyWith(
+                                        color: AppColors.black,
+                                        fontSize: 18.sp),
+                              ),
+                            ])),
+                        RichText(
                           textAlign: TextAlign.center,
                           textDirection:
                               LocalizationService.instance.textDirection,
-                        ),
-                        Text(
-                          '\n\n«أقسم بالله العظيم أنني سجلت في هذا التطبيق زواجًا شرعيًا، وأن قصدي جاد وصادق في بناء أسرة قائمة على المودة والرحمة، وفقًا لأحكام الشريعة الإسلامية.',
-                          style: AppTextStyles.font15BistreSemiBoldLamaSans
-                              .copyWith(color: AppColors.black),
-                          textAlign: TextAlign.center,
-                          textDirection:
-                              LocalizationService.instance.textDirection,
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text:
+                                  '\n\n«أقسم بالله العظيم أنني سجلت في هذا التطبيق زواجًا شرعيًا، وأن قصدي جاد وصادق في بناء أسرة قائمة على المودة والرحمة، وفقًا لأحكام الشريعة الإسلامية.',
+                              style: AppTextStyles.font15BistreSemiBoldLamaSans
+                                  .copyWith(
+                                      color: AppColors.black, fontSize: 18.sp),
+                            ),
+                          ]),
                         ),
                         RichText(
                           textAlign: TextAlign.center,
                           textDirection:
                               LocalizationService.instance.textDirection,
                           text: TextSpan(
-                            style: AppTextStyles.font15BistreSemiBoldLamaSans
-                                .copyWith(color: AppColors.black),
                             children: [
-                              const TextSpan(
+                              TextSpan(
                                 text: '\n\nوأتعهد بالالتزام الكامل ',
+                                style: AppTextStyles
+                                    .font15BistreSemiBoldLamaSans
+                                    .copyWith(
+                                        color: AppColors.black,
+                                        fontSize: 18.sp),
                               ),
                               TextSpan(
                                 text: 'بشروط وقوانين',
@@ -122,7 +154,12 @@ Future<void> oathDialog({
                                         AppRoutes.termsAndConditionsScreen);
                                   },
                               ),
-                              const TextSpan(
+                              TextSpan(
+                                style: AppTextStyles
+                                    .font15BistreSemiBoldLamaSans
+                                    .copyWith(
+                                        color: AppColors.black,
+                                        fontSize: 18.sp),
                                 text:
                                     ' هذا التطبيق، وعدم استخدامه لأي غرض يسيء للدين أو الأخلاق أو يخالف ما وضع له من أهداف، والله على ما أقول شهيد.».',
                               ),
