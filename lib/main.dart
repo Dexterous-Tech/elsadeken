@@ -3,6 +3,7 @@ import 'package:elsadeken/core/routes/app_routing.dart';
 import 'package:elsadeken/core/services/firebase_notification_service.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/di/injection_container.dart';
 import 'core/routes/app_routes.dart';
@@ -14,6 +15,11 @@ import 'l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Lock orientation to portrait only
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   // Initialize dependencies first
   await initializeDependencies();
   await sl.allReady();
