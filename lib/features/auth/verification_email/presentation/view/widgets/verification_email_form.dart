@@ -25,8 +25,7 @@ class VerificationEmailForm extends StatelessWidget {
     return Form(
       key: cubit.formKey,
       child: Column(
-        crossAxisAlignment:
-            LocalizationService.instance.startCrossAxisAlignment,
+        crossAxisAlignment: CrossAxisAlignment.start,
         textDirection: LocalizationService.instance.textDirection,
         children: [
           Text(
