@@ -47,6 +47,8 @@ class NotificationListWidget extends StatelessWidget {
                 padding: EdgeInsets.all(16.w),
                 child: Center(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: [
                       CircularProgressIndicator(
                         color: Colors.deepOrange,

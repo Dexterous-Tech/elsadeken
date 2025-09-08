@@ -41,8 +41,7 @@ class NotificationScreen extends StatelessWidget {
             SafeArea(
               child: Column(
                 textDirection: LocalizationService.instance.textDirection,
-                crossAxisAlignment:
-                    LocalizationService.instance.startCrossAxisAlignment,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
                     padding:
@@ -65,7 +64,9 @@ class NotificationScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8).r)),
                             child: Center(
                               child: Transform.rotate(
-                                angle: 3.1,
+                                angle: LocalizationService.instance.isArabic
+                                    ? 0
+                                    : 3.14,
                                 child: Image.asset(
                                   AppImages.authArrowBack,
                                   width: 14.w,

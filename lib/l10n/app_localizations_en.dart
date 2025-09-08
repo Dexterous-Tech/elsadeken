@@ -1672,4 +1672,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatSetting => 'Chat Settings';
+
+  @override
+  String get beardTitle => 'Beard';
+
+  @override
+  String get hijabTitle => 'Hijab';
+
+  @override
+  String get prayerTitle => 'Prayer';
 }

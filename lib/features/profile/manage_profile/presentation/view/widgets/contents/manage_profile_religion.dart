@@ -30,13 +30,14 @@ class ManageProfileReligion extends StatelessWidget {
         ManageProfileContentItem(
           title: AppLocalizations.of(context)!.religiousCommitment,
           itemContent: ManageProfileContentText(
-            text: _mapReligionToDisplay(context, profileData?.attribute?.religiousCommitment),
+            text: _mapReligionToDisplay(
+                context, profileData?.attribute?.religiousCommitment),
             isLoading: isLoading,
           ),
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: AppLocalizations.of(context)!.prayer,
+          title: AppLocalizations.of(context)!.prayerTitle,
           itemContent: ManageProfileContentText(
             text: _mapPrayerToDisplay(context, profileData?.attribute?.prayer),
             isLoading: isLoading,
@@ -46,7 +47,8 @@ class ManageProfileReligion extends StatelessWidget {
         ManageProfileContentItem(
           title: AppLocalizations.of(context)!.smoking,
           itemContent: ManageProfileContentText(
-            text: _getSmokingDisplayValue(context, profileData?.attribute?.smoking),
+            text: _getSmokingDisplayValue(
+                context, profileData?.attribute?.smoking),
             isLoading: isLoading,
           ),
         ),
@@ -54,7 +56,7 @@ class ManageProfileReligion extends StatelessWidget {
         // Show beard for males only
         if (profileData?.gender == 'male' || profileData?.gender == 'ذكر')
           ManageProfileContentItem(
-            title: AppLocalizations.of(context)!.beard,
+            title: AppLocalizations.of(context)!.beardTitle,
             itemContent: ManageProfileContentText(
               text: _mapBeardToDisplay(context, profileData?.attribute?.beard),
               isLoading: isLoading,
@@ -63,7 +65,7 @@ class ManageProfileReligion extends StatelessWidget {
         // Show hijab for females only
         if (profileData?.gender != 'male' && profileData?.gender != 'ذكر')
           ManageProfileContentItem(
-            title: AppLocalizations.of(context)!.hijab,
+            title: AppLocalizations.of(context)!.hijabTitle,
             itemContent: ManageProfileContentText(
               text: _mapHijabToDisplay(context, profileData?.attribute?.hijab),
               isLoading: isLoading,
@@ -104,14 +106,16 @@ class ManageProfileReligion extends StatelessWidget {
         ManageProfileField(
           label: AppLocalizations.of(context)!.prayer,
           hint: AppLocalizations.of(context)!.choosePrayerStatus,
-          currentValue: _mapPrayerToDisplay(context, profileData?.attribute?.prayer),
+          currentValue:
+              _mapPrayerToDisplay(context, profileData?.attribute?.prayer),
           type: ManageProfileFieldType.dropdown,
           options: _getPrayerOptions(context),
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.smoking,
           hint: AppLocalizations.of(context)!.chooseSmokingStatus,
-          currentValue: _getSmokingDisplayValue(context, profileData?.attribute?.smoking),
+          currentValue:
+              _getSmokingDisplayValue(context, profileData?.attribute?.smoking),
           type: ManageProfileFieldType.dropdown,
           options: [
             AppLocalizations.of(context)!.yes,
@@ -123,7 +127,8 @@ class ManageProfileReligion extends StatelessWidget {
           ManageProfileField(
             label: AppLocalizations.of(context)!.beard,
             hint: AppLocalizations.of(context)!.chooseBeardStatus,
-            currentValue: _mapBeardToDisplay(context, profileData?.attribute?.beard),
+            currentValue:
+                _mapBeardToDisplay(context, profileData?.attribute?.beard),
             type: ManageProfileFieldType.dropdown,
             options: _getBeardOptions(context),
           ),
@@ -132,7 +137,8 @@ class ManageProfileReligion extends StatelessWidget {
           ManageProfileField(
             label: AppLocalizations.of(context)!.hijab,
             hint: AppLocalizations.of(context)!.chooseHijabStatus,
-            currentValue: _mapHijabToDisplay(context, profileData?.attribute?.hijab),
+            currentValue:
+                _mapHijabToDisplay(context, profileData?.attribute?.hijab),
             type: ManageProfileFieldType.dropdown,
             options: _getHijabOptions(context),
           ),
@@ -148,11 +154,19 @@ class ManageProfileReligion extends StatelessWidget {
 
     // Handle both string and numeric values
     String smokingValue = smoking.toString().toLowerCase().trim();
-    
-    if (smokingValue == '1' || smokingValue == 'نعم' || smokingValue == 'true' || smokingValue == 'yes' || smokingValue == 'smoking') {
+
+    if (smokingValue == '1' ||
+        smokingValue == 'نعم' ||
+        smokingValue == 'true' ||
+        smokingValue == 'yes' ||
+        smokingValue == 'smoking') {
       return AppLocalizations.of(context)!.yes;
     }
-    if (smokingValue == '0' || smokingValue == 'لا' || smokingValue == 'false' || smokingValue == 'no' || smokingValue == 'not smoking') {
+    if (smokingValue == '0' ||
+        smokingValue == 'لا' ||
+        smokingValue == 'false' ||
+        smokingValue == 'no' ||
+        smokingValue == 'not smoking') {
       return AppLocalizations.of(context)!.no;
     }
 
@@ -214,7 +228,8 @@ class ManageProfileReligion extends StatelessWidget {
     if (apiValue == null || apiValue.isEmpty) return '';
 
     // If it's already a display value, return as is
-    if (['غير متدين', 'متدين قليلاً', 'متدين', 'متدين كثيراً', 'أفضل ألا أقول'].contains(apiValue)) {
+    if (['غير متدين', 'متدين قليلاً', 'متدين', 'متدين كثيراً', 'أفضل ألا أقول']
+        .contains(apiValue)) {
       return apiValue;
     }
 
@@ -248,7 +263,13 @@ class ManageProfileReligion extends StatelessWidget {
     if (apiValue == null || apiValue.isEmpty) return '';
 
     // If it's already a display value, return as is
-    if (['أصلي دائماً', 'أصلي أغلب الأوقات', 'أصلي أحياناً', 'لا أصلي', 'أفضل ألا أقول'].contains(apiValue)) {
+    if ([
+      'أصلي دائماً',
+      'أصلي أغلب الأوقات',
+      'أصلي أحياناً',
+      'لا أصلي',
+      'أفضل ألا أقول'
+    ].contains(apiValue)) {
       return apiValue;
     }
 
@@ -301,7 +322,13 @@ class ManageProfileReligion extends StatelessWidget {
     if (apiValue == null || apiValue.isEmpty) return '';
 
     // If it's already a display value, return as is
-    if (['غير محجبة', 'محجبة (كشف الوجه)', 'محجبة (النقاب)', 'محجبة (غطاء الوجه)', 'أفضل ألا أقول'].contains(apiValue)) {
+    if ([
+      'غير محجبة',
+      'محجبة (كشف الوجه)',
+      'محجبة (النقاب)',
+      'محجبة (غطاء الوجه)',
+      'أفضل ألا أقول'
+    ].contains(apiValue)) {
       return apiValue;
     }
 

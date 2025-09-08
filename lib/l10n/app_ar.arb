@@ -772,7 +772,10 @@
     "pleaseEnterMessageContent": "يرجى إدخال محتوى الرسالة",
     "messageMustBeMoreThan10Chars": "يجب أن تكون الرسالة أكثر من 10 أحرف",
     "send": "ارســــــــل",
-        "chatSetting" : "اعدادات الرسائل"
+        "chatSetting" : "اعدادات الرسائل",
 
+"beardTitle" : "اللحية" ,
+"hijabTitle" : "الحجاب",
+"prayerTitle" : "الصلاة"
 
 }

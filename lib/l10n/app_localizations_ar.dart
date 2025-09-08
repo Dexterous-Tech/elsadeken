@@ -1673,4 +1673,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get chatSetting => 'اعدادات الرسائل';
+
+  @override
+  String get beardTitle => 'اللحية';
+
+  @override
+  String get hijabTitle => 'الحجاب';
+
+  @override
+  String get prayerTitle => 'الصلاة';
 }

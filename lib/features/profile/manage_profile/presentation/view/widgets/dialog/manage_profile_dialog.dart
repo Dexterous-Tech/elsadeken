@@ -340,7 +340,8 @@ class _ManageProfileDialogContentState
         signUpListsCubit.getCites(countryId.toString());
 
         // Reset city field when country changes
-        final cityController = widget.controllers[AppLocalizations.of(context)!.city];
+        final cityController =
+            widget.controllers[AppLocalizations.of(context)!.city];
         if (cityController != null) {
           cityController.clear();
           widget.selectedValues[AppLocalizations.of(context)!.city] =
@@ -653,13 +654,20 @@ class _ManageProfileDialogContentState
   void _handleSave(BuildContext context) {
     if (widget.formKey.currentState!.validate()) {
       // Get password and confirm password values for login data
-      final password = widget.controllers[AppLocalizations.of(context)!.passwordOptional]?.text ?? '';
-      final passwordConfirmation =
-          widget.controllers[AppLocalizations.of(context)!.confirmPasswordOptional]?.text ?? '';
+      final password = widget
+              .controllers[AppLocalizations.of(context)!.passwordOptional]
+              ?.text ??
+          '';
+      final passwordConfirmation = widget
+              .controllers[
+                  AppLocalizations.of(context)!.confirmPasswordOptional]
+              ?.text ??
+          '';
 
       // If password is entered, confirm password is required
       if (password.isNotEmpty && passwordConfirmation.isEmpty) {
-        _showSnackBarAboveDialog(context, AppLocalizations.of(context)!.pleaseConfirmPassword, Colors.red);
+        _showSnackBarAboveDialog(context,
+            AppLocalizations.of(context)!.pleaseConfirmPassword, Colors.red);
         return;
       }
 
@@ -674,20 +682,25 @@ class _ManageProfileDialogContentState
 
       // Additional validation for login data fields
       if (widget.data.dialogType == ManageProfileDialogType.loginData) {
-        final name = widget.controllers[AppLocalizations.of(context)!.username]?.text ?? '';
-        final email = widget.controllers[AppLocalizations.of(context)!.email]?.text ?? '';
-        final phone = widget.controllers[AppLocalizations.of(context)!.phoneNumber]?.text ?? '';
+        final name =
+            widget.controllers[AppLocalizations.of(context)!.username]?.text ??
+                '';
+        final email =
+            widget.controllers[AppLocalizations.of(context)!.email]?.text ?? '';
+        final phone = widget
+                .controllers[AppLocalizations.of(context)!.phoneNumber]?.text ??
+            '';
 
         // Validate name
         if (name.trim().length < 2) {
-          _showSnackBarAboveDialog(
-              context, AppLocalizations.of(context)!.usernameMinLength, Colors.red);
+          _showSnackBarAboveDialog(context,
+              AppLocalizations.of(context)!.usernameMinLength, Colors.red);
           return;
         }
 
         if (name.trim().length > 50) {
-          _showSnackBarAboveDialog(
-              context, AppLocalizations.of(context)!.usernameMaxLength, Colors.red);
+          _showSnackBarAboveDialog(context,
+              AppLocalizations.of(context)!.usernameMaxLength, Colors.red);
           return;
         }
 
@@ -696,7 +709,9 @@ class _ManageProfileDialogContentState
           final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
           if (!emailRegex.hasMatch(email.trim())) {
             _showSnackBarAboveDialog(
-                context, AppLocalizations.of(context)!.pleaseEnterValidEmail, Colors.red);
+                context,
+                AppLocalizations.of(context)!.pleaseEnterValidEmail,
+                Colors.red);
             return;
           }
         }
@@ -705,8 +720,8 @@ class _ManageProfileDialogContentState
         if (phone.isNotEmpty) {
           final cleanPhone = phone.replaceAll(RegExp(r'[^\d]'), '');
           if (cleanPhone.length < 8 || cleanPhone.length > 15) {
-            _showSnackBarAboveDialog(
-                context, AppLocalizations.of(context)!.phoneNumberLength, Colors.red);
+            _showSnackBarAboveDialog(context,
+                AppLocalizations.of(context)!.phoneNumberLength, Colors.red);
             return;
           }
         }
@@ -733,10 +748,8 @@ class _ManageProfileDialogContentState
           final hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
           final hasLowercase = RegExp(r'[a-z]').hasMatch(password);
           if (!hasUppercase || !hasLowercase) {
-            _showSnackBarAboveDialog(
-                context,
-                AppLocalizations.of(context)!.passwordCase,
-                Colors.red);
+            _showSnackBarAboveDialog(context,
+                AppLocalizations.of(context)!.passwordCase, Colors.red);
             return;
           }
         }
@@ -753,9 +766,14 @@ class _ManageProfileDialogContentState
       String password, String passwordConfirmation) {
     switch (widget.data.dialogType) {
       case ManageProfileDialogType.loginData:
-        final name = widget.controllers[AppLocalizations.of(context)!.username]?.text ?? '';
-        final email = widget.controllers[AppLocalizations.of(context)!.email]?.text ?? '';
-        final phone = widget.controllers[AppLocalizations.of(context)!.phoneNumber]?.text ?? '';
+        final name =
+            widget.controllers[AppLocalizations.of(context)!.username]?.text ??
+                '';
+        final email =
+            widget.controllers[AppLocalizations.of(context)!.email]?.text ?? '';
+        final phone = widget
+                .controllers[AppLocalizations.of(context)!.phoneNumber]?.text ??
+            '';
 
         // Extract country code and phone number from the phone field
         String? countryCode;
@@ -784,9 +802,14 @@ class _ManageProfileDialogContentState
 
       case ManageProfileDialogType.nationalCountry:
         // Extract selected values from controllers
-        final nationalityName = widget.controllers[AppLocalizations.of(context)!.nationality]?.text ?? '';
-        final countryName = widget.controllers[AppLocalizations.of(context)!.country]?.text ?? '';
-        final cityName = widget.controllers[AppLocalizations.of(context)!.city]?.text ?? '';
+        final nationalityName = widget
+                .controllers[AppLocalizations.of(context)!.nationality]?.text ??
+            '';
+        final countryName =
+            widget.controllers[AppLocalizations.of(context)!.country]?.text ??
+                '';
+        final cityName =
+            widget.controllers[AppLocalizations.of(context)!.city]?.text ?? '';
 
         print('DEBUG: Extracted values from controllers:');
         print('  - nationalityName: "$nationalityName"');
@@ -815,31 +838,48 @@ class _ManageProfileDialogContentState
           print('DEBUG: Some IDs are null, showing error message');
           // Show error message if any required field is missing
           _showSnackBarAboveDialog(
-              context, AppLocalizations.of(context)!.pleaseSelectAllRequiredFields, Colors.red);
+              context,
+              AppLocalizations.of(context)!.pleaseSelectAllRequiredFields,
+              Colors.red);
         }
         break;
 
       case ManageProfileDialogType.job:
-        final qualificationName =
-            widget.controllers[AppLocalizations.of(context)!.educationalQualification]?.text ?? '';
-        final financialSituationName =
-            widget.controllers[AppLocalizations.of(context)!.financialStatus]?.text ?? '';
-        final jobTitle = widget.controllers[AppLocalizations.of(context)!.job]?.text ?? '';
-        final monthlyIncomeStr = widget.controllers[AppLocalizations.of(context)!.monthlyIncome]?.text ?? '';
-        final healthConditionName =
-            widget.controllers[AppLocalizations.of(context)!.healthStatus]?.text ?? '';
+        final qualificationName = widget
+                .controllers[
+                    AppLocalizations.of(context)!.educationalQualification]
+                ?.text ??
+            '';
+        final financialSituationName = widget
+                .controllers[AppLocalizations.of(context)!.financialStatus]
+                ?.text ??
+            '';
+        final jobTitle =
+            widget.controllers[AppLocalizations.of(context)!.job]?.text ?? '';
+        final monthlyIncomeStr = widget
+                .controllers[AppLocalizations.of(context)!.monthlyIncome]
+                ?.text ??
+            '';
+        final healthConditionName = widget
+                .controllers[AppLocalizations.of(context)!.healthStatus]
+                ?.text ??
+            '';
 
         // Validate income - must be greater than 0
         if (monthlyIncomeStr.isNotEmpty) {
           final income = int.tryParse(monthlyIncomeStr);
           if (income == null) {
             _showSnackBarAboveDialog(
-                context, AppLocalizations.of(context)!.pleaseEnterValidMonthlyIncome, Colors.red);
+                context,
+                AppLocalizations.of(context)!.pleaseEnterValidMonthlyIncome,
+                Colors.red);
             return;
           }
           if (income <= 0) {
             _showSnackBarAboveDialog(
-                context, AppLocalizations.of(context)!.monthlyIncomeMustBePositive, Colors.red);
+                context,
+                AppLocalizations.of(context)!.monthlyIncomeMustBePositive,
+                Colors.red);
             return;
           }
         }
@@ -886,18 +926,27 @@ class _ManageProfileDialogContentState
         break;
 
       case ManageProfileDialogType.socialStatus:
-        final maritalStatus =
-            widget.controllers[AppLocalizations.of(context)!.maritalStatus]?.text ?? '';
-        final typeOfMarriage = widget.controllers[AppLocalizations.of(context)!.marriageType]?.text ?? '';
-        final ageStr = widget.controllers[AppLocalizations.of(context)!.age]?.text ?? '';
-        final childrenStr = widget.controllers[AppLocalizations.of(context)!.numberOfChildren]?.text ?? '';
+        final maritalStatus = widget
+                .controllers[AppLocalizations.of(context)!.maritalStatus]
+                ?.text ??
+            '';
+        final typeOfMarriage = widget
+                .controllers[AppLocalizations.of(context)!.marriageType]
+                ?.text ??
+            '';
+        final ageStr =
+            widget.controllers[AppLocalizations.of(context)!.age]?.text ?? '';
+        final childrenStr = widget
+                .controllers[AppLocalizations.of(context)!.numberOfChildren]
+                ?.text ??
+            '';
 
         // Validate age
         if (ageStr.isNotEmpty) {
           final age = int.tryParse(ageStr);
           if (age == null) {
-            _showSnackBarAboveDialog(
-                context, AppLocalizations.of(context)!.pleaseEnterValidAge, Colors.red);
+            _showSnackBarAboveDialog(context,
+                AppLocalizations.of(context)!.pleaseEnterValidAge, Colors.red);
             return;
           }
           if (age > 99 || age < 18) {
@@ -912,12 +961,14 @@ class _ManageProfileDialogContentState
           final children = int.tryParse(childrenStr);
           if (children == null) {
             _showSnackBarAboveDialog(
-                context, AppLocalizations.of(context)!.pleaseEnterValidChildrenCount, Colors.red);
+                context,
+                AppLocalizations.of(context)!.pleaseEnterValidChildrenCount,
+                Colors.red);
             return;
           }
           if (children > 99 || children < 0) {
-            _showSnackBarAboveDialog(
-                context, AppLocalizations.of(context)!.childrenRange, Colors.red);
+            _showSnackBarAboveDialog(context,
+                AppLocalizations.of(context)!.childrenRange, Colors.red);
             return;
           }
         }
@@ -996,22 +1047,32 @@ class _ManageProfileDialogContentState
         break;
 
       case ManageProfileDialogType.bodyInfo:
-        final weightStr = widget.controllers[AppLocalizations.of(context)!.weight]?.text ?? '';
-        final heightStr = widget.controllers[AppLocalizations.of(context)!.height]?.text ?? '';
-        final skinColorName = widget.controllers[AppLocalizations.of(context)!.skinColor]?.text ?? '';
-        final physiqueName = widget.controllers[AppLocalizations.of(context)!.physique]?.text ?? '';
+        final weightStr =
+            widget.controllers[AppLocalizations.of(context)!.weight]?.text ??
+                '';
+        final heightStr =
+            widget.controllers[AppLocalizations.of(context)!.height]?.text ??
+                '';
+        final skinColorName =
+            widget.controllers[AppLocalizations.of(context)!.skinColor]?.text ??
+                '';
+        final physiqueName =
+            widget.controllers[AppLocalizations.of(context)!.physique]?.text ??
+                '';
 
         // Validate weight
         if (weightStr.isNotEmpty) {
           final weight = int.tryParse(weightStr);
           if (weight == null) {
             _showSnackBarAboveDialog(
-                context, AppLocalizations.of(context)!.pleaseEnterValidWeight, Colors.red);
+                context,
+                AppLocalizations.of(context)!.pleaseEnterValidWeight,
+                Colors.red);
             return;
           }
           if (weight > 300 || weight < 30) {
-            _showSnackBarAboveDialog(context,
-                AppLocalizations.of(context)!.weightRange, Colors.red);
+            _showSnackBarAboveDialog(
+                context, AppLocalizations.of(context)!.weightRange, Colors.red);
             return;
           }
         }
@@ -1021,14 +1082,14 @@ class _ManageProfileDialogContentState
           final height = int.tryParse(heightStr);
           if (height == null) {
             _showSnackBarAboveDialog(
-                context, AppLocalizations.of(context)!.pleaseEnterValidHeight, Colors.red);
+                context,
+                AppLocalizations.of(context)!.pleaseEnterValidHeight,
+                Colors.red);
             return;
           }
           if (height > 250 || height < 50) {
             _showSnackBarAboveDialog(
-                context,
-                AppLocalizations.of(context)!.heightRange,
-                Colors.red);
+                context, AppLocalizations.of(context)!.heightRange, Colors.red);
             return;
           }
         }
@@ -1050,14 +1111,25 @@ class _ManageProfileDialogContentState
         break;
 
       case ManageProfileDialogType.education:
-        final qualificationName =
-            widget.controllers[AppLocalizations.of(context)!.educationalQualification]?.text ?? '';
-        final financialSituationName =
-            widget.controllers[AppLocalizations.of(context)!.financialStatus]?.text ?? '';
-        final jobTitle = widget.controllers[AppLocalizations.of(context)!.job]?.text ?? '';
-        final monthlyIncomeStr = widget.controllers[AppLocalizations.of(context)!.monthlyIncome]?.text ?? '';
-        final healthConditionName =
-            widget.controllers[AppLocalizations.of(context)!.healthStatus]?.text ?? '';
+        final qualificationName = widget
+                .controllers[
+                    AppLocalizations.of(context)!.educationalQualification]
+                ?.text ??
+            '';
+        final financialSituationName = widget
+                .controllers[AppLocalizations.of(context)!.financialStatus]
+                ?.text ??
+            '';
+        final jobTitle =
+            widget.controllers[AppLocalizations.of(context)!.job]?.text ?? '';
+        final monthlyIncomeStr = widget
+                .controllers[AppLocalizations.of(context)!.monthlyIncome]
+                ?.text ??
+            '';
+        final healthConditionName = widget
+                .controllers[AppLocalizations.of(context)!.healthStatus]
+                ?.text ??
+            '';
 
         // Convert income string to number
         int? income =
@@ -1076,8 +1148,12 @@ class _ManageProfileDialogContentState
         break;
 
       case ManageProfileDialogType.descriptions:
-        final aboutMe = widget.controllers['نبذة عني']?.text ?? '';
-        final aboutPartner = widget.controllers['شريك الحياة']?.text ?? '';
+        final aboutMe =
+            widget.controllers[AppLocalizations.of(context)!.aboutMe]?.text ??
+                '';
+        final aboutPartner = widget
+                .controllers[AppLocalizations.of(context)!.lifePartner]?.text ??
+            '';
 
         // Update about me if field exists and is not empty
         if (aboutMe.isNotEmpty) {
@@ -1095,12 +1171,20 @@ class _ManageProfileDialogContentState
         break;
 
       case ManageProfileDialogType.religion:
-        final religiousCommitment =
-            widget.controllers[AppLocalizations.of(context)!.religiousCommitment]?.text ?? '';
-        final prayer = widget.controllers[AppLocalizations.of(context)!.prayer]?.text ?? '';
-        final smokingStr = widget.controllers[AppLocalizations.of(context)!.smoking]?.text ?? '';
-        final hijab = widget.controllers[AppLocalizations.of(context)!.hijab]?.text ?? '';
-        final beard = widget.controllers[AppLocalizations.of(context)!.beard]?.text ?? '';
+        final religiousCommitment = widget
+                .controllers[AppLocalizations.of(context)!.religiousCommitment]
+                ?.text ??
+            '';
+        final prayer =
+            widget.controllers[AppLocalizations.of(context)!.prayer]?.text ??
+                '';
+        final smokingStr =
+            widget.controllers[AppLocalizations.of(context)!.smoking]?.text ??
+                '';
+        final hijab =
+            widget.controllers[AppLocalizations.of(context)!.hijab]?.text ?? '';
+        final beard =
+            widget.controllers[AppLocalizations.of(context)!.beard]?.text ?? '';
 
         // Debug: Print collected values
         print('DEBUG: Collected Religious Commitment: "$religiousCommitment"');
@@ -1113,7 +1197,13 @@ class _ManageProfileDialogContentState
         String? religiousCommitmentValue;
         if (religiousCommitment.isNotEmpty) {
           // Check if it's already an API value
-          if (['irreligious', 'little_religious', 'religious', 'much_religious', 'dont_say'].contains(religiousCommitment)) {
+          if ([
+            'irreligious',
+            'little_religious',
+            'religious',
+            'much_religious',
+            'dont_say'
+          ].contains(religiousCommitment)) {
             religiousCommitmentValue = religiousCommitment;
           } else {
             // Map localized values to API values
@@ -1146,7 +1236,8 @@ class _ManageProfileDialogContentState
         String? prayerValue;
         if (prayer.isNotEmpty) {
           // Check if it's already an API value
-          if (['always', 'most_times', 'sometimes', 'no_pray', 'dont_say'].contains(prayer)) {
+          if (['always', 'most_times', 'sometimes', 'no_pray', 'dont_say']
+              .contains(prayer)) {
             prayerValue = prayer;
           } else {
             // Map localized values to API values
@@ -1184,7 +1275,8 @@ class _ManageProfileDialogContentState
         String? hijabValue;
         if (hijab.isNotEmpty) {
           // Check if it's already an API value
-          if (['not_hijab', 'hijab', 'hijab_and_veil', 'hijab_face', 'dont_say'].contains(hijab)) {
+          if (['not_hijab', 'hijab', 'hijab_and_veil', 'hijab_face', 'dont_say']
+              .contains(hijab)) {
             hijabValue = hijab;
           } else {
             // Map localized values to API values
@@ -1253,9 +1345,14 @@ class _ManageProfileDialogContentState
       case ManageProfileDialogType.personalInfo:
       case null:
         // For now, fall back to login data if no type is specified
-        final name = widget.controllers[AppLocalizations.of(context)!.username]?.text ?? '';
-        final email = widget.controllers[AppLocalizations.of(context)!.email]?.text ?? '';
-        final phone = widget.controllers[AppLocalizations.of(context)!.phoneNumber]?.text ?? '';
+        final name =
+            widget.controllers[AppLocalizations.of(context)!.username]?.text ??
+                '';
+        final email =
+            widget.controllers[AppLocalizations.of(context)!.email]?.text ?? '';
+        final phone = widget
+                .controllers[AppLocalizations.of(context)!.phoneNumber]?.text ??
+            '';
 
         widget.data.cubit!.updateProfileLoginData(
           name: name.isNotEmpty ? name : null,
@@ -1461,7 +1558,8 @@ class _ManageProfileDialogContentState
               hintText: field.hint,
               controller: controller,
               obscureText: true,
-              inputFormatters: _getInputFormattersForField(field.label, context),
+              inputFormatters:
+                  _getInputFormattersForField(field.label, context),
               validator: (value) {
                 // Password fields are optional, so no validation needed here
                 // The validation logic is handled in the save button onPressed
@@ -1580,7 +1678,8 @@ class _ManageProfileDialogContentState
     );
   }
 
-  List<TextInputFormatter>? _getInputFormattersForField(String label, BuildContext context) {
+  List<TextInputFormatter>? _getInputFormattersForField(
+      String label, BuildContext context) {
     final phoneNumber = AppLocalizations.of(context)!.phoneNumber;
     final countryCode = AppLocalizations.of(context)!.countryCode;
     final age = AppLocalizations.of(context)!.age;
@@ -1588,13 +1687,13 @@ class _ManageProfileDialogContentState
     final weight = AppLocalizations.of(context)!.weight;
     final height = AppLocalizations.of(context)!.height;
     final monthlyIncome = AppLocalizations.of(context)!.monthlyIncome;
-    
-    if (label == phoneNumber || 
-        label == countryCode || 
-        label == age || 
-        label == numberOfChildren || 
-        label == weight || 
-        label == height || 
+
+    if (label == phoneNumber ||
+        label == countryCode ||
+        label == age ||
+        label == numberOfChildren ||
+        label == weight ||
+        label == height ||
         label == monthlyIncome) {
       return [FilteringTextInputFormatter.digitsOnly];
     }

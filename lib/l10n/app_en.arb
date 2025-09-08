@@ -773,7 +773,10 @@
     "pleaseEnterMessageContent": "Please enter the message content",
     "messageMustBeMoreThan10Chars": "Message must be more than 10 characters",
     "send": "Send",
-    "chatSetting" : "Chat Settings"
+    "chatSetting" : "Chat Settings",
+"beardTitle" : "Beard" ,
+"hijabTitle" : "Hijab",
+"prayerTitle" : "Prayer"
 
 
 }

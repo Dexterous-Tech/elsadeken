@@ -3322,6 +3322,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Chat Settings'**
   String get chatSetting;
+
+  /// No description provided for @beardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Beard'**
+  String get beardTitle;
+
+  /// No description provided for @hijabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hijab'**
+  String get hijabTitle;
+
+  /// No description provided for @prayerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer'**
+  String get prayerTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -40,11 +40,8 @@ class NotificationItemWidget extends StatelessWidget {
           /// 👉 TEXT on the left
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  LocalizationService.instance.startCrossAxisAlignment,
-              textDirection: LocalizationService
-                  .instance.textDirection, // Keep RTL for Arabic
-// align left
+              crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: LocalizationService.instance.textDirection,
               children: [
                 Text(
                   notification.title,
