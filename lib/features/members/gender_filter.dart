@@ -6,24 +6,22 @@ class GenderFilter extends StatelessWidget {
   final VoidCallback onTap;
 
   const GenderFilter({
-    super.key,
+    Key? key,
     required this.text,
     required this.isActive,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-return GestureDetector(
+    return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        width: 100,
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 28, vertical: 12),
+        padding:
+            const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isActive 
-              ? const Color(0xFFE8A5A5)  
-              : const Color(0xFFF5F1E8), 
+          color: isActive ? const Color(0xFFE8A5A5) : const Color(0xFFF5F1E8),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Text(

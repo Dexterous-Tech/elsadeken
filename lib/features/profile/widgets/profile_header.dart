@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -8,15 +9,17 @@ import '../../../core/widgets/custom_arrow_back.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({
-    super.key, 
-    required this.title, 
+    super.key,
+    required this.title,
     this.background,
     this.showBackButton = true,
+    this.titleStyle,
   });
 
   final String title;
   final Color? background;
   final bool showBackButton;
+  final TextStyle? titleStyle;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -36,11 +39,12 @@ class ProfileHeader extends StatelessWidget {
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w500,
-              color: AppColors.darkBlue,
-            ),
+            style: titleStyle ??
+                AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeightHelper.medium,
+                  color: AppColors.darkBlue,
+                ),
           ),
         ),
         SizedBox(

@@ -13,6 +13,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
 
 import '../../../../../core/theme/app_color.dart';
+import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../profile/widgets/profile_header.dart';
 
 class ViewersView extends StatefulWidget {
   const ViewersView({Key? key}) : super(key: key);
@@ -139,32 +141,7 @@ class _ViewersViewState extends State<ViewersView> {
     return Directionality(
       textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
-        extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          title: Text(
-            AppLocalizations.of(context)!.whoVisitedMyProfile,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-              size: 20,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
         body: Stack(
           alignment: Alignment.topCenter,
           children: [
@@ -182,6 +159,15 @@ class _ViewersViewState extends State<ViewersView> {
                 create: (_) => cubit,
                 child: Column(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      child: ProfileHeader(
+                          title:
+                              AppLocalizations.of(context)!.whoVisitedMyProfile,
+                          titleStyle: AppTextStyles.font20WhiteBoldLamaSans
+                              .copyWith(color: AppColors.black)),
+                    ),
                     // Container(
                     //   width: double.infinity,
                     //   padding: const EdgeInsets.symmetric(

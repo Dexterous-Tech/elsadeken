@@ -14,7 +14,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
 
 import '../../../../../core/theme/app_color.dart';
-import '../../../new_members/presentation/view/widgets/gender_filter.dart';
+import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../profile/widgets/profile_header.dart';
+import '../../../gender_filter.dart';
 
 class HealthStatusesView extends StatefulWidget {
   const HealthStatusesView({super.key});
@@ -135,30 +137,6 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          title: Text(
-            AppLocalizations.of(context)!.healthStatuses,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-              size: 20,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
         body: Stack(
           alignment: Alignment.topCenter,
           children: [
@@ -192,6 +170,15 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
 
                     return Column(
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          child: ProfileHeader(
+                              title:
+                                  AppLocalizations.of(context)!.healthStatuses,
+                              titleStyle: AppTextStyles.font20WhiteBoldLamaSans
+                                  .copyWith(color: AppColors.black)),
+                        ),
                         Padding(
                           padding: const EdgeInsetsDirectional.all(24.0),
                           child: Row(
@@ -239,39 +226,46 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                           ),
                         ),
                         SizedBox(height: 16),
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF5F1E8),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            textDirection:
-                                LocalizationService.instance.textDirection,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GenderFilter(
-                                text: AppLocalizations.of(context)!.all,
-                                isActive: _activeFilter == 'all',
-                                onTap: () =>
-                                    setState(() => _activeFilter = 'all'),
-                              ),
-                              const SizedBox(width: 6),
-                              GenderFilter(
-                                text: AppLocalizations.of(context)!.males,
-                                isActive: _activeFilter == 'males',
-                                onTap: () =>
-                                    setState(() => _activeFilter = 'males'),
-                              ),
-                              const SizedBox(width: 6),
-                              GenderFilter(
-                                text: AppLocalizations.of(context)!.females,
-                                isActive: _activeFilter == 'females',
-                                onTap: () =>
-                                    setState(() => _activeFilter = 'females'),
-                              ),
-                            ],
+                        Padding(
+                          padding: const EdgeInsetsDirectional.symmetric(
+                              horizontal: 24.0),
+                          child: Container(
+                            padding: EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF5F1E8),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: GenderFilter(
+                                    text: AppLocalizations.of(context)!.all,
+                                    isActive: _activeFilter == 'all',
+                                    onTap: () =>
+                                        setState(() => _activeFilter = 'all'),
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: GenderFilter(
+                                    text: AppLocalizations.of(context)!.males,
+                                    isActive: _activeFilter == 'males',
+                                    onTap: () =>
+                                        setState(() => _activeFilter = 'males'),
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: GenderFilter(
+                                    text: AppLocalizations.of(context)!.females,
+                                    isActive: _activeFilter == 'females',
+                                    onTap: () => setState(
+                                        () => _activeFilter = 'females'),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         if (_selectedHealthName.isNotEmpty &&
