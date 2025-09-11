@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/core/helper/localization_helper.dart';
@@ -269,41 +270,44 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: HomeHeader(),
                   ),
                   SizedBox(height: 21.h),
-                  CustomTextFormField(
-                    focusNode: _focusNode,
-                    onChanged: (value) {
-                      context.read<SearchCubit>().updateUsername(value);
-                      _onSearchChanged(value);
-                    },
-                    hintText: AppLocalizations.of(context)!.search,
-                    validator: (value) {},
-                    suffixIcon: GestureDetector(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.search,
-                        color: Color(0xff949494),
-                        size: 19,
+                  Padding(
+                    padding:  EdgeInsetsDirectional.only(start: 12.w, end: 12.w),
+                    child: CustomTextFormField(
+                      focusNode: _focusNode,
+                      onChanged: (value) {
+                        context.read<SearchCubit>().updateUsername(value);
+                        _onSearchChanged(value);
+                      },
+                      hintText: AppLocalizations.of(context)!.search,
+                      validator: (value) {},
+                      suffixIcon: GestureDetector(
+                        onTap: () {},
+                        child: Icon(
+                          Icons.search,
+                          color: Color(0xff949494),
+                          size: 19,
+                        ),
                       ),
-                    ),
-                    hintStyle: TextStyle(
-                      fontWeight: FontWeightHelper.regular,
-                      color: Color(0xff949494),
-                      fontSize: 16.sp,
-                      fontFamily: FontFamilyHelper.lamaSansArabic,
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
+                      hintStyle: TextStyle(
+                        fontWeight: FontWeightHelper.regular,
                         color: Color(0xff949494),
-                        width: 1,
+                        fontSize: 16.sp,
+                        fontFamily: FontFamilyHelper.lamaSansArabic,
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xff949494),
-                        width: 1.w,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xff949494),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      borderRadius: BorderRadius.circular(10.r),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xff949494),
+                          width: 1.w,
+                        ),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
                     ),
                   ),
                   SizedBox(height: 16.h),
@@ -347,43 +351,43 @@ class _HomeScreenState extends State<HomeScreen> {
               else
                 Container(
                   height: 600.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white
+                  ),
                   margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Stack(
-                      children: currentUsers
-                          .asMap()
-                          .entries
-                          .map((entry) {
-                            final index = entry.key;
-                            final user = entry.value;
+                  child: Stack(
+                    children: currentUsers
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                          final index = entry.key;
+                          final user = entry.value;
 
-                            final isTopCard = index == 0;
-                            final isSecondCard = index == 1;
+                          final isTopCard = index == 0;
+                          final isSecondCard = index == 1;
 
-                            double scale = 1.0;
-                            double verticalOffset = 0.0.h;
+                          double scale = 1.0;
+                          double verticalOffset = 0.0.h;
 
-                            if (isSecondCard) {
-                              scale = 0.95;
-                              verticalOffset = 20.h;
-                            } else if (!isTopCard) {
-                              scale = 0.9;
-                              verticalOffset = 40.h;
-                            }
+                          if (isSecondCard) {
+                            scale = 0.95;
+                            verticalOffset = 20.h;
+                          } else if (!isTopCard) {
+                            scale = 0.9;
+                            verticalOffset = 40.h;
+                          }
 
-                            return SwipeableCard(
-                              user: user,
-                              onSwipe: isTopCard ? _onSwipe : null,
-                              isTop: isTopCard,
-                              scale: scale,
-                              verticalOffset: verticalOffset,
-                            );
-                          })
-                          .toList()
-                          .reversed
-                          .toList(),
-                    ),
+                          return SwipeableCard(
+                            user: user,
+                            onSwipe: isTopCard ? _onSwipe : null,
+                            isTop: isTopCard,
+                            scale: scale,
+                            verticalOffset: verticalOffset,
+                          );
+                        })
+                        .toList()
+                        .reversed
+                        .toList(),
                   ),
                 )
             ],

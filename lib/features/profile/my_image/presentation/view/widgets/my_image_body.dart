@@ -95,14 +95,14 @@ class _MyImageBodyState extends State<MyImageBody> {
       contentBody: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           textDirection: LocalizationService.instance.textDirection,
           children: [
             ProfileHeader(title: AppLocalizations.of(context)!.myImage),
             verticalSpace(30),
             Text(
               AppLocalizations.of(context)!.importantInformation,
-              textDirection: LocalizationService.instance.textDirection,
+          textDirection: LocalizationService.instance.textDirection,
               style: AppTextStyles.font20LightOrangeMediumLamaSans.copyWith(
                 color: Color(0xffF9F9F9),
               ),
@@ -455,8 +455,8 @@ class _MyImageBodyState extends State<MyImageBody> {
           ),
           title: Text(
             AppLocalizations.of(context)!.chooseImageSource,
-            textDirection: LocalizationService.instance.textDirection,
-            textAlign: LocalizationService.instance.textAlignment,
+            textDirection: TextDirection.rtl,
+            textAlign: TextAlign.center,
             style: AppTextStyles.font16BlackSemiBoldLamaSans,
           ),
           content: Column(
@@ -466,7 +466,7 @@ class _MyImageBodyState extends State<MyImageBody> {
                 leading: Icon(Icons.camera_alt, color: AppColors.primaryOrange),
                 title: Text(
                   AppLocalizations.of(context)!.takePhotoFromCamera,
-                  textDirection: LocalizationService.instance.textDirection,
+                  textDirection: TextDirection.rtl,
                   style: AppTextStyles.font14BlackRegularLamaSans,
                 ),
                 onTap: () {
@@ -479,7 +479,7 @@ class _MyImageBodyState extends State<MyImageBody> {
                     Icon(Icons.photo_library, color: AppColors.primaryOrange),
                 title: Text(
                   AppLocalizations.of(context)!.chooseFromGallery,
-                  textDirection: LocalizationService.instance.textDirection,
+                  textDirection: TextDirection.rtl,
                   style: AppTextStyles.font14BlackRegularLamaSans,
                 ),
                 onTap: () {
@@ -496,9 +496,9 @@ class _MyImageBodyState extends State<MyImageBody> {
 
   Widget informationItem(String info) {
     return Padding(
-      padding: EdgeInsetsDirectional.only(start: 16.w, bottom: 16.h),
+      padding: EdgeInsets.only(right: 16.w, bottom: 16.h),
       child: Row(
-        textDirection: LocalizationService.instance.textDirection,
+        textDirection: TextDirection.rtl,
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -513,8 +513,8 @@ class _MyImageBodyState extends State<MyImageBody> {
           Expanded(
             child: Text(
               info,
-              textDirection: LocalizationService.instance.textDirection,
-              textAlign: LocalizationService.instance.textAlignment,
+              textDirection: TextDirection.rtl,
+              textAlign: TextAlign.right,
               style: AppTextStyles.font19JetRegularLamaSans,
             ),
           )

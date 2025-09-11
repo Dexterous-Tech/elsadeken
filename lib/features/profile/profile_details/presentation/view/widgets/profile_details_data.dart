@@ -151,7 +151,7 @@ class ProfileDetailsData extends StatelessWidget {
                       ? TextAlign.right
                       : TextAlign.left,
                   style: AppTextStyles.font18GreyRegularLamaSans
-                      .copyWith(fontFamily: FontFamilyHelper.plexSansArabic),
+                      .copyWith(fontFamily: FontFamilyHelper.lamaSansArabic),
                 ),
               ),
             ),
@@ -168,7 +168,7 @@ class ProfileDetailsData extends StatelessWidget {
                       ? TextAlign.right
                       : TextAlign.left,
                   style: AppTextStyles.font18GreyRegularLamaSans
-                      .copyWith(fontFamily: FontFamilyHelper.plexSansArabic),
+                      .copyWith(fontFamily: FontFamilyHelper.lamaSansArabic),
                 ),
               ),
             ),

@@ -99,7 +99,7 @@ class _MembersProfileCountryState extends State<MembersProfileCountry> {
                             : AppLocalizations.of(context)!.chooseCountry,
                         style: AppTextStyles.font18GreyRegularLamaSans.copyWith(
                             color: AppColors.darkSunray,
-                            fontFamily: FontFamilyHelper.plexSansArabic),
+                            fontFamily: FontFamilyHelper.lamaSansArabic),
                       ),
                       horizontalSpace(8),
                       Image.asset(

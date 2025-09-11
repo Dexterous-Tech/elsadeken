@@ -1169,7 +1169,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get filter => 'فلترة';
+  String get filter => 'ترشيح';
 
   @override
   String resultsCount(Object count) {
@@ -1186,22 +1186,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String filteredByHealthStatus(Object status) {
-    return 'تم الفلترة حسب الحالة الصحية: $status';
+    return 'تم الترشيح حسب الحالة الصحية: $status';
   }
 
   @override
   String filteredByCountry(Object country) {
-    return 'تم الفلترة حسب الدولة: $country';
+    return 'تم الترشيح حسب الدولة: $country';
   }
 
   @override
   String get clearFilter => 'إلغاء التصفية';
 
   @override
-  String get filterByHealthStatus => 'فلتره بواسطه الحاله الصحيه';
+  String get filterByHealthStatus => 'ترشيح بواسطه الحاله الصحيه';
 
   @override
-  String get filterByCountry => 'فلتره بواسطه الدوله';
+  String get filterByCountry => 'ترشيح بواسطه الدوله';
 
   @override
   String get clear => 'مسح';

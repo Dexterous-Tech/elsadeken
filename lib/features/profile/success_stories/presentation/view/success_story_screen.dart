@@ -89,7 +89,7 @@ class SuccessStoriesScreen extends StatelessWidget {
                             color: AppColors.primaryOrangeMod,
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w500,
-                            fontFamily: FontFamilyHelper.plexSansArabic,
+                            fontFamily: FontFamilyHelper.lamaSansArabic,
                           ),
                         ),
                       ),
@@ -133,7 +133,7 @@ class SuccessStoriesScreen extends StatelessWidget {
                           color: AppColors.white,
                           fontSize: 22.sp,
                           fontWeight: FontWeight.w500,
-                          fontFamily: FontFamilyHelper.plexSansArabic,
+                          fontFamily: FontFamilyHelper.lamaSansArabic,
                         ),
                         onPressed: () {
                           Navigator.pop(context);

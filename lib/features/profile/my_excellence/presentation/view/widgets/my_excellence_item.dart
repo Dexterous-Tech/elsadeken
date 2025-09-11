@@ -34,7 +34,7 @@ class MyExcellenceItem extends StatelessWidget {
                   title,
                   style: AppTextStyles.font18JetMediumLamaSans.copyWith(
                     fontSize: 20.sp,
-                    fontFamily: FontFamilyHelper.plexSansArabic,
+                    fontFamily: FontFamilyHelper.lamaSansArabic,
                   ),
                   textDirection: TextDirection.rtl,
                   textAlign: TextAlign.right,

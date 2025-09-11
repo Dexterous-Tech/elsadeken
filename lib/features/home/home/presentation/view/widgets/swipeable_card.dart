@@ -51,6 +51,11 @@ class _SwipeableCardState extends State<SwipeableCard>
       duration: Duration(milliseconds: 300),
       vsync: this,
     );
+    // Ensure the widget rebuilds on every animation tick so
+    // slide/rotation animations are reflected in the UI.
+    _animationController.addListener(() {
+      if (mounted) setState(() {});
+    });
     _slideAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: Offset.zero,
@@ -113,11 +118,16 @@ class _SwipeableCardState extends State<SwipeableCard>
 
     _animationController.forward().then((_) {
       widget.onSwipe?.call(isLike);
-      _animationController.reset();
+      // Ensure we land at rest state cleanly without visual jump
       setState(() {
         _dragOffset = Offset.zero;
         _isProcessingAction = false;
+        _slideAnimation = Tween<Offset>(begin: Offset.zero, end: Offset.zero)
+            .animate(_animationController);
+        _rotationAnimation =
+            Tween<double>(begin: 0, end: 0).animate(_animationController);
       });
+      _animationController.reset();
     });
   }
 
@@ -133,10 +143,15 @@ class _SwipeableCardState extends State<SwipeableCard>
     ).animate(_animationController);
 
     _animationController.forward().then((_) {
-      _animationController.reset();
+      // Land at zero without bouncing back to previous begin value
       setState(() {
         _dragOffset = Offset.zero;
+        _slideAnimation = Tween<Offset>(begin: Offset.zero, end: Offset.zero)
+            .animate(_animationController);
+        _rotationAnimation =
+            Tween<double>(begin: 0, end: 0).animate(_animationController);
       });
+      _animationController.reset();
     });
   }
 
@@ -147,11 +162,16 @@ class _SwipeableCardState extends State<SwipeableCard>
 
   @override
   Widget build(BuildContext context) {
+    final bool isAnimating = _animationController.isAnimating;
     final cardOffset = widget.isTop
-        ? (_isDragging ? _dragOffset : _slideAnimation.value)
+        ? (_isDragging
+            ? _dragOffset
+            : (isAnimating ? _slideAnimation.value : Offset.zero))
         : Offset.zero;
     final rotation = widget.isTop
-        ? (_isDragging ? _dragOffset.dx * 0.001 : _rotationAnimation.value)
+        ? (_isDragging
+            ? _dragOffset.dx * 0.001
+            : (isAnimating ? _rotationAnimation.value : 0.0))
         : 0.0;
 
     return Positioned(
@@ -200,7 +220,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                         EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(16).r,
+                      borderRadius: BorderRadius.circular(12).r,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.08),
@@ -317,80 +337,91 @@ class _SwipeableCardState extends State<SwipeableCard>
                                 child: Column(
                                   children: [
                                     SizedBox(height: 250.h),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      textDirection: LocalizationService
-                                          .instance.textDirection,
-                                      children: [
-                                        Flexible(
-                                          child: Container(
-                                            padding:
-                                                EdgeInsetsDirectional.symmetric(
-                                              horizontal: 26.5.w,
-                                              vertical: 11.h,
-                                            ),
-                                            constraints: BoxConstraints(
-                                              maxWidth: 250.w,
-                                              minWidth: 80.w,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Color(0xffDBAE48),
-                                              borderRadius:
-                                                  BorderRadius.circular(15).r,
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                maxLines: 1,
-                                                widget.user.location,
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.05),
+                                            blurRadius: 12,
+                                            offset: Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        textDirection: LocalizationService
+                                            .instance.textDirection,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            textDirection: LocalizationService
+                                                .instance.textDirection,
+                                            children: [
+                                              Text(
+                                                '${widget.user.name}، ${widget.user.age} ${AppLocalizations.of(context)!.year}',
+                                                textDirection: LocalizationService
+                                                    .instance.textDirection,
                                                 style: TextStyle(
-                                                  color: Colors.white,
-                                                  overflow:
-                                                      TextOverflow.visible,
-                                                  fontSize: 15.sp,
-                                                  fontWeight:
-                                                      FontWeightHelper.medium,
-                                                  fontFamily: FontFamilyHelper
-                                                      .lamaSansArabic,
+                                                    color: Colors.white,
+                                                    fontSize: 16.sp,
+                                                    fontWeight:
+                                                    FontWeightHelper.bold,
+                                                    fontFamily: FontFamilyHelper
+                                                        .lamaSansArabic),
+                                              ),
+                                              Text(
+                                                widget.user.profession,
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14.sp,
+                                                    fontWeight:
+                                                    FontWeightHelper.regular,
+                                                    fontFamily: FontFamilyHelper
+                                                        .lamaSansArabic),
+                                              ),
+                                            ],
+                                          ),
+                                          Flexible(
+                                            child: Container(
+                                              padding:
+                                                  EdgeInsetsDirectional.symmetric(
+                                                horizontal: 26.5.w,
+                                                vertical: 11.h,
+                                              ),
+                                              constraints: BoxConstraints(
+                                                maxWidth: 150.w,
+                                                minWidth: 80.w,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Color(0xffDBAE48),
+                                                borderRadius:
+                                                    BorderRadius.circular(15).r,
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  maxLines: 1,
+                                                  widget.user.location,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    overflow:
+                                                        TextOverflow.visible,
+                                                    fontSize: 15.sp,
+                                                    fontWeight:
+                                                        FontWeightHelper.medium,
+                                                    fontFamily: FontFamilyHelper
+                                                        .lamaSansArabic,
+                                                  ),
+                                                  softWrap: true,
+                                                  overflow: TextOverflow.visible,
                                                 ),
-                                                softWrap: true,
-                                                overflow: TextOverflow.visible,
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              LocalizationService.instance
-                                                  .startCrossAxisAlignment,
-                                          textDirection: LocalizationService
-                                              .instance.textDirection,
-                                          children: [
-                                            Text(
-                                              '${widget.user.name}، ${widget.user.age} ${AppLocalizations.of(context)!.year}',
-                                              textDirection: LocalizationService
-                                                  .instance.textDirection,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16.sp,
-                                                  fontWeight:
-                                                      FontWeightHelper.bold,
-                                                  fontFamily: FontFamilyHelper
-                                                      .lamaSansArabic),
-                                            ),
-                                            Text(
-                                              widget.user.profession,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 14.sp,
-                                                  fontWeight:
-                                                      FontWeightHelper.regular,
-                                                  fontFamily: FontFamilyHelper
-                                                      .lamaSansArabic),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),

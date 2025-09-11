@@ -47,7 +47,7 @@ class _StoryCardState extends State<StoryCard> {
                     Text(
                       'قصة النجاح',
                       style: TextStyle(
-                        fontFamily: FontFamilyHelper.plexSansArabic,
+                        fontFamily: FontFamilyHelper.lamaSansArabic,
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
                         color: Colors.black87,
@@ -68,7 +68,7 @@ class _StoryCardState extends State<StoryCard> {
                 Text(
                   widget.title,
                   style: TextStyle(
-                    fontFamily: FontFamilyHelper.plexSansArabic,
+                    fontFamily: FontFamilyHelper.lamaSansArabic,
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFFFFBC85),
@@ -82,7 +82,7 @@ class _StoryCardState extends State<StoryCard> {
                     child: Text(
                       widget.content,
                       style: TextStyle(
-                        fontFamily: FontFamilyHelper.plexSansArabic,
+                        fontFamily: FontFamilyHelper.lamaSansArabic,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                         color: Colors.black87,
@@ -134,7 +134,7 @@ class _StoryCardState extends State<StoryCard> {
                 widget.title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: FontFamilyHelper.plexSansArabic,
+                  fontFamily: FontFamilyHelper.lamaSansArabic,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
@@ -157,7 +157,7 @@ class _StoryCardState extends State<StoryCard> {
                           textDirection: TextDirection.rtl,
                           style: TextStyle(
                             color: Colors.orange,
-                            fontFamily: FontFamilyHelper.plexSansArabic,
+                            fontFamily: FontFamilyHelper.lamaSansArabic,
                             fontSize: 10,
                             fontWeight: FontWeight.w500,
                           ),

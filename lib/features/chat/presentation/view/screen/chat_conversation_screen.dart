@@ -833,7 +833,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   color: Colors.grey[600],
                   fontSize: 17.sp,
                   fontWeight: FontWeight.w400,
-                  fontFamily: FontFamilyHelper.plexSansArabic,
+                  fontFamily: FontFamilyHelper.lamaSansArabic,
                 ),
               ),
             ),
@@ -897,7 +897,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   hintStyle: TextStyle(
                     color: Colors.grey[500],
                     fontSize: 18.sp,
-                    fontFamily: FontFamilyHelper.plexSansArabic,
+                    fontFamily: FontFamilyHelper.lamaSansArabic,
                     fontWeight: FontWeight.w400,
                   ),
                   border: InputBorder.none,
