@@ -9,8 +9,6 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/manager/m
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
-import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 
@@ -71,13 +69,12 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    final result =
-                        await context.pushNamed(AppRoutes.profileMyImageScreen);
-                    // If we returned from the image screen, refresh the profile data
-                    if (result == true) {
-                      if (context.mounted)
-                        context.read<ManageProfileCubit>().getProfile();
-                    }
+                    await context.pushNamed(AppRoutes.profileMyImageScreen,
+                        arguments:
+                            state.myProfileResponseModel.data?.photoVisibility);
+                    // Always refresh the profile data when returning from the image screen
+                    if (context.mounted)
+                      context.read<ManageProfileCubit>().getProfile();
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),

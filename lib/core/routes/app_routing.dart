@@ -63,23 +63,23 @@ class AppRouting {
           final initialStep = arguments['initialStep'] as int? ?? 0;
           return MaterialPageRoute(
               builder: (_) => SignupScreen(
-                gender: gender,
-                initialStep: initialStep,
-              ));
+                    gender: gender,
+                    initialStep: initialStep,
+                  ));
         } else if (arguments is String) {
           // Handle case when coming from other places with just gender
           return MaterialPageRoute(
               builder: (_) => SignupScreen(
-                gender: arguments,
-                initialStep: 0,
-              ));
+                    gender: arguments,
+                    initialStep: 0,
+                  ));
         } else {
           // Fallback with default values
           return MaterialPageRoute(
               builder: (_) => SignupScreen(
-                gender: 'male',
-                initialStep: 0,
-              ));
+                    gender: 'male',
+                    initialStep: 0,
+                  ));
         }
       case AppRoutes.loginScreen:
         return MaterialPageRoute(builder: (_) => LoginScreen());
@@ -88,15 +88,15 @@ class AppRouting {
       case AppRoutes.verificationEmailScreen:
         return MaterialPageRoute(
             builder: (_) => VerificationEmailScreen(
-              email: arguments as String,
-            ));
+                  email: arguments as String,
+                ));
       case AppRoutes.newPasswordScreen:
         return MaterialPageRoute(
             builder: (_) => NewPasswordScreen(
-              email: arguments as String,
-            ));
-    // case AppRoutes.profileScreen:
-    //   return MaterialPageRoute(builder: (_) => ProfileScreen());
+                  email: arguments as String,
+                ));
+      // case AppRoutes.profileScreen:
+      //   return MaterialPageRoute(builder: (_) => ProfileScreen());
       case AppRoutes.manageProfileScreen:
         return MaterialPageRoute(builder: (_) => ManageProfileScreen());
       case AppRoutes.searchScreen:
@@ -121,13 +121,13 @@ class AppRouting {
       case AppRoutes.homeScreen:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
-              create: (context) => SearchCubit(sl<SearchUseCase>()),
-              child: HomeScreenWrapper(),
-            ));
+                  create: (context) => SearchCubit(sl<SearchUseCase>()),
+                  child: HomeScreenWrapper(),
+                ));
       case AppRoutes.notificationScreen:
         return MaterialPageRoute(builder: (_) => NotificationScreen());
       case AppRoutes.profileDetailsScreen:
-      // Handle both UsersDataModel and int arguments
+        // Handle both UsersDataModel and int arguments
         if (arguments is UsersDataModel) {
           return MaterialPageRoute(
               builder: (_) => ProfileDetailsScreen(user: arguments));
@@ -149,9 +149,9 @@ class AppRouting {
         final imageUrl = args['imageUrl'] as String;
         return MaterialPageRoute(
             builder: (_) => PersonDetailsView(
-              personId: personId,
-              imageUrl: imageUrl,
-            ));
+                  personId: personId,
+                  imageUrl: imageUrl,
+                ));
       case AppRoutes.profileAboutUsScreen:
         return MaterialPageRoute(builder: (_) => AboutUsScreen());
       case AppRoutes.profileExcellencePackageScreen:
@@ -169,15 +169,18 @@ class AppRouting {
       case AppRoutes.profileContactUsScreen:
         return MaterialPageRoute(builder: (_) => ContactUsScreen());
       case AppRoutes.profileMyImageScreen:
-        return MaterialPageRoute(builder: (_) => MyImageScreen());
+        return MaterialPageRoute(
+            builder: (_) => MyImageScreen(
+                  photoVisibility: arguments as String,
+                ));
       case AppRoutes.profileTechnicalSupportScreen:
         return MaterialPageRoute(builder: (_) => TechnicalSupportScreen());
       case AppRoutes.successStoriesScreen:
         return MaterialPageRoute(
             builder: (_) => BlocProvider.value(
-              value: sl<SuccessStoryCubit>()..loadStories(),
-              child: SuccessStoriesScreen(),
-            ));
+                  value: sl<SuccessStoryCubit>()..loadStories(),
+                  child: SuccessStoriesScreen(),
+                ));
       case AppRoutes.blogScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider.value(
