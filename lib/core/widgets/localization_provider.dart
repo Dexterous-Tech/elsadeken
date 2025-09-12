@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import '../services/localization_service.dart';
+import '../theme/font_family_helper.dart';
 
 class LocalizationProvider extends StatefulWidget {
   final Widget child;
@@ -35,6 +36,9 @@ class _LocalizationProviderState extends State<LocalizationProvider> {
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+              scaffoldBackgroundColor: Colors.white,
+              fontFamily: FontFamilyHelper.lamaSansArabic),
           locale: _localizationService.currentLocale,
           supportedLocales: LocalizationService.supportedLocales,
           localizationsDelegates: const [

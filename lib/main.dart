@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:elsadeken/core/routes/app_routing.dart';
 import 'package:elsadeken/core/services/firebase_notification_service.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -59,7 +60,9 @@ class Elsadeken extends StatelessWidget {
         builder: (context, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+            theme: ThemeData(
+                scaffoldBackgroundColor: Colors.white,
+                fontFamily: FontFamilyHelper.lamaSansArabic),
             onGenerateRoute: appRouting.onGenerateRouting,
             initialRoute: AppRoutes.splashScreen,
 
