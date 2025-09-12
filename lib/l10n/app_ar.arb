@@ -696,7 +696,7 @@
     "textCannotContainNumbers": "لا يمكن أن يحتوي النص على أرقام",
     "cannotEnterPhoneNumber": "لا يمكن إدخال رقم هاتف هنا",
     "textCannotContainLinks": "لا يمكن أن يحتوي النص على روابط",
-    "agreeToTermsAndConditions": "أوافق على الشروط والأحكام",
+    "agreeToTermsAndConditions": "أوافق على سياسة الخصوصية وضوابط الاستخدام",
     "login": "تسجيل الدخول",
     "whatIsYourEducationalQualification": "ما هو المؤهل التعليمي ؟",
     "financialStatus": "الوضع المادي ؟",
@@ -762,7 +762,6 @@
     "offline": "غير متصل",
     "messageSentSuccessfully": "تم إرسال رسالتك بنجاح",
     "contactUs": "إتصل بنا",
-    "premiumCardDescription": "في حالة قمت بشراء بطاقة الصادقون و الصادقات من الوكيل المحلي ، فسيرسل لك رقم لتفعيل باقة التميز ، قم بإدخاله في الخانة اسفله و سيتم ترقية حسابك الى عضوية مميزة مباشرة",
     "yourEmailAddress": "البريد الإلكتروني الخاص بك",
     "pleaseEnterEmail": "يرجى إدخال البريد الإلكتروني",
     "pleaseEnterValidEmail": "يرجى إدخال بريد إلكتروني صحيح",
@@ -776,6 +775,7 @@
 
 "beardTitle" : "اللحية" ,
 "hijabTitle" : "الحجاب",
-"prayerTitle" : "الصلاة"
+"prayerTitle" : "الصلاة",
+  "premiumCardDescription"  : "يسعدنا تواصلكم معنا، فريق الدعم جاهز لخدمتكم والإجابة على استفساراتكم وملاحظاتكم في أي وقت."
 
 }

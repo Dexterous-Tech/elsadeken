@@ -18,9 +18,34 @@ import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class ContactUsBody extends StatelessWidget {
+class ContactUsBody extends StatefulWidget {
   const ContactUsBody({super.key});
+
+  @override
+  State<ContactUsBody> createState() => _ContactUsBodyState();
+}
+
+class _ContactUsBodyState extends State<ContactUsBody> {
+  Future<void> openWhatsApp(String phoneNumber) async {
+    final Uri whatsapp = Uri.parse("https://wa.me/$phoneNumber");
+    if (!await launchUrl(whatsapp, mode: LaunchMode.externalApplication)) {
+      throw Exception("Could not launch WhatsApp");
+    }
+  }
+
+  Future<void> sendEmail(String email) async {
+    final Uri mail = Uri(
+      scheme: 'mailto',
+      path: email,
+      query: 'subject=Hello&body=Hi there!', // optional
+    );
+    if (!await launchUrl(mail)) {
+      throw Exception("Could not launch email");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,25 +174,28 @@ class ContactUsBody extends StatelessWidget {
                                 },
                                 textButton: AppLocalizations.of(context)!.send,
                               ),
-                              verticalSpace(13),
-                              // GestureDetector(
-                              //   onTap: () {
-                              //     context.pushNamed(
-                              //         AppRoutes.profileTechnicalSupportScreen);
-                              //   },
-                              //   child: Row(
-                              //     textDirection: TextDirection.rtl,
-                              //     mainAxisAlignment: MainAxisAlignment.center,
-                              //     children: [
-                              //       Image.asset(
-                              //         AppImages.contactHeadphoneProfile,
-                              //         width: 17.w,
-                              //         height: 17.h,
-                              //       ),
-                              //
-                              //     ],
-                              //   ),
-                              // ),
+                              verticalSpace(12),
+                              contactOption(
+                                icon: FontAwesomeIcons.whatsapp,
+                                contact: '0573743330',
+                                iconColor: Color(0xff25D366),
+                                onTap: () => openWhatsApp("966573743330"),
+                              ),
+                              verticalSpace(8),
+                              contactOption(
+                                icon: FontAwesomeIcons.envelope,
+                                contact: 'sadiqeen1@hotmail.com',
+                                iconColor: Color(0xffEA4335),
+                                onTap: () => sendEmail("sadiqeen1@hotmail.com"),
+                              ),
+                              verticalSpace(8),
+                              contactOption(
+                                icon: FontAwesomeIcons.headset,
+                                contact: 'alsaadiqin@hotmail.com',
+                                iconColor: Color(0xff007BFF),
+                                onTap: () =>
+                                    sendEmail("alsaadiqin@hotmail.com"),
+                              ),
                             ],
                           ),
                         ),
@@ -180,6 +208,33 @@ class ContactUsBody extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget contactOption({
+    required IconData icon,
+    required String contact,
+    required Color iconColor,
+    required void Function()? onTap,
+  }) {
+    return Row(
+      textDirection: LocalizationService.instance.textDirection,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          color: iconColor,
+        ),
+        horizontalSpace(8),
+        GestureDetector(
+          onTap: onTap,
+          child: Text(
+            contact,
+            style: AppTextStyles.font16BlackSemiBoldLamaSans
+                .copyWith(color: AppColors.sinopia),
+          ),
+        )
+      ],
     );
   }
 }

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmptyNotificationsWidget extends StatelessWidget {
-  const EmptyNotificationsWidget({Key? key}) : super(key: key);
+  const EmptyNotificationsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

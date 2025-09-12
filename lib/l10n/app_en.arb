@@ -697,7 +697,7 @@
     "textCannotContainNumbers": "Text cannot contain numbers",
     "cannotEnterPhoneNumber": "Cannot enter phone number here",
     "textCannotContainLinks": "Text cannot contain links",
-    "agreeToTermsAndConditions": "I agree to the terms and conditions",
+    "agreeToTermsAndConditions": "I agree to the Privacy Policy and Terms of Use",
     "login": "Login",
     "whatIsYourEducationalQualification": "What is your educational qualification?",
     "financialStatus": "Financial status?",
@@ -763,7 +763,6 @@
     "offline": "Offline",
     "messageSentSuccessfully": "Your message has been sent successfully",
     "contactUs": "Contact Us",
-    "premiumCardDescription": "If you purchased a premium card from a local agent, you will receive a number to activate the premium package. Enter it in the field below and your account will be upgraded to premium membership immediately",
     "yourEmailAddress": "Your email address",
     "pleaseEnterEmail": "Please enter your email",
     "pleaseEnterValidEmail": "Please enter a valid email",
@@ -776,7 +775,8 @@
     "chatSetting" : "Chat Settings",
 "beardTitle" : "Beard" ,
 "hijabTitle" : "Hijab",
-"prayerTitle" : "Prayer"
+"prayerTitle" : "Prayer",
+  "premiumCardDescription" : "We are pleased to communicate with you. Our support team is ready to serve you and answer your inquiries and comments at any time."
 
 
 }

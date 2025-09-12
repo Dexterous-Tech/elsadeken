@@ -1548,7 +1548,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get textCannotContainLinks => 'Text cannot contain links';
 
   @override
-  String get agreeToTermsAndConditions => 'I agree to the terms and conditions';
+  String get agreeToTermsAndConditions => 'I agree to the Privacy Policy and Terms of Use';
 
   @override
   String get whatIsYourEducationalQualification => 'What is your educational qualification?';
@@ -1644,9 +1644,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messageSentSuccessfully => 'Your message has been sent successfully';
 
   @override
-  String get premiumCardDescription => 'If you purchased a premium card from a local agent, you will receive a number to activate the premium package. Enter it in the field below and your account will be upgraded to premium membership immediately';
-
-  @override
   String get yourEmailAddress => 'Your email address';
 
   @override
@@ -1681,4 +1678,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get prayerTitle => 'Prayer';
+
+  @override
+  String get premiumCardDescription => 'We are pleased to communicate with you. Our support team is ready to serve you and answer your inquiries and comments at any time.';
 }

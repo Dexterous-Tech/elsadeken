@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../../core/services/localization_service.dart';
 import '../../../data/model/notification_model.dart';
-import 'notification_items.dart';
+import 'notification_item.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationListWidget extends StatelessWidget {

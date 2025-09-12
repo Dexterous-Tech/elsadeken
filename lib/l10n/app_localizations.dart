@@ -3074,7 +3074,7 @@ abstract class AppLocalizations {
   /// No description provided for @agreeToTermsAndConditions.
   ///
   /// In en, this message translates to:
-  /// **'I agree to the terms and conditions'**
+  /// **'I agree to the Privacy Policy and Terms of Use'**
   String get agreeToTermsAndConditions;
 
   /// No description provided for @whatIsYourEducationalQualification.
@@ -3263,12 +3263,6 @@ abstract class AppLocalizations {
   /// **'Your message has been sent successfully'**
   String get messageSentSuccessfully;
 
-  /// No description provided for @premiumCardDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'If you purchased a premium card from a local agent, you will receive a number to activate the premium package. Enter it in the field below and your account will be upgraded to premium membership immediately'**
-  String get premiumCardDescription;
-
   /// No description provided for @yourEmailAddress.
   ///
   /// In en, this message translates to:
@@ -3340,6 +3334,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Prayer'**
   String get prayerTitle;
+
+  /// No description provided for @premiumCardDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'We are pleased to communicate with you. Our support team is ready to serve you and answer your inquiries and comments at any time.'**
+  String get premiumCardDescription;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1549,7 +1549,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get textCannotContainLinks => 'لا يمكن أن يحتوي النص على روابط';
 
   @override
-  String get agreeToTermsAndConditions => 'أوافق على الشروط والأحكام';
+  String get agreeToTermsAndConditions => 'أوافق على سياسة الخصوصية وضوابط الاستخدام';
 
   @override
   String get whatIsYourEducationalQualification => 'ما هو المؤهل التعليمي ؟';
@@ -1645,9 +1645,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get messageSentSuccessfully => 'تم إرسال رسالتك بنجاح';
 
   @override
-  String get premiumCardDescription => 'في حالة قمت بشراء بطاقة الصادقون و الصادقات من الوكيل المحلي ، فسيرسل لك رقم لتفعيل باقة التميز ، قم بإدخاله في الخانة اسفله و سيتم ترقية حسابك الى عضوية مميزة مباشرة';
-
-  @override
   String get yourEmailAddress => 'البريد الإلكتروني الخاص بك';
 
   @override
@@ -1682,4 +1679,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get prayerTitle => 'الصلاة';
+
+  @override
+  String get premiumCardDescription => 'يسعدنا تواصلكم معنا، فريق الدعم جاهز لخدمتكم والإجابة على استفساراتكم وملاحظاتكم في أي وقت.';
 }
