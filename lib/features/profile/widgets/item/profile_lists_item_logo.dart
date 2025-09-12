@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/widgets/custom_image_network.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class ProfileListsItemLogo extends StatelessWidget {
               bottom: -5,
               right: 0,
               child: Image.asset(
-                'assets/images/members/menu_items/special.png',
+                AppImages.specialMember,
                 width: 22.w,
                 height: 22,
               ))

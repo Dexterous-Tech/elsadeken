@@ -15,37 +15,37 @@ class MembersScreen extends StatelessWidget {
   const MembersScreen({Key? key}) : super(key: key);
 
   List<Map<String, dynamic>> _getMenuItems(BuildContext context) => [
-    {
-      'title': AppLocalizations.of(context)!.onlineMembers,
-      'backgroundColor': AppColors.beige,
-      'avatarAsset': 'assets/images/members/menu_items/member_item1.png',
-      'screen': 'online_members_screen',
-    },
-    {
-      'title': AppLocalizations.of(context)!.profileVisitors,
-      'backgroundColor': AppColors.beige,
-      'avatarAsset': 'assets/images/members/menu_items/member_item2.png',
-      'screen': 'profile_visitors_screen',
-    },
-    {
-      'title': AppLocalizations.of(context)!.newMembers,
-      'backgroundColor': AppColors.beige,
-      'avatarAsset': 'assets/images/members/menu_items/member_item3.png',
-      'screen': 'new_members_screen',
-    },
-    {
-      'title': AppLocalizations.of(context)!.premiumMembers,
-      'backgroundColor': AppColors.beige,
-      'avatarAsset': 'assets/images/members/menu_items/member_item4.png',
-      'screen': 'premium_members_screen',
-    },
-    {
-      'title': AppLocalizations.of(context)!.healthStatuses,
-      'backgroundColor': AppColors.beige,
-      'avatarAsset': 'assets/images/members/menu_items/member_item5.png',
-      'screen': 'health_status_screen',
-    },
-  ];
+        {
+          'title': AppLocalizations.of(context)!.onlineMembers,
+          'backgroundColor': AppColors.beige,
+          'avatarAsset': AppImages.memberItem1,
+          'screen': 'online_members_screen',
+        },
+        {
+          'title': AppLocalizations.of(context)!.profileVisitors,
+          'backgroundColor': AppColors.beige,
+          'avatarAsset': AppImages.memberItem2,
+          'screen': 'profile_visitors_screen',
+        },
+        {
+          'title': AppLocalizations.of(context)!.newMembers,
+          'backgroundColor': AppColors.beige,
+          'avatarAsset': AppImages.memberItem3,
+          'screen': 'new_members_screen',
+        },
+        {
+          'title': AppLocalizations.of(context)!.premiumMembers,
+          'backgroundColor': AppColors.beige,
+          'avatarAsset': AppImages.memberItem4,
+          'screen': 'premium_members_screen',
+        },
+        {
+          'title': AppLocalizations.of(context)!.healthStatuses,
+          'backgroundColor': AppColors.beige,
+          'avatarAsset': AppImages.memberItem5,
+          'screen': 'health_status_screen',
+        },
+      ];
 
   void _navigateToScreen(BuildContext context, String screenName) async {
     await Future.delayed(const Duration(milliseconds: 150));

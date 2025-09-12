@@ -122,4 +122,13 @@ class AppImages {
   //notification
   static String emptyNotification =
       '${AppConstants.notificationAssetsPath}empty_notification.png';
+
+  // members
+  static String memberItem1 = '${AppConstants.membersPath}member_item1.png';
+  static String memberItem2 = '${AppConstants.membersPath}member_item2.png';
+  static String memberItem3 = '${AppConstants.membersPath}member_item3.png';
+  static String memberItem4 = '${AppConstants.membersPath}member_item4.png';
+  static String memberItem5 = '${AppConstants.membersPath}member_item5.png';
+  static String memberItem6 = '${AppConstants.membersPath}member_item6.png';
+  static String specialMember = '${AppConstants.membersPath}special.png';
 }
