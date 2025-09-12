@@ -34,18 +34,20 @@ class _CustomCountryCodePickerState extends State<CustomCountryCodePicker> {
           side: BorderSide(color: AppColors.brown),
         ),
       ),
-      child: Directionality(
-        textDirection: LocalizationService.instance.textDirection,
-        child: CountryCodePicker(
-          padding: EdgeInsets.zero,
-          onChanged: (code) {
-            widget.code.value = code.dialCode ?? '';
-          },
-          initialSelection: 'SA',
-          favorite: ['+966', 'SA'],
-          showCountryOnly: false,
-          showOnlyCountryWhenClosed: false,
-          alignLeft: false,
+      child: Center(
+        child: Directionality(
+          textDirection: LocalizationService.instance.textDirection,
+          child: CountryCodePicker(
+            padding: EdgeInsets.zero,
+            onChanged: (code) {
+              widget.code.value = code.dialCode ?? '';
+            },
+            initialSelection: 'SA',
+            favorite: ['+966', 'SA'],
+            showCountryOnly: false,
+            showOnlyCountryWhenClosed: false,
+            alignLeft: false,
+          ),
         ),
       ),
     );

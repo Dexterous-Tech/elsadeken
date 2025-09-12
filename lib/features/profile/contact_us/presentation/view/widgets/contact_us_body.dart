@@ -40,7 +40,6 @@ class _ContactUsBodyState extends State<ContactUsBody> {
     final Uri mail = Uri(
       scheme: 'mailto',
       path: email,
-      query: 'subject=Hello&body=Hi there!', // optional
     );
     if (!await launchUrl(mail)) {
       throw Exception("Could not launch email");
@@ -175,32 +174,43 @@ class _ContactUsBodyState extends State<ContactUsBody> {
                                 textButton: AppLocalizations.of(context)!.send,
                               ),
                               verticalSpace(12),
-                              contactOption(
-                                icon: FontAwesomeIcons.whatsapp,
-                                contact: '0573743330',
-                                iconColor: Color(0xff25D366),
-                                onTap: () => openWhatsApp("966573743330"),
-                              ),
-                              verticalSpace(8),
-                              contactOption(
-                                icon: FontAwesomeIcons.envelope,
-                                contact: 'sadiqeen1@hotmail.com',
-                                iconColor: Color(0xffEA4335),
-                                onTap: () => sendEmail("sadiqeen1@hotmail.com"),
-                              ),
-                              verticalSpace(8),
-                              contactOption(
-                                icon: FontAwesomeIcons.headset,
-                                contact: 'alsaadiqin@hotmail.com',
-                                iconColor: Color(0xff007BFF),
-                                onTap: () =>
-                                    sendEmail("alsaadiqin@hotmail.com"),
-                              ),
+                              //
                             ],
                           ),
                         ),
                       ],
                     ),
+                  ),
+                  verticalSpace(16),
+                  Row(
+                    textDirection: LocalizationService.instance.textDirection,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () => openWhatsApp("966573743330"),
+                        child: Icon(
+                          FontAwesomeIcons.whatsapp,
+                          color: Color(0xff25D366),
+                          size: 30.sp,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => sendEmail("sadiqeen1@hotmail.com"),
+                        child: Icon(
+                          FontAwesomeIcons.envelope,
+                          color: Color(0xffEA4335),
+                          size: 30.sp,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => sendEmail("alsaadiqin@hotmail.com"),
+                        child: Icon(
+                          FontAwesomeIcons.headset,
+                          color: Color(0xff007BFF),
+                          size: 30.sp,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -237,4 +247,25 @@ class _ContactUsBodyState extends State<ContactUsBody> {
       ],
     );
   }
+
+// contactOption(
+//   icon: FontAwesomeIcons.whatsapp,
+//   contact: '0573743330',
+//   iconColor: Color(0xff25D366),
+//   onTap: () => openWhatsApp("966573743330"),
+// ),
+// verticalSpace(8),
+// contactOption(
+//   icon: FontAwesomeIcons.envelope,
+//   contact: 'sadiqeen1@hotmail.com',
+//   iconColor: Color(0xffEA4335),
+//   onTap: () => sendEmail("sadiqeen1@hotmail.com"),
+// ),
+// verticalSpace(8),
+// contactOption(
+//   icon: FontAwesomeIcons.headset,
+//   contact: 'alsaadiqin@hotmail.com',
+//   iconColor: Color(0xff007BFF),
+//   onTap: () =>sendEmail("alsaadiqin@hotmail.com"),
+// ),
 }

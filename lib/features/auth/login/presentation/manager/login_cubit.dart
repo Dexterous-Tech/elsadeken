@@ -100,12 +100,10 @@ class LoginCubit extends Cubit<LoginState> {
   // }
 
   Future<void> saveUserToken(String token) async {
-    // Clear previous data
-    await Future.wait([
-      SharedPreferencesHelper.deleteSecuredString(
-        SharedPreferencesKey.apiTokenKey,
-      ),
-    ]);
+    // Clear all shared preferences data before storing new token
+    await SharedPreferencesHelper.clearAllAppState();
+
+    // Store the new token
     await SharedPreferencesHelper.setSecuredString(
       SharedPreferencesKey.apiTokenKey,
       token,

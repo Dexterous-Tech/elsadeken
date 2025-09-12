@@ -85,7 +85,7 @@ class _MyImageBodyState extends State<MyImageBody> {
         contentBody: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             textDirection: LocalizationService.instance.textDirection,
             children: [
               ProfileHeader(title: AppLocalizations.of(context)!.myImage),
@@ -209,7 +209,8 @@ class _MyImageBodyState extends State<MyImageBody> {
               verticalSpace(30),
               // Show privacy settings only for males
               if (!isLoadingGender &&
-                  (userGender == 'ذكر' || userGender == 'male')) ...[
+                  (userGender!.toLowerCase() == 'ذكر' ||
+                      userGender!.toLowerCase() == 'male')) ...[
                 BlocListener<MyImageCubit, MyImageState>(
                   listenWhen: (previous, current) =>
                       current is UpdateImageSettingLoading ||
@@ -256,7 +257,6 @@ class _MyImageBodyState extends State<MyImageBody> {
                         ),
                       );
                     } else if (state is UpdateImageSettingFailure) {
-                      // Show error snackbar without affecting the build
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
@@ -278,7 +278,6 @@ class _MyImageBodyState extends State<MyImageBody> {
                         ),
                       );
                     } else if (state is UpdateImageSettingSuccess) {
-                      // Show snackbar with privacy setting message without affecting the build
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
@@ -306,14 +305,16 @@ class _MyImageBodyState extends State<MyImageBody> {
                     }
                   },
                   child: Column(
-                    textDirection: TextDirection.rtl,
+                    textDirection: LocalizationService.instance.textDirection,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ContainerSuccessWay(
                           text: AppLocalizations.of(context)!
                               .allowedToViewMyImage),
                       verticalSpace(30),
                       Row(
-                        textDirection: TextDirection.rtl,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         children: [
                           Radio<String>(
                             value: 'no_one',
@@ -333,14 +334,15 @@ class _MyImageBodyState extends State<MyImageBody> {
                           horizontalSpace(10),
                           Expanded(
                             child: RichText(
-                              textAlign: TextAlign.right,
-                              textDirection: TextDirection.rtl,
+                              textAlign:
+                                  LocalizationService.instance.textAlignment,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
                               text: TextSpan(
                                 children: [
                                   TextSpan(
                                       text:
-                                          AppLocalizations.of(context)!.noOne +
-                                              ' ',
+                                          '${AppLocalizations.of(context)!.noOne} ',
                                       style: AppTextStyles
                                           .font14PumpkinOrangeBoldLamaSans
                                           .copyWith(color: AppColors.black)),
@@ -359,7 +361,8 @@ class _MyImageBodyState extends State<MyImageBody> {
                       ),
                       verticalSpace(16),
                       Row(
-                        textDirection: TextDirection.rtl,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         children: [
                           Radio<String>(
                             value: 'all_members',
@@ -379,14 +382,15 @@ class _MyImageBodyState extends State<MyImageBody> {
                           horizontalSpace(10),
                           Expanded(
                             child: RichText(
-                              textAlign: TextAlign.right,
-                              textDirection: TextDirection.rtl,
+                              textAlign:
+                                  LocalizationService.instance.textAlignment,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: AppLocalizations.of(context)!
-                                            .allMembers +
-                                        ' ',
+                                    text:
+                                        '${AppLocalizations.of(context)!.allMembers} ',
                                     style: AppTextStyles
                                         .font14PumpkinOrangeBoldLamaSans
                                         .copyWith(color: AppColors.black),
@@ -404,7 +408,8 @@ class _MyImageBodyState extends State<MyImageBody> {
               ],
               // Show hint text for non-male users
               if (!isLoadingGender &&
-                  (userGender != 'ذكر' && userGender != 'male')) ...[
+                  (userGender!.toLowerCase() != 'ذكر' &&
+                      userGender!.toLowerCase() != 'male')) ...[
                 Column(
                   children: [
                     ContainerSuccessWay(
@@ -503,7 +508,7 @@ class _MyImageBodyState extends State<MyImageBody> {
     return Padding(
       padding: EdgeInsets.only(right: 16.w, bottom: 16.h),
       child: Row(
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -518,8 +523,8 @@ class _MyImageBodyState extends State<MyImageBody> {
           Expanded(
             child: Text(
               info,
-              textDirection: TextDirection.rtl,
-              textAlign: TextAlign.right,
+              textDirection: LocalizationService.instance.textDirection,
+              textAlign: LocalizationService.instance.textAlignment,
               style: AppTextStyles.font19JetRegularLamaSans,
             ),
           )

@@ -327,7 +327,9 @@ class SignupCubit extends Cubit<SignupState> {
         log("Register information completed successfully");
         // Don't mark user as logged in after signup - they must login first
         // await SharedPreferencesHelper.setIsLoggedIn(true);
-        // Clear signup data after successful registration
+        // Clear all shared preferences data after successful registration
+        await SharedPreferencesHelper.clearAllAppState();
+        // Also clear signup-specific data
         await clearSignupData();
         emit(RegisterInformationSuccess(
             registerInformationResponseModel:
