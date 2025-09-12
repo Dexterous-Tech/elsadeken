@@ -60,6 +60,8 @@ class NotificationDataModel {
     this.icon,
     this.readAt,
     this.createdAt,
+    this.type,
+    this.referenceId,
   });
 
   NotificationDataModel.fromJson(dynamic json) {
@@ -71,6 +73,8 @@ class NotificationDataModel {
     icon = json['icon'];
     readAt = json['read_at'];
     createdAt = json['created_at'];
+    type = json['type'];
+    referenceId = json['reference_id'];
   }
   String? id;
   int? userId;
@@ -80,6 +84,8 @@ class NotificationDataModel {
   String? icon;
   String? readAt;
   String? createdAt;
+  String? type;
+  int? referenceId;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -91,6 +97,8 @@ class NotificationDataModel {
     map['icon'] = icon;
     map['read_at'] = readAt;
     map['created_at'] = createdAt;
+    map['type'] = type;
+    map['reference_id'] = referenceId;
     return map;
   }
 }

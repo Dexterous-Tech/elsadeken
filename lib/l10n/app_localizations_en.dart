@@ -1681,4 +1681,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get premiumCardDescription => 'We are pleased to communicate with you. Our support team is ready to serve you and answer your inquiries and comments at any time.';
+
+  @override
+  String get chats => 'Chats';
 }

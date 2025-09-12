@@ -776,7 +776,8 @@
 "beardTitle" : "Beard" ,
 "hijabTitle" : "Hijab",
 "prayerTitle" : "Prayer",
-  "premiumCardDescription" : "We are pleased to communicate with you. Our support team is ready to serve you and answer your inquiries and comments at any time."
+  "premiumCardDescription" : "We are pleased to communicate with you. Our support team is ready to serve you and answer your inquiries and comments at any time.",
 
+  "chats" : "Chats"
 
 }

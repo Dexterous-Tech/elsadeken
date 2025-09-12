@@ -259,7 +259,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                   child: CustomContainer(
                     img: AppImages.message,
                     color: AppColors.orangeLight.withValues(alpha: 0.07),
-                    text: 'رسائل',
+                    text: AppLocalizations.of(context)!.chats,
                   ),
                 ),
                 BlocListener<ProfileDetailsCubit, ProfileDetailsState>(

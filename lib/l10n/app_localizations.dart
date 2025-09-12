@@ -3340,6 +3340,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We are pleased to communicate with you. Our support team is ready to serve you and answer your inquiries and comments at any time.'**
   String get premiumCardDescription;
+
+  /// No description provided for @chats.
+  ///
+  /// In en, this message translates to:
+  /// **'Chats'**
+  String get chats;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

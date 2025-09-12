@@ -1682,4 +1682,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get premiumCardDescription => 'يسعدنا تواصلكم معنا، فريق الدعم جاهز لخدمتكم والإجابة على استفساراتكم وملاحظاتكم في أي وقت.';
+
+  @override
+  String get chats => 'الرسائل';
 }
