@@ -30,7 +30,9 @@ import '../../data/models/user_model.dart';
 import 'package:elsadeken/features/chat/presentation/view/chat_page.dart';
 
 class HomeScreenWrapper extends StatelessWidget {
-  const HomeScreenWrapper({super.key});
+  const HomeScreenWrapper({super.key, this.initialTabIndex});
+
+  final int? initialTabIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +42,16 @@ class HomeScreenWrapper extends StatelessWidget {
         BlocProvider(create: (context) => sl<ChatListCubit>()),
       ],
       child: Scaffold(
-        body: HomeScreen(),
+        body: HomeScreen(initialTabIndex: initialTabIndex),
       ),
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.initialTabIndex});
+
+  final int? initialTabIndex;
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -83,6 +87,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Set initial tab index if provided
+    if (widget.initialTabIndex != null &&
+        widget.initialTabIndex! >= 0 &&
+        widget.initialTabIndex! <= 3) {
+      _currentIndex = widget.initialTabIndex!;
+      print('🏠 [HomeScreen] Initial tab index set to: $_currentIndex');
+    }
+
     _loadMatchesUsers();
 
     // Load chat list so SwipeableCard can access existing chat rooms
@@ -271,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 21.h),
                   Padding(
-                    padding:  EdgeInsetsDirectional.only(start: 12.w, end: 12.w),
+                    padding: EdgeInsetsDirectional.only(start: 12.w, end: 12.w),
                     child: CustomTextFormField(
                       focusNode: _focusNode,
                       onChanged: (value) {
@@ -351,9 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
               else
                 Container(
                   height: 600.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white
-                  ),
+                  decoration: BoxDecoration(color: Colors.white),
                   margin: EdgeInsets.symmetric(horizontal: 16.w),
                   child: Stack(
                     children: currentUsers

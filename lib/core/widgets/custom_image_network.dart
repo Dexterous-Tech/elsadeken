@@ -20,6 +20,8 @@ class CustomImageNetwork extends StatelessWidget {
           child: Container(
         width: width,
         height: height,
+        padding:
+            EdgeInsetsDirectional.symmetric(horizontal: 16.w, vertical: 16.h),
         decoration:
             BoxDecoration(shape: BoxShape.circle, color: Colors.grey[200]),
         child: Center(

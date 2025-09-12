@@ -122,7 +122,7 @@ class AppRouting {
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => SearchCubit(sl<SearchUseCase>()),
-                  child: HomeScreenWrapper(),
+                  child: HomeScreenWrapper(initialTabIndex: arguments as int?),
                 ));
       case AppRoutes.notificationScreen:
         return MaterialPageRoute(builder: (_) => NotificationScreen());

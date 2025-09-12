@@ -4,7 +4,6 @@ import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/custom_image_network.dart';
-import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -110,27 +109,13 @@ class NotificationItemWidget extends StatelessWidget {
         break;
 
       case 'chat':
-        // Navigate to chat conversation screen if referenceId has value
+        // Navigate to chat page (bottom navigation tab) if referenceId has value
         if (notification.referenceId != null) {
-          // Create ChatRoomModel using the chat ID directly
-          final chatRoom = ChatRoomModel(
-            id: notification.referenceId.toString(),
-            name: notification.userName,
-            image: notification.icon ?? '',
-            receiverId: 0, // Will be loaded from the chat
-            lastMessage: notification.body,
-            lastMessageTime: notification.createdAt,
-            unreadCount: 0,
-            isOnline: false,
-            isFavorite: false,
-          );
-
-          context.pushNamed(
-            AppRoutes.chatConversationScreen,
-            arguments: {
-              "chatRoom": chatRoom,
-            },
-          );
+          print(
+              '🔔 [Notification] Navigating to home screen with chat tab (index: 1)');
+          // Navigate to home screen with chat tab selected
+          context.pushNamed(AppRoutes.homeScreen,
+              arguments: 1); // 1 is the chat tab index
         }
         break;
 
