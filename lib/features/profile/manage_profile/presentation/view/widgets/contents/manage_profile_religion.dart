@@ -54,7 +54,8 @@ class ManageProfileReligion extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         // Show beard for males only
-        if (profileData?.gender == 'male' || profileData?.gender == 'ذكر')
+        if (profileData?.gender!.toLowerCase() == 'male' ||
+            profileData?.gender == 'ذكر')
           ManageProfileContentItem(
             title: AppLocalizations.of(context)!.beardTitle,
             itemContent: ManageProfileContentText(
@@ -63,7 +64,8 @@ class ManageProfileReligion extends StatelessWidget {
             ),
           ),
         // Show hijab for females only
-        if (profileData?.gender != 'male' && profileData?.gender != 'ذكر')
+        if (profileData?.gender!.toLowerCase() != 'male' &&
+            profileData?.gender != 'ذكر')
           ManageProfileContentItem(
             title: AppLocalizations.of(context)!.hijabTitle,
             itemContent: ManageProfileContentText(
@@ -123,9 +125,10 @@ class ManageProfileReligion extends StatelessWidget {
           ],
         ),
         // Show beard for males only
-        if (profileData?.gender == 'male' || profileData?.gender == 'ذكر')
+        if (profileData?.gender!.toLowerCase() == 'male' ||
+            profileData?.gender == 'ذكر')
           ManageProfileField(
-            label: AppLocalizations.of(context)!.beard,
+            label: AppLocalizations.of(context)!.beardTitle,
             hint: AppLocalizations.of(context)!.chooseBeardStatus,
             currentValue:
                 _mapBeardToDisplay(context, profileData?.attribute?.beard),
@@ -133,9 +136,10 @@ class ManageProfileReligion extends StatelessWidget {
             options: _getBeardOptions(context),
           ),
         // Show hijab for females only
-        if (profileData?.gender != 'male' && profileData?.gender != 'ذكر')
+        if (profileData?.gender!.toLowerCase() != 'male' &&
+            profileData?.gender != 'ذكر')
           ManageProfileField(
-            label: AppLocalizations.of(context)!.hijab,
+            label: AppLocalizations.of(context)!.hijabTitle,
             hint: AppLocalizations.of(context)!.chooseHijabStatus,
             currentValue:
                 _mapHijabToDisplay(context, profileData?.attribute?.hijab),

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:elsadeken/core/routes/app_routing.dart';
 import 'package:elsadeken/core/services/firebase_notification_service.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
@@ -68,6 +69,7 @@ class Elsadeken extends StatelessWidget {
 
             // ✅ Add AppLocalizations.delegate
             localizationsDelegates: const [
+              CountryLocalizations.delegate, // 👈 from country_code_picker
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,

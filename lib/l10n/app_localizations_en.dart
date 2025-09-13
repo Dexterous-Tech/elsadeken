@@ -1696,4 +1696,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get locationNotAvailable => 'Location not available';
+
+  @override
+  String get selectCountry => 'Select Country';
 }

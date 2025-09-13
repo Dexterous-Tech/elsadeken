@@ -782,6 +782,8 @@
   "noNewMatches" : "No new matches",
   "failedToLoadMatches" : "Failed to load matches",
   "errorLoadingProfile" : "Error loading profile" ,
-  "locationNotAvailable" : "Location not available"
+  "locationNotAvailable" : "Location not available",
+  "selectCountry" : "Select Country"
+
 
 }

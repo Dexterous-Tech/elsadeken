@@ -781,8 +781,8 @@
   "noNewMatches" : "لا توجد مطابقات جديدة",
   "failedToLoadMatches" : "خطا في تحميل المطابقات",
   "errorLoadingProfile" : "خطأ في تحميل الحساب",
-  "locationNotAvailable" : "الموقع غير متوفر"
-
+  "locationNotAvailable" : "الموقع غير متوفر",
+  "selectCountry" : "اختيار الدولة"
 
 
 }

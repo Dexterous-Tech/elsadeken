@@ -1,5 +1,6 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -85,6 +86,10 @@ class _CustomCountryCodePickerState extends State<CustomCountryCodePicker> {
         child: Directionality(
           textDirection: LocalizationService.instance.textDirection,
           child: CountryCodePicker(
+            searchDecoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.selectCountry,
+            ),
+            headerText: AppLocalizations.of(context)!.selectCountry,
             padding: EdgeInsets.zero,
             onChanged: (code) {
               widget.code.value = code.dialCode ?? '';

@@ -1697,4 +1697,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get locationNotAvailable => 'الموقع غير متوفر';
+
+  @override
+  String get selectCountry => 'اختيار الدولة';
 }
