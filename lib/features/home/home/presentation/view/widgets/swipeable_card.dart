@@ -341,7 +341,8 @@ class _SwipeableCardState extends State<SwipeableCard>
                                       decoration: BoxDecoration(
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withValues(alpha: 0.05),
+                                            color: Colors.black
+                                                .withValues(alpha: 0.08),
                                             blurRadius: 12,
                                             offset: Offset(0, 4),
                                           ),
@@ -355,19 +356,22 @@ class _SwipeableCardState extends State<SwipeableCard>
                                         children: [
                                           Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             textDirection: LocalizationService
                                                 .instance.textDirection,
                                             children: [
                                               Text(
                                                 '${widget.user.name}، ${widget.user.age} ${AppLocalizations.of(context)!.year}',
-                                                textDirection: LocalizationService
-                                                    .instance.textDirection,
+                                                textDirection:
+                                                    LocalizationService
+                                                        .instance.textDirection,
+                                                textAlign: LocalizationService
+                                                    .instance.textAlignment,
                                                 style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 16.sp,
                                                     fontWeight:
-                                                    FontWeightHelper.bold,
+                                                        FontWeightHelper.bold,
                                                     fontFamily: FontFamilyHelper
                                                         .lamaSansArabic),
                                               ),
@@ -376,8 +380,8 @@ class _SwipeableCardState extends State<SwipeableCard>
                                                 style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 14.sp,
-                                                    fontWeight:
-                                                    FontWeightHelper.regular,
+                                                    fontWeight: FontWeightHelper
+                                                        .regular,
                                                     fontFamily: FontFamilyHelper
                                                         .lamaSansArabic),
                                               ),
@@ -385,8 +389,8 @@ class _SwipeableCardState extends State<SwipeableCard>
                                           ),
                                           Flexible(
                                             child: Container(
-                                              padding:
-                                                  EdgeInsetsDirectional.symmetric(
+                                              padding: EdgeInsetsDirectional
+                                                  .symmetric(
                                                 horizontal: 26.5.w,
                                                 vertical: 11.h,
                                               ),
@@ -414,12 +418,12 @@ class _SwipeableCardState extends State<SwipeableCard>
                                                         .lamaSansArabic,
                                                   ),
                                                   softWrap: true,
-                                                  overflow: TextOverflow.visible,
+                                                  overflow:
+                                                      TextOverflow.visible,
                                                 ),
                                               ),
                                             ),
                                           ),
-
                                         ],
                                       ),
                                     ),

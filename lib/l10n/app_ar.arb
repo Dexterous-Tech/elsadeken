@@ -777,6 +777,12 @@
 "hijabTitle" : "الحجاب",
 "prayerTitle" : "الصلاة",
   "premiumCardDescription"  : "يسعدنا تواصلكم معنا، فريق الدعم جاهز لخدمتكم والإجابة على استفساراتكم وملاحظاتكم في أي وقت.",
-  "chats" : "الرسائل"
+  "chats" : "الرسائل",
+  "noNewMatches" : "لا توجد مطابقات جديدة",
+  "failedToLoadMatches" : "خطا في تحميل المطابقات",
+  "errorLoadingProfile" : "خطأ في تحميل الحساب",
+  "locationNotAvailable" : "الموقع غير متوفر"
+
+
 
 }

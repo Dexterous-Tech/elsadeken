@@ -1,4 +1,3 @@
-import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
@@ -118,17 +117,22 @@ class _HomeHeaderState extends State<HomeHeader> {
                     SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         children: [
                           Text(
-                            LocalizationHelper.getLocalizedText(
-                                'خطا في تحميل الحساب', 'Error loading profile'),
+                            AppLocalizations.of(context)!.errorLoadingProfile,
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 16.sp,
                               fontWeight: FontWeightHelper.semiBold,
                             ),
                             maxLines: 1,
+                            textAlign:
+                                LocalizationService.instance.textAlignment,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Row(
@@ -143,9 +147,8 @@ class _HomeHeaderState extends State<HomeHeader> {
                               SizedBox(width: 10.w),
                               Expanded(
                                 child: Text(
-                                  LocalizationHelper.getLocalizedText(
-                                      'الموقع غير متوفر',
-                                      'Location not available'),
+                                  AppLocalizations.of(context)!
+                                      .locationNotAvailable,
                                   style: TextStyle(
                                     color: Color(0xff000000)
                                         .withValues(alpha: 0.87),

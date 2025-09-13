@@ -3346,6 +3346,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Chats'**
   String get chats;
+
+  /// No description provided for @noNewMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No new matches'**
+  String get noNewMatches;
+
+  /// No description provided for @failedToLoadMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load matches'**
+  String get failedToLoadMatches;
+
+  /// No description provided for @errorLoadingProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading profile'**
+  String get errorLoadingProfile;
+
+  /// No description provided for @locationNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Location not available'**
+  String get locationNotAvailable;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

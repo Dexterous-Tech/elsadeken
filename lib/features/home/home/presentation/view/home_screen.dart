@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:elsadeken/core/di/injection_container.dart';
-import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
+import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
 
@@ -206,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } catch (e) {
       setState(() {
-        errorMessage = 'Failed to load matches';
+        errorMessage = AppLocalizations.of(context)!.failedToLoadMatches;
         isLoading = false;
       });
     }
@@ -242,7 +243,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       } else {
-        // سوايب ليفت: مفيش أي API Call
         print("User ${swipedUser.id} removed by swipe left");
       }
 
@@ -250,7 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _loadMatchesUsers(loadMore: true);
       }
     } catch (e) {
-      print("fashal error: $e");
+      print("error: $e");
       setState(() {
         currentUsers = tempUsers;
       });
@@ -335,7 +335,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       verticalSpace(150),
-                      Text(errorMessage!),
+                      Text(
+                        AppLocalizations.of(context)!.failedToLoadMatches,
+                        style: AppTextStyles.font14JetRegularLamaSans
+                            .copyWith(color: AppColors.red),
+                      ),
+                      verticalSpace(18),
                       ElevatedButton(
                         onPressed: _loadMatchesUsers,
                         child: Text(AppLocalizations.of(context)!.tryAgain),
@@ -349,12 +354,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      verticalSpace(150),
                       Icon(Icons.favorite_outline,
                           size: 80.w, color: Colors.grey[400]),
                       SizedBox(height: 16.h),
                       Text(
-                        LocalizationHelper.getLocalizedText(
-                            'لا توجد مطابقات جديدة', 'No new matches'),
+                        AppLocalizations.of(context)!.noNewMatches,
                         style:
                             TextStyle(fontSize: 18.sp, color: Colors.grey[600]),
                       ),

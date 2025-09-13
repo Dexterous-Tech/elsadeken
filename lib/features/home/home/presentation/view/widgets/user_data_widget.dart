@@ -1,4 +1,3 @@
-import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';

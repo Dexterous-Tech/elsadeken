@@ -1684,4 +1684,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chats => 'Chats';
+
+  @override
+  String get noNewMatches => 'No new matches';
+
+  @override
+  String get failedToLoadMatches => 'Failed to load matches';
+
+  @override
+  String get errorLoadingProfile => 'Error loading profile';
+
+  @override
+  String get locationNotAvailable => 'Location not available';
 }

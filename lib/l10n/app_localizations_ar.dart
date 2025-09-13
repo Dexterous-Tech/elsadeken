@@ -1685,4 +1685,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get chats => 'الرسائل';
+
+  @override
+  String get noNewMatches => 'لا توجد مطابقات جديدة';
+
+  @override
+  String get failedToLoadMatches => 'خطا في تحميل المطابقات';
+
+  @override
+  String get errorLoadingProfile => 'خطأ في تحميل الحساب';
+
+  @override
+  String get locationNotAvailable => 'الموقع غير متوفر';
 }
