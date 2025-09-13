@@ -105,12 +105,6 @@ flutter:
     - assets/images/notification/
     - assets/lottie/
 
-flutter_gen_l10n:
-  arb-dir: lib/l10n
-  template-arb-file: app_en.arb
-  output-localization-file: l10n.dart
-  output-class: S
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
   # For details regarding adding assets from package dependencies, see
@@ -121,23 +115,6 @@ flutter_gen_l10n:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: IBM Plex Sans Arabic
-      fonts:
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-Thin.ttf
-          weight: 100
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-ExtraLight.ttf
-          weight: 200
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-Light.ttf
-          weight: 300
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-Bold.ttf
-          weight: 700
-
     - family: Lama Sans
       fonts:
         - asset: assets/fonts/lama_sans/LamaSans-ThinExpanded.ttf
@@ -176,3 +153,9 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "assets/images/app_logo/app_logo.png"
+
+flutter_gen_l10n:
+  arb-dir: lib/l10n
+  template-arb-file: app_en.arb
+  output-localization-file: l10n.dart
+  output-class: S

@@ -144,7 +144,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get successStories => 'Success stories';
 
   @override
-  String get blog => 'Alsadiqeen & Alsadiqat Blog';
+  String get blog => 'Alsadiqeen Blog';
 
   @override
   String get aboutUs => 'About Us';
@@ -591,9 +591,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get messagesLabel => 'Messages';
-
-  @override
-  String get membersLabel => 'Members';
 
   @override
   String get accountLabel => 'Account';

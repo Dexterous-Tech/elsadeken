@@ -165,7 +165,7 @@ class ChatOptionsCard extends StatelessWidget {
           ),
           title: Text(
             AppLocalizations.of(context)!.confirm,
-            style: AppTextStyles.font40BlackSemiBoldPlexSans,
+            style: AppTextStyles.font23ChineseBlackBoldLamaSans,
             textAlign: TextAlign.center,
           ),
           content: Text(

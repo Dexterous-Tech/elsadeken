@@ -110,9 +110,9 @@ class MembersScreen extends StatelessWidget {
                           child: Text(
                             AppLocalizations.of(context)!.members,
                             style: TextStyle(
-                                fontSize: 26,
+                                fontSize: 26.sp,
                                 color: Colors.black,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.w700),
                           ),
                         ),
                       ],

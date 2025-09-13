@@ -40,24 +40,30 @@ class _ChatTabBarState extends State<ChatTabBar> {
         textDirection: LocalizationService.instance.textDirection,
         children: List.generate(tabs.length, (index) {
           final bool isSelected = index == widget.selectedIndex;
-          return GestureDetector(
-            onTap: () {
-              widget.onTabChanged(index);
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 50.w),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: isSelected
-                    ? AppColors.desire.withValues(alpha: 0.474)
-                    : Colors.transparent,
-              ),
-              child: Center(
-                child: Text(
-                  tabs[index],
-                  style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
-                    fontWeight: FontWeightHelper.medium,
-                    color: const Color(0xff2D2D2D),
+          return Expanded(
+            child: GestureDetector(
+              onTap: () {
+                widget.onTabChanged(index);
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 4.w),
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: isSelected
+                      ? AppColors.desire.withValues(alpha: 0.474)
+                      : Colors.transparent,
+                ),
+                child: Center(
+                  child: Text(
+                    tabs[index],
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
+                      fontWeight: FontWeightHelper.medium,
+                      color: const Color(0xff2D2D2D),
+                    ),
                   ),
                 ),
               ),

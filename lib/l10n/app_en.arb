@@ -50,7 +50,7 @@
   "membersPhotos": "Members Photos",
   "excellencePackage": "Excellence Package",
   "successStories": "Success Stories",
-  "blog": "Alsadiqeen & Alsadiqat Blog",
+  "blog": "Alsadiqeen Blog",
   "aboutUs": "About Us",
   "shareApp": "Share App",
   "contactUs": "Contact Us",
@@ -216,7 +216,6 @@
   
   "homeLabel": "Home",
   "messagesLabel": "Messages",
-  "membersLabel": "Members", 
   "accountLabel": "Account",
   
   "searchResults": "Found {count} results",

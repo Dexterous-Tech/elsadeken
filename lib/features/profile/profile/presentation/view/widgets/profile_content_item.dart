@@ -32,13 +32,16 @@ class ProfileContentItem extends StatelessWidget {
           children: [
             Image.asset(image, width: 44.w, height: 44.h),
             horizontalSpace(16),
-            Text(
-              title,
-              textAlign: TextAlign.right,
-              style: AppTextStyles.font14CharlestonGreenMediumLamaSans,
-              overflow: TextOverflow.ellipsis,
+            Expanded(
+              child: Text(
+                title,
+                textAlign: TextAlign.right,
+                style: AppTextStyles.font14CharlestonGreenMediumLamaSans,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
             ),
-            Spacer(),
+            horizontalSpace(8),
             leading ??
                 IconButton(
                   onPressed: onPressed,

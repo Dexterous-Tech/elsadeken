@@ -211,8 +211,8 @@ class _SwipeableCardState extends State<SwipeableCard>
                 child: Transform.rotate(
                   angle: rotation,
                   child: Container(
-                    width: MediaQuery.of(context).size.width -
-                        32.w, // 16w margin on each side
+                    width: MediaQuery.of(context).size.width - 32.w,
+                    // 16w margin on each side
                     constraints: BoxConstraints(
                       maxWidth: 388.w,
                     ),
@@ -298,6 +298,21 @@ class _SwipeableCardState extends State<SwipeableCard>
                                         ),
                                 ),
                               ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.grey.withValues(alpha: 0.3)
+                                    ],
+                                    stops: [0.7, 1],// from -> to
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                      16), // optional rounded corners
+                                ),
+                              ),
                               Positioned(
                                 top: 14.h,
                                 left: 0,
@@ -361,7 +376,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                                                 .instance.textDirection,
                                             children: [
                                               Text(
-                                                '${widget.user.name}، ${widget.user.age} ${AppLocalizations.of(context)!.year}',
+                                                ' ${widget.user.age} ${AppLocalizations.of(context)!.year}, ${widget.user.name}',
                                                 textDirection:
                                                     LocalizationService
                                                         .instance.textDirection,
@@ -369,7 +384,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                                                     .instance.textAlignment,
                                                 style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 16.sp,
+                                                    fontSize: 15.sp,
                                                     fontWeight:
                                                         FontWeightHelper.bold,
                                                     fontFamily: FontFamilyHelper
@@ -405,13 +420,13 @@ class _SwipeableCardState extends State<SwipeableCard>
                                               ),
                                               child: Center(
                                                 child: Text(
-                                                  maxLines: 1,
+                                                  maxLines: 2,
                                                   widget.user.location,
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     overflow:
                                                         TextOverflow.visible,
-                                                    fontSize: 15.sp,
+                                                    fontSize: 12.sp,
                                                     fontWeight:
                                                         FontWeightHelper.medium,
                                                     fontFamily: FontFamilyHelper

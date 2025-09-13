@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
+import 'package:elsadeken/core/networking/api_error_handler.dart';
+import 'package:dio/dio.dart';
 
 abstract class MembersListState<T> {}
 
@@ -110,7 +111,27 @@ class MembersListCubit<T> extends Cubit<MembersListState<T>> {
         }
       }
     } catch (e) {
-      emit(MembersListError<T>(e.toString()));
+      // Handle API errors gracefully
+      String errorMessage;
+      
+      if (e is DioException) {
+        final apiError = ApiErrorHandler.handle(e);
+        errorMessage = apiError.displayMessage;
+        
+        // Provide more user-friendly messages for common server errors
+        if (apiError.statusCode == 500) {
+          errorMessage = 'حدث خطأ في الخادم. يرجى المحاولة لاحقاً';
+        } else if (apiError.statusCode == 404) {
+          errorMessage = 'البيانات المطلوبة غير موجودة';
+        } else if (apiError.statusCode == 401) {
+          errorMessage = 'انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى';
+        }
+      } else {
+        // For non-API errors, provide a generic message
+        errorMessage = 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى';
+      }
+      
+      emit(MembersListError<T>(errorMessage));
     }
   }
 

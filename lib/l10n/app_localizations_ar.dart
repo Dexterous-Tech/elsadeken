@@ -593,9 +593,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get messagesLabel => 'الرسائل';
 
   @override
-  String get membersLabel => 'الاعضاء';
-
-  @override
   String get accountLabel => 'الحساب';
 
   @override

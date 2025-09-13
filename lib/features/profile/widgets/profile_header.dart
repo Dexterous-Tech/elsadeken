@@ -46,6 +46,7 @@ class ProfileHeader extends StatelessWidget {
                 AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
                   fontSize: 20.sp,
                   fontWeight: FontWeightHelper.medium,
+                  fontFamily: 'Lama Sans',
                   color: AppColors.darkBlue,
                 ),
           ),

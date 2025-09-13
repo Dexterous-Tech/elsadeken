@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
@@ -37,7 +38,11 @@ class _BlogScreenState extends State<BlogScreen> {
                 contentBody: Column(
                   children: [
                     ProfileHeader(
-                        title: AppLocalizations.of(context)!.blogTitle),
+                        title: AppLocalizations.of(context)!.blogTitle,
+                    titleStyle: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+            fontSize: 20.sp,
+              fontWeight: FontWeight.w500,
+            ),),
                     SizedBox(height: 20.h),
                     Expanded(
                         child: const Center(

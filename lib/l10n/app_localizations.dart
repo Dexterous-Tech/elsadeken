@@ -368,7 +368,7 @@ abstract class AppLocalizations {
   /// No description provided for @blog.
   ///
   /// In en, this message translates to:
-  /// **'Alsadiqeen & Alsadiqat Blog'**
+  /// **'Alsadiqeen Blog'**
   String get blog;
 
   /// No description provided for @aboutUs.
@@ -1246,12 +1246,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Messages'**
   String get messagesLabel;
-
-  /// No description provided for @membersLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Members'**
-  String get membersLabel;
 
   /// No description provided for @accountLabel.
   ///
