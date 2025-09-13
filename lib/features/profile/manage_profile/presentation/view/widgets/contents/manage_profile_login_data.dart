@@ -10,8 +10,6 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/manager/u
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/services.dart';
-
 
 class ManageProfileLoginData extends StatelessWidget {
   const ManageProfileLoginData({
@@ -133,7 +131,7 @@ class ManageProfileLoginData extends StatelessWidget {
       return countryCode;
     }
 
-    return '$countryCode $phone';
+    return '\u200E$countryCode $phone';
   }
 
   void _showLoginDataEditDialog(BuildContext context) {
@@ -155,9 +153,8 @@ class ManageProfileLoginData extends StatelessWidget {
         ManageProfileField(
           label: AppLocalizations.of(context)!.phoneNumber,
           hint: AppLocalizations.of(context)!.enterPhoneNumber,
-          currentValue:
-              '${profileData?.countryCode ?? '+966'} ${profileData?.phone ?? ''}'
-                  .trim(),
+          currentValue: (profileData?.phone ?? '').trim(),
+          code: ValueNotifier<String>(profileData?.countryCode ?? '+966'),
           type: ManageProfileFieldType.phoneWithCountryCode,
           keyboardType: TextInputType.phone,
         ),

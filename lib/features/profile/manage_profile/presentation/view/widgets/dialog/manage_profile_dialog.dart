@@ -64,22 +64,22 @@ class ManageProfileField {
   final int? maxLines;
   final String?
       dependentFieldLabel; // For fields that depend on other fields (like city depends on country)
-  final ManageProfileFieldDataType?
-      dataType; // To identify what type of data to load
+  final ManageProfileFieldDataType? dataType;
+  final ValueNotifier<String>? code; // To identify what type of data to load
 
-  ManageProfileField({
-    required this.label,
-    required this.hint,
-    required this.currentValue,
-    required this.type,
-    this.options,
-    this.isRequired = true,
-    this.keyboardType,
-    this.obscureText = false,
-    this.maxLines,
-    this.dependentFieldLabel,
-    this.dataType,
-  });
+  ManageProfileField(
+      {required this.label,
+      required this.hint,
+      required this.currentValue,
+      required this.type,
+      this.options,
+      this.isRequired = true,
+      this.keyboardType,
+      this.obscureText = false,
+      this.maxLines,
+      this.dependentFieldLabel,
+      this.dataType,
+      this.code});
 }
 
 enum ManageProfileFieldType {
@@ -775,24 +775,26 @@ class _ManageProfileDialogContentState
                 .controllers[AppLocalizations.of(context)!.phoneNumber]?.text ??
             '';
 
-        // Extract country code and phone number from the phone field
+        // Get country code from the ValueNotifier and phone number from text field separately
         String? countryCode;
-        String? phoneNumber;
+        String? phoneNumber =
+            phone.trim(); // Phone number is directly from text field
 
-        if (phone.isNotEmpty) {
-          final parts = phone.split(' ');
-          if (parts.length >= 2) {
-            countryCode = parts[0];
-            phoneNumber = parts.sublist(1).join(' ');
-          } else {
-            phoneNumber = phone;
-          }
-        }
+        // Find the phone field to get its country code ValueNotifier
+        final phoneField = widget.data.fields.firstWhere(
+          (field) => field.type == ManageProfileFieldType.phoneWithCountryCode,
+        );
+        countryCode = phoneField.code?.value;
+
+        // Debug: Print the separated values
+        print('DEBUG: Separated values:');
+        print('  - countryCode: "$countryCode"');
+        print('  - phoneNumber: "$phoneNumber"');
 
         widget.data.cubit!.updateProfileLoginData(
           name: name.isNotEmpty ? name : null,
           email: email.isNotEmpty ? email : null,
-          phone: phoneNumber?.isNotEmpty == true ? phoneNumber : null,
+          phone: phoneNumber.isNotEmpty ? phoneNumber : null,
           countryCode: countryCode?.isNotEmpty == true ? countryCode : null,
           password: password.isNotEmpty ? password : null,
           passwordConfirmation:
@@ -1509,7 +1511,7 @@ class _ManageProfileDialogContentState
   Widget _buildFieldInternal({
     required ManageProfileField field,
     required TextEditingController controller,
-    String? selectedValue,
+    required String? selectedValue,
     required Function(String?) onChanged,
   }) {
     switch (field.type) {
@@ -1594,46 +1596,23 @@ class _ManageProfileDialogContentState
     String? selectedValue,
     Function(String?) onChanged,
   ) {
-    // Extract country code from the current value if it exists
-    String currentCountryCode = '+966'; // Default to Saudi Arabia
-    String currentPhone = '';
+    // Get the country code from the field's code ValueNotifier (from user profile data)
+    String currentCountryCode = '+966'; // Default country code
+    String currentPhone = selectedValue ?? ''; // Use the phone number directly
 
-    if (selectedValue != null && selectedValue.isNotEmpty) {
-      // Try to parse the current value to extract country code and phone
-      final parts = selectedValue.split(' ');
-      if (parts.length >= 2) {
-        currentCountryCode = parts[0];
-        currentPhone = parts.sublist(1).join(' ');
-      } else {
-        currentPhone = selectedValue;
-      }
-    }
+    // Create a ValueNotifier for the country code - use the one from field or create default
+    final countryCodeNotifier =
+        field.code ?? ValueNotifier<String>(currentCountryCode);
 
-    // Create a ValueNotifier for the country code
-    final countryCodeNotifier = ValueNotifier<String>(currentCountryCode);
+    // Get the initial country code from the ValueNotifier (which contains user's country code)
+    currentCountryCode = countryCodeNotifier.value;
 
-    // Update the controller when country code changes
-    countryCodeNotifier.addListener(() {
-      final currentPhoneText = controller.text;
-      if (currentPhoneText.isNotEmpty) {
-        // Update the controller with new country code + phone
-        final parts = currentPhoneText.split(' ');
-        if (parts.length >= 2) {
-          // Replace the country code part
-          parts[0] = countryCodeNotifier.value;
-          controller.text = parts.join(' ');
-        } else {
-          // If only phone number exists, add country code
-          controller.text = '${countryCodeNotifier.value} $currentPhoneText';
-        }
-      }
-    });
+    // Country code and phone number are handled separately
+    // No need to modify phone text field when country code changes
 
-    // Initialize the controller with country code + phone if it's empty
-    if (controller.text.isEmpty && currentPhone.isNotEmpty) {
-      controller.text = '$currentCountryCode $currentPhone';
-    } else if (controller.text.isEmpty) {
-      controller.text = currentCountryCode;
+    // Initialize the controller with phone number only (country code is handled by the picker)
+    if (controller.text.isEmpty) {
+      controller.text = currentPhone;
     }
 
     return Column(
@@ -1670,7 +1649,10 @@ class _ManageProfileDialogContentState
             horizontalSpace(8),
             SizedBox(
               height: 50.h, // Match the height of CustomTextFormField
-              child: CustomCountryCodePicker(code: countryCodeNotifier),
+              child: CustomCountryCodePicker(
+                code: countryCodeNotifier,
+                initialCountryCode: currentCountryCode,
+              ),
             ),
           ],
         ),
