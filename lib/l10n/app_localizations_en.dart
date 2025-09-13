@@ -1221,10 +1221,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterAge => 'Enter age';
 
   @override
-  String get widowed => 'Widowed';
+  String get widowed => 'Widower';
 
   @override
-  String get widowedFemale => 'Widowed';
+  String get widowedFemale => 'Widower';
 
   @override
   String get noObjectionToPolygamy => 'No objection to polygamy';

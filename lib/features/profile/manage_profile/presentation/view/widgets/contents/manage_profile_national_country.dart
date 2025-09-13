@@ -86,10 +86,12 @@ class ManageProfileNationalCountry extends StatelessWidget {
         ManageProfileField(
           label: AppLocalizations.of(context)!.city,
           hint: AppLocalizations.of(context)!.chooseCity,
-          currentValue: profileData?.attribute?.city ?? '',
+          currentValue:
+              '', // Start with empty value so first city from API can be selected
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.city,
-          dependentFieldLabel: AppLocalizations.of(context)!.country, // Cities depend on country selection
+          dependentFieldLabel: AppLocalizations.of(context)!
+              .country, // Cities depend on country selection
         ),
       ],
     );

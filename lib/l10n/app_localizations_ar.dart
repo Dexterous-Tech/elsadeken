@@ -1222,10 +1222,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterAge => 'أدخل العمر';
 
   @override
-  String get widowed => 'أرمل';
+  String get widowed => 'ارمل';
 
   @override
-  String get widowedFemale => 'أرملة';
+  String get widowedFemale => 'ارملة';
 
   @override
   String get noObjectionToPolygamy => 'لا مانع من تعدل الزوجات';

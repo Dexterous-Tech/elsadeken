@@ -87,8 +87,8 @@ class ManageProfileMaritalStatus extends StatelessWidget {
         ManageProfileField(
           label: AppLocalizations.of(context)!.maritalStatus,
           hint: AppLocalizations.of(context)!.chooseMaritalStatus,
-          currentValue:
-              _mapMaritalStatusToDisplay(profileData?.attribute?.maritalStatus, context),
+          currentValue: _mapMaritalStatusToDisplay(
+              profileData?.attribute?.maritalStatus, context),
           type: ManageProfileFieldType.dropdown,
           options: _isMale(profileData?.gender)
               ? [
@@ -169,13 +169,21 @@ class ManageProfileMaritalStatus extends StatelessWidget {
     // Map API values to display values
     switch (value.toLowerCase()) {
       case 'single':
-        return _isMale(profileData?.gender) ? AppLocalizations.of(context)!.single : AppLocalizations.of(context)!.singleFemale;
+        return _isMale(profileData?.gender)
+            ? AppLocalizations.of(context)!.single
+            : AppLocalizations.of(context)!.singleFemale;
       case 'married':
-        return _isMale(profileData?.gender) ? AppLocalizations.of(context)!.married : '';
+        return _isMale(profileData?.gender)
+            ? AppLocalizations.of(context)!.married
+            : '';
       case 'divorced':
-        return _isMale(profileData?.gender) ? AppLocalizations.of(context)!.divorced : AppLocalizations.of(context)!.divorcedFemale;
+        return _isMale(profileData?.gender)
+            ? AppLocalizations.of(context)!.divorced
+            : AppLocalizations.of(context)!.divorcedFemale;
       case 'widower':
-        return _isMale(profileData?.gender) ? AppLocalizations.of(context)!.widowed : AppLocalizations.of(context)!.widowedFemale;
+        return _isMale(profileData?.gender)
+            ? AppLocalizations.of(context)!.widowed
+            : AppLocalizations.of(context)!.widowedFemale;
       default:
         // If it's already in Arabic, return as is
         return value;
@@ -191,7 +199,9 @@ class ManageProfileMaritalStatus extends StatelessWidget {
     // Map API values to display values
     switch (value.toLowerCase()) {
       case 'only_one':
-        return _isMale(profileData?.gender) ? AppLocalizations.of(context)!.firstWife : AppLocalizations.of(context)!.onlyHusband;
+        return _isMale(profileData?.gender)
+            ? AppLocalizations.of(context)!.firstWife
+            : AppLocalizations.of(context)!.onlyHusband;
       case 'multi':
         return _isMale(profileData?.gender)
             ? AppLocalizations.of(context)!.secondWife

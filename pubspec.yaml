@@ -105,21 +105,6 @@ flutter:
     - assets/images/notification/
     - assets/lottie/
 
-flutter_gen_l10n:
-  arb-dir: lib/l10n
-  template-arb-file: app_en.arb
-  output-localization-file: l10n.dart
-  output-class: S
-
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
   fonts:
     - family: IBM Plex Sans Arabic
       fonts:
@@ -156,8 +141,13 @@ flutter_gen_l10n:
           weight: 700
         - asset: assets/fonts/lama_sans/LamaSans-ExtraBoldExpanded.ttf
           weight: 800
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
+
+flutter_gen_l10n:
+  arb-dir: lib/l10n
+  template-arb-file: app_en.arb
+  output-localization-file: l10n.dart
+  output-class: S
+
 # Flutter Launcher Icons configuration
 flutter_launcher_icons:
   android: "launcher_icon"

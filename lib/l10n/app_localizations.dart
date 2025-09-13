@@ -2420,13 +2420,13 @@ abstract class AppLocalizations {
   /// No description provided for @widowed.
   ///
   /// In en, this message translates to:
-  /// **'Widowed'**
+  /// **'Widower'**
   String get widowed;
 
   /// No description provided for @widowedFemale.
   ///
   /// In en, this message translates to:
-  /// **'Widowed'**
+  /// **'Widower'**
   String get widowedFemale;
 
   /// No description provided for @noObjectionToPolygamy.
