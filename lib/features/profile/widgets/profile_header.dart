@@ -14,12 +14,14 @@ class ProfileHeader extends StatelessWidget {
     this.background,
     this.showBackButton = true,
     this.titleStyle,
+    this.onPressed,
   });
 
   final String title;
   final Color? background;
   final bool showBackButton;
   final TextStyle? titleStyle;
+  final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -29,6 +31,7 @@ class ProfileHeader extends StatelessWidget {
         if (showBackButton)
           CustomArrowBack(
             background: background ?? AppColors.white,
+            onPressed: onPressed,
           )
         else
           SizedBox(
