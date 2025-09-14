@@ -239,11 +239,10 @@ class SocialStatusUpdateHandler extends ProfileUpdateHandler {
     print('DEBUG: Age: "$ageStr"');
     print('DEBUG: Children: "$childrenStr"');
 
-    // Convert Arabic text to API values
-    final maritalStatusValue =
-        ProfileDataMappers.mapMaritalStatusToApiValue(maritalStatus);
+    // The values should now be API keys directly from the key-value mapping
+    final maritalStatusValue = maritalStatus.isNotEmpty ? maritalStatus : null;
     final typeOfMarriageValue =
-        ProfileDataMappers.mapTypeOfMarriageToApiValue(typeOfMarriage);
+        typeOfMarriage.isNotEmpty ? typeOfMarriage : null;
 
     print('DEBUG: Social Status Update - Mapped values:');
     print('DEBUG: Marital Status Value: "$maritalStatusValue"');
@@ -400,8 +399,10 @@ class ReligionUpdateHandler extends ProfileUpdateHandler {
         controllers[AppLocalizations.of(context)!.prayer]?.text ?? '';
     final smokingStr =
         controllers[AppLocalizations.of(context)!.smoking]?.text ?? '';
-    final hijab = controllers[AppLocalizations.of(context)!.hijab]?.text ?? '';
-    final beard = controllers[AppLocalizations.of(context)!.beard]?.text ?? '';
+    final hijab =
+        controllers[AppLocalizations.of(context)!.hijabTitle]?.text ?? '';
+    final beard =
+        controllers[AppLocalizations.of(context)!.beardTitle]?.text ?? '';
 
     print('DEBUG: Religion Update - Raw values:');
     print('DEBUG: Religious Commitment: "$religiousCommitment"');
@@ -410,14 +411,19 @@ class ReligionUpdateHandler extends ProfileUpdateHandler {
     print('DEBUG: Hijab: "$hijab"');
     print('DEBUG: Beard: "$beard"');
 
-    // Convert localized text to API values
+    // Also print all controller values for debugging
+    print('DEBUG: All controller values:');
+    controllers.forEach((key, controller) {
+      print('DEBUG: Controller "$key": "${controller.text}"');
+    });
+
+    // The values should now be API keys directly from the key-value mapping
     final religiousCommitmentValue =
-        ProfileDataMappers.mapReligiousCommitmentToApiValue(
-            religiousCommitment);
-    final prayerValue = ProfileDataMappers.mapPrayerToApiValue(prayer);
-    final smoking = ProfileDataMappers.mapSmokingToInt(smokingStr);
-    final hijabValue = ProfileDataMappers.mapHijabToApiValue(hijab);
-    final beardValue = ProfileDataMappers.mapBeardToApiValue(beard);
+        religiousCommitment.isNotEmpty ? religiousCommitment : null;
+    final prayerValue = prayer.isNotEmpty ? prayer : null;
+    final smoking = smokingStr.isNotEmpty ? int.tryParse(smokingStr) : null;
+    final hijabValue = hijab.isNotEmpty ? hijab : null;
+    final beardValue = beard.isNotEmpty ? beard : null;
 
     print('DEBUG: Religion Update - Mapped values:');
     print('DEBUG: Religious Commitment Value: "$religiousCommitmentValue"');

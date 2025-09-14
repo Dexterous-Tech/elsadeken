@@ -167,6 +167,38 @@ class DropdownFieldBuilder extends ProfileFieldBuilder {
         countriesList: countriesList,
         citiesList: citiesList,
       );
+    } else if (field.keyValueOptions != null) {
+      // Handle key-value options
+      return CustomDropDownMenu(
+        label: field.label,
+        hint: field.hint,
+        items: field.keyValueOptions!.values.toList(),
+        onChanged: (selectedDisplayValue) {
+          print(
+              'DEBUG: Dropdown "${field.label}" - Selected display value: "$selectedDisplayValue"');
+          print(
+              'DEBUG: Dropdown "${field.label}" - Available key-value options: ${field.keyValueOptions}');
+
+          // Find the key for the selected display value
+          final selectedKey = field.keyValueOptions!.entries
+              .firstWhere(
+                (entry) => entry.value == selectedDisplayValue,
+                orElse: () => const MapEntry('', ''),
+              )
+              .key;
+
+          print('DEBUG: Dropdown "${field.label}" - Found key: "$selectedKey"');
+
+          // Store the key (API value) in the controller
+          controller.text = selectedKey;
+          onChanged(selectedKey);
+
+          print(
+              'DEBUG: Dropdown "${field.label}" - Controller updated to: "${controller.text}"');
+        },
+        initialValue:
+            _getDisplayValueForKey(selectedValue, field.keyValueOptions!),
+      );
     } else {
       return CustomDropDownMenu(
         label: field.label,
@@ -176,6 +208,13 @@ class DropdownFieldBuilder extends ProfileFieldBuilder {
         initialValue: selectedValue,
       );
     }
+  }
+
+  /// Helper method to get display value for a given key
+  String? _getDisplayValueForKey(
+      String? key, Map<String, String> keyValueOptions) {
+    if (key == null || key.isEmpty) return null;
+    return keyValueOptions[key];
   }
 
   Widget _buildDynamicDropdown({

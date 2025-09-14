@@ -119,6 +119,11 @@ class NotificationItemWidget extends StatelessWidget {
         }
         break;
 
+      case 'story':
+        // Navigate to blog screen if referenceId is null
+        context.pushNamed(AppRoutes.successStoriesScreen);
+        break;
+
       default:
         // No navigation for unknown types
         break;

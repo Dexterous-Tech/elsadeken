@@ -165,44 +165,15 @@ class ProfileDataMappers {
 
     print('DEBUG: Mapping marital status: "$maritalStatus"');
 
-    switch (maritalStatus) {
-      // English options (from localized strings)
-      case 'Single':
-        return 'single';
-      case 'Married':
-        return 'married';
-      case 'Divorced':
-        return 'divorced';
-      case 'Widower':
-        return 'widower';
-      // Female English options
-      case 'Single Female':
-        return 'single';
-      case 'Married Female':
-        return 'married';
-      case 'Divorced Female':
-        return 'divorced';
-      case 'Widowed Female':
-        return 'widower';
-      // Arabic options
-      case 'آنسة':
-        return 'single';
-      case 'مطلقة':
-        return 'divorced';
-      case 'أرملة':
-        return 'widower';
-      case 'عازب':
-        return 'single';
-      case 'متزوج':
-        return 'married';
-      case 'مطلق':
-        return 'divorced';
-      case 'أرمل':
-        return 'widower';
-      default:
-        print('DEBUG: No mapping found for marital status: "$maritalStatus"');
-        return null;
+    // Check if it's already an API value
+    if (['single', 'married', 'divorced', 'widower'].contains(maritalStatus)) {
+      return maritalStatus;
     }
+
+    // Map display values back to API keys
+    // This should work with the new key-value system
+    // The display value should be mapped back to its key
+    return null; // This will be handled by the dialog's key mapping
   }
 
   /// Convert type of marriage from localized text to API value
@@ -211,30 +182,14 @@ class ProfileDataMappers {
 
     print('DEBUG: Mapping type of marriage: "$typeOfMarriage"');
 
-    switch (typeOfMarriage) {
-      // English options (from localized strings)
-      case 'First Wife':
-        return 'only_one';
-      case 'Second Wife':
-        return 'multi';
-      case 'Only Husband':
-        return 'only_one';
-      case 'No Objection to Polygamy':
-        return 'multi';
-      // Arabic options
-      case 'الزوج الوحيد':
-        return 'only_one';
-      case 'لا مانع من تعدل الزوجات':
-        return 'multi';
-      case 'زوجة اولي':
-        return 'only_one';
-      case 'زوجة ثانية':
-        return 'multi';
-      default:
-        print(
-            'DEBUG: No mapping found for type of marriage: "$typeOfMarriage"');
-        return null;
+    // Check if it's already an API value
+    if (['only_one', 'multi'].contains(typeOfMarriage)) {
+      return typeOfMarriage;
     }
+
+    // Map display values back to API keys
+    // This should work with the new key-value system
+    return null; // This will be handled by the dialog's key mapping
   }
 
   /// Convert religious commitment from localized text to API value
@@ -254,29 +209,9 @@ class ProfileDataMappers {
       return religiousCommitment;
     }
 
-    // Map localized values to API values
-    switch (religiousCommitment) {
-      case 'غير متدين':
-      case 'Not religious':
-        return 'irreligious';
-      case 'متدين قليلاً':
-      case 'A little religious':
-      case 'Little religious':
-        return 'little_religious';
-      case 'متدين':
-      case 'Religious':
-        return 'religious';
-      case 'متدين كثيراً':
-      case 'Very religious':
-        return 'much_religious';
-      case 'أفضل ألا أقول':
-      case 'Prefer not to say':
-        return 'dont_say';
-      default:
-        print(
-            'DEBUG: No mapping found for religious commitment: "$religiousCommitment"');
-        return null;
-    }
+    // Map display values back to API keys
+    // This should work with the new key-value system
+    return null; // This will be handled by the dialog's key mapping
   }
 
   /// Convert prayer from localized text to API value
@@ -291,27 +226,9 @@ class ProfileDataMappers {
       return prayer;
     }
 
-    // Map localized values to API values
-    switch (prayer) {
-      case 'أصلي دائماً':
-      case 'I always pray':
-        return 'always';
-      case 'أصلي أغلب الأوقات':
-      case 'I pray most of the time':
-        return 'most_times';
-      case 'أصلي أحياناً':
-      case 'I pray sometimes':
-        return 'sometimes';
-      case 'لا أصلي':
-      case 'I don\'t pray':
-        return 'no_pray';
-      case 'أفضل ألا أقول':
-      case 'Prefer not to say':
-        return 'dont_say';
-      default:
-        print('DEBUG: No mapping found for prayer: "$prayer"');
-        return null;
-    }
+    // Map display values back to API keys
+    // This should work with the new key-value system
+    return null; // This will be handled by the dialog's key mapping
   }
 
   /// Convert hijab from localized text to API value
@@ -326,27 +243,9 @@ class ProfileDataMappers {
       return hijab;
     }
 
-    // Map localized values to API values
-    switch (hijab) {
-      case 'غير محجبة':
-      case 'Not wearing hijab':
-        return 'not_hijab';
-      case 'محجبة (كشف الوجه)':
-      case 'Hijab (face visible)':
-        return 'hijab';
-      case 'محجبة (النقاب)':
-      case 'Hijab with veil':
-        return 'hijab_and_veil';
-      case 'محجبة (غطاء الوجه)':
-      case 'Hijab (face covered)':
-        return 'hijab_face';
-      case 'أفضل ألا أقول':
-      case 'Prefer not to say':
-        return 'dont_say';
-      default:
-        print('DEBUG: No mapping found for hijab: "$hijab"');
-        return null;
-    }
+    // Map display values back to API keys
+    // This should work with the new key-value system
+    return null; // This will be handled by the dialog's key mapping
   }
 
   /// Convert beard from localized text to API value
@@ -360,18 +259,9 @@ class ProfileDataMappers {
       return beard;
     }
 
-    // Map localized values to API values
-    switch (beard) {
-      case 'ملتحي':
-      case 'With beard':
-        return 'beard';
-      case 'بدون لحية':
-      case 'Without beard':
-        return 'without_beard';
-      default:
-        print('DEBUG: No mapping found for beard: "$beard"');
-        return null;
-    }
+    // Map display values back to API keys
+    // This should work with the new key-value system
+    return null; // This will be handled by the dialog's key mapping
   }
 
   /// Convert smoking string to int (0 for "لا"/"No", 1 for "نعم"/"Yes")
@@ -380,9 +270,13 @@ class ProfileDataMappers {
 
     print('DEBUG: Mapping smoking: "$smokingStr"');
 
-    final result = (smokingStr == 'نعم' || smokingStr == 'Yes') ? 1 : 0;
-    print('DEBUG: Smoking mapped to: $result');
+    // Check if it's already an API value (numeric string)
+    if (smokingStr == '1' || smokingStr == '0') {
+      return int.tryParse(smokingStr);
+    }
 
-    return result;
+    // Map display values back to API keys
+    // This should work with the new key-value system
+    return null; // This will be handled by the dialog's key mapping
   }
 }

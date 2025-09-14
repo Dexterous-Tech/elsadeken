@@ -75,6 +75,7 @@ class ManageProfileNationalCountry extends StatelessWidget {
           currentValue: profileData?.attribute?.nationality ?? '',
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.nationality,
+          isRequired: false, // Make optional
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.country,
@@ -82,16 +83,18 @@ class ManageProfileNationalCountry extends StatelessWidget {
           currentValue: profileData?.attribute?.country ?? '',
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.country,
+          isRequired: false, // Make optional
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.city,
           hint: AppLocalizations.of(context)!.chooseCity,
           currentValue:
-              '', // Start with empty value so first city from API can be selected
+              profileData?.attribute?.city ?? '', // Show current user city
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.city,
           dependentFieldLabel: AppLocalizations.of(context)!
               .country, // Cities depend on country selection
+          isRequired: false, // Make optional
         ),
       ],
     );

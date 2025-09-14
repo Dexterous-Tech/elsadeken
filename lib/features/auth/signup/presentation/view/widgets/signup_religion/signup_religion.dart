@@ -27,7 +27,7 @@ class SignupReligion extends StatefulWidget {
 
 class _SignupReligionState extends State<SignupReligion> {
   Map<String, String> religionOptions(BuildContext context) {
-    if (widget.gender == 'male' || widget.gender == 'ّذكر') {
+    if (widget.gender.toLowerCase() == 'male' || widget.gender == 'ّذكر') {
       return {
         'irreligious': AppLocalizations.of(context)!.irreligious,
         'little_religious': AppLocalizations.of(context)!.littleReligious,

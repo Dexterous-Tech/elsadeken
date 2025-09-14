@@ -425,12 +425,6 @@ abstract class AppLocalizations {
   /// **'Are you sure?'**
   String get areYouSure;
 
-  /// No description provided for @close.
-  ///
-  /// In en, this message translates to:
-  /// **'Close'**
-  String get close;
-
   /// No description provided for @edit.
   ///
   /// In en, this message translates to:
@@ -887,65 +881,11 @@ abstract class AppLocalizations {
   /// **'What is your marriage type?'**
   String get whatIsMarriageType;
 
-  /// No description provided for @single.
-  ///
-  /// In en, this message translates to:
-  /// **'Single'**
-  String get single;
-
-  /// No description provided for @married.
-  ///
-  /// In en, this message translates to:
-  /// **'Married'**
-  String get married;
-
-  /// No description provided for @divorced.
-  ///
-  /// In en, this message translates to:
-  /// **'Divorced'**
-  String get divorced;
-
-  /// No description provided for @singleFemale.
-  ///
-  /// In en, this message translates to:
-  /// **'Single'**
-  String get singleFemale;
-
-  /// No description provided for @marriedFemale.
-  ///
-  /// In en, this message translates to:
-  /// **'Married'**
-  String get marriedFemale;
-
-  /// No description provided for @divorcedFemale.
-  ///
-  /// In en, this message translates to:
-  /// **'Divorced'**
-  String get divorcedFemale;
-
-  /// No description provided for @onlyWife.
-  ///
-  /// In en, this message translates to:
-  /// **'Only wife'**
-  String get onlyWife;
-
   /// No description provided for @noPolygamy.
   ///
   /// In en, this message translates to:
   /// **'No Polygamy Allowed'**
   String get noPolygamy;
-
-  /// No description provided for @firstWife.
-  ///
-  /// In en, this message translates to:
-  /// **'First wife'**
-  String get firstWife;
-
-  /// No description provided for @secondWife.
-  ///
-  /// In en, this message translates to:
-  /// **'Second wife'**
-  String get secondWife;
 
   /// No description provided for @onlyHusband.
   ///
@@ -2042,13 +1982,13 @@ abstract class AppLocalizations {
   /// No description provided for @hijab.
   ///
   /// In en, this message translates to:
-  /// **'hijab'**
+  /// **'Hijab'**
   String get hijab;
 
   /// No description provided for @beard.
   ///
   /// In en, this message translates to:
-  /// **'beard'**
+  /// **'Beard'**
   String get beard;
 
   /// No description provided for @editReligiousInfo.
@@ -2087,18 +2027,6 @@ abstract class AppLocalizations {
   /// **'Choose hijab status'**
   String get chooseHijabStatus;
 
-  /// No description provided for @irreligious.
-  ///
-  /// In en, this message translates to:
-  /// **'Not religious'**
-  String get irreligious;
-
-  /// No description provided for @littleReligious.
-  ///
-  /// In en, this message translates to:
-  /// **'A little religious'**
-  String get littleReligious;
-
   /// No description provided for @religious.
   ///
   /// In en, this message translates to:
@@ -2110,12 +2038,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Very religious'**
   String get muchReligious;
-
-  /// No description provided for @dontSay.
-  ///
-  /// In en, this message translates to:
-  /// **'Prefer not to say'**
-  String get dontSay;
 
   /// No description provided for @irreligiousFemale.
   ///
@@ -2141,30 +2063,6 @@ abstract class AppLocalizations {
   /// **'Very religious'**
   String get muchReligiousFemale;
 
-  /// No description provided for @prayAlways.
-  ///
-  /// In en, this message translates to:
-  /// **'I always pray'**
-  String get prayAlways;
-
-  /// No description provided for @prayMostTimes.
-  ///
-  /// In en, this message translates to:
-  /// **'I pray most of the time'**
-  String get prayMostTimes;
-
-  /// No description provided for @praySometimes.
-  ///
-  /// In en, this message translates to:
-  /// **'I pray sometimes'**
-  String get praySometimes;
-
-  /// No description provided for @noPray.
-  ///
-  /// In en, this message translates to:
-  /// **'I don\'t pray'**
-  String get noPray;
-
   /// No description provided for @withBeard.
   ///
   /// In en, this message translates to:
@@ -2174,7 +2072,7 @@ abstract class AppLocalizations {
   /// No description provided for @withoutBeard.
   ///
   /// In en, this message translates to:
-  /// **'without Beard'**
+  /// **'Without Beard'**
   String get withoutBeard;
 
   /// No description provided for @notHijab.
@@ -2411,6 +2309,24 @@ abstract class AppLocalizations {
   /// **'Enter age'**
   String get enterAge;
 
+  /// No description provided for @single.
+  ///
+  /// In en, this message translates to:
+  /// **'Single'**
+  String get single;
+
+  /// No description provided for @married.
+  ///
+  /// In en, this message translates to:
+  /// **'Married'**
+  String get married;
+
+  /// No description provided for @divorced.
+  ///
+  /// In en, this message translates to:
+  /// **'Divorced'**
+  String get divorced;
+
   /// No description provided for @widowed.
   ///
   /// In en, this message translates to:
@@ -2423,12 +2339,6 @@ abstract class AppLocalizations {
   /// **'Widower'**
   String get widowedFemale;
 
-  /// No description provided for @noObjectionToPolygamy.
-  ///
-  /// In en, this message translates to:
-  /// **'No objection to polygamy'**
-  String get noObjectionToPolygamy;
-
   /// No description provided for @notAvailable.
   ///
   /// In en, this message translates to:
@@ -2440,6 +2350,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error: UpdateProfileCubit not provided'**
   String get errorNoUpdateProfileCubit;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
 
   /// No description provided for @pleaseConfirmPassword.
   ///
@@ -2975,6 +2891,12 @@ abstract class AppLocalizations {
   /// **'No'**
   String get noIam;
 
+  /// No description provided for @hijabOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Hijab'**
+  String get hijabOption;
+
   /// No description provided for @hijabAndVeil.
   ///
   /// In en, this message translates to:
@@ -2986,6 +2908,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hijab Face'**
   String get hijab_face;
+
+  /// No description provided for @dontSay.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer not say'**
+  String get dontSay;
 
   /// No description provided for @smokingAsk.
   ///
@@ -3215,6 +3143,42 @@ abstract class AppLocalizations {
   /// **'What is your phone number?'**
   String get whatIsYourPhoneNumber;
 
+  /// No description provided for @irreligious.
+  ///
+  /// In en, this message translates to:
+  /// **'Not religious'**
+  String get irreligious;
+
+  /// No description provided for @littleReligious.
+  ///
+  /// In en, this message translates to:
+  /// **'A little religious'**
+  String get littleReligious;
+
+  /// No description provided for @prayAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'I always pray'**
+  String get prayAlways;
+
+  /// No description provided for @prayMostTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'I pray most of the time'**
+  String get prayMostTimes;
+
+  /// No description provided for @praySometimes.
+  ///
+  /// In en, this message translates to:
+  /// **'I pray sometimes'**
+  String get praySometimes;
+
+  /// No description provided for @noPray.
+  ///
+  /// In en, this message translates to:
+  /// **'I don\'t pray'**
+  String get noPray;
+
   /// No description provided for @whatIsYourReligiousCommitment.
   ///
   /// In en, this message translates to:
@@ -3239,11 +3203,47 @@ abstract class AppLocalizations {
   /// **'Widower'**
   String get widower;
 
+  /// No description provided for @singleFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Single'**
+  String get singleFemale;
+
+  /// No description provided for @divorcedFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Divorced'**
+  String get divorcedFemale;
+
   /// No description provided for @widow.
   ///
   /// In en, this message translates to:
-  /// **'Widow'**
+  /// **'Widower'**
   String get widow;
+
+  /// No description provided for @firstWife.
+  ///
+  /// In en, this message translates to:
+  /// **'First wife'**
+  String get firstWife;
+
+  /// No description provided for @secondWife.
+  ///
+  /// In en, this message translates to:
+  /// **'Second wife'**
+  String get secondWife;
+
+  /// No description provided for @onlyWife.
+  ///
+  /// In en, this message translates to:
+  /// **'Only wife'**
+  String get onlyWife;
+
+  /// No description provided for @noObjectionToPolygamy.
+  ///
+  /// In en, this message translates to:
+  /// **'No objection to polygamy'**
+  String get noObjectionToPolygamy;
 
   /// No description provided for @errorUpdatingStatus.
   ///

@@ -174,9 +174,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get areYouSure => 'Are you sure?';
 
   @override
-  String get close => 'Close';
-
-  @override
   String get edit => 'Edit';
 
   @override
@@ -413,34 +410,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whatIsMarriageType => 'What is your marriage type?';
 
   @override
-  String get single => 'Single';
-
-  @override
-  String get married => 'Married';
-
-  @override
-  String get divorced => 'Divorced';
-
-  @override
-  String get singleFemale => 'Single';
-
-  @override
-  String get marriedFemale => 'Married';
-
-  @override
-  String get divorcedFemale => 'Divorced';
-
-  @override
-  String get onlyWife => 'Only wife';
-
-  @override
   String get noPolygamy => 'No Polygamy Allowed';
-
-  @override
-  String get firstWife => 'First wife';
-
-  @override
-  String get secondWife => 'Second wife';
 
   @override
   String get onlyHusband => 'Only husband';
@@ -1010,10 +980,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smoking => 'Smoking';
 
   @override
-  String get hijab => 'hijab';
+  String get hijab => 'Hijab';
 
   @override
-  String get beard => 'beard';
+  String get beard => 'Beard';
 
   @override
   String get editReligiousInfo => 'Edit Religious Information';
@@ -1034,19 +1004,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseHijabStatus => 'Choose hijab status';
 
   @override
-  String get irreligious => 'Not religious';
-
-  @override
-  String get littleReligious => 'A little religious';
-
-  @override
   String get religious => 'Religious';
 
   @override
   String get muchReligious => 'Very religious';
-
-  @override
-  String get dontSay => 'Prefer not to say';
 
   @override
   String get irreligiousFemale => 'Not religious';
@@ -1061,22 +1022,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get muchReligiousFemale => 'Very religious';
 
   @override
-  String get prayAlways => 'I always pray';
-
-  @override
-  String get prayMostTimes => 'I pray most of the time';
-
-  @override
-  String get praySometimes => 'I pray sometimes';
-
-  @override
-  String get noPray => 'I don\'t pray';
-
-  @override
   String get withBeard => 'With beard';
 
   @override
-  String get withoutBeard => 'without Beard';
+  String get withoutBeard => 'Without Beard';
 
   @override
   String get notHijab => 'Not Hijab';
@@ -1218,19 +1167,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterAge => 'Enter age';
 
   @override
+  String get single => 'Single';
+
+  @override
+  String get married => 'Married';
+
+  @override
+  String get divorced => 'Divorced';
+
+  @override
   String get widowed => 'Widower';
 
   @override
   String get widowedFemale => 'Widower';
 
   @override
-  String get noObjectionToPolygamy => 'No objection to polygamy';
-
-  @override
   String get notAvailable => 'Not Available';
 
   @override
   String get errorNoUpdateProfileCubit => 'Error: UpdateProfileCubit not provided';
+
+  @override
+  String get close => 'Close';
 
   @override
   String get pleaseConfirmPassword => 'Please confirm password';
@@ -1500,10 +1458,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noIam => 'No';
 
   @override
+  String get hijabOption => 'Hijab';
+
+  @override
   String get hijabAndVeil => 'Hijab and Veil';
 
   @override
   String get hijab_face => 'Hijab Face';
+
+  @override
+  String get dontSay => 'Prefer not say';
 
   @override
   String get smokingAsk => 'Smoking ?';
@@ -1620,6 +1584,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whatIsYourPhoneNumber => 'What is your phone number?';
 
   @override
+  String get irreligious => 'Not religious';
+
+  @override
+  String get littleReligious => 'A little religious';
+
+  @override
+  String get prayAlways => 'I always pray';
+
+  @override
+  String get prayMostTimes => 'I pray most of the time';
+
+  @override
+  String get praySometimes => 'I pray sometimes';
+
+  @override
+  String get noPray => 'I don\'t pray';
+
+  @override
   String get whatIsYourReligiousCommitment => 'What is your religious commitment?';
 
   @override
@@ -1632,7 +1614,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get widower => 'Widower';
 
   @override
-  String get widow => 'Widow';
+  String get singleFemale => 'Single';
+
+  @override
+  String get divorcedFemale => 'Divorced';
+
+  @override
+  String get widow => 'Widower';
+
+  @override
+  String get firstWife => 'First wife';
+
+  @override
+  String get secondWife => 'Second wife';
+
+  @override
+  String get onlyWife => 'Only wife';
+
+  @override
+  String get noObjectionToPolygamy => 'No objection to polygamy';
 
   @override
   String get errorUpdatingStatus => 'Error occurred while updating status';

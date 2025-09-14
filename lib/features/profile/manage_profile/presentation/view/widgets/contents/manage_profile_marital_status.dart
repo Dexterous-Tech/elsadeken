@@ -70,13 +70,8 @@ class ManageProfileMaritalStatus extends StatelessWidget {
   void _showMaritalStatusEditDialog(BuildContext context) {
     final updateProfileCubit = context.read<UpdateProfileCubit>();
 
-    // Debug: Print gender value to understand what we're receiving
-    print('DEBUG: Gender value: "${profileData?.gender}"');
-    print('DEBUG: Is male: ${_isMale(profileData?.gender)}');
-    print(
-        'DEBUG: Current marital status: "${profileData?.attribute?.maritalStatus}"');
-    print(
-        'DEBUG: Current type of marriage: "${profileData?.attribute?.typeOfMarriage}"');
+    final maritalStatusOptions = _getMaritalStatusOptions(context);
+    final typeOfMarriageOptions = _getTypeOfMarriageOptions(context);
 
     final dialogData = ManageProfileDialogData(
       title: AppLocalizations.of(context)!.editMaritalStatus,
@@ -90,19 +85,8 @@ class ManageProfileMaritalStatus extends StatelessWidget {
           currentValue: _mapMaritalStatusToDisplay(
               profileData?.attribute?.maritalStatus, context),
           type: ManageProfileFieldType.dropdown,
-          options: _isMale(profileData?.gender)
-              ? [
-                  AppLocalizations.of(context)!.single,
-                  AppLocalizations.of(context)!.married,
-                  AppLocalizations.of(context)!.divorced,
-                  AppLocalizations.of(context)!.widowed,
-                ]
-              : [
-                  AppLocalizations.of(context)!.singleFemale,
-                  AppLocalizations.of(context)!.marriedFemale,
-                  AppLocalizations.of(context)!.divorcedFemale,
-                  AppLocalizations.of(context)!.widowedFemale,
-                ],
+          keyValueOptions: maritalStatusOptions,
+          isRequired: false, // Make optional
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.marriageType,
@@ -110,15 +94,8 @@ class ManageProfileMaritalStatus extends StatelessWidget {
           currentValue: _mapTypeOfMarriageToDisplay(
               profileData?.attribute?.typeOfMarriage, context),
           type: ManageProfileFieldType.dropdown,
-          options: _isMale(profileData?.gender)
-              ? [
-                  AppLocalizations.of(context)!.firstWife,
-                  AppLocalizations.of(context)!.secondWife,
-                ]
-              : [
-                  AppLocalizations.of(context)!.onlyHusband,
-                  AppLocalizations.of(context)!.noObjectionToPolygamy,
-                ],
+          keyValueOptions: typeOfMarriageOptions,
+          isRequired: false, // Make optional
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.age,
@@ -126,6 +103,7 @@ class ManageProfileMaritalStatus extends StatelessWidget {
           currentValue: profileData?.attribute?.age?.toString() ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.number,
+          isRequired: false, // Make optional
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.numberOfChildren,
@@ -133,6 +111,7 @@ class ManageProfileMaritalStatus extends StatelessWidget {
           currentValue: profileData?.attribute?.children?.toString() ?? '',
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.number,
+          isRequired: false, // Make optional
         ),
       ],
     );
@@ -160,34 +139,58 @@ class ManageProfileMaritalStatus extends StatelessWidget {
     return false;
   }
 
+  /// Get marital status options based on gender - same as signup
+  Map<String, String> _getMaritalStatusOptions(BuildContext context) {
+    if (_isMale(profileData?.gender)) {
+      return {
+        'single': AppLocalizations.of(context)!.singleMale,
+        'married': AppLocalizations.of(context)!.married,
+        'divorced': AppLocalizations.of(context)!.divorcedMale,
+        'widower': AppLocalizations.of(context)!.widower,
+      };
+    } else {
+      return {
+        'single': AppLocalizations.of(context)!.singleFemale,
+        'divorced': AppLocalizations.of(context)!.divorcedFemale,
+        'widower': AppLocalizations.of(context)!.widow,
+      };
+    }
+  }
+
+  /// Get type of marriage options based on gender - same as signup
+  Map<String, String> _getTypeOfMarriageOptions(BuildContext context) {
+    if (_isMale(profileData?.gender)) {
+      return {
+        'only_one': AppLocalizations.of(context)!.firstWife,
+        'multi': AppLocalizations.of(context)!.secondWife,
+      };
+    } else {
+      return {
+        'only_one': AppLocalizations.of(context)!.onlyHusband,
+        'multi': AppLocalizations.of(context)!.noObjectionToPolygamy,
+      };
+    }
+  }
+
   /// Helper method to map API marital status values to display values
   String _mapMaritalStatusToDisplay(String? apiValue, BuildContext context) {
     if (apiValue == null || apiValue.isEmpty) return '';
 
     final value = apiValue.trim();
+    final options = _getMaritalStatusOptions(context);
 
-    // Map API values to display values
-    switch (value.toLowerCase()) {
-      case 'single':
-        return _isMale(profileData?.gender)
-            ? AppLocalizations.of(context)!.single
-            : AppLocalizations.of(context)!.singleFemale;
-      case 'married':
-        return _isMale(profileData?.gender)
-            ? AppLocalizations.of(context)!.married
-            : '';
-      case 'divorced':
-        return _isMale(profileData?.gender)
-            ? AppLocalizations.of(context)!.divorced
-            : AppLocalizations.of(context)!.divorcedFemale;
-      case 'widower':
-        return _isMale(profileData?.gender)
-            ? AppLocalizations.of(context)!.widowed
-            : AppLocalizations.of(context)!.widowedFemale;
-      default:
-        // If it's already in Arabic, return as is
-        return value;
+    // If the value is already a key in our options, return the display value
+    if (options.containsKey(value)) {
+      return options[value]!;
     }
+
+    // If it's already a display value, return as is
+    if (options.containsValue(value)) {
+      return value;
+    }
+
+    // Default case - return the original value
+    return value;
   }
 
   /// Helper method to map API type of marriage values to display values
@@ -195,20 +198,19 @@ class ManageProfileMaritalStatus extends StatelessWidget {
     if (apiValue == null || apiValue.isEmpty) return '';
 
     final value = apiValue.trim();
+    final options = _getTypeOfMarriageOptions(context);
 
-    // Map API values to display values
-    switch (value.toLowerCase()) {
-      case 'only_one':
-        return _isMale(profileData?.gender)
-            ? AppLocalizations.of(context)!.firstWife
-            : AppLocalizations.of(context)!.onlyHusband;
-      case 'multi':
-        return _isMale(profileData?.gender)
-            ? AppLocalizations.of(context)!.secondWife
-            : AppLocalizations.of(context)!.noObjectionToPolygamy;
-      default:
-        // If it's already in Arabic, return as is
-        return value;
+    // If the value is already a key in our options, return the display value
+    if (options.containsKey(value)) {
+      return options[value]!;
     }
+
+    // If it's already a display value, return as is
+    if (options.containsValue(value)) {
+      return value;
+    }
+
+    // Default case - return the original value
+    return value;
   }
 }

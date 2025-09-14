@@ -60,6 +60,7 @@ class ManageProfileField {
   final String currentValue;
   final ManageProfileFieldType type;
   final List<String>? options;
+  final Map<String, String>? keyValueOptions; // For key-value mapping
   final bool isRequired;
   final TextInputType? keyboardType;
   final bool obscureText;
@@ -75,6 +76,7 @@ class ManageProfileField {
       required this.currentValue,
       required this.type,
       this.options,
+      this.keyValueOptions,
       this.isRequired = true,
       this.keyboardType,
       this.obscureText = false,
@@ -112,8 +114,32 @@ Future<void> manageProfileDialog(
 
   // Initialize controllers and selected values
   for (var field in data.fields) {
-    controllers[field.label] = TextEditingController(text: field.currentValue);
-    selectedValues[field.label] = field.currentValue;
+    // For key-value fields, store the key (API value) in the controller
+    // For regular fields, store the display value
+    String controllerValue = field.currentValue;
+    if (field.keyValueOptions != null) {
+      print(
+          'DEBUG: Field "${field.label}" - Current value: "${field.currentValue}"');
+      print(
+          'DEBUG: Field "${field.label}" - Available options: ${field.keyValueOptions}');
+
+      // Find the key for the current display value
+      final key = field.keyValueOptions!.entries
+          .firstWhere(
+            (entry) => entry.value == field.currentValue,
+            orElse: () => const MapEntry('', ''),
+          )
+          .key;
+
+      print('DEBUG: Field "${field.label}" - Found key: "$key"');
+      controllerValue = key;
+    }
+
+    controllers[field.label] = TextEditingController(text: controllerValue);
+    selectedValues[field.label] = controllerValue;
+
+    print(
+        'DEBUG: Field "${field.label}" - Final controller value: "$controllerValue"');
   }
 
   return customDialog(
@@ -246,6 +272,29 @@ class _ManageProfileDialogContentState
     }
   }
 
+  void _handleCitiesLoadedForNationalCountry() {
+    // Find the city field and get its current value
+    final cityField = widget.data.fields.firstWhere(
+      (field) => field.dataType == ManageProfileFieldDataType.city,
+      orElse: () => ManageProfileField(
+        label: '',
+        hint: '',
+        currentValue: '',
+        type: ManageProfileFieldType.text,
+      ),
+    );
+
+    if (cityField.currentValue.isNotEmpty && citiesList.isNotEmpty) {
+      // Update the city controller and selected value with the current user's city
+      final cityController = widget.controllers[cityField.label];
+      if (cityController != null) {
+        cityController.text = cityField.currentValue;
+        widget.selectedValues[cityField.label] = cityField.currentValue;
+        print('DEBUG: Set default city to: "${cityField.currentValue}"');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Create list of listeners based on available cubits
@@ -276,6 +325,13 @@ class _ManageProfileDialogContentState
                 widget.data.dialogType ==
                     ManageProfileDialogType.nationalCountry) {
               _handleCountriesLoadedForNationalCountry();
+            }
+
+            // Handle cities loaded for national country dialog
+            if (state is CitiesSuccess &&
+                widget.data.dialogType ==
+                    ManageProfileDialogType.nationalCountry) {
+              _handleCitiesLoadedForNationalCountry();
             }
           },
         ),

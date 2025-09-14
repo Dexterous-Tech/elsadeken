@@ -174,9 +174,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get areYouSure => 'هل انت متاكد؟';
 
   @override
-  String get close => 'إغلاق';
-
-  @override
   String get edit => 'تعديل';
 
   @override
@@ -413,34 +410,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get whatIsMarriageType => 'ما هو نوع الزواج ؟';
 
   @override
-  String get single => 'عازب';
-
-  @override
-  String get married => 'متزوج';
-
-  @override
-  String get divorced => 'مطلق';
-
-  @override
-  String get singleFemale => 'آنسة';
-
-  @override
-  String get marriedFemale => 'متزوجة';
-
-  @override
-  String get divorcedFemale => 'مطلقة';
-
-  @override
-  String get onlyWife => 'الزوجة الوحيدة';
-
-  @override
   String get noPolygamy => 'لا مانع من تعدد الزوجات';
-
-  @override
-  String get firstWife => 'زوجة اولي';
-
-  @override
-  String get secondWife => 'زوجة ثانية';
 
   @override
   String get onlyHusband => 'الزوج الوحيد';
@@ -1011,7 +981,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get smoking => 'التدخين';
 
   @override
-  String get hijab => 'محجبه(كشف الوجه)';
+  String get hijab => 'الحجاب';
 
   @override
   String get beard => 'ملتحي';
@@ -1035,43 +1005,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chooseHijabStatus => 'اختر حالة الحجاب';
 
   @override
-  String get irreligious => 'غير متدين';
-
-  @override
-  String get littleReligious => 'متدين قليلا';
-
-  @override
   String get religious => 'متدين';
 
   @override
   String get muchReligious => 'متدين كثيرا';
 
   @override
-  String get dontSay => 'أفضل الا اقول';
-
-  @override
   String get irreligiousFemale => 'غير متدينة';
 
   @override
-  String get littleReligiousFemale => 'متدينة قليلاً';
+  String get littleReligiousFemale => 'متدينة قليلا';
 
   @override
   String get religiousFemale => 'متدينة';
 
   @override
-  String get muchReligiousFemale => 'متدينة كثيراً';
-
-  @override
-  String get prayAlways => 'اصلي دائما';
-
-  @override
-  String get prayMostTimes => 'اصلي اغلب الاوقات';
-
-  @override
-  String get praySometimes => 'اصلي بعض الاحيان';
-
-  @override
-  String get noPray => 'لا اصلي';
+  String get muchReligiousFemale => 'متدينة كثيرا';
 
   @override
   String get withBeard => 'ملتحي';
@@ -1080,7 +1029,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get withoutBeard => 'بدون لحية';
 
   @override
-  String get notHijab => 'غير محجبه';
+  String get notHijab => 'غير محجبة';
 
   @override
   String get hijabFaceVisible => 'محجبة (كشف الوجه)';
@@ -1219,19 +1168,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterAge => 'أدخل العمر';
 
   @override
+  String get single => 'عازب';
+
+  @override
+  String get married => 'متزوج';
+
+  @override
+  String get divorced => 'مطلق';
+
+  @override
   String get widowed => 'ارمل';
 
   @override
   String get widowedFemale => 'ارملة';
 
   @override
-  String get noObjectionToPolygamy => 'لا مانع من تعدل الزوجات';
-
-  @override
   String get notAvailable => 'لا يوجد';
 
   @override
   String get errorNoUpdateProfileCubit => 'خطأ: لم يتم توفير UpdateProfileCubit';
+
+  @override
+  String get close => 'إغلاق';
 
   @override
   String get pleaseConfirmPassword => 'يرجى تأكيد كلمة المرور';
@@ -1501,10 +1459,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noIam => 'لا';
 
   @override
-  String get hijabAndVeil => 'محجبه (النقاب)';
+  String get hijabOption => 'محجبة (كشف الوجه)';
 
   @override
-  String get hijab_face => 'محجبه (غطاء الوجه)';
+  String get hijabAndVeil => 'محجبة (النقاب)';
+
+  @override
+  String get hijab_face => 'محجبة (غطاء الوجه)';
+
+  @override
+  String get dontSay => 'أفضل أن لا أقول';
 
   @override
   String get smokingAsk => 'التدخين ؟';
@@ -1621,6 +1585,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get whatIsYourPhoneNumber => 'ما هو رقم جوالك ؟';
 
   @override
+  String get irreligious => 'غير متدين';
+
+  @override
+  String get littleReligious => 'متدين قليلا';
+
+  @override
+  String get prayAlways => 'أصلي دائما';
+
+  @override
+  String get prayMostTimes => 'أصلي أغلب الاوقات';
+
+  @override
+  String get praySometimes => 'أصلي بعض الاحيان';
+
+  @override
+  String get noPray => 'لا أصلي';
+
+  @override
   String get whatIsYourReligiousCommitment => 'ما هي التزامك الديني ؟';
 
   @override
@@ -1633,7 +1615,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get widower => 'أرمل';
 
   @override
+  String get singleFemale => 'آنسة';
+
+  @override
+  String get divorcedFemale => 'مطلقة';
+
+  @override
   String get widow => 'أرملة';
+
+  @override
+  String get firstWife => 'زوجة اولي';
+
+  @override
+  String get secondWife => 'زوجة ثانية';
+
+  @override
+  String get onlyWife => 'الزوجة الوحيدة';
+
+  @override
+  String get noObjectionToPolygamy => 'لا مانع من تعدل الزوجات';
 
   @override
   String get errorUpdatingStatus => 'حدث خطأ اثناء تحديث الحالة';
