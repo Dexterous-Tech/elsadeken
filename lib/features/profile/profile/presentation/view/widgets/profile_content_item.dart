@@ -35,7 +35,8 @@ class ProfileContentItem extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                textAlign: TextAlign.right,
+                textAlign: LocalizationService.instance.textAlignment,
+                textDirection: LocalizationService.instance.textDirection,
                 style: AppTextStyles.font14CharlestonGreenMediumLamaSans,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,

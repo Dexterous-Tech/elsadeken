@@ -233,11 +233,21 @@ class SocialStatusUpdateHandler extends ProfileUpdateHandler {
     final childrenStr =
         controllers[AppLocalizations.of(context)!.numberOfChildren]?.text ?? '';
 
+    print('DEBUG: Social Status Update - Raw values:');
+    print('DEBUG: Marital Status: "$maritalStatus"');
+    print('DEBUG: Type of Marriage: "$typeOfMarriage"');
+    print('DEBUG: Age: "$ageStr"');
+    print('DEBUG: Children: "$childrenStr"');
+
     // Convert Arabic text to API values
     final maritalStatusValue =
         ProfileDataMappers.mapMaritalStatusToApiValue(maritalStatus);
     final typeOfMarriageValue =
         ProfileDataMappers.mapTypeOfMarriageToApiValue(typeOfMarriage);
+
+    print('DEBUG: Social Status Update - Mapped values:');
+    print('DEBUG: Marital Status Value: "$maritalStatusValue"');
+    print('DEBUG: Type of Marriage Value: "$typeOfMarriageValue"');
 
     // Convert strings to numbers
     int? age;
@@ -393,6 +403,13 @@ class ReligionUpdateHandler extends ProfileUpdateHandler {
     final hijab = controllers[AppLocalizations.of(context)!.hijab]?.text ?? '';
     final beard = controllers[AppLocalizations.of(context)!.beard]?.text ?? '';
 
+    print('DEBUG: Religion Update - Raw values:');
+    print('DEBUG: Religious Commitment: "$religiousCommitment"');
+    print('DEBUG: Prayer: "$prayer"');
+    print('DEBUG: Smoking: "$smokingStr"');
+    print('DEBUG: Hijab: "$hijab"');
+    print('DEBUG: Beard: "$beard"');
+
     // Convert localized text to API values
     final religiousCommitmentValue =
         ProfileDataMappers.mapReligiousCommitmentToApiValue(
@@ -401,6 +418,13 @@ class ReligionUpdateHandler extends ProfileUpdateHandler {
     final smoking = ProfileDataMappers.mapSmokingToInt(smokingStr);
     final hijabValue = ProfileDataMappers.mapHijabToApiValue(hijab);
     final beardValue = ProfileDataMappers.mapBeardToApiValue(beard);
+
+    print('DEBUG: Religion Update - Mapped values:');
+    print('DEBUG: Religious Commitment Value: "$religiousCommitmentValue"');
+    print('DEBUG: Prayer Value: "$prayerValue"');
+    print('DEBUG: Smoking Value: "$smoking"');
+    print('DEBUG: Hijab Value: "$hijabValue"');
+    print('DEBUG: Beard Value: "$beardValue"');
 
     cubit.updateProfileReligiousData(
       religiousCommitment: religiousCommitmentValue,

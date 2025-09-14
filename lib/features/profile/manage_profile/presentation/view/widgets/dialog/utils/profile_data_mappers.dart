@@ -163,15 +163,34 @@ class ProfileDataMappers {
   static String? mapMaritalStatusToApiValue(String maritalStatus) {
     if (maritalStatus.isEmpty) return null;
 
+    print('DEBUG: Mapping marital status: "$maritalStatus"');
+
     switch (maritalStatus) {
-      // Female options
+      // English options (from localized strings)
+      case 'Single':
+        return 'single';
+      case 'Married':
+        return 'married';
+      case 'Divorced':
+        return 'divorced';
+      case 'Widower':
+        return 'widower';
+      // Female English options
+      case 'Single Female':
+        return 'single';
+      case 'Married Female':
+        return 'married';
+      case 'Divorced Female':
+        return 'divorced';
+      case 'Widowed Female':
+        return 'widower';
+      // Arabic options
       case 'آنسة':
         return 'single';
       case 'مطلقة':
         return 'divorced';
       case 'أرملة':
         return 'widower';
-      // Male options
       case 'عازب':
         return 'single';
       case 'متزوج':
@@ -181,6 +200,7 @@ class ProfileDataMappers {
       case 'أرمل':
         return 'widower';
       default:
+        print('DEBUG: No mapping found for marital status: "$maritalStatus"');
         return null;
     }
   }
@@ -189,18 +209,30 @@ class ProfileDataMappers {
   static String? mapTypeOfMarriageToApiValue(String typeOfMarriage) {
     if (typeOfMarriage.isEmpty) return null;
 
+    print('DEBUG: Mapping type of marriage: "$typeOfMarriage"');
+
     switch (typeOfMarriage) {
-      // Female options
+      // English options (from localized strings)
+      case 'First Wife':
+        return 'only_one';
+      case 'Second Wife':
+        return 'multi';
+      case 'Only Husband':
+        return 'only_one';
+      case 'No Objection to Polygamy':
+        return 'multi';
+      // Arabic options
       case 'الزوج الوحيد':
         return 'only_one';
       case 'لا مانع من تعدل الزوجات':
         return 'multi';
-      // Male options
       case 'زوجة اولي':
         return 'only_one';
       case 'زوجة ثانية':
         return 'multi';
       default:
+        print(
+            'DEBUG: No mapping found for type of marriage: "$typeOfMarriage"');
         return null;
     }
   }
@@ -208,6 +240,8 @@ class ProfileDataMappers {
   /// Convert religious commitment from localized text to API value
   static String? mapReligiousCommitmentToApiValue(String religiousCommitment) {
     if (religiousCommitment.isEmpty) return null;
+
+    print('DEBUG: Mapping religious commitment: "$religiousCommitment"');
 
     // Check if it's already an API value
     if ([
@@ -239,6 +273,8 @@ class ProfileDataMappers {
       case 'Prefer not to say':
         return 'dont_say';
       default:
+        print(
+            'DEBUG: No mapping found for religious commitment: "$religiousCommitment"');
         return null;
     }
   }
@@ -246,6 +282,8 @@ class ProfileDataMappers {
   /// Convert prayer from localized text to API value
   static String? mapPrayerToApiValue(String prayer) {
     if (prayer.isEmpty) return null;
+
+    print('DEBUG: Mapping prayer: "$prayer"');
 
     // Check if it's already an API value
     if (['always', 'most_times', 'sometimes', 'no_pray', 'dont_say']
@@ -271,6 +309,7 @@ class ProfileDataMappers {
       case 'Prefer not to say':
         return 'dont_say';
       default:
+        print('DEBUG: No mapping found for prayer: "$prayer"');
         return null;
     }
   }
@@ -278,6 +317,8 @@ class ProfileDataMappers {
   /// Convert hijab from localized text to API value
   static String? mapHijabToApiValue(String hijab) {
     if (hijab.isEmpty) return null;
+
+    print('DEBUG: Mapping hijab: "$hijab"');
 
     // Check if it's already an API value
     if (['not_hijab', 'hijab', 'hijab_and_veil', 'hijab_face', 'dont_say']
@@ -303,6 +344,7 @@ class ProfileDataMappers {
       case 'Prefer not to say':
         return 'dont_say';
       default:
+        print('DEBUG: No mapping found for hijab: "$hijab"');
         return null;
     }
   }
@@ -310,6 +352,8 @@ class ProfileDataMappers {
   /// Convert beard from localized text to API value
   static String? mapBeardToApiValue(String beard) {
     if (beard.isEmpty) return null;
+
+    print('DEBUG: Mapping beard: "$beard"');
 
     // Check if it's already an API value
     if (['beard', 'without_beard'].contains(beard)) {
@@ -325,6 +369,7 @@ class ProfileDataMappers {
       case 'Without beard':
         return 'without_beard';
       default:
+        print('DEBUG: No mapping found for beard: "$beard"');
         return null;
     }
   }
@@ -332,6 +377,12 @@ class ProfileDataMappers {
   /// Convert smoking string to int (0 for "لا"/"No", 1 for "نعم"/"Yes")
   static int? mapSmokingToInt(String smokingStr) {
     if (smokingStr.isEmpty) return null;
-    return (smokingStr == 'نعم' || smokingStr == 'Yes') ? 1 : 0;
+
+    print('DEBUG: Mapping smoking: "$smokingStr"');
+
+    final result = (smokingStr == 'نعم' || smokingStr == 'Yes') ? 1 : 0;
+    print('DEBUG: Smoking mapped to: $result');
+
+    return result;
   }
 }

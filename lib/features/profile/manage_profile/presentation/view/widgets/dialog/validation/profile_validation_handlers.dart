@@ -284,6 +284,45 @@ class NationalCountryValidationHandler extends ProfileValidationHandler {
   }
 }
 
+/// Validation handler for religious data
+class ReligionValidationHandler extends ProfileValidationHandler {
+  @override
+  ValidationResult validate(
+    Map<String, TextEditingController> controllers,
+    BuildContext context,
+  ) {
+    // Religious data doesn't require specific validation
+    // All fields are optional dropdowns
+    return ValidationResult(isValid: true);
+  }
+}
+
+/// Validation handler for descriptions (about me and about partner)
+class DescriptionsValidationHandler extends ProfileValidationHandler {
+  @override
+  ValidationResult validate(
+    Map<String, TextEditingController> controllers,
+    BuildContext context,
+  ) {
+    // Descriptions are optional text fields
+    // No specific validation required
+    return ValidationResult(isValid: true);
+  }
+}
+
+/// Validation handler for education data
+class EducationValidationHandler extends ProfileValidationHandler {
+  @override
+  ValidationResult validate(
+    Map<String, TextEditingController> controllers,
+    BuildContext context,
+  ) {
+    // Education data validation can be added here if needed
+    // For now, all fields are optional
+    return ValidationResult(isValid: true);
+  }
+}
+
 /// Factory class to get the appropriate validation handler
 class ProfileValidationHandlerFactory {
   static ProfileValidationHandler getHandler(
@@ -300,8 +339,16 @@ class ProfileValidationHandlerFactory {
         return SocialStatusValidationHandler();
       case ManageProfileDialogType.bodyInfo:
         return BodyInfoValidationHandler();
+      case ManageProfileDialogType.religion:
+        return ReligionValidationHandler();
+      case ManageProfileDialogType.descriptions:
+        return DescriptionsValidationHandler();
+      case ManageProfileDialogType.education:
+        return EducationValidationHandler();
+      case ManageProfileDialogType.personalInfo:
+        return DescriptionsValidationHandler(); // Personal info uses descriptions validation
       default:
-        return LoginDataValidationHandler(); // Default fallback
+        return DescriptionsValidationHandler(); // Default fallback - no validation
     }
   }
 }
