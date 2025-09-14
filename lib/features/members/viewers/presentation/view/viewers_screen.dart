@@ -202,10 +202,42 @@ class _ViewersViewState extends State<ViewersView> {
                           );
                           return Expanded(
                             child: Center(
-                              child: Text(
-                                state.message,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: Colors.red),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.error_outline,
+                                    size: 64.sp,
+                                    color: Colors.red,
+                                  ),
+                                  SizedBox(height: 16.h),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 32.w),
+                                    child: Text(
+                                      state.message,
+                                      textAlign: TextAlign.center,
+                                      style: AppTextStyles.font14DesiredMediumLamaSans,
+                                    ),
+                                  ),
+                                  SizedBox(height: 24.h),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      cubit.fetch(page: 1);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.primaryOrange,
+                                      foregroundColor: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 32.w,
+                                        vertical: 12.h,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      AppLocalizations.of(context)!.retry,
+                                      style: TextStyle(fontSize: 14.sp),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           );

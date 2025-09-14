@@ -106,23 +106,6 @@ flutter:
     - assets/lottie/
 
   fonts:
-    - family: IBM Plex Sans Arabic
-      fonts:
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-Thin.ttf
-          weight: 100
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-ExtraLight.ttf
-          weight: 200
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-Light.ttf
-          weight: 300
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/ibm_sans_arabic/IBMPlexSansArabic-Bold.ttf
-          weight: 700
-
     - family: Lama Sans
       fonts:
         - asset: assets/fonts/lama_sans/LamaSans-ThinExpanded.ttf

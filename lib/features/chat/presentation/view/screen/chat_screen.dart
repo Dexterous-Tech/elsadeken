@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 import 'package:flutter/material.dart';
@@ -135,6 +136,12 @@ class _ChatScreenState extends State<ChatScreen>
           ProfileHeader(
             title: AppLocalizations.of(context)!.messagesLabel,
             showBackButton: false,
+            titleStyle: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Lama Sans',
+              color: AppColors.darkBlue,
+            ),
           ),
           SizedBox(height: 16.h),
           ChatTabBar(

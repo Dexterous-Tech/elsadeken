@@ -273,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
             crossAxisAlignment:
-                LocalizationService.instance.startCrossAxisAlignment,
+            LocalizationService.instance.startCrossAxisAlignment,
             textDirection: LocalizationService.instance.textDirection,
             children: [
               Column(
@@ -349,63 +349,63 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 )
               else if (currentUsers.isEmpty)
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      verticalSpace(150),
-                      Icon(Icons.favorite_outline,
-                          size: 80.w, color: Colors.grey[400]),
-                      SizedBox(height: 16.h),
-                      Text(
-                        AppLocalizations.of(context)!.noNewMatches,
-                        style:
-                            TextStyle(fontSize: 18.sp, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
-                )
-              else
-                Container(
-                  height: 600.h,
-                  decoration: BoxDecoration(color: Colors.white),
-                  margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Stack(
-                    children: currentUsers
-                        .asMap()
-                        .entries
-                        .map((entry) {
-                          final index = entry.key;
-                          final user = entry.value;
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        verticalSpace(150),
+                        Icon(Icons.favorite_outline,
+                            size: 80.w, color: Colors.grey[400]),
+                        SizedBox(height: 16.h),
+                        Text(
+                          AppLocalizations.of(context)!.noNewMatches,
+                          style:
+                          TextStyle(fontSize: 18.sp, color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  Container(
+                    height: 600.h,
+                    decoration: BoxDecoration(color: Colors.white),
+                    margin: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Stack(
+                      children: currentUsers
+                          .asMap()
+                          .entries
+                          .map((entry) {
+                        final index = entry.key;
+                        final user = entry.value;
 
-                          final isTopCard = index == 0;
-                          final isSecondCard = index == 1;
+                        final isTopCard = index == 0;
+                        final isSecondCard = index == 1;
 
-                          double scale = 1.0;
-                          double verticalOffset = 0.0.h;
+                        double scale = 1.0;
+                        double verticalOffset = 0.0.h;
 
-                          if (isSecondCard) {
-                            scale = 0.95;
-                            verticalOffset = 20.h;
-                          } else if (!isTopCard) {
-                            scale = 0.9;
-                            verticalOffset = 40.h;
-                          }
+                        if (isSecondCard) {
+                          scale = 0.95;
+                          verticalOffset = 20.h;
+                        } else if (!isTopCard) {
+                          scale = 0.9;
+                          verticalOffset = 40.h;
+                        }
 
-                          return SwipeableCard(
-                            user: user,
-                            onSwipe: isTopCard ? _onSwipe : null,
-                            isTop: isTopCard,
-                            scale: scale,
-                            verticalOffset: verticalOffset,
-                          );
-                        })
-                        .toList()
-                        .reversed
-                        .toList(),
-                  ),
-                )
+                        return SwipeableCard(
+                          user: user,
+                          onSwipe: isTopCard ? _onSwipe : null,
+                          isTop: isTopCard,
+                          scale: scale,
+                          verticalOffset: verticalOffset,
+                        );
+                      })
+                          .toList()
+                          .reversed
+                          .toList(),
+                    ),
+                  )
             ],
           ),
         ),
@@ -451,7 +451,7 @@ class _HomeScreenState extends State<HomeScreen> {
           type: BottomNavigationBarType.fixed,
           unselectedItemColor: Color(0xffA0A4B0),
           selectedItemColor:
-              _currentIndex == 3 ? Color(0xffD54B16) : Color(0xffFFB74D),
+          _currentIndex == 3 ? Color(0xffD54B16) : Color(0xffFFB74D),
           unselectedLabelStyle: TextStyle(
               color: Color(0xffA0A4B0),
               fontSize: 12.sp,
@@ -495,7 +495,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 24.w,
                 height: 24.h,
               ),
-              label: AppLocalizations.of(context)!.membersLabel,
+              label: AppLocalizations.of(context)!.members,
               activeIcon: Image.asset(
                 'assets/images/home/group_orange.png',
                 width: 24.w,
