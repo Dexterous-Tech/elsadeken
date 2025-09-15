@@ -432,6 +432,46 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Widget _buildNavItem(int index, String activeIcon, String label) {
+    bool isSelected = _currentIndex == index;
+    Color highlightColor = index == 3 ? Color(0xffD54B16) : Color(0xffFFB74D);
+    
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: isSelected ? highlightColor.withOpacity(0.2) : Colors.transparent,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              activeIcon ,
+              width: 24.w,
+              height: 24.h,
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              label,
+              style: TextStyle(
+                color:   Color(0xffA0A4B0),
+                fontSize: 12.sp,
+                fontFamily: FontFamilyHelper.lamaSansArabic,
+                fontWeight: FontWeightHelper.medium,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -439,83 +479,28 @@ class _HomeScreenState extends State<HomeScreen> {
       body: getBody(),
       bottomNavigationBar: Directionality(
         textDirection: LocalizationService.instance.textDirection,
-        child: BottomNavigationBar(
-          elevation: 1,
-          backgroundColor: Colors.white,
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          type: BottomNavigationBarType.fixed,
-          unselectedItemColor: Color(0xffA0A4B0),
-          selectedItemColor:
-          _currentIndex == 3 ? Color(0xffD54B16) : Color(0xffFFB74D),
-          unselectedLabelStyle: TextStyle(
-              color: Color(0xffA0A4B0),
-              fontSize: 12.sp,
-              fontFamily: FontFamilyHelper.lamaSansArabic,
-              fontWeight: FontWeightHelper.medium),
-          selectedLabelStyle: TextStyle(
-              color: Color(0xffFFB74D),
-              fontSize: 12.sp,
-              fontFamily: FontFamilyHelper.lamaSansArabic,
-              fontWeight: FontWeightHelper.medium),
-          items: [
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/images/home/home_gray.png',
-                width: 24.w,
-                height: 24.h,
+        child: Container(
+          height: 80.h,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 5,
+                offset: Offset(0, -1),
               ),
-              label: AppLocalizations.of(context)!.homeLabel,
-              activeIcon: Image.asset(
-                'assets/images/home/home_orange.png',
-                width: 24.w,
-                height: 24.h,
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/images/home/message_gray.png',
-                width: 24.w,
-                height: 24.h,
-              ),
-              label: AppLocalizations.of(context)!.messagesLabel,
-              activeIcon: Image.asset(
-                'assets/images/home/message_orange.png',
-                width: 24.w,
-                height: 24.h,
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/images/home/group_gray.png',
-                width: 24.w,
-                height: 24.h,
-              ),
-              label: AppLocalizations.of(context)!.members,
-              activeIcon: Image.asset(
-                'assets/images/home/group_orange.png',
-                width: 24.w,
-                height: 24.h,
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/images/home/profile_gray.png',
-                width: 24.w,
-                height: 24.h,
-              ),
-              label: AppLocalizations.of(context)!.accountLabel,
-              activeIcon: Image.asset(
-                'assets/images/home/profile_orange.png',
-                width: 24.w,
-                height: 24.h,
-              ),
-            ),
-          ],
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(0,  'assets/images/home/home_orange.png', AppLocalizations.of(context)!.homeLabel),
+              _buildNavItem(1,  'assets/images/home/message_orange.png', AppLocalizations.of(context)!.messagesLabel),
+              _buildNavItem(2,  'assets/images/home/group_orange.png', AppLocalizations.of(context)!.members),
+              _buildNavItem(3,  'assets/images/home/profile_orange.png', AppLocalizations.of(context)!.accountLabel),
+            ],
+          ),
         ),
       ),
     );
