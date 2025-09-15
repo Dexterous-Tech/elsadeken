@@ -443,7 +443,8 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+        width: 85.w,
+        padding: EdgeInsetsDirectional.symmetric(horizontal: 12.w, vertical: 8.h),
         decoration: BoxDecoration(
           color: isSelected ? highlightColor.withOpacity(0.2) : Colors.transparent,
           borderRadius: BorderRadius.circular(25),
