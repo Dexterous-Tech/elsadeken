@@ -333,6 +333,14 @@ class DropdownFieldBuilder extends ProfileFieldBuilder {
               isLoading = true;
             }
             break;
+          case ManageProfileFieldDataType.income:
+            final incomes = generalDataLists['incomes'];
+            if (incomes != null && incomes.isNotEmpty) {
+              items = incomes.map((item) => item.name ?? '').toList();
+            } else if (state is IncomesLoading) {
+              isLoading = true;
+            }
+            break;
         }
 
         return Column(

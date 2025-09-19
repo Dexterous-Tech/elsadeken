@@ -127,27 +127,9 @@ class JobDataValidationHandler extends ProfileValidationHandler {
     Map<String, TextEditingController> controllers,
     BuildContext context,
   ) {
-    final monthlyIncomeStr =
-        controllers[AppLocalizations.of(context)!.monthlyIncome]?.text ?? '';
-
-    // Validate income - must be greater than 0
-    if (monthlyIncomeStr.isNotEmpty) {
-      final income = int.tryParse(monthlyIncomeStr);
-      if (income == null) {
-        return ValidationResult(
-          isValid: false,
-          errorMessage:
-              AppLocalizations.of(context)!.pleaseEnterValidMonthlyIncome,
-        );
-      }
-      if (income <= 0) {
-        return ValidationResult(
-          isValid: false,
-          errorMessage:
-              AppLocalizations.of(context)!.monthlyIncomeMustBePositive,
-        );
-      }
-    }
+    // Income is now a dropdown selection, so no specific validation needed
+    // The dropdown selection itself ensures a valid income option is chosen
+    // Any additional validation would be handled by the dropdown field requirements
 
     return ValidationResult(isValid: true);
   }

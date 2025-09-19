@@ -109,9 +109,9 @@ class ManageProfileJob extends StatelessWidget {
         ManageProfileField(
           label: AppLocalizations.of(context)!.monthlyIncome,
           hint: AppLocalizations.of(context)!.enterMonthlyIncome,
-          currentValue: profileData?.attribute?.income?.toString() ?? '',
-          type: ManageProfileFieldType.text,
-          keyboardType: TextInputType.number,
+          currentValue: profileData?.attribute?.income ?? '',
+          type: ManageProfileFieldType.dropdown,
+          dataType: ManageProfileFieldDataType.income,
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.healthStatus,

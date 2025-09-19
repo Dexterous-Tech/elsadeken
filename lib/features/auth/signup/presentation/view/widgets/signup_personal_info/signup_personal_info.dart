@@ -105,6 +105,9 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(
                             RegExp(r'[a-zA-Z\u0600-\u06FF\s]')),
+                        // Explicitly deny Arabic numbers (٠-٩) and regular numbers (0-9)
+                        FilteringTextInputFormatter.deny(
+                            RegExp(r'[0-9\u0660-\u0669]')),
                       ],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {

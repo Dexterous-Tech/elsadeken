@@ -159,6 +159,25 @@ class ProfileDataMappers {
     }
   }
 
+  /// Get income ID by income name
+  static int? getIncomeIdByName(
+    String incomeName,
+    Map<String, List<GeneralInfoResponseModels>> generalDataLists,
+  ) {
+    try {
+      final incomes = generalDataLists['incomes'];
+      if (incomes != null && incomes.isNotEmpty) {
+        final income = incomes.firstWhere(
+          (item) => item.name == incomeName,
+        );
+        return income.id;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   /// Convert marital status from localized text to API value
   static String? mapMaritalStatusToApiValue(String maritalStatus) {
     if (maritalStatus.isEmpty) return null;

@@ -30,13 +30,21 @@ class SignupJob extends StatefulWidget {
 
 class _SignupJobState extends State<SignupJob> {
   GeneralInfoResponseModels? _selectedHealth;
+  GeneralInfoResponseModels? _selectedIncomes;
+
   List<GeneralInfoResponseModels> _healthOptions = [];
+  List<GeneralInfoResponseModels> _incomesOptions = [];
+
+  // Track loading states separately
+  bool _isLoadingHealthConditions = true;
+  bool _isLoadingIncomes = true;
 
   @override
   void initState() {
     super.initState();
     // Load health conditions when widget initializes
     context.read<SignUpListsCubit>().getHealthConditions();
+    context.read<SignUpListsCubit>().getIncomes();
   }
 
   @override
@@ -49,13 +57,25 @@ class _SignupJobState extends State<SignupJob> {
           setState(() {
             _healthOptions =
                 state.generalList.cast<GeneralInfoResponseModels>();
+            _isLoadingHealthConditions = false;
+          });
+        } else if (state is IncomesSuccess) {
+          setState(() {
+            _incomesOptions =
+                state.generalList.cast<GeneralInfoResponseModels>();
+            _isLoadingIncomes = false;
+          });
+        } else if (state is HealthConditionsLoading) {
+          setState(() {
+            _isLoadingHealthConditions = true;
+          });
+        } else if (state is IncomesLoading) {
+          setState(() {
+            _isLoadingIncomes = true;
           });
         }
       },
       builder: (context, state) {
-        // Check if data is loading
-        bool isLoadingHealth = state is HealthConditionsLoading;
-
         return LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
@@ -98,44 +118,75 @@ class _SignupJobState extends State<SignupJob> {
                     ),
                     verticalSpace(40),
 
-                    Text(AppLocalizations.of(context)!.whatIsYourMonthlyIncome,
-                        textDirection:
-                            LocalizationService.instance.textDirection,
-                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                    verticalSpace(16),
-                    // Income field
-                    CustomTextFormField(
-                      controller: cubit.incomeController,
-                      keyboardType: TextInputType.number,
-                      hintText: '',
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly, // ✅ Only digits
-                        LengthLimitingTextInputFormatter(
-                            9), // Limit to reasonable length (e.g., no phone number length)
-                      ],
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return AppLocalizations.of(context)!.incomeRequired;
-                        }
+                    // Text(AppLocalizations.of(context)!.whatIsYourMonthlyIncome,
+                    //     textDirection:
+                    //         LocalizationService.instance.textDirection,
+                    //     style: AppTextStyles.font23ChineseBlackBoldLamaSans),
+                    // verticalSpace(16),
+                    // // Income field
+                    // CustomTextFormField(
+                    //   controller: cubit.incomeController,
+                    //   keyboardType: TextInputType.number,
+                    //   hintText: '',
+                    //   inputFormatters: [
+                    //     FilteringTextInputFormatter.digitsOnly, // ✅ Only digits
+                    //     LengthLimitingTextInputFormatter(
+                    //         9), // Limit to reasonable length (e.g., no phone number length)
+                    //   ],
+                    //   validator: (value) {
+                    //     if (value == null || value.trim().isEmpty) {
+                    //       return AppLocalizations.of(context)!.incomeRequired;
+                    //     }
+                    //
+                    //     final income = int.tryParse(value);
+                    //     if (income == null) {
+                    //       return AppLocalizations.of(context)!
+                    //           .pleaseEnterValidNumber;
+                    //     }
+                    //     if (income < 0) {
+                    //       return AppLocalizations.of(context)!
+                    //           .incomeCannotBeNegative;
+                    //     }
+                    //
+                    //     return null;
+                    //   },
+                    // ),
 
-                        final income = int.tryParse(value);
-                        if (income == null) {
-                          return AppLocalizations.of(context)!
-                              .pleaseEnterValidNumber;
-                        }
-                        if (income < 0) {
-                          return AppLocalizations.of(context)!
-                              .incomeCannotBeNegative;
-                        }
-
-                        return null;
-                      },
-                    ),
+                    // Income Selection
+                    if (_isLoadingIncomes)
+                      SignupChoiceLoading(
+                        title: AppLocalizations.of(context)!
+                            .whatIsYourMonthlyIncome,
+                      )
+                    else
+                      SignupMultiChoice(
+                        height: 170.h,
+                        title: AppLocalizations.of(context)!
+                            .whatIsYourMonthlyIncome,
+                        options: _incomesOptions
+                            .map((income) => income.name ?? '')
+                            .toList(),
+                        selected: _selectedIncomes?.name,
+                        onChanged: (newStatus) {
+                          final selectedIncome = _incomesOptions.firstWhere(
+                            (income) => income.name == newStatus,
+                            orElse: () => GeneralInfoResponseModels(),
+                          );
+                          setState(() {
+                            _selectedIncomes = selectedIncome;
+                          });
+                          // Store the ID in the signup cubit
+                          if (selectedIncome.id != null) {
+                            context.read<SignupCubit>().incomeController.text =
+                                selectedIncome.id.toString();
+                          }
+                        },
+                      ),
 
                     verticalSpace(40),
 
                     // Health Condition Selection
-                    if (isLoadingHealth)
+                    if (_isLoadingHealthConditions)
                       SignupChoiceLoading(
                         title: AppLocalizations.of(context)!
                             .whatIsYourHealthStatus,
@@ -189,7 +240,8 @@ class _SignupJobState extends State<SignupJob> {
     bool hasJob = cubit.jobController.text.trim().isNotEmpty;
 
     // Must have income
-    bool hasIncome = cubit.incomeController.text.trim().isNotEmpty;
+    // bool hasIncome = cubit.incomeController.text.trim().isNotEmpty;
+    bool hasIncome = _selectedIncomes != null;
 
     // Must select health condition
     bool hasHealthCondition = _selectedHealth != null;

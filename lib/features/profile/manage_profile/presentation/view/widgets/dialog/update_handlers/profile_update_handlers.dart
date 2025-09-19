@@ -180,7 +180,7 @@ class JobUpdateHandler extends ProfileUpdateHandler {
     final financialSituationName =
         controllers[AppLocalizations.of(context)!.financialStatus]?.text ?? '';
     final jobTitle = controllers[AppLocalizations.of(context)!.job]?.text ?? '';
-    final monthlyIncomeStr =
+    final incomeName =
         controllers[AppLocalizations.of(context)!.monthlyIncome]?.text ?? '';
     final healthConditionName =
         controllers[AppLocalizations.of(context)!.healthStatus]?.text ?? '';
@@ -191,21 +191,14 @@ class JobUpdateHandler extends ProfileUpdateHandler {
     final financialSituationId =
         ProfileDataMappers.getFinancialSituationIdByName(
             financialSituationName, generalDataLists);
+    final incomeId =
+        ProfileDataMappers.getIncomeIdByName(incomeName, generalDataLists);
     final healthConditionId = ProfileDataMappers.getHealthConditionIdByName(
         healthConditionName, generalDataLists);
 
-    // Convert income string to number
-    int? income;
-    try {
-      income = monthlyIncomeStr.isNotEmpty ? int.parse(monthlyIncomeStr) : null;
-    } catch (e) {
-      print('DEBUG: Income parsing error: $e');
-      income = null;
-    }
-
     cubit.updateProfileWorkData(
       qualificationId: qualificationId?.toString(),
-      income: income,
+      income: incomeId,
       job: jobTitle.isNotEmpty ? jobTitle : null,
       healthConditionId: healthConditionId?.toString(),
       financialSituationId: financialSituationId?.toString(),

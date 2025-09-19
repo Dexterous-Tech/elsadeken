@@ -84,10 +84,12 @@ class UpdateProfileMarriageDataModel {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    if (maritalStatus != null && maritalStatus!.isNotEmpty)
+    if (maritalStatus != null && maritalStatus!.isNotEmpty) {
       map['marital_status'] = maritalStatus;
-    if (typeOfMarriage != null && typeOfMarriage!.isNotEmpty)
+    }
+    if (typeOfMarriage != null && typeOfMarriage!.isNotEmpty) {
       map['type_of_marriage'] = typeOfMarriage;
+    }
     if (childrenNumber != null) map['children_number'] = childrenNumber;
     if (age != null) map['age'] = age;
     return map;
@@ -169,7 +171,7 @@ class UpdateProfileWorkDataModel {
 
   UpdateProfileWorkDataModel.fromJson(dynamic json) {
     qualificationId = json['qualification_id'];
-    income = json['income'];
+    income = json['income_id'];
     job = json['job'];
     healthConditionId = json['health_condition_id'];
     financialSituationId = json['financial_situation_id'];
@@ -185,7 +187,7 @@ class UpdateProfileWorkDataModel {
     if (qualificationId != null && qualificationId!.isNotEmpty) {
       map['qualification_id'] = qualificationId;
     }
-    if (income != null) map['income'] = income;
+    if (income != null) map['income_id'] = income;
     if (job != null && job!.isNotEmpty) map['job'] = job;
     if (healthConditionId != null && healthConditionId!.isNotEmpty) {
       map['health_condition_id'] = healthConditionId;

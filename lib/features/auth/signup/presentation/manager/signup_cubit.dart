@@ -105,7 +105,7 @@ class SignupCubit extends Cubit<SignupState> {
         educationalQualification: educationalQualificationController.text,
         financialSituation: financialSituationController.text,
         job: jobController.text,
-        income: incomeController.text,
+        incomeId: incomeController.text,
         healthCondition: healthConditionController.text,
         aboutMe: aboutMeController.text,
         lifePartner: lifePartnerController.text,
@@ -154,7 +154,7 @@ class SignupCubit extends Cubit<SignupState> {
             formData.educationalQualification ?? '';
         financialSituationController.text = formData.financialSituation ?? '';
         jobController.text = formData.job ?? '';
-        incomeController.text = formData.income ?? '';
+        incomeController.text = formData.incomeId ?? '';
         healthConditionController.text = formData.healthCondition ?? '';
         aboutMeController.text = formData.aboutMe ?? '';
         lifePartnerController.text = formData.lifePartner ?? '';

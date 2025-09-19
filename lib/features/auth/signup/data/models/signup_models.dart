@@ -101,7 +101,7 @@ class RegisterInformationRequestModel {
       'qualification_id': educationalQualification,
       'financial_situation_id': financialSituation,
       'job': job,
-      'income': income,
+      'income_id': income,
       'health_condition_id': healthCondition,
       'about_me': aboutMe,
       'life_partner': lifePartner,

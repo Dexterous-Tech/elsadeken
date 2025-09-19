@@ -16,6 +16,7 @@ class ApiConstants {
   static String qualifications = '/user/list/qualifications';
   static String financialSituations = '/user/list/financial-situations';
   static String healthConditions = '/user/list/health-conditions';
+  static String incomes = '/user/list/incomes';
   static String signup = '/user/register';
   static String registerInformation = '/user/attributes';
   static String logout = '/user/logout';

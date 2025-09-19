@@ -116,3 +116,17 @@ final class HealthConditionsSuccess extends SignUpListsState {
 
   HealthConditionsSuccess(this.generalList);
 }
+
+final class IncomesLoading extends SignUpListsState {}
+
+final class IncomesFailure extends SignUpListsState {
+  final String error;
+
+  IncomesFailure(this.error);
+}
+
+final class IncomesSuccess extends SignUpListsState {
+  final List<GeneralInfoResponseModels> generalList;
+
+  IncomesSuccess(this.generalList);
+}

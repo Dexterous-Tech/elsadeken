@@ -102,6 +102,7 @@ enum ManageProfileFieldDataType {
   qualification,
   financialSituation,
   healthCondition,
+  income,
 }
 
 Future<void> manageProfileDialog(

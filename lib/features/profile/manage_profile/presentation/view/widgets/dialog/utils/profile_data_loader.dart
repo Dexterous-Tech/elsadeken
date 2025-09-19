@@ -35,6 +35,9 @@ class ProfileDataLoader {
         case ManageProfileFieldDataType.healthCondition:
           signUpListsCubit.getHealthConditions();
           break;
+        case ManageProfileFieldDataType.income:
+          signUpListsCubit.getIncomes();
+          break;
         case ManageProfileFieldDataType.city:
           // Cities will be loaded when country is selected
           break;
