@@ -1278,6 +1278,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAccount => 'Delete Account';
 
   @override
+  String get enterPasswordToConfirmDeletion => 'Enter your password to confirm account deletion';
+
+  @override
   String get lifePartner => 'Life Partner';
 
   @override

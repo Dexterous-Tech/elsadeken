@@ -545,6 +545,7 @@
   "cannotUndoThisAction": "This action cannot be undone",
   "cancel": "Cancel",
   "deleteAccount": "Delete Account",
+  "enterPasswordToConfirmDeletion": "Enter your password to confirm account deletion",
   
   "lifePartner": "Life Partner",
   "writeAboutLifePartner": "Write about your life partner's characteristics",

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/profile/contact_us/data/models/contact_us_model.dart';
 import 'package:elsadeken/features/profile/contact_us/data/repo/contact_us_repo.dart';
-import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
+import 'package:elsadeken/features/profile/profile/data/models/profile_action_model.dart';
 
 part 'contact_us_state.dart';
 

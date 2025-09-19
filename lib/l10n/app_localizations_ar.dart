@@ -1279,6 +1279,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get deleteAccount => 'حذف الحساب';
 
   @override
+  String get enterPasswordToConfirmDeletion => 'أدخل كلمة المرور لتأكيد حذف الحساب';
+
+  @override
   String get lifePartner => 'شريك الحياة';
 
   @override

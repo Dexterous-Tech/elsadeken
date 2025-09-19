@@ -2531,6 +2531,12 @@ abstract class AppLocalizations {
   /// **'Delete Account'**
   String get deleteAccount;
 
+  /// No description provided for @enterPasswordToConfirmDeletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password to confirm account deletion'**
+  String get enterPasswordToConfirmDeletion;
+
   /// No description provided for @lifePartner.
   ///
   /// In en, this message translates to:

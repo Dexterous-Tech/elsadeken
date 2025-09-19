@@ -6,11 +6,12 @@ import 'package:elsadeken/core/networking/api_error_model.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/data_source/manage_profile_data_source.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/update_profile_models.dart';
-import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
+import 'package:elsadeken/features/profile/profile/data/models/profile_action_model.dart';
 
 abstract class ManageProfileRepoInterface {
   Future<Either<ApiErrorModel, MyProfileResponseModel>> getProfile();
-  Future<Either<ApiErrorModel, ProfileActionResponseModel>> deleteAccount();
+  Future<Either<ApiErrorModel, ProfileActionResponseModel>> deleteAccount(
+      String password);
   Future<Either<ApiErrorModel, MyProfileResponseModel>> updateProfileLoginData(
       UpdateProfileLoginDataRequestModel updateProfileData);
   Future<Either<ApiErrorModel, MyProfileResponseModel>>
@@ -53,10 +54,10 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
   }
 
   @override
-  Future<Either<ApiErrorModel, ProfileActionResponseModel>>
-      deleteAccount() async {
+  Future<Either<ApiErrorModel, ProfileActionResponseModel>> deleteAccount(
+      String password) async {
     try {
-      var response = await manageProfileDataSource.deleteAccount();
+      var response = await manageProfileDataSource.deleteAccount(password);
       return Right(response);
     } catch (error) {
       log("error in delete profile $error");

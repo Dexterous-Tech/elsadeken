@@ -1,4 +1,4 @@
-import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
+import 'package:elsadeken/features/profile/profile/data/models/profile_action_model.dart';
 
 import '../../data/models/login_models.dart';
 

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:elsadeken/features/profile/my_image/data/model/my_image_model.dart';
 import 'package:elsadeken/features/profile/my_image/data/repo/my_image_repo%20.dart';
-import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
+import 'package:elsadeken/features/profile/profile/data/models/profile_action_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 

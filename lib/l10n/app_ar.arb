@@ -544,6 +544,7 @@
   "cannotUndoThisAction": "لا يمكن التراجع عن هذا الإجراء",
   "cancel": "الغاء",
   "deleteAccount": "حذف الحساب",
+  "enterPasswordToConfirmDeletion": "أدخل كلمة المرور لتأكيد حذف الحساب",
   
   "lifePartner": "شريك الحياة",
   "writeAboutLifePartner": "اكتب عن مواصفات شريك حياتك",
