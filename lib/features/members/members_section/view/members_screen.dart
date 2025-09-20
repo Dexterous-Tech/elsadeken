@@ -81,10 +81,9 @@ class MembersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.white,
-      body: Stack(
+    return Container(
+      color: Colors.white,
+      child: Stack(
         alignment: Alignment.topCenter,
         children: [
           Positioned(

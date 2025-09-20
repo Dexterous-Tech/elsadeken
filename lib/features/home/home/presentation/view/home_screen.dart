@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/core/networking/api_constants.dart';
@@ -23,6 +22,7 @@ import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cub
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 
@@ -42,9 +42,7 @@ class HomeScreenWrapper extends StatelessWidget {
         BlocProvider(create: (context) => sl<ProfileDetailsCubit>()),
         BlocProvider(create: (context) => sl<ChatListCubit>()),
       ],
-      child: Scaffold(
-        body: HomeScreen(initialTabIndex: initialTabIndex),
-      ),
+      child: HomeScreen(initialTabIndex: initialTabIndex),
     );
   }
 }
@@ -231,7 +229,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       if (isLike) {
-        final apiService = await ApiServices.init();
         context.read<ProfileDetailsCubit>().likeUser(swipedUser.id);
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -266,149 +263,172 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildHomeContent() {
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
-        child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          child: Column(
-            crossAxisAlignment:
-            LocalizationService.instance.startCrossAxisAlignment,
-            textDirection: LocalizationService.instance.textDirection,
-            children: [
-              Column(
-                children: [
-                  BlocProvider(
-                    create: (context) => sl<ManageProfileCubit>(),
-                    child: HomeHeader(),
-                  ),
-                  SizedBox(height: 21.h),
-                  Padding(
-                    padding: EdgeInsetsDirectional.only(start: 12.w, end: 12.w),
-                    child: CustomTextFormField(
-                      focusNode: _focusNode,
-                      onChanged: (value) {
-                        context.read<SearchCubit>().updateUsername(value);
-                        _onSearchChanged(value);
-                      },
-                      hintText: AppLocalizations.of(context)!.search,
-                      validator: (value) {},
-                      suffixIcon: GestureDetector(
-                        onTap: () {},
-                        child: Icon(
-                          Icons.search,
-                          color: Color(0xff949494),
-                          size: 19,
-                        ),
-                      ),
-                      hintStyle: TextStyle(
-                        fontWeight: FontWeightHelper.regular,
-                        color: Color(0xff949494),
-                        fontSize: 16.sp,
-                        fontFamily: FontFamilyHelper.lamaSansArabic,
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0xff949494),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0xff949494),
-                          width: 1.w,
-                        ),
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 16.h),
-                ],
-              ),
-              if (isLoading)
-                Center(child: CircularProgressIndicator())
-              else if (errorMessage != null)
-                Center(
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        end: Alignment.bottomCenter,
+        begin: Alignment.topCenter,
+        colors: [
+          Color(0xffF8ECD6).withValues(alpha: 0.1),
+          Color(0xffF8ECD6),
+        ],
+      )),
+      child: SafeArea(
+        child: LayoutBuilder(builder: (context, constraints) {
+          return SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment:
+                        LocalizationService.instance.startCrossAxisAlignment,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: [
-                      verticalSpace(150),
-                      Text(
-                        AppLocalizations.of(context)!.failedToLoadMatches,
-                        style: AppTextStyles.font14JetRegularLamaSans
-                            .copyWith(color: AppColors.red),
+                      Column(
+                        children: [
+                          BlocProvider(
+                            create: (context) => sl<ManageProfileCubit>(),
+                            child: HomeHeader(),
+                          ),
+                          SizedBox(height: 21.h),
+                          Padding(
+                            padding: EdgeInsetsDirectional.only(
+                                start: 12.w, end: 12.w),
+                            child: CustomTextFormField(
+                              focusNode: _focusNode,
+                              onChanged: (value) {
+                                context
+                                    .read<SearchCubit>()
+                                    .updateUsername(value);
+                                _onSearchChanged(value);
+                              },
+                              hintText: AppLocalizations.of(context)!.search,
+                              validator: (value) {},
+                              suffixIcon: GestureDetector(
+                                onTap: () {},
+                                child: Icon(
+                                  Icons.search,
+                                  color: Color(0xff949494),
+                                  size: 19,
+                                ),
+                              ),
+                              hintStyle: TextStyle(
+                                fontWeight: FontWeightHelper.regular,
+                                color: Color(0xff949494),
+                                fontSize: 16.sp,
+                                fontFamily: FontFamilyHelper.lamaSansArabic,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0xff949494),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0xff949494),
+                                  width: 1.w,
+                                ),
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 16.h),
+                        ],
                       ),
-                      verticalSpace(18),
-                      ElevatedButton(
-                        onPressed: _loadMatchesUsers,
-                        child: Text(AppLocalizations.of(context)!.tryAgain),
-                      ),
+                      if (isLoading)
+                        Center(child: CircularProgressIndicator())
+                      else if (errorMessage != null)
+                        Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              verticalSpace(150),
+                              Text(
+                                AppLocalizations.of(context)!
+                                    .failedToLoadMatches,
+                                style: AppTextStyles.font14JetRegularLamaSans
+                                    .copyWith(color: AppColors.red),
+                              ),
+                              verticalSpace(18),
+                              ElevatedButton(
+                                onPressed: _loadMatchesUsers,
+                                child: Text(
+                                    AppLocalizations.of(context)!.tryAgain),
+                              ),
+                            ],
+                          ),
+                        )
+                      else if (currentUsers.isEmpty)
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              verticalSpace(150),
+                              Icon(Icons.favorite_outline,
+                                  size: 80.w, color: Colors.grey[400]),
+                              SizedBox(height: 16.h),
+                              Text(
+                                AppLocalizations.of(context)!.noNewMatches,
+                                style: TextStyle(
+                                    fontSize: 18.sp, color: Colors.grey[600]),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        Container(
+                          height: 600.h,
+                          margin: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Stack(
+                            children: currentUsers
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                                  final index = entry.key;
+                                  final user = entry.value;
+
+                                  final isTopCard = index == 0;
+                                  final isSecondCard = index == 1;
+
+                                  double scale = 1.0;
+                                  double verticalOffset = 0.0.h;
+
+                                  if (isSecondCard) {
+                                    scale = 0.95;
+                                    verticalOffset = 20.h;
+                                  } else if (!isTopCard) {
+                                    scale = 0.9;
+                                    verticalOffset = 40.h;
+                                  }
+
+                                  return SwipeableCard(
+                                    user: user,
+                                    onSwipe: isTopCard ? _onSwipe : null,
+                                    isTop: isTopCard,
+                                    scale: scale,
+                                    verticalOffset: verticalOffset,
+                                  );
+                                })
+                                .toList()
+                                .reversed
+                                .toList(),
+                          ),
+                        )
                     ],
                   ),
-                )
-              else if (currentUsers.isEmpty)
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      // crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        verticalSpace(150),
-                        Icon(Icons.favorite_outline,
-                            size: 80.w, color: Colors.grey[400]),
-                        SizedBox(height: 16.h),
-                        Text(
-                          AppLocalizations.of(context)!.noNewMatches,
-                          style:
-                          TextStyle(fontSize: 18.sp, color: Colors.grey[600]),
-                        ),
-                      ],
-                    ),
-                  )
-                else
-                  Container(
-                    height: 600.h,
-                    decoration: BoxDecoration(color: Colors.white),
-                    margin: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Stack(
-                      children: currentUsers
-                          .asMap()
-                          .entries
-                          .map((entry) {
-                        final index = entry.key;
-                        final user = entry.value;
-
-                        final isTopCard = index == 0;
-                        final isSecondCard = index == 1;
-
-                        double scale = 1.0;
-                        double verticalOffset = 0.0.h;
-
-                        if (isSecondCard) {
-                          scale = 0.95;
-                          verticalOffset = 20.h;
-                        } else if (!isTopCard) {
-                          scale = 0.9;
-                          verticalOffset = 40.h;
-                        }
-
-                        return SwipeableCard(
-                          user: user,
-                          onSwipe: isTopCard ? _onSwipe : null,
-                          isTop: isTopCard,
-                          scale: scale,
-                          verticalOffset: verticalOffset,
-                        );
-                      })
-                          .toList()
-                          .reversed
-                          .toList(),
-                    ),
-                  )
-            ],
-          ),
-        ),
+                ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -417,8 +437,10 @@ class _HomeScreenState extends State<HomeScreen> {
     switch (_currentIndex) {
       case 0:
         return GestureDetector(
+            behavior: HitTestBehavior
+                .translucent, // Ensures taps are detected on empty space
             onTap: () {
-              FocusScope.of(context).unfocus(); // Close keyboard
+              FocusScope.of(context).requestFocus(FocusNode());
             },
             child: buildHomeContent());
       case 1:
@@ -432,10 +454,47 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Widget _buildNavItem(int index, String activeIcon, String label) {
+  Widget _buildNavItem(int index, String svgIcon, String label) {
     bool isSelected = _currentIndex == index;
-    Color highlightColor = index == 3 ? Color(0xffD54B16) : Color(0xffFFB74D);
-    
+
+    // Determine border radius based on index and directionality
+    BorderRadius getItemBorderRadius() {
+      if (!isSelected) return BorderRadius.zero;
+
+      bool isRTL =
+          LocalizationService.instance.textDirection == TextDirection.rtl;
+
+      if (index == 0 || index == 3) {
+        // For items 0 and 3, apply radius based on directionality
+        if (index == 0) {
+          // First item (Home)
+          return isRTL
+              ? BorderRadius.only(
+                  topRight: Radius.circular(25).r,
+                  bottomRight: Radius.circular(25).r,
+                )
+              : BorderRadius.only(
+                  topLeft: Radius.circular(25).r,
+                  bottomLeft: Radius.circular(25).r,
+                );
+        } else {
+          // Last item (Profile)
+          return isRTL
+              ? BorderRadius.only(
+                  topLeft: Radius.circular(25).r,
+                  bottomLeft: Radius.circular(25).r,
+                )
+              : BorderRadius.only(
+                  topRight: Radius.circular(25).r,
+                  bottomRight: Radius.circular(25).r,
+                );
+        }
+      } else {
+        // For items 1 and 2, no radius (rectangle/square)
+        return BorderRadius.zero;
+      }
+    }
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -443,25 +502,30 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       },
       child: Container(
-        width: 85.w,
-        padding: EdgeInsetsDirectional.symmetric(horizontal: 12.w, vertical: 8.h),
+        height: double.infinity, // Take full height of navigation bar
+        // padding: EdgeInsetsDirectional.symmetric(vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected ? highlightColor.withOpacity(0.2) : Colors.transparent,
-          borderRadius: BorderRadius.circular(25),
+          color: isSelected ? Color(0xffF4E2B8) : Colors.transparent,
+          borderRadius: getItemBorderRadius(),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          // mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              activeIcon ,
+            SvgPicture.asset(
+              svgIcon,
               width: 24.w,
               height: 24.h,
+              colorFilter: ColorFilter.mode(
+                isSelected ? Colors.white : Color(0xffDBAE48),
+                BlendMode.srcIn,
+              ),
             ),
             SizedBox(height: 4.h),
             Text(
               label,
               style: TextStyle(
-                color:   Color(0xffA0A4B0),
+                color: isSelected ? Colors.white : Color(0xffDBAE48),
                 fontSize: 12.sp,
                 fontFamily: FontFamilyHelper.lamaSansArabic,
                 fontWeight: FontWeightHelper.medium,
@@ -476,34 +540,51 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffFFFFFF),
-      body: getBody(),
-      bottomNavigationBar: Directionality(
-        textDirection: LocalizationService.instance.textDirection,
-        child: Container(
-          height: 80.h,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 5,
-                offset: Offset(0, -1),
-              ),
-            ],
+        extendBody: true, // allows body to paint behind bottomNavigationBar
+        body: getBody(),
+        bottomNavigationBar: Directionality(
+          textDirection: LocalizationService.instance.textDirection,
+          child: Container(
+            height: 60.h,
+            margin: EdgeInsets.only(
+              left: 24.w,
+              right: 24.w,
+              bottom: 24.h,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25).r,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withValues(alpha: 0.1),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: Offset(0, -1),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  child: _buildNavItem(0, 'assets/svg/home_icon.svg',
+                      AppLocalizations.of(context)!.homeLabel),
+                ),
+                Expanded(
+                  child: _buildNavItem(1, 'assets/svg/message_icon.svg',
+                      AppLocalizations.of(context)!.messagesLabel),
+                ),
+                Expanded(
+                  child: _buildNavItem(2, 'assets/svg/group_icon.svg',
+                      AppLocalizations.of(context)!.members),
+                ),
+                Expanded(
+                  child: _buildNavItem(3, 'assets/svg/profile_icon.svg',
+                      AppLocalizations.of(context)!.accountLabel),
+                ),
+              ],
+            ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(0,  'assets/images/home/home_orange.png', AppLocalizations.of(context)!.homeLabel),
-              _buildNavItem(1,  'assets/images/home/message_orange.png', AppLocalizations.of(context)!.messagesLabel),
-              _buildNavItem(2,  'assets/images/home/group_orange.png', AppLocalizations.of(context)!.members),
-              _buildNavItem(3,  'assets/images/home/profile_orange.png', AppLocalizations.of(context)!.accountLabel),
-            ],
-          ),
-        ),
-      ),
-    );
+        ));
   }
 }

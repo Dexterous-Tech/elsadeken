@@ -82,19 +82,21 @@ class _HomeHeaderState extends State<HomeHeader> {
                                 height: 18.h,
                               ),
                               SizedBox(width: 10.w),
-                              Text(
-                                '$country, $city',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textDirection:
-                                    LocalizationService.instance.textDirection,
-                                textAlign: TextAlign.right,
-                                style: AppTextStyles
-                                    .font15BistreSemiBoldLamaSans
-                                    .copyWith(
-                                  color:
-                                      AppColors.black.withValues(alpha: 0.87),
-                                  fontWeight: FontWeightHelper.medium,
+                              Expanded(
+                                child: Text(
+                                  '$country, $city',
+                                  maxLines: 2, // ✅ allow up to 2 lines
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: true,
+                                  textDirection: LocalizationService
+                                      .instance.textDirection,
+                                  style: AppTextStyles
+                                      .font15BistreSemiBoldLamaSans
+                                      .copyWith(
+                                    color:
+                                        AppColors.black.withValues(alpha: 0.87),
+                                    fontWeight: FontWeightHelper.medium,
+                                  ),
                                 ),
                               ),
                             ],
