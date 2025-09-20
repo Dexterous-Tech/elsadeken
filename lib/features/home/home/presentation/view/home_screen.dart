@@ -53,7 +53,7 @@ class HomeScreen extends StatefulWidget {
   final int? initialTabIndex;
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -505,7 +505,7 @@ class _HomeScreenState extends State<HomeScreen> {
         height: double.infinity, // Take full height of navigation bar
         // padding: EdgeInsetsDirectional.symmetric(vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected ? Color(0xffF4E2B8) : Colors.transparent,
+          color: isSelected ? Color(0xffDBAE48) : Colors.transparent,
           borderRadius: getItemBorderRadius(),
         ),
         child: Column(
