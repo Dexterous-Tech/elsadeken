@@ -11,6 +11,7 @@ import '../../../../../core/routes/app_routes.dart';
 import '../../../../chat/data/models/chat_room_model.dart';
 import '../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import '../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
+import '../../../../profile/profile_details/presentation/manager/profile_details_cubit.dart';
 
 class PersonInfoSheet extends StatefulWidget {
   final PersonModel person;
@@ -25,6 +26,14 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   final DraggableScrollableController _controller =
       DraggableScrollableController();
 
+  late PersonModel _currentPerson;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentPerson = widget.person;
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -33,23 +42,10 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
 
   /// Handle favorite button press
   void _handleFavoritePress() {
-    // Add your favorite functionality here
-    // For example, you could:
-    // - Toggle favorite status
-    // - Show a snackbar
-    // - Navigate to a different screen
-    // - Call an API to update favorite status
-    print('Favorite button pressed for user: ${widget.person.name}');
+    print('Favorite button pressed for user: ${_currentPerson.name}');
 
-    // Example: Show a snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-            AppLocalizations.of(context)!.addedToFavorites(widget.person.name)),
-        duration: const Duration(seconds: 2),
-        backgroundColor: Colors.green,
-      ),
-    );
+    // Call the likeUser method from ProfileDetailsCubit
+    context.read<ProfileDetailsCubit>().likeUser(_currentPerson.id);
   }
 
   /// Format the createdAt date string to a readable format
@@ -156,46 +152,80 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      controller: _controller,
-      initialChildSize: 0.5,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      snap: true,
-      snapSizes: const [0.5, 0.6, 0.95],
-      builder: (context, scrollController) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            textDirection: LocalizationService.instance.textDirection,
-            children: [
-              _buildDragHandle(),
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(20),
-                  children: [
-                    _buildPersonHeader(),
-                    const SizedBox(height: 20),
-                    _buildAboutSection(),
-                    const SizedBox(height: 30),
-                    _buildLogTable(),
-                    const SizedBox(height: 30),
-                    _buildDataTable(),
-                    const SizedBox(height: 30),
-                    Center(child: _buildActionButtons()),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
+    return BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
+      listener: (context, state) {
+        if (state is LikeUserSuccess) {
+          // Update the person's favorite status
+          setState(() {
+            _currentPerson = _currentPerson.copyWith(
+              isFavorite: !_currentPerson.isFavorite,
+            );
+          });
+
+          // Show success message from response
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.profileDetailsActionResponseModel.message ??
+                  (_currentPerson.isFavorite
+                      ? AppLocalizations.of(context)!
+                          .addedToFavorites(_currentPerson.name)
+                      : AppLocalizations.of(context)!.removeFromFavorites)),
+              duration: const Duration(seconds: 2),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else if (state is LikeUserFailure) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error),
+              duration: const Duration(seconds: 2),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       },
+      child: DraggableScrollableSheet(
+        controller: _controller,
+        initialChildSize: 0.5,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        snap: true,
+        snapSizes: const [0.5, 0.6, 0.95],
+        builder: (context, scrollController) {
+          return Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: LocalizationService.instance.textDirection,
+              children: [
+                _buildDragHandle(),
+                Expanded(
+                  child: ListView(
+                    controller: scrollController,
+                    padding: const EdgeInsets.all(20),
+                    children: [
+                      _buildPersonHeader(),
+                      const SizedBox(height: 20),
+                      _buildAboutSection(),
+                      const SizedBox(height: 30),
+                      _buildLogTable(),
+                      const SizedBox(height: 30),
+                      _buildDataTable(),
+                      const SizedBox(height: 30),
+                      Center(child: _buildActionButtons()),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -225,7 +255,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildPersonHeader() {
-    final p = widget.person;
+    final p = _currentPerson;
     return Row(
       textDirection: LocalizationService.instance.textDirection,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,13 +289,13 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
           child: Container(
             width: 40.w,
             height: 40.h,
-            decoration: const BoxDecoration(
-              color: Colors.red,
+            decoration: BoxDecoration(
+              color: p.isFavorite ? Colors.red : Colors.grey[300],
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.favorite,
-              color: Colors.white,
+            child: Icon(
+              p.isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: p.isFavorite ? Colors.white : Colors.grey[600],
               size: 20,
             ),
           ),
@@ -275,7 +305,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildAboutSection() {
-    final p = widget.person;
+    final p = _currentPerson;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -301,7 +331,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildLogTable() {
-    final p = widget.person;
+    final p = _currentPerson;
     final data = [
       {
         'label': AppLocalizations.of(context)!.registeredSince,
@@ -398,7 +428,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildDataTable() {
-    final p = widget.person;
+    final p = _currentPerson;
     final data = [
       {
         'label': AppLocalizations.of(context)!.nationality,
@@ -550,7 +580,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
           onTap: () async {
             try {
               print(
-                  '🔍 [PersonInfo] Message icon tapped for user ID: ${widget.person.id}');
+                  '🔍 [PersonInfo] Message icon tapped for user ID: ${_currentPerson.id}');
 
               // Check if there's an existing chat room first
               final chatListCubit = context.read<ChatListCubit>();
@@ -568,7 +598,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
 
               // Find existing chat room between current user and this profile user
               final existingChatRoom =
-                  chatListCubit.findExistingChatRoom(widget.person.id);
+                  chatListCubit.findExistingChatRoom(_currentPerson.id);
 
               if (existingChatRoom != null) {
                 print(
@@ -592,9 +622,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                   AppRoutes.chatConversationScreen,
                   arguments: {
                     "chatRoom": ChatRoomModel.fromUser(
-                      userId: widget.person.id,
-                      userName: widget.person.name,
-                      userImage: widget.person.image,
+                      userId: _currentPerson.id,
+                      userName: _currentPerson.name,
+                      userImage: _currentPerson.image,
                     ),
                   },
                 );
@@ -607,9 +637,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                 AppRoutes.chatConversationScreen,
                 arguments: {
                   "chatRoom": ChatRoomModel.fromUser(
-                    userId: widget.person.id,
-                    userName: widget.person.name,
-                    userImage: widget.person.image,
+                    userId: _currentPerson.id,
+                    userName: _currentPerson.name,
+                    userImage: _currentPerson.image,
                   ),
                 },
               );

@@ -36,273 +36,355 @@ class ProfileDetailsBody extends StatefulWidget {
 }
 
 class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
+  UsersDataModel? _currentUser;
+
   @override
   void initState() {
     super.initState();
+    _currentUser = widget.user;
     // Call getProfileDetails once when widget initializes
     context.read<ProfileDetailsCubit>().getProfileDetails(widget.userId);
   }
 
   @override
   Widget build(BuildContext context) {
-    return CustomProfileBody(
-      contentBody: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          textDirection: LocalizationService.instance.textDirection,
-          children: [
-            CustomArrowBack(),
-            ProfileDetailsLogo(),
-            verticalSpace(20),
-            Row(
-              // spacing: 37.75,
-              textDirection: TextDirection.rtl,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
-                  listenWhen: (context, current) =>
-                      current is ShareUserLoading ||
-                      current is ShareUserFailure ||
-                      current is ShareUserSuccess,
-                  listener: (context, state) {
-                    if (state is ShareUserLoading) {
-                      loadingDialog(context);
-                    } else if (state is ShareUserFailure) {
-                      context.pop();
-                      errorDialog(context: context, error: state.error);
-                    } else if (state is ShareUserSuccess) {
-                      context.pop();
-                      _showShareSuccessDialog(
-                        context: context,
-                        message:
-                            state.profileDetailsActionResponseModel.message ??
-                                'تم انشاء رابط مشاركة',
-                        shareUrl: state
-                            .profileDetailsActionResponseModel.data?.shareUrl,
-                      );
-                    }
-                  },
-                  child: CustomContainer(
-                    img: AppImages.share,
-                    color: AppColors.lightBlue.withValues(alpha: 0.07),
-                    text: AppLocalizations.of(context)!.share,
-                    onTap: () {
-                      context
-                          .read<ProfileDetailsCubit>()
-                          .shareUser(widget.userId);
-                    },
-                  ),
-                ),
-                BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
-                  listenWhen: (context, current) =>
-                      current is LikeUserLoading ||
-                      current is LikeUserFailure ||
-                      current is LikeUserSuccess,
-                  listener: (context, state) {
-                    if (state is LikeUserLoading) {
-                      loadingDialog(context);
-                    } else if (state is LikeUserFailure) {
-                      context.pop();
-                      errorDialog(context: context, error: state.error);
-                    } else if (state is LikeUserSuccess) {
-                      context.pop();
-                      successDialog(
+    return BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
+      listenWhen: (context, current) => current is GetProfileDetailsSuccess,
+      listener: (context, state) {
+        if (state is GetProfileDetailsSuccess) {
+          // Update current user data when profile details are loaded
+          final userData = state.profileDetailsResponseModel.data;
+          if (userData != null) {
+            setState(() {
+              _currentUser = _currentUser?.copyWith(
+                isFavorite: userData.isFavorite,
+                isIgnore: userData.isIgnore,
+                name: userData.name,
+                image: userData.image,
+              );
+            });
+          }
+        }
+      },
+      child: CustomProfileBody(
+        contentBody: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            textDirection: LocalizationService.instance.textDirection,
+            children: [
+              CustomArrowBack(),
+              ProfileDetailsLogo(),
+              verticalSpace(20),
+              Row(
+                // spacing: 37.75,
+                textDirection: TextDirection.rtl,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
+                    listenWhen: (context, current) =>
+                        current is ShareUserLoading ||
+                        current is ShareUserFailure ||
+                        current is ShareUserSuccess,
+                    listener: (context, state) {
+                      if (state is ShareUserLoading) {
+                        loadingDialog(context);
+                      } else if (state is ShareUserFailure) {
+                        context.pop();
+                        errorDialog(context: context, error: state.error);
+                      } else if (state is ShareUserSuccess) {
+                        context.pop();
+                        _showShareSuccessDialog(
                           context: context,
                           message:
                               state.profileDetailsActionResponseModel.message ??
-                                  AppLocalizations.of(context)!.liked,
-                          onPressed: () {
-                            context.pop();
-                            context.pop();
-                          });
-                    }
-                  },
-                  child: CustomContainer(
-                    img: AppImages.like,
-                    color: AppColors.lightPink.withValues(alpha: 0.07),
-                    text: AppLocalizations.of(context)!.interest,
-                    onTap: () {
-                      context
-                          .read<ProfileDetailsCubit>()
-                          .likeUser(widget.userId);
-                    },
-                  ),
-                ),
-                BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
-                  listenWhen: (context, current) =>
-                      current is IgnoreUserLoading ||
-                      current is IgnoreUserFailure ||
-                      current is IgnoreUserSuccess,
-                  listener: (context, state) {
-                    if (state is IgnoreUserLoading) {
-                      loadingDialog(context);
-                    } else if (state is IgnoreUserFailure) {
-                      context.pop();
-                      errorDialog(context: context, error: state.error);
-                    } else if (state is IgnoreUserSuccess) {
-                      context.pop();
-                      successDialog(
-                          context: context,
-                          message:
-                              state.profileDetailsActionResponseModel.message ??
-                                  AppLocalizations.of(context)!.ignored,
-                          onPressed: () {
-                            context.pop();
-                            context.pop();
-                          });
-                    }
-                  },
-                  child: CustomContainer(
-                    img: AppImages.thumbDown,
-                    color: AppColors.lightPink.withValues(alpha: 0.07),
-                    text: AppLocalizations.of(context)!.ignore,
-                    onTap: () {
-                      context
-                          .read<ProfileDetailsCubit>()
-                          .ignoreUser(widget.userId);
-                    },
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    try {
-                      print(
-                          '🔍 [ProfileDetails] Message icon tapped for user ID: ${widget.userId}');
-
-                      // Check if there's an existing chat room first
-                      final chatListCubit = context.read<ChatListCubit>();
-
-                      // Check if chat list is already loaded, if not, load it silently
-
-                      // Check if chat list is already loaded, if not, load it
-                      if (chatListCubit.state is! ChatListLoaded) {
-                        print(
-                            '🔄 [ProfileDetails] Chat list not loaded, loading now...');
-                        await chatListCubit.forceRefreshChatList();
-
-                        // Wait a bit for the state to update
-                        await Future.delayed(const Duration(milliseconds: 500));
-                      } else {
-                        print('✅ [ProfileDetails] Chat list already loaded');
+                                  'تم انشاء رابط مشاركة',
+                          shareUrl: state
+                              .profileDetailsActionResponseModel.data?.shareUrl,
+                        );
                       }
+                    },
+                    child: CustomContainer(
+                      img: AppImages.share,
+                      color: AppColors.lightBlue.withValues(alpha: 0.07),
+                      text: AppLocalizations.of(context)!.share,
+                      onTap: () {
+                        context
+                            .read<ProfileDetailsCubit>()
+                            .shareUser(widget.userId);
+                      },
+                    ),
+                  ),
+                  BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
+                    listenWhen: (context, current) =>
+                        current is LikeUserLoading ||
+                        current is LikeUserFailure ||
+                        current is LikeUserSuccess,
+                    listener: (context, state) {
+                      if (state is LikeUserLoading) {
+                        loadingDialog(context);
+                      } else if (state is LikeUserFailure) {
+                        context.pop();
+                        errorDialog(context: context, error: state.error);
+                      } else if (state is LikeUserSuccess) {
+                        context.pop();
 
-                      // Find existing chat room between current user and this profile user
-                      final existingChatRoom =
-                          chatListCubit.findExistingChatRoom(widget.userId);
+                        // Update the current user's favorite status
+                        setState(() {
+                          _currentUser = _currentUser?.copyWith(
+                            isFavorite: !(_currentUser?.isFavorite ?? false),
+                          );
+                        });
 
-                      if (existingChatRoom != null) {
+                        // Reload profile data to get updated information
+                        context
+                            .read<ProfileDetailsCubit>()
+                            .getProfileDetails(widget.userId);
+
+                        successDialog(
+                            context: context,
+                            message: state.profileDetailsActionResponseModel
+                                    .message ??
+                                AppLocalizations.of(context)!.liked,
+                            onPressed: () {
+                              context.pop();
+                            });
+                      }
+                    },
+                    child: (_currentUser?.isIgnore ?? false)
+                        ? Opacity(
+                            opacity: 0.3, // Make it very transparent/hidden
+                            child: CustomContainer(
+                              img: AppImages.like,
+                              color: Colors.grey.withValues(alpha: 0.3),
+                              text: AppLocalizations.of(context)!.interest,
+                              onTap: null, // Disable tap when ignored
+                            ),
+                          )
+                        : CustomContainer(
+                            img: AppImages.like,
+                            color: (_currentUser?.isFavorite ?? false)
+                                ? AppColors.green.withValues(alpha: 0.07)
+                                : AppColors.lightPink.withValues(alpha: 0.07),
+                            text: (_currentUser?.isFavorite ?? false)
+                                ? AppLocalizations.of(context)!.liked
+                                : AppLocalizations.of(context)!.interest,
+                            onTap: () {
+                              context
+                                  .read<ProfileDetailsCubit>()
+                                  .likeUser(widget.userId);
+                            },
+                          ),
+                  ),
+                  BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
+                    listenWhen: (context, current) =>
+                        current is IgnoreUserLoading ||
+                        current is IgnoreUserFailure ||
+                        current is IgnoreUserSuccess,
+                    listener: (context, state) {
+                      if (state is IgnoreUserLoading) {
+                        loadingDialog(context);
+                      } else if (state is IgnoreUserFailure) {
+                        context.pop();
+                        errorDialog(context: context, error: state.error);
+                      } else if (state is IgnoreUserSuccess) {
+                        context.pop();
+
+                        // Update the current user's ignore status
+                        setState(() {
+                          _currentUser = _currentUser?.copyWith(
+                            isIgnore: !(_currentUser?.isIgnore ?? false),
+                          );
+                        });
+
+                        // Reload profile data to get updated information
+                        context
+                            .read<ProfileDetailsCubit>()
+                            .getProfileDetails(widget.userId);
+
+                        successDialog(
+                            context: context,
+                            message: state.profileDetailsActionResponseModel
+                                    .message ??
+                                AppLocalizations.of(context)!.ignored,
+                            onPressed: () {
+                              context.pop();
+                            });
+                      }
+                    },
+                    child: (_currentUser?.isIgnore ?? false)
+                        ? Opacity(
+                            opacity: 0.3, // Make it very transparent/hidden
+                            child: CustomContainer(
+                              img: AppImages.thumbDown,
+                              color: Colors.grey.withValues(alpha: 0.3),
+                              text: AppLocalizations.of(context)!.ignored,
+                              onTap: null, // Disable tap when ignored
+                            ),
+                          )
+                        : (_currentUser?.isFavorite ?? false)
+                            ? Opacity(
+                                opacity: 0.3, // Make it very transparent/hidden
+                                child: CustomContainer(
+                                  img: AppImages.thumbDown,
+                                  color: Colors.grey.withValues(alpha: 0.3),
+                                  text: AppLocalizations.of(context)!.ignore,
+                                  onTap: null, // Disable tap when favorited
+                                ),
+                              )
+                            : CustomContainer(
+                                img: AppImages.thumbDown,
+                                color:
+                                    AppColors.lightPink.withValues(alpha: 0.07),
+                                text: AppLocalizations.of(context)!.ignore,
+                                onTap: () {
+                                  context
+                                      .read<ProfileDetailsCubit>()
+                                      .ignoreUser(widget.userId);
+                                },
+                              ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      try {
                         print(
-                            '✅ [ProfileDetails] Found existing chat room: ${existingChatRoom.id}, navigating to it');
-                        // Navigate to existing chat room
-                        if (context.mounted) {
+                            '🔍 [ProfileDetails] Message icon tapped for user ID: ${widget.userId}');
+
+                        // Check if there's an existing chat room first
+                        final chatListCubit = context.read<ChatListCubit>();
+
+                        // Check if chat list is already loaded, if not, load it silently
+
+                        // Check if chat list is already loaded, if not, load it
+                        if (chatListCubit.state is! ChatListLoaded) {
+                          print(
+                              '🔄 [ProfileDetails] Chat list not loaded, loading now...');
+                          await chatListCubit.forceRefreshChatList();
+
+                          // Wait a bit for the state to update
+                          await Future.delayed(
+                              const Duration(milliseconds: 500));
+                        } else {
+                          print('✅ [ProfileDetails] Chat list already loaded');
+                        }
+
+                        // Find existing chat room between current user and this profile user
+                        final existingChatRoom =
+                            chatListCubit.findExistingChatRoom(widget.userId);
+
+                        if (existingChatRoom != null) {
+                          print(
+                              '✅ [ProfileDetails] Found existing chat room: ${existingChatRoom.id}, navigating to it');
+                          // Navigate to existing chat room
+                          if (context.mounted) {
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.chatConversationScreen,
+                              arguments: {
+                                "chatRoom": existingChatRoom,
+                              },
+                            );
+                          }
+                        } else {
+                          print(
+                              '🆕 [ProfileDetails] No existing chat room found, creating new temporary chat');
+                          // Get user data from the current state if available
+                          final cubit = context.read<ProfileDetailsCubit>();
+                          final state = cubit.state;
+
+                          String userName = 'User';
+                          String userImage = '';
+
+                          if (state is GetProfileDetailsSuccess) {
+                            final userData =
+                                state.profileDetailsResponseModel.data;
+                            if (userData != null) {
+                              userName = userData.name ?? 'User';
+                              userImage = userData.image ?? '';
+                            }
+                          } else if (widget.user != null) {
+                            // Fallback to passed user data if available
+                            userName = widget.user!.name ?? 'User';
+                            userImage = widget.user!.image ?? '';
+                          }
+
+                          // Create new temporary chat room for new conversation
                           Navigator.pushNamed(
                             context,
                             AppRoutes.chatConversationScreen,
                             arguments: {
-                              "chatRoom": existingChatRoom,
+                              "chatRoom": ChatRoomModel.fromUser(
+                                userId: widget.userId,
+                                userName: userName,
+                                userImage: userImage,
+                              ),
                             },
                           );
                         }
-                      } else {
+                      } catch (e) {
                         print(
-                            '🆕 [ProfileDetails] No existing chat room found, creating new temporary chat');
-                        // Get user data from the current state if available
-                        final cubit = context.read<ProfileDetailsCubit>();
-                        final state = cubit.state;
-
-                        String userName = 'User';
-                        String userImage = '';
-
-                        if (state is GetProfileDetailsSuccess) {
-                          final userData =
-                              state.profileDetailsResponseModel.data;
-                          if (userData != null) {
-                            userName = userData.name ?? 'User';
-                            userImage = userData.image ?? '';
-                          }
-                        } else if (widget.user != null) {
-                          // Fallback to passed user data if available
-                          userName = widget.user!.name ?? 'User';
-                          userImage = widget.user!.image ?? '';
-                        }
-
-                        // Create new temporary chat room for new conversation
+                            '❌ [ProfileDetails] Error in message icon onTap: $e');
+                        // Fallback to creating new chat
                         Navigator.pushNamed(
                           context,
                           AppRoutes.chatConversationScreen,
                           arguments: {
                             "chatRoom": ChatRoomModel.fromUser(
                               userId: widget.userId,
-                              userName: userName,
-                              userImage: userImage,
+                              userName: widget.user?.name ?? 'User',
+                              userImage: widget.user?.image ?? '',
                             ),
                           },
                         );
                       }
-                    } catch (e) {
-                      print(
-                          '❌ [ProfileDetails] Error in message icon onTap: $e');
-                      // Fallback to creating new chat
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.chatConversationScreen,
-                        arguments: {
-                          "chatRoom": ChatRoomModel.fromUser(
-                            userId: widget.userId,
-                            userName: widget.user?.name ?? 'User',
-                            userImage: widget.user?.image ?? '',
-                          ),
-                        },
-                      );
-                    }
-                  },
-                  child: CustomContainer(
-                    img: AppImages.message,
-                    color: AppColors.orangeLight.withValues(alpha: 0.07),
-                    text: AppLocalizations.of(context)!.chats,
-                  ),
-                ),
-                BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
-                  listenWhen: (context, current) =>
-                      current is ReportUserLoading ||
-                      current is ReportUserFailure ||
-                      current is ReportUserSuccess,
-                  listener: (context, state) {
-                    if (state is ReportUserLoading) {
-                      loadingDialog(context);
-                    } else if (state is ReportUserFailure) {
-                      context.pop();
-                      errorDialog(context: context, error: state.error);
-                    } else if (state is ReportUserSuccess) {
-                      context.pop();
-                      successDialog(
-                          context: context,
-                          message:
-                              state.profileDetailsActionResponseModel.message ??
-                                  AppLocalizations.of(context)!.reported,
-                          onPressed: () {
-                            context.pop();
-                            context.pop();
-                          });
-                    }
-                  },
-                  child: CustomContainer(
-                    img: AppImages.block,
-                    color: AppColors.lightRed.withValues(alpha: 0.07),
-                    text: AppLocalizations.of(context)!.report,
-                    onTap: () {
-                      context
-                          .read<ProfileDetailsCubit>()
-                          .reportUser(widget.userId);
                     },
+                    child: CustomContainer(
+                      img: AppImages.message,
+                      color: AppColors.orangeLight.withValues(alpha: 0.07),
+                      text: AppLocalizations.of(context)!.chats,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            verticalSpace(40),
-            ProfileDetailsData(),
-            verticalSpace(20),
-          ],
+                  BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
+                    listenWhen: (context, current) =>
+                        current is ReportUserLoading ||
+                        current is ReportUserFailure ||
+                        current is ReportUserSuccess,
+                    listener: (context, state) {
+                      if (state is ReportUserLoading) {
+                        loadingDialog(context);
+                      } else if (state is ReportUserFailure) {
+                        context.pop();
+                        errorDialog(context: context, error: state.error);
+                      } else if (state is ReportUserSuccess) {
+                        context.pop();
+                        successDialog(
+                            context: context,
+                            message: state.profileDetailsActionResponseModel
+                                    .message ??
+                                AppLocalizations.of(context)!.reported,
+                            onPressed: () {
+                              context.pop();
+                              context.pop();
+                            });
+                      }
+                    },
+                    child: CustomContainer(
+                      img: AppImages.block,
+                      color: AppColors.lightRed.withValues(alpha: 0.07),
+                      text: AppLocalizations.of(context)!.report,
+                      onTap: () {
+                        context
+                            .read<ProfileDetailsCubit>()
+                            .reportUser(widget.userId);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              verticalSpace(40),
+              ProfileDetailsData(),
+              verticalSpace(20),
+            ],
+          ),
         ),
       ),
     );

@@ -148,9 +148,12 @@ class AppRouting {
         final personId = args['personId'] as int;
         final imageUrl = args['imageUrl'] as String;
         return MaterialPageRoute(
-            builder: (_) => PersonDetailsView(
-                  personId: personId,
-                  imageUrl: imageUrl,
+            builder: (_) => BlocProvider(
+                  create: (context) => sl<ProfileDetailsCubit>(),
+                  child: PersonDetailsView(
+                    personId: personId,
+                    imageUrl: imageUrl,
+                  ),
                 ));
       case AppRoutes.profileAboutUsScreen:
         return MaterialPageRoute(builder: (_) => AboutUsScreen());

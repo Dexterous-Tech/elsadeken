@@ -82,6 +82,8 @@ class UsersDataModel {
     this.attribute,
     this.visitedAtDate,
     this.visitedAtTime,
+    this.isFavorite,
+    this.isIgnore,
   });
 
   UsersDataModel.fromJson(dynamic json) {
@@ -99,6 +101,12 @@ class UsersDataModel {
     lastSeen = json['last_seen'];
     visitedAtDate = json['visited_at_date'];
     visitedAtTime = json['visited_at_time'];
+    isFavorite = json['is_favorite'] == true ||
+        json['is_favorite'] == 'true' ||
+        json['is_favorite'] == 1;
+    isIgnore = json['is_ignore'] == true ||
+        json['is_ignore'] == 'true' ||
+        json['is_ignore'] == 1;
     attribute = json['attribute'] != null
         ? UsersAttributeModel.fromJson(json['attribute'])
         : null;
@@ -117,6 +125,8 @@ class UsersDataModel {
   String? lastSeen;
   String? visitedAtDate;
   String? visitedAtTime;
+  bool? isFavorite;
+  bool? isIgnore;
   UsersAttributeModel? attribute;
 
   Map<String, dynamic> toJson() {
@@ -135,6 +145,8 @@ class UsersDataModel {
     map['last_seen'] = lastSeen;
     map['visited_at_date'] = visitedAtDate;
     map['visited_at_time'] = visitedAtTime;
+    map['is_favorite'] = isFavorite;
+    map['is_ignore'] = isIgnore;
     map['attribute'] = attribute;
     return map;
   }
@@ -154,6 +166,8 @@ class UsersDataModel {
     String? lastSeen,
     String? visitedAtDate,
     String? visitedAtTime,
+    bool? isFavorite,
+    bool? isIgnore,
     UsersAttributeModel? attribute,
   }) {
     return UsersDataModel(
@@ -171,6 +185,8 @@ class UsersDataModel {
       lastSeen: lastSeen ?? this.lastSeen,
       visitedAtDate: visitedAtDate ?? this.visitedAtDate,
       visitedAtTime: visitedAtTime ?? this.visitedAtTime,
+      isFavorite: isFavorite ?? this.isFavorite,
+      isIgnore: isIgnore ?? this.isIgnore,
       attribute: attribute ?? this.attribute,
     );
   }
