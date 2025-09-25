@@ -5,6 +5,8 @@ import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../core/services/localization_service.dart';
+
 class MyExcellenceItem extends StatelessWidget {
   const MyExcellenceItem(
       {super.key, required this.isCorrect, required this.title});
@@ -16,7 +18,7 @@ class MyExcellenceItem extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: Row(
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         children: [
           Image.asset(
             isCorrect ? AppImages.correctProfile : AppImages.wrongProfile,
@@ -28,7 +30,8 @@ class MyExcellenceItem extends StatelessWidget {
           ),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: LocalizationService.instance.textDirection,
               children: [
                 Text(
                   title,
@@ -36,8 +39,8 @@ class MyExcellenceItem extends StatelessWidget {
                     fontSize: 20.sp,
                     fontFamily: FontFamilyHelper.lamaSansArabic,
                   ),
-                  textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.right,
+                  textDirection: LocalizationService.instance.textDirection,
+                  textAlign: LocalizationService.instance.textAlignment,
                 ),
                 SizedBox(
                   height: 11,

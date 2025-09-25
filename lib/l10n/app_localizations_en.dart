@@ -219,7 +219,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAccountWarning => 'This action cannot be undone';
 
   @override
-  String get messageSettings => 'Message Settings';
+  String get messageSettings => 'Message Reception Settings';
 
   @override
   String get showOnlineStatus => 'Your Connection Status';
@@ -1699,4 +1699,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectCountry => 'Select Country';
+
+  @override
+  String get excellencePackageTitle => 'Excellence Package';
+
+  @override
+  String get benefits => 'Benefits';
+
+  @override
+  String get currentBenefits => 'My Current Benefits';
+
+  @override
+  String get prices => 'Prices';
+
+  @override
+  String get paymentMethods => 'Payment Methods';
+
+  @override
+  String get subscribeNow => 'Subscribe Now';
+
+  @override
+  String get youAreAlreadyPremium => 'You are already a premium member';
+
+  @override
+  String get excellencePackageDescription => 'By subscribing to the Excellence Package, you will activate all available features and thus increase your interaction in the app and achieve your goal faster';
+
+  @override
+  String get packageDescription => 'A set of premium services and features that increase your effectiveness in the app by displaying your profile better and publishing it more widely to achieve your goal faster';
+
+  @override
+  String get enhanceProfile => 'Enhance Personal Profile';
+
+  @override
+  String get enhanceProfileDescription => 'We will display your account in a unique and distinctive way, and place it at the top of all lists and before other members. You will notice a significant increase in your profile views and greater interaction in the app';
+
+  @override
+  String get changeUsername => 'Change Your Username';
+
+  @override
+  String get changeUsernameDescription => 'You have the option to change your username to any name you want';
+
+  @override
+  String get messageSettingsDescription => 'You will be able to specify the countries you want to receive messages from and exclude other countries';
+
+  @override
+  String get invisibleMode => 'Enable Invisible Browsing Mode';
+
+  @override
+  String get invisibleModeDescription => 'You can use the app in invisible browsing mode, where you will appear offline and your presence will not be shown to other members';
+
+  @override
+  String get premiumMembersList => 'Premium Members List';
+
+  @override
+  String get premiumMembersListDescription => 'Your profile will be displayed on the Premium Members page, which receives many visits from sincere male and female members';
+
+  @override
+  String get locationVerification => 'Verification of Actual Residence Country of Members';
+
+  @override
+  String get locationVerificationDescription => 'With this feature, we will reveal the actual residence country of any member based on their IP address, instead of the country they listed in their profile';
+
+  @override
+  String get months => 'months';
+
+  @override
+  String get forText => 'for';
+
+  @override
+  String get currency => 'SAR';
+
+  @override
+  String get packageAddedSuccessfully => 'Package added successfully!';
+
+  @override
+  String get errorAddingPackage => 'An error occurred while adding the package';
+
+  @override
+  String get noPackagesAvailable => 'No packages are currently available';
+
+  @override
+  String get inMonths => 'in';
+
+  @override
+  String get priceInCurrency => 'SAR';
 }

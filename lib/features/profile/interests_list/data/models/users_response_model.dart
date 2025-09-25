@@ -322,7 +322,7 @@ class UsersAttributeModel {
   String? hijab;
   String? beard;
   String? job;
-  int? income;
+  String? income;
   String? lifePartner;
   String? aboutMe;
 

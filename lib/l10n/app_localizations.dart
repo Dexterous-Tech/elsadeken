@@ -518,7 +518,7 @@ abstract class AppLocalizations {
   /// No description provided for @messageSettings.
   ///
   /// In en, this message translates to:
-  /// **'Message Settings'**
+  /// **'Message Reception Settings'**
   String get messageSettings;
 
   /// No description provided for @showOnlineStatus.
@@ -3376,6 +3376,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Country'**
   String get selectCountry;
+
+  /// No description provided for @excellencePackageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellence Package'**
+  String get excellencePackageTitle;
+
+  /// No description provided for @benefits.
+  ///
+  /// In en, this message translates to:
+  /// **'Benefits'**
+  String get benefits;
+
+  /// No description provided for @currentBenefits.
+  ///
+  /// In en, this message translates to:
+  /// **'My Current Benefits'**
+  String get currentBenefits;
+
+  /// No description provided for @prices.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices'**
+  String get prices;
+
+  /// No description provided for @paymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Methods'**
+  String get paymentMethods;
+
+  /// No description provided for @subscribeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe Now'**
+  String get subscribeNow;
+
+  /// No description provided for @youAreAlreadyPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'You are already a premium member'**
+  String get youAreAlreadyPremium;
+
+  /// No description provided for @excellencePackageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'By subscribing to the Excellence Package, you will activate all available features and thus increase your interaction in the app and achieve your goal faster'**
+  String get excellencePackageDescription;
+
+  /// No description provided for @packageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A set of premium services and features that increase your effectiveness in the app by displaying your profile better and publishing it more widely to achieve your goal faster'**
+  String get packageDescription;
+
+  /// No description provided for @enhanceProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Enhance Personal Profile'**
+  String get enhanceProfile;
+
+  /// No description provided for @enhanceProfileDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'We will display your account in a unique and distinctive way, and place it at the top of all lists and before other members. You will notice a significant increase in your profile views and greater interaction in the app'**
+  String get enhanceProfileDescription;
+
+  /// No description provided for @changeUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Your Username'**
+  String get changeUsername;
+
+  /// No description provided for @changeUsernameDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You have the option to change your username to any name you want'**
+  String get changeUsernameDescription;
+
+  /// No description provided for @messageSettingsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You will be able to specify the countries you want to receive messages from and exclude other countries'**
+  String get messageSettingsDescription;
+
+  /// No description provided for @invisibleMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Invisible Browsing Mode'**
+  String get invisibleMode;
+
+  /// No description provided for @invisibleModeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You can use the app in invisible browsing mode, where you will appear offline and your presence will not be shown to other members'**
+  String get invisibleModeDescription;
+
+  /// No description provided for @premiumMembersList.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Members List'**
+  String get premiumMembersList;
+
+  /// No description provided for @premiumMembersListDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile will be displayed on the Premium Members page, which receives many visits from sincere male and female members'**
+  String get premiumMembersListDescription;
+
+  /// No description provided for @locationVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification of Actual Residence Country of Members'**
+  String get locationVerification;
+
+  /// No description provided for @locationVerificationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'With this feature, we will reveal the actual residence country of any member based on their IP address, instead of the country they listed in their profile'**
+  String get locationVerificationDescription;
+
+  /// No description provided for @months.
+  ///
+  /// In en, this message translates to:
+  /// **'months'**
+  String get months;
+
+  /// No description provided for @forText.
+  ///
+  /// In en, this message translates to:
+  /// **'for'**
+  String get forText;
+
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR'**
+  String get currency;
+
+  /// No description provided for @packageAddedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Package added successfully!'**
+  String get packageAddedSuccessfully;
+
+  /// No description provided for @errorAddingPackage.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while adding the package'**
+  String get errorAddingPackage;
+
+  /// No description provided for @noPackagesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No packages are currently available'**
+  String get noPackagesAvailable;
+
+  /// No description provided for @inMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'in'**
+  String get inMonths;
+
+  /// No description provided for @priceInCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR'**
+  String get priceInCurrency;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

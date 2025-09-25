@@ -219,7 +219,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get deleteAccountWarning => 'لا يمكن التراجع عن هذا الإجراء';
 
   @override
-  String get messageSettings => 'إعدادات الرسائل';
+  String get messageSettings => 'إعدادات إستقبال الرسائل';
 
   @override
   String get showOnlineStatus => 'حالة الاتصال الخاصة بك';
@@ -1700,4 +1700,88 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get selectCountry => 'اختيار الدولة';
+
+  @override
+  String get excellencePackageTitle => 'باقـــة التميــــز';
+
+  @override
+  String get benefits => 'المزايـــــا';
+
+  @override
+  String get currentBenefits => 'إمتيازاتـــي الحاليـــة';
+
+  @override
+  String get prices => 'الأسعار';
+
+  @override
+  String get paymentMethods => 'طرق الدفع';
+
+  @override
+  String get subscribeNow => 'اشترك الان';
+
+  @override
+  String get youAreAlreadyPremium => 'أنت عضو مميز بالفعل';
+
+  @override
+  String get excellencePackageDescription => 'عند الأشتراك في باقة التميز ، ستقوم بتفعيل جميع الميزات المتاحة و بالتالي زيادة تفاعلك في التطبيق و تحقيق هدفك بشكل أسرع';
+
+  @override
+  String get packageDescription => 'مجموعة من الخدمات و الخصائص المميزة ، تزيد من فعاليتك في تطبيق عبر عرض ملفك بشكل أفضل ونشره بشكل أوسع لتحقيق هدفك بشكل أسرع';
+
+  @override
+  String get enhanceProfile => 'تعزيز ملف الشخصي';
+
+  @override
+  String get enhanceProfileDescription => 'سنعرض حسابك بطريقة فريدة ومميزة ، و نضعه في أعلى جميع القوائم وقبل أعضاء آخرين، ستلاحظ زيادة كبيرة في مشاهدات ملفك الشخصي وتفاعل أكبر في التطبيق';
+
+  @override
+  String get changeUsername => 'تغيير أسم الملف المستخدم الخاص بك';
+
+  @override
+  String get changeUsernameDescription => 'لديك الخيار لتغيير اسم المستخدم إلى أي اسم ترغب فيه';
+
+  @override
+  String get messageSettingsDescription => 'ستتمكن من تحديد البلدان التي تريد استقبال الرسائل منها واستعباد باقي البلدان';
+
+  @override
+  String get invisibleMode => 'تمكين وضع التصفح الخفي';
+
+  @override
+  String get invisibleModeDescription => 'يمكنك استخدام التطبيق في وضع التصفح الخفي ، حيث ستظهر غير متصل ولا يتم عرض تواجدك لأعضاء الآخرين';
+
+  @override
+  String get premiumMembersList => 'قائمة الأعضاء المميزين';
+
+  @override
+  String get premiumMembersListDescription => 'سيتم عرض ملفك الشخصي على صفحة الأعضاء المميزين ، التي تلقي زيارات كثيرة من أغضاء الصادقون و الصادقات';
+
+  @override
+  String get locationVerification => 'تحقيق من دولة الإقامة الفعلية لأعضاء';
+
+  @override
+  String get locationVerificationDescription => 'مع هذه الميزة، سنكشف عن دولة الإقامة الفعلية لأي عضو/عضوة بناء على عنوان IP الخاص به ، بدلا من البلد الذي قام بإدراجه في ملف الشخصي';
+
+  @override
+  String get months => 'أشهر';
+
+  @override
+  String get forText => 'بــ';
+
+  @override
+  String get currency => 'ريـــال';
+
+  @override
+  String get packageAddedSuccessfully => 'تم إضافة الباقة بنجاح!';
+
+  @override
+  String get errorAddingPackage => 'حدث خطأ أثناء إضافة الباقة';
+
+  @override
+  String get noPackagesAvailable => 'لا توجد باقات متاحة حالياً';
+
+  @override
+  String get inMonths => 'في';
+
+  @override
+  String get priceInCurrency => 'بريال';
 }
