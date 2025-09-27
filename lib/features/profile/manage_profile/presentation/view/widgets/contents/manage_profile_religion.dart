@@ -173,7 +173,7 @@ class ManageProfileReligion extends StatelessWidget {
   Map<String, String> _getHijabOptions(BuildContext context) {
     return {
       'not_hijab': AppLocalizations.of(context)!.notHijab,
-      'hijab': AppLocalizations.of(context)!.hijab,
+      'hijab': AppLocalizations.of(context)!.hijabFaceVisible,
       'hijab_and_veil': AppLocalizations.of(context)!.hijabAndVeil,
       'hijab_face': AppLocalizations.of(context)!.hijab_face,
       'dont_say': AppLocalizations.of(context)!.dontSay,

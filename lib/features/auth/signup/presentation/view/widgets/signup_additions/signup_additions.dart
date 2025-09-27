@@ -40,7 +40,7 @@ class _SignupAdditionsState extends State<SignupAdditions> {
   Map<String, String> get hijabOptions {
     return {
       'not_hijab': AppLocalizations.of(context)!.notHijab,
-      'hijab': AppLocalizations.of(context)!.hijab,
+      'hijab': AppLocalizations.of(context)!.hijabFaceVisible,
       'hijab_and_veil': AppLocalizations.of(context)!.hijabAndVeil,
       'hijab_face': AppLocalizations.of(context)!.hijab_face,
       'dont_say': AppLocalizations.of(context)!.dontSay,
