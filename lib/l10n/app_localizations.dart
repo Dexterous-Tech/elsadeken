@@ -614,7 +614,7 @@ abstract class AppLocalizations {
   /// No description provided for @chatBlockedSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Chat blocked successfully'**
+  /// **'Chat reported successfully'**
   String get chatBlockedSuccess;
 
   /// No description provided for @chatMutedSuccess.
@@ -1040,7 +1040,7 @@ abstract class AppLocalizations {
   /// No description provided for @blockUser.
   ///
   /// In en, this message translates to:
-  /// **'Block User'**
+  /// **'Report User'**
   String get blockUser;
 
   /// No description provided for @addToFavorites.
@@ -1894,6 +1894,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User unreported successfully'**
   String get unreportSuccessful;
+
+  /// No description provided for @unmuteChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute Chat'**
+  String get unmuteChat;
+
+  /// No description provided for @confirmUnmute.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Unmute'**
+  String get confirmUnmute;
+
+  /// No description provided for @areYouSureUnmute.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to unmute this chat?'**
+  String get areYouSureUnmute;
+
+  /// No description provided for @chatUnmutedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat unmuted successfully'**
+  String get chatUnmutedSuccess;
+
+  /// No description provided for @confirmMute.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Mute'**
+  String get confirmMute;
+
+  /// No description provided for @areYouSureMute.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to mute this chat?'**
+  String get areYouSureMute;
+
+  /// No description provided for @confirmReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Report'**
+  String get confirmReport;
+
+  /// No description provided for @areYouSureReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to report this user?'**
+  String get areYouSureReport;
+
+  /// No description provided for @reportSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'User reported successfully'**
+  String get reportSuccessful;
+
+  /// No description provided for @removeFromFavoritesSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed from favorites'**
+  String get removeFromFavoritesSuccess;
+
+  /// No description provided for @addToFavoritesSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to favorites'**
+  String get addToFavoritesSuccess;
+
+  /// No description provided for @alreadyInFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Already in favorites'**
+  String get alreadyInFavorites;
+
+  /// No description provided for @alreadyRemovedFromFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Already removed from favorites'**
+  String get alreadyRemovedFromFavorites;
 
   /// No description provided for @year.
   ///

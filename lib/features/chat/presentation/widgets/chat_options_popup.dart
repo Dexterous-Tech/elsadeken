@@ -14,6 +14,8 @@ class ChatOptionsPopup extends StatelessWidget {
   final VoidCallback onAddToFavorites;
   final bool isChatFavorite;
   final bool isChatReported;
+  final bool isChatMuted;
+  final bool isInFavoritesList;
 
   const ChatOptionsPopup({
     Key? key,
@@ -23,6 +25,8 @@ class ChatOptionsPopup extends StatelessWidget {
     required this.onAddToFavorites,
     this.isChatFavorite = false,
     this.isChatReported = false,
+    this.isChatMuted = false,
+    this.isInFavoritesList = false,
   }) : super(key: key);
 
   @override
@@ -57,11 +61,13 @@ class ChatOptionsPopup extends StatelessWidget {
                   height: 0.5,
                   color: AppColors.grey,
                 ),
-                // Mute
+                // Mute/Unmute
                 _buildOptionItem(
                   context,
                   imagePath: 'assets/images/icons/mute.png',
-                  text: AppLocalizations.of(context)!.muteChat,
+                  text: isChatMuted 
+                      ? AppLocalizations.of(context)!.unmuteChat 
+                      : AppLocalizations.of(context)!.muteChat,
                   onTap: () {
                     Navigator.pop(context);
                     onMute();
@@ -93,7 +99,7 @@ class ChatOptionsPopup extends StatelessWidget {
                 _buildOptionItem(
                   context,
                   imagePath: 'assets/images/icons/heart.png',
-                  text: isChatFavorite ? AppLocalizations.of(context)!.removeFromFavorites : AppLocalizations.of(context)!.addToFavorites,
+                  text: _getFavoritesText(context),
                   onTap: () {
                     Navigator.pop(context);
                     onAddToFavorites();
@@ -120,6 +126,18 @@ class ChatOptionsPopup extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getFavoritesText(BuildContext context) {
+    if (isInFavoritesList) {
+      // In favorites list, always show "Remove from Favorites"
+      return AppLocalizations.of(context)!.removeFromFavorites;
+    } else {
+      // In all chats list, show based on current favorite status
+      return isChatFavorite 
+          ? AppLocalizations.of(context)!.removeFromFavorites 
+          : AppLocalizations.of(context)!.addToFavorites;
+    }
   }
 
   Widget _buildOptionItem(

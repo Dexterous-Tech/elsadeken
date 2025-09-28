@@ -129,6 +129,10 @@ class ChatData {
   });
 
   factory ChatData.fromJson(Map<String, dynamic> json) {
+    // Check multiple possible field names for favorite status
+    final isFavoriteValue = json['is_favorite'] ?? json['favourite'] ?? json['isFavorite'];
+    final isFavorite = isFavoriteValue == 1 || isFavoriteValue == true || isFavoriteValue == '1';
+    
     return ChatData(
       id: json['id'] ?? 0,
       lastMessage: json['last_message'] != null
@@ -138,7 +142,7 @@ class ChatData {
       otherUser: OtherUser.fromJson(json['other_user']),
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
-      isFavorite: json['is_favorite'] == 1 || json['is_favorite'] == true,
+      isFavorite: isFavorite,
     );
   }
 

@@ -14,6 +14,7 @@ class ChatRoomItem extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback? onLongPress;
   final ChatListCubit chatListCubit;
+  final bool isInFavoritesList;
 
   const ChatRoomItem({
     super.key,
@@ -21,6 +22,7 @@ class ChatRoomItem extends StatelessWidget {
     required this.onTap,
     required this.chatListCubit,
     this.onLongPress,
+    this.isInFavoritesList = false,
   });
 
   @override
@@ -146,6 +148,8 @@ class ChatRoomItem extends StatelessWidget {
         onAddToFavorites: () => _toggleFavorite(context),
         isChatFavorite: chat.isFavorite, // Pass the current favorite status
         isChatReported: chat.isReported, // Pass the current report status
+        isChatMuted: chat.isMuted, // Pass the current mute status
+        isInFavoritesList: isInFavoritesList, // Pass the context
       ),
     );
   }
@@ -312,14 +316,14 @@ class ChatRoomItem extends StatelessWidget {
         title: Text(
           isReported 
               ? AppLocalizations.of(context)!.confirmUnreport
-              : AppLocalizations.of(context)!.confirm,
+              : AppLocalizations.of(context)!.confirmReport,
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
         content: Text(
           isReported 
               ? AppLocalizations.of(context)!.areYouSureUnreport
-              : AppLocalizations.of(context)!.report,
+              : AppLocalizations.of(context)!.areYouSureReport,
           style: AppTextStyles.font16BlackSemiBoldLamaSans,
           textAlign: TextAlign.center,
         ),
@@ -355,7 +359,7 @@ class ChatRoomItem extends StatelessWidget {
                 // Show success snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(AppLocalizations.of(context)!.chatBlockedSuccess),
+                    content: Text(AppLocalizations.of(context)!.reportSuccessful),
                     backgroundColor: Colors.orange,
                   ),
                 );
@@ -364,7 +368,7 @@ class ChatRoomItem extends StatelessWidget {
             child: Text(
               AppLocalizations.of(context)!.confirm,
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                color: Colors.red,
+                color: isReported ? Colors.green : Colors.red,
               ),
             ),
           ),
@@ -374,6 +378,8 @@ class ChatRoomItem extends StatelessWidget {
   }
 
   void _muteChat(BuildContext context) {
+    final bool isCurrentlyMuted = chat.isMuted;
+    
     // Show confirmation dialog
     showDialog(
       context: context,
@@ -382,12 +388,16 @@ class ChatRoomItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
         ),
         title: Text(
-          AppLocalizations.of(context)!.confirm,
+          isCurrentlyMuted 
+              ? AppLocalizations.of(context)!.confirmUnmute
+              : AppLocalizations.of(context)!.confirmMute,
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
         content: Text(
-          AppLocalizations.of(context)!.muteChat,
+          isCurrentlyMuted 
+              ? AppLocalizations.of(context)!.areYouSureUnmute
+              : AppLocalizations.of(context)!.areYouSureMute,
           style: AppTextStyles.font16BlackSemiBoldLamaSans,
           textAlign: TextAlign.center,
         ),
@@ -404,21 +414,23 @@ class ChatRoomItem extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              // Call the cubit method to mute this user
+              // Call the cubit method to mute/unmute this user
               chatListCubit.muteUser(chat.id);
 
               // Show success snackbar
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(AppLocalizations.of(context)!.chatMutedSuccess),
-                  backgroundColor: Colors.grey,
+                  content: Text(isCurrentlyMuted 
+                      ? AppLocalizations.of(context)!.chatUnmutedSuccess
+                      : AppLocalizations.of(context)!.chatMutedSuccess),
+                  backgroundColor: isCurrentlyMuted ? Colors.green : Colors.grey,
                 ),
               );
             },
             child: Text(
               AppLocalizations.of(context)!.confirm,
               style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                color: Colors.orangeAccent,
+                color: isCurrentlyMuted ? Colors.green : Colors.orangeAccent,
               ),
             ),
           ),
@@ -428,14 +440,36 @@ class ChatRoomItem extends StatelessWidget {
   }
 
   void _toggleFavorite(BuildContext context) {
-    // Toggle the favorite status
-    chatListCubit.toggleChatFavorite(chat.id, chat.isFavorite);
-
-    // Show appropriate snackbar
+    final bool isCurrentlyFavorite = chat.isFavorite;
+    
+    // Debug: Print the current favorite status
+    print('🔍 [ChatRoomItem] Chat ID: ${chat.id}, isFavorite: $isCurrentlyFavorite');
+    print('🔍 [ChatRoomItem] Chat otherUser: ${chat.otherUser.name}');
+    print('🔍 [ChatRoomItem] isInFavoritesList: $isInFavoritesList');
+    
+    // Use the toggle method from cubit
+    chatListCubit.addChatToFavorite(chat.id);
+    
+    // Show appropriate snackbar based on current state and context
+    String message;
+    Color backgroundColor;
+    
+    if (isInFavoritesList) {
+      // In favorites list, always show "removed successfully"
+      message = AppLocalizations.of(context)!.removeFromFavoritesSuccess;
+      backgroundColor = Colors.grey;
+    } else {
+      // In all chats list, show based on current state
+      message = isCurrentlyFavorite 
+          ? AppLocalizations.of(context)!.removeFromFavoritesSuccess
+          : AppLocalizations.of(context)!.addToFavoritesSuccess;
+      backgroundColor = isCurrentlyFavorite ? Colors.grey : Colors.pink;
+    }
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(chat.isFavorite ? '${AppLocalizations.of(context)!.removeFromFavorites}' : '${AppLocalizations.of(context)!.addToFavorites}'),
-        backgroundColor: chat.isFavorite ? Colors.grey : Colors.pink,
+        content: Text(message),
+        backgroundColor: backgroundColor,
       ),
     );
   }

@@ -482,25 +482,41 @@ class ChatListCubit extends Cubit<ChatListState> {
     }
   }
 
-  /// Add chat to favorites
+  /// Add chat to favorites (handles toggle logic)
   Future<void> addChatToFavorite(int chatId) async {
     try {
-      print('[ChatListCubit] Adding chat $chatId to favorites...');
+      // Get current favorite status
+      final currentState = state;
+      bool isCurrentlyFavorite = false;
+      
+      if (currentState is ChatListLoaded) {
+        final chat = currentState.chatList.data.firstWhere(
+          (chat) => chat.id == chatId,
+          orElse: () => throw Exception('Chat not found'),
+        );
+        isCurrentlyFavorite = chat.isFavorite;
+      }
+      
+      // Toggle the favorite status
+      final newFavoriteStatus = !isCurrentlyFavorite;
+      final favouriteValue = newFavoriteStatus ? 1 : 0;
+      
+      print('[ChatListCubit] Toggling chat $chatId favorite status from $isCurrentlyFavorite to $newFavoriteStatus');
 
       final Either<ApiErrorModel, Map<String, dynamic>> result =
-          await chatListRepo.addChatToFavorite(chatId, favourite: 1);
+          await chatListRepo.addChatToFavorite(chatId, favourite: favouriteValue);
 
       result.fold(
         (failure) {
-          print('[ChatListCubit] Add to favorite failed: ${failure.message}');
+          print('[ChatListCubit] Toggle favorite failed: ${failure.message}');
           // Show error message to user
           emit(ChatListError(
-              failure.message ?? 'فشل في إضافة المحادثة إلى المفضلة'));
+              failure.message ?? 'فشل في تحديث حالة المفضلة'));
         },
         (success) {
-          print('[ChatListCubit] Add to favorite successful: $success');
+          print('[ChatListCubit] Toggle favorite successful: $success');
           // Update the chat locally to show immediate feedback
-          _updateChatFavoriteStatus(chatId, true);
+          _updateChatFavoriteStatus(chatId, newFavoriteStatus);
           
           // Refresh the appropriate list based on current tab
           if (_currentTabIndex == 0) {
@@ -514,7 +530,7 @@ class ChatListCubit extends Cubit<ChatListState> {
       );
     } catch (e) {
       print('[ChatListCubit] Exception in addChatToFavorite: $e');
-      emit(ChatListError('حدث خطأ أثناء إضافة المحادثة إلى المفضلة'));
+      emit(ChatListError('حدث خطأ أثناء تحديث حالة المفضلة'));
     }
   }
 

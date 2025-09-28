@@ -269,7 +269,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get chatBlockedSuccess => 'Chat blocked successfully';
+  String get chatBlockedSuccess => 'Chat reported successfully';
 
   @override
   String get chatMutedSuccess => 'Chat muted';
@@ -488,7 +488,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get muteChat => 'Mute Chat';
 
   @override
-  String get blockUser => 'Block User';
+  String get blockUser => 'Report User';
 
   @override
   String get addToFavorites => 'Add to Favorites';
@@ -927,6 +927,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unreportSuccessful => 'User unreported successfully';
+
+  @override
+  String get unmuteChat => 'Unmute Chat';
+
+  @override
+  String get confirmUnmute => 'Confirm Unmute';
+
+  @override
+  String get areYouSureUnmute => 'Are you sure you want to unmute this chat?';
+
+  @override
+  String get chatUnmutedSuccess => 'Chat unmuted successfully';
+
+  @override
+  String get confirmMute => 'Confirm Mute';
+
+  @override
+  String get areYouSureMute => 'Are you sure you want to mute this chat?';
+
+  @override
+  String get confirmReport => 'Confirm Report';
+
+  @override
+  String get areYouSureReport => 'Are you sure you want to report this user?';
+
+  @override
+  String get reportSuccessful => 'User reported successfully';
+
+  @override
+  String get removeFromFavoritesSuccess => 'Removed from favorites';
+
+  @override
+  String get addToFavoritesSuccess => 'Added to favorites';
+
+  @override
+  String get alreadyInFavorites => 'Already in favorites';
+
+  @override
+  String get alreadyRemovedFromFavorites => 'Already removed from favorites';
 
   @override
   String get year => 'year';

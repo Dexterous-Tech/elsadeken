@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 import 'package:flutter/material.dart';
@@ -223,6 +222,7 @@ class _ChatScreenState extends State<ChatScreen>
               return ChatRoomItem(
                 chat: chat,
                 chatListCubit: context.read<ChatListCubit>(),
+                isInFavoritesList: _selectedTabIndex == 1, // Pass true if we're in favorites tab
                 onTap: () {
                   // Mark this chat as read when opened
                   _markChatAsRead(chat);

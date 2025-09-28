@@ -269,7 +269,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get chatBlockedSuccess => 'تم حظر الشات بنجاح';
+  String get chatBlockedSuccess => 'تم الابلاغ عن المحادثة بنجاح';
 
   @override
   String get chatMutedSuccess => 'تم كتم الصوت';
@@ -488,7 +488,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get muteChat => 'وضع الصامت';
 
   @override
-  String get blockUser => 'حظر المستخدم';
+  String get blockUser => 'ابلاغ عن المستخدم';
 
   @override
   String get addToFavorites => 'إضافة إلى المفضلة';
@@ -927,6 +927,45 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unreportSuccessful => 'تم إلغاء الإبلاغ عن المستخدم بنجاح';
+
+  @override
+  String get unmuteChat => 'إلغاء كتم الصوت';
+
+  @override
+  String get confirmUnmute => 'تأكيد إلغاء كتم الصوت';
+
+  @override
+  String get areYouSureUnmute => 'هل أنت متأكد من إلغاء كتم صوت هذه المحادثة؟';
+
+  @override
+  String get chatUnmutedSuccess => 'تم إلغاء كتم صوت المحادثة بنجاح';
+
+  @override
+  String get confirmMute => 'تأكيد كتم الصوت';
+
+  @override
+  String get areYouSureMute => 'هل أنت متأكد من كتم صوت هذه المحادثة؟';
+
+  @override
+  String get confirmReport => 'تأكيد الإبلاغ';
+
+  @override
+  String get areYouSureReport => 'هل أنت متأكد من الإبلاغ عن هذا المستخدم؟';
+
+  @override
+  String get reportSuccessful => 'تم الإبلاغ عن المستخدم بنجاح';
+
+  @override
+  String get removeFromFavoritesSuccess => 'تم إزالة من المفضلة';
+
+  @override
+  String get addToFavoritesSuccess => 'تم الإضافة إلى المفضلة';
+
+  @override
+  String get alreadyInFavorites => 'موجود بالفعل في المفضلة';
+
+  @override
+  String get alreadyRemovedFromFavorites => 'تم إزالته بالفعل من المفضلة';
 
   @override
   String get year => 'سنة';
