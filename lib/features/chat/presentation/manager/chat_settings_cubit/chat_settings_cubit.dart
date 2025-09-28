@@ -1,11 +1,9 @@
 import 'package:elsadeken/features/chat/data/models/chat_settings_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_settings_request_model.dart';
 import 'package:elsadeken/features/chat/data/repositories/chat_settings_repository.dart';
-import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'dart:async';
-
 
 // Events
 abstract class ChatSettingsEvent extends Equatable {
@@ -85,17 +83,20 @@ class ChatSettingsCubit extends Cubit<ChatSettingsState> {
   Future<void> loadChatSettings({String? errorMessage}) async {
     print('[ChatSettingsCubit] loadChatSettings called');
     emit(ChatSettingsLoading());
-    
+
     try {
       print('[ChatSettingsCubit] Calling repository getChatSettings...');
       final response = await _repository.getChatSettings();
-      print('[ChatSettingsCubit] Repository response: ${response.isSuccess} - ${response.message}');
-      
+      print(
+          '[ChatSettingsCubit] Repository response: ${response.isSuccess} - ${response.message}');
+
       if (response.isSuccess) {
-        print('[ChatSettingsCubit] Settings loaded successfully, ID: ${response.data!.id}');
+        print(
+            '[ChatSettingsCubit] Settings loaded successfully, ID: ${response.data!.id}');
         emit(ChatSettingsLoaded(response.data!));
       } else {
-        print('[ChatSettingsCubit] Failed to load settings: ${response.message}');
+        print(
+            '[ChatSettingsCubit] Failed to load settings: ${response.message}');
         emit(ChatSettingsError(response.message));
       }
     } catch (e) {
@@ -104,50 +105,63 @@ class ChatSettingsCubit extends Cubit<ChatSettingsState> {
     }
   }
 
-  Future<void> updateChatSettings(ChatSettingsRequestModel request, {String? successMessage, String? errorMessage}) async {
-    print('[ChatSettingsCubit] updateChatSettings called with request: ${request.toJson()}');
-    
+  Future<void> updateChatSettings(ChatSettingsRequestModel request,
+      {String? successMessage, String? errorMessage}) async {
+    print(
+        '[ChatSettingsCubit] updateChatSettings called with request: ${request.toJson()}');
+
     // Check if we have current settings
     if (state is! ChatSettingsLoaded) {
       print('[ChatSettingsCubit] Error: No current settings loaded');
-      emit(ChatSettingsUpdateError(errorMessage ?? 'لا يمكن تحديث الإعدادات قبل تحميلها'));
+      emit(ChatSettingsUpdateError(
+          errorMessage ?? 'لا يمكن تحديث الإعدادات قبل تحميلها'));
       return;
     }
 
     final currentState = state as ChatSettingsLoaded;
-    print('[ChatSettingsCubit] Current settings ID: ${currentState.chatSettings.id}');
-    
+    print(
+        '[ChatSettingsCubit] Current settings ID: ${currentState.chatSettings.id}');
+
     // Check if we have a valid settings ID
     if (currentState.chatSettings.id == 0) {
-      print('[ChatSettingsCubit] No valid settings ID - user has no chat settings yet');
-      emit(ChatSettingsUpdateError(errorMessage ?? 'لا توجد إعدادات محادثة - يرجى التواصل مع الدعم الفني'));
+      print(
+          '[ChatSettingsCubit] No valid settings ID - user has no chat settings yet');
+      emit(ChatSettingsUpdateError(errorMessage ??
+          'لا توجد إعدادات محادثة - يرجى التواصل مع الدعم الفني'));
       return;
     }
-    
+
     emit(ChatSettingsUpdating());
-    
+
     try {
       print('[ChatSettingsCubit] Calling repository updateChatSettings...');
       final stopwatch = Stopwatch()..start();
-      
+
       // Add timeout to prevent hanging
-      final response = await _repository.updateChatSettings(
-        request, 
+      final response = await _repository
+          .updateChatSettings(
+        request,
         currentState.chatSettings.id.toString(),
-      ).timeout(
+      )
+          .timeout(
         const Duration(seconds: 15), // 15 second timeout
         onTimeout: () {
-          print('[ChatSettingsCubit] Update request timed out after 15 seconds');
-          throw TimeoutException('Update request timed out', const Duration(seconds: 15));
+          print(
+              '[ChatSettingsCubit] Update request timed out after 15 seconds');
+          throw TimeoutException(
+              'Update request timed out', const Duration(seconds: 15));
         },
       );
-      
+
       stopwatch.stop();
-      print('[ChatSettingsCubit] Repository call completed in ${stopwatch.elapsedMilliseconds}ms');
-      print('[ChatSettingsCubit] Response received: ${response.isSuccess} - ${response.message}');
-      
+      print(
+          '[ChatSettingsCubit] Repository call completed in ${stopwatch.elapsedMilliseconds}ms');
+      print(
+          '[ChatSettingsCubit] Response received: ${response.isSuccess} - ${response.message}');
+
       if (response.isSuccess) {
-        print('[ChatSettingsCubit] Update successful, emitting ChatSettingsUpdated');
+        print(
+            '[ChatSettingsCubit] Update successful, emitting ChatSettingsUpdated');
         // Show success message in Arabic
         emit(ChatSettingsUpdated(successMessage ?? 'تم تحديث البيانات بنجاح'));
         // Reload settings to get updated data
@@ -155,22 +169,25 @@ class ChatSettingsCubit extends Cubit<ChatSettingsState> {
         await loadChatSettings();
         print('[ChatSettingsCubit] Settings reloaded successfully');
       } else {
-        print('[ChatSettingsCubit] Update failed with message: ${response.message}');
+        print(
+            '[ChatSettingsCubit] Update failed with message: ${response.message}');
         // Show error message from API or default Arabic message
-        final errorMessage = response.message.isNotEmpty 
-            ? response.message 
+        final errorMessage = response.message.isNotEmpty
+            ? response.message
             : 'حدث خطأ أثناء تحديث الإعدادات';
         emit(ChatSettingsUpdateError(errorMessage));
       }
     } on TimeoutException catch (e) {
       print('[ChatSettingsCubit] Timeout exception: $e');
-      emit(ChatSettingsUpdateError(errorMessage ?? 'انتهت مهلة الاتصال - يرجى المحاولة مرة أخرى'));
+      emit(ChatSettingsUpdateError(
+          errorMessage ?? 'انتهت مهلة الاتصال - يرجى المحاولة مرة أخرى'));
     } catch (e) {
       print('[ChatSettingsCubit] Exception occurred: $e');
       print('[ChatSettingsCubit] Exception type: ${e.runtimeType}');
       // Provide more specific error messages based on the error type
-      String finalErrorMessage = errorMessage ?? 'حدث خطأ أثناء تحديث الإعدادات';
-      
+      String finalErrorMessage =
+          errorMessage ?? 'حدث خطأ أثناء تحديث الإعدادات';
+
       if (e.toString().contains('405')) {
         finalErrorMessage = 'خطأ في طريقة الطلب - يرجى المحاولة مرة أخرى';
       } else if (e.toString().contains('401')) {
@@ -180,9 +197,10 @@ class ChatSettingsCubit extends Cubit<ChatSettingsState> {
       } else if (e.toString().contains('timeout')) {
         finalErrorMessage = 'انتهت مهلة الاتصال - يرجى التحقق من الإنترنت';
       } else if (e.toString().contains('404')) {
-        finalErrorMessage = 'الإعدادات غير موجودة - يرجى التواصل مع الدعم الفني';
+        finalErrorMessage =
+            'الإعدادات غير موجودة - يرجى التواصل مع الدعم الفني';
       }
-      
+
       print('[ChatSettingsCubit] Emitting error: $finalErrorMessage');
       emit(ChatSettingsUpdateError(finalErrorMessage));
     }

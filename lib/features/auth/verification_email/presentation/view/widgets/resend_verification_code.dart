@@ -1,4 +1,3 @@
-import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../core/routes/app_routes.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 
 class ResendVerificationCode extends StatelessWidget {

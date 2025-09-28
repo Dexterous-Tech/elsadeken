@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../core/theme/app_color.dart';
 
 class CustomAuthCard extends StatelessWidget {
   const CustomAuthCard({super.key, required this.cardContent});
