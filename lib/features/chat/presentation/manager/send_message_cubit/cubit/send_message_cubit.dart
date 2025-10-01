@@ -13,7 +13,7 @@ class SendMessageCubit extends Cubit<SendMessagesState> {
     final result = await repo.sendMessage(receiverId, message);
 
     result.fold(
-      (error) => emit(SendMessagesError(error.message ?? "حدث خطأ ما")),
+      (error) => emit(SendMessagesError(error.message ?? "errorOccurred")),
       (chatMessages) => emit(SendMessagesLoaded(chatMessages)),
     );
   }

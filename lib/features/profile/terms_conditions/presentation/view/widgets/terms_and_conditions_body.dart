@@ -7,6 +7,7 @@ import 'package:elsadeken/features/profile/terms_conditions/presentation/manager
 import 'package:elsadeken/features/profile/terms_conditions/presentation/manager/terms_and_conditions_state.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -43,7 +44,8 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
         textDirection: TextDirection.rtl,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ProfileHeader(title: 'الشروط والأحكام'),
+          ProfileHeader(
+              title: AppLocalizations.of(context)!.termsAndConditionsTitle),
           verticalSpace(16),
           BlocBuilder<TermsCubit, TermsState>(
             buildWhen: (context, state) =>
@@ -89,9 +91,12 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
                           } else {
                             return Center(
                               child: Text(
-                                'لا توجد شروط وأحكام متاحة',
-                                style: AppTextStyles.font20LightOrangeMediumLamaSans
-                                    .copyWith(color: AppColors.lightMixGrayAndBlue),
+                                AppLocalizations.of(context)!
+                                    .noTermsAndConditionsAvailable,
+                                style: AppTextStyles
+                                    .font20LightOrangeMediumLamaSans
+                                    .copyWith(
+                                        color: AppColors.lightMixGrayAndBlue),
                               ),
                             );
                           }
@@ -99,7 +104,8 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
                         separatorBuilder: (_, index) {
                           return verticalSpace(30);
                         },
-                        itemCount: state.terms.isNotEmpty ? state.terms.length : 1,
+                        itemCount:
+                            state.terms.isNotEmpty ? state.terms.length : 1,
                       ),
                     ),
                   ),
@@ -125,7 +131,7 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
           // Close button at the end of screen
           CustomElevatedButton(
             onPressed: () => Navigator.pop(context),
-            textButton: 'اغلاق',
+            textButton: AppLocalizations.of(context)!.close,
             height: 45.h,
           ),
         ],

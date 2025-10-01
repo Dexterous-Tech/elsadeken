@@ -299,11 +299,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   void _loadReceiverProfile() {
     // Get receiver ID from chat room
     final receiverId = widget.chatRoom.receiverId;
-    if (receiverId != null) {
-      print(
-          '[ChatConversationScreen] Loading receiver profile for ID: $receiverId');
-      context.read<ProfileDetailsCubit>().getProfileDetails(receiverId);
-    }
+    print(
+        '[ChatConversationScreen] Loading receiver profile for ID: $receiverId');
+    context.read<ProfileDetailsCubit>().getProfileDetails(receiverId);
   }
 
   /// Load chat messages early for faster UI response
@@ -577,7 +575,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               }
             } else if (state is ChatMessagesError) {
               // If the chat was deleted, clear messages to show empty state immediately
-              if (state.message == "هذه المحادثة لم تعد موجودة") {
+              if (state.message == 'thisConversationNoLongerExists' ||
+                  state.message ==
+                      AppLocalizations.of(context)!
+                          .thisConversationNoLongerExists) {
                 setState(() {
                   _messages = []; // Clear messages to show empty chat state
                 });
@@ -704,7 +705,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       child: BlocBuilder<ChatMessagesCubit, ChatMessagesState>(
         builder: (context, state) {
           if (state is ChatMessagesLoading) {
-            return  Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           } else if (state is ChatMessagesError) {
             return Center(
               child: Column(
@@ -713,7 +714,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
                   SizedBox(height: 16),
                   Text(
-                    'حدث خطأ في تحميل الرسائل',
+                    AppLocalizations.of(context)!.errorLoadingChatMessages,
                     style: TextStyle(
                       color: Colors.red[600],
                       fontSize: 18,
@@ -748,7 +749,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                       size: 64, color: Colors.grey[400]),
                   SizedBox(height: 16),
                   Text(
-                    'لا توجد رسائل حتى الآن',
+                    AppLocalizations.of(context)!.noMessagesYet,
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontSize: 18,
@@ -757,7 +758,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'ابدأ المحادثة بإرسال رسالة',
+                    AppLocalizations.of(context)!
+                        .startConversationBySendingMessage,
                     style: TextStyle(
                       color: Colors.grey[500],
                       fontSize: 14,
@@ -786,15 +788,15 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 } else {
                   final prev = _messages[index - 1].timestamp;
                   final curr = message.timestamp;
-                  showDaySeparator =
-                      prev.year != curr.year ||
+                  showDaySeparator = prev.year != curr.year ||
                       prev.month != curr.month ||
                       prev.day != curr.day;
                 }
 
                 return Column(
                   children: [
-                    if (showDaySeparator) _buildDaySeparatorFor(message.timestamp),
+                    if (showDaySeparator)
+                      _buildDaySeparatorFor(message.timestamp),
                     ChatMessageBubble(
                       message: message,
                       isCurrentUser: isCurrentUser,
@@ -851,11 +853,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
   String _formatDayLabel(DateTime date) {
     final today = DateTime.now();
-    final isSameDay =
-        date.year == today.year && date.month == today.month && date.day == today.day;
+    final isSameDay = date.year == today.year &&
+        date.month == today.month &&
+        date.day == today.day;
     final yesterday = today.subtract(const Duration(days: 1));
-    final isYesterday =
-        date.year == yesterday.year && date.month == yesterday.month && date.day == yesterday.day;
+    final isYesterday = date.year == yesterday.year &&
+        date.month == yesterday.month &&
+        date.day == yesterday.day;
 
     if (isSameDay) {
       return AppLocalizations.of(context)!.today;
@@ -893,7 +897,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 controller: _messageController,
                 textDirection: TextDirection.rtl,
                 decoration: InputDecoration(
-                  hintText: 'اكتب رسالتك...',
+                  hintText: AppLocalizations.of(context)!.writeYourMessage,
                   hintStyle: TextStyle(
                     color: Colors.grey[500],
                     fontSize: 18.sp,
@@ -946,8 +950,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (_messageController.text.trim().isEmpty) return;
     if (_currentUserId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
-          content: Text(AppLocalizations.of(context)!.pleaseWaitWhileLoadingProfile),
+        SnackBar(
+          content:
+              Text(AppLocalizations.of(context)!.pleaseWaitWhileLoadingProfile),
           backgroundColor: Colors.orange,
         ),
       );

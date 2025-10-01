@@ -45,12 +45,12 @@ class _NotificationSettingsContentState
     // Load notification settings when screen initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        context
-            .read<home.NotificationSettingsCubit>()
-            .loadNotificationSettings(
-              whoAddedMeToFavorites: AppLocalizations.of(context)!.whoAddedMeToFavorites,
+        context.read<home.NotificationSettingsCubit>().loadNotificationSettings(
+              whoAddedMeToFavorites:
+                  AppLocalizations.of(context)!.whoAddedMeToFavorites,
               profileVisits: AppLocalizations.of(context)!.profileVisits,
-              whoAddedMeToIgnoreList: AppLocalizations.of(context)!.whoAddedMeToIgnoreList,
+              whoAddedMeToIgnoreList:
+                  AppLocalizations.of(context)!.whoAddedMeToIgnoreList,
               newMessages: AppLocalizations.of(context)!.newMessages,
               successStories: AppLocalizations.of(context)!.successStories,
             );
@@ -86,9 +86,10 @@ class _NotificationSettingsContentState
   // Top Bar with background
   Widget _buildAppBar() {
     return Padding(
-      padding: EdgeInsetsDirectional.symmetric(horizontal: 16.w, vertical: 12.h),
-      child:         ProfileHeader(
-            title: AppLocalizations.of(context)!.notificationSettings),
+      padding:
+          EdgeInsetsDirectional.symmetric(horizontal: 16.w, vertical: 12.h),
+      child: ProfileHeader(
+          title: AppLocalizations.of(context)!.notificationSettings),
     );
   }
 
@@ -125,11 +126,16 @@ class _NotificationSettingsContentState
                     context
                         .read<home.NotificationSettingsCubit>()
                         .loadNotificationSettings(
-                          whoAddedMeToFavorites: AppLocalizations.of(context)!.whoAddedMeToFavorites,
-                          profileVisits: AppLocalizations.of(context)!.profileVisits,
-                          whoAddedMeToIgnoreList: AppLocalizations.of(context)!.whoAddedMeToIgnoreList,
-                          newMessages: AppLocalizations.of(context)!.newMessages,
-                          successStories: AppLocalizations.of(context)!.successStories,
+                          whoAddedMeToFavorites: AppLocalizations.of(context)!
+                              .whoAddedMeToFavorites,
+                          profileVisits:
+                              AppLocalizations.of(context)!.profileVisits,
+                          whoAddedMeToIgnoreList: AppLocalizations.of(context)!
+                              .whoAddedMeToIgnoreList,
+                          newMessages:
+                              AppLocalizations.of(context)!.newMessages,
+                          successStories:
+                              AppLocalizations.of(context)!.successStories,
                         );
                   },
                   child: Text(AppLocalizations.of(context)!.tryAgain),
@@ -220,11 +226,25 @@ class _NotificationSettingsContentState
               onChanged: (bool newValue) {
                 final settingId = setting['id'];
                 if (settingId != null) {
+                  final localizations = AppLocalizations.of(context)!;
+
+                  // Get localized strings based on settingId and newValue
+                  String settingTitle =
+                      _getSettingTitle(settingId, localizations);
+                  String actionDescription =
+                      _getActionDescription(settingId, newValue, localizations);
+
                   context
                       .read<home.NotificationSettingsCubit>()
                       .toggleNotificationSetting(
                         settingId,
                         newValue,
+                        settingTitle: settingTitle,
+                        actionDescription: actionDescription,
+                        noCurrentSettingsError:
+                            localizations.noCurrentSettingsFound,
+                        toggleError:
+                            localizations.failedToToggleNotificationSetting,
                       );
                 }
               },
@@ -237,5 +257,59 @@ class _NotificationSettingsContentState
         },
       ),
     );
+  }
+
+  /// Get localized setting title based on settingId
+  String _getSettingTitle(String settingId, AppLocalizations localizations) {
+    switch (settingId) {
+      case 'favorite_list':
+        return localizations.whoAddedMeToFavorites;
+      case 'visit_profile':
+        return localizations.profileVisits;
+      case 'ignore_list':
+        return localizations.whoAddedMeToIgnoreList;
+      case 'message':
+        return localizations.newMessages;
+      case 'blog':
+        return localizations.successStories;
+      default:
+        return localizations.settingLabel;
+    }
+  }
+
+  /// Get localized action description based on settingId and isActive
+  String _getActionDescription(
+      String settingId, bool isActive, AppLocalizations localizations) {
+    if (isActive) {
+      switch (settingId) {
+        case 'favorite_list':
+          return localizations.willNotifyWhenAddedToFavorites;
+        case 'visit_profile':
+          return localizations.willNotifyOnProfileVisit;
+        case 'ignore_list':
+          return localizations.willNotifyWhenAddedToIgnoreList;
+        case 'message':
+          return localizations.willNotifyOnNewMessages;
+        case 'blog':
+          return localizations.willNotifyOnSuccessStories;
+        default:
+          return localizations.notificationsAllowed;
+      }
+    } else {
+      switch (settingId) {
+        case 'favorite_list':
+          return localizations.willNotNotifyWhenAddedToFavorites;
+        case 'visit_profile':
+          return localizations.willNotNotifyOnProfileVisit;
+        case 'ignore_list':
+          return localizations.willNotNotifyWhenAddedToIgnoreList;
+        case 'message':
+          return localizations.willNotNotifyOnNewMessages;
+        case 'blog':
+          return localizations.willNotNotifyOnSuccessStories;
+        default:
+          return localizations.notificationsNotAllowed;
+      }
+    }
   }
 }

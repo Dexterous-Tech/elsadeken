@@ -9,7 +9,8 @@ class TimeFormatter {
     final difference = now.difference(time);
 
     // Determine locale (default to Arabic suffixes if no context)
-    final isArabic = context != null && AppLocalizations.of(context)!.localeName.toLowerCase().startsWith('ar');
+    final isArabic = context != null &&
+        AppLocalizations.of(context)!.localeName.toLowerCase().startsWith('ar');
 
     if (difference.inDays >= 1) {
       final d = difference.inDays;

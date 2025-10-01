@@ -1696,7 +1696,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pleaseEnterMessageSubject => 'يرجى إدخال موضوع الرسالة';
 
   @override
-  String get writeYourMessage => 'اكتب رسالتك';
+  String get writeYourMessage => 'اكتب رسالتك...';
 
   @override
   String get pleaseEnterMessageContent => 'يرجى إدخال محتوى الرسالة';
@@ -1823,4 +1823,149 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get priceInCurrency => 'بريال';
+
+  @override
+  String get errorLoadingChatMessages => 'حدث خطأ في تحميل الرسائل';
+
+  @override
+  String get noMessagesYet => 'لا توجد رسائل حتى الآن';
+
+  @override
+  String get startConversationBySendingMessage => 'ابدأ المحادثة بإرسال رسالة';
+
+  @override
+  String get thisConversationNoLongerExists => 'هذه المحادثة لم تعد موجودة';
+
+  @override
+  String get noFavoriteChats => 'لا توجد محادثات مفضلة';
+
+  @override
+  String get noMessagesYetShort => 'لا يوجد رسائل حتى الآن';
+
+  @override
+  String typingIndicator(Object name) {
+    return '$name يكتب...';
+  }
+
+  @override
+  String get confirmDefault => 'تأكيد';
+
+  @override
+  String get cancelDefault => 'إلغاء';
+
+  @override
+  String get errorOccurred => 'حدث خطأ ما';
+
+  @override
+  String get errorUpdatingChatList => 'حدث خطأ أثناء تحديث قائمة المحادثات';
+
+  @override
+  String get failedToReportUser => 'فشل في الإبلاغ عن المستخدم';
+
+  @override
+  String get errorReportingUser => 'حدث خطأ أثناء الإبلاغ عن المستخدم';
+
+  @override
+  String get failedToUnreportUser => 'فشل في إلغاء الإبلاغ عن المستخدم';
+
+  @override
+  String get errorUnreportingUser => 'حدث خطأ أثناء إلغاء الإبلاغ عن المستخدم';
+
+  @override
+  String get failedToMuteUser => 'فشل في كتم صوت المستخدم';
+
+  @override
+  String get errorMutingUser => 'حدث خطأ أثناء كتم صوت المستخدم';
+
+  @override
+  String get failedToDeleteChat => 'فشل في حذف المحادثة';
+
+  @override
+  String get errorDeletingChat => 'حدث خطأ أثناء حذف المحادثة';
+
+  @override
+  String get failedToDeleteAllChats => 'فشل في حذف جميع المحادثات';
+
+  @override
+  String get errorDeletingAllChats => 'حدث خطأ أثناء حذف جميع المحادثات';
+
+  @override
+  String get failedToLoadFavoritesList => 'فشل في جلب قائمة المفضلة';
+
+  @override
+  String get errorLoadingFavoritesList => 'حدث خطأ أثناء جلب قائمة المفضلة';
+
+  @override
+  String get failedToUpdateFavoriteStatus => 'فشل في تحديث حالة المفضلة';
+
+  @override
+  String get errorUpdatingFavoriteStatus => 'حدث خطأ أثناء تحديث حالة المفضلة';
+
+  @override
+  String get failedToRemoveFromFavorites => 'فشل في إزالة المحادثة من المفضلة';
+
+  @override
+  String get errorRemovingFromFavorites => 'حدث خطأ أثناء إزالة المحادثة من المفضلة';
+
+  @override
+  String get termsAndConditionsTitle => 'الشروط والأحكام';
+
+  @override
+  String get noTermsAndConditionsAvailable => 'لا توجد شروط وأحكام متاحة';
+
+  @override
+  String notificationSettingUpdated(Object setting) {
+    return 'تم تحديث $setting';
+  }
+
+  @override
+  String get willNotifyWhenAddedToFavorites => 'سيتم إعلامك عند وضعك في قائمة المفضلة';
+
+  @override
+  String get willNotifyOnProfileVisit => 'سيتم إعلامك عند زيارة ملفك الشخصي';
+
+  @override
+  String get willNotifyWhenAddedToIgnoreList => 'سيتم إعلامك عند إضافتك لقائمة التجاهل';
+
+  @override
+  String get willNotifyOnNewMessages => 'سيتم إعلامك عند استلام رسائل جديدة';
+
+  @override
+  String get willNotifyOnSuccessStories => 'سيتم إعلامك عند نشر قصص ناجحة';
+
+  @override
+  String get notificationsAllowed => 'يسمح بتلقي الإشعارات';
+
+  @override
+  String get willNotNotifyWhenAddedToFavorites => 'لن يتم إعلامك عند وضعك في قائمة المفضلة';
+
+  @override
+  String get willNotNotifyOnProfileVisit => 'لن يتم إعلامك عند زيارة ملفك الشخصي';
+
+  @override
+  String get willNotNotifyWhenAddedToIgnoreList => 'لن يتم إعلامك عند إضافتك لقائمة التجاهل';
+
+  @override
+  String get willNotNotifyOnNewMessages => 'لن يتم إعلامك عند استلام رسائل جديدة';
+
+  @override
+  String get willNotNotifyOnSuccessStories => 'لن يتم إعلامك عند نشر قصص ناجحة';
+
+  @override
+  String get notificationsNotAllowed => 'لا يسمح بتلقي الإشعارات';
+
+  @override
+  String get settingLabel => 'الإعداد';
+
+  @override
+  String get failedToToggleNotificationSetting => 'فشل في تحديث إعدادات الإشعارات';
+
+  @override
+  String get noCurrentSettingsFound => 'لم يتم العثور على الإعدادات الحالية';
+
+  @override
+  String get failedToLoadNotificationSettings => 'فشل في تحميل إعدادات الإشعارات';
+
+  @override
+  String get noNotificationSettingsFound => 'لا توجد إعدادات إشعارات';
 }

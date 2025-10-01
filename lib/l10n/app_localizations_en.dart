@@ -1695,7 +1695,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pleaseEnterMessageSubject => 'Please enter the message subject';
 
   @override
-  String get writeYourMessage => 'Write your message';
+  String get writeYourMessage => 'Write your message...';
 
   @override
   String get pleaseEnterMessageContent => 'Please enter the message content';
@@ -1822,4 +1822,149 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get priceInCurrency => 'SAR';
+
+  @override
+  String get errorLoadingChatMessages => 'Error loading chat messages';
+
+  @override
+  String get noMessagesYet => 'No messages yet';
+
+  @override
+  String get startConversationBySendingMessage => 'Start conversation by sending a message';
+
+  @override
+  String get thisConversationNoLongerExists => 'This conversation no longer exists';
+
+  @override
+  String get noFavoriteChats => 'No favorite chats';
+
+  @override
+  String get noMessagesYetShort => 'No messages yet';
+
+  @override
+  String typingIndicator(Object name) {
+    return '$name is typing...';
+  }
+
+  @override
+  String get confirmDefault => 'Confirm';
+
+  @override
+  String get cancelDefault => 'Cancel';
+
+  @override
+  String get errorOccurred => 'An error occurred';
+
+  @override
+  String get errorUpdatingChatList => 'Error updating chat list';
+
+  @override
+  String get failedToReportUser => 'Failed to report user';
+
+  @override
+  String get errorReportingUser => 'Error reporting user';
+
+  @override
+  String get failedToUnreportUser => 'Failed to unreport user';
+
+  @override
+  String get errorUnreportingUser => 'Error unreporting user';
+
+  @override
+  String get failedToMuteUser => 'Failed to mute user';
+
+  @override
+  String get errorMutingUser => 'Error muting user';
+
+  @override
+  String get failedToDeleteChat => 'Failed to delete chat';
+
+  @override
+  String get errorDeletingChat => 'Error deleting chat';
+
+  @override
+  String get failedToDeleteAllChats => 'Failed to delete all chats';
+
+  @override
+  String get errorDeletingAllChats => 'Error deleting all chats';
+
+  @override
+  String get failedToLoadFavoritesList => 'Failed to load favorites list';
+
+  @override
+  String get errorLoadingFavoritesList => 'Error loading favorites list';
+
+  @override
+  String get failedToUpdateFavoriteStatus => 'Failed to update favorite status';
+
+  @override
+  String get errorUpdatingFavoriteStatus => 'Error updating favorite status';
+
+  @override
+  String get failedToRemoveFromFavorites => 'Failed to remove from favorites';
+
+  @override
+  String get errorRemovingFromFavorites => 'Error removing from favorites';
+
+  @override
+  String get termsAndConditionsTitle => 'Terms and Conditions';
+
+  @override
+  String get noTermsAndConditionsAvailable => 'No terms and conditions available';
+
+  @override
+  String notificationSettingUpdated(Object setting) {
+    return '$setting updated';
+  }
+
+  @override
+  String get willNotifyWhenAddedToFavorites => 'You will be notified when added to favorites';
+
+  @override
+  String get willNotifyOnProfileVisit => 'You will be notified when your profile is visited';
+
+  @override
+  String get willNotifyWhenAddedToIgnoreList => 'You will be notified when added to ignore list';
+
+  @override
+  String get willNotifyOnNewMessages => 'You will be notified when receiving new messages';
+
+  @override
+  String get willNotifyOnSuccessStories => 'You will be notified when success stories are published';
+
+  @override
+  String get notificationsAllowed => 'Notifications allowed';
+
+  @override
+  String get willNotNotifyWhenAddedToFavorites => 'You will not be notified when added to favorites';
+
+  @override
+  String get willNotNotifyOnProfileVisit => 'You will not be notified when your profile is visited';
+
+  @override
+  String get willNotNotifyWhenAddedToIgnoreList => 'You will not be notified when added to ignore list';
+
+  @override
+  String get willNotNotifyOnNewMessages => 'You will not be notified when receiving new messages';
+
+  @override
+  String get willNotNotifyOnSuccessStories => 'You will not be notified when success stories are published';
+
+  @override
+  String get notificationsNotAllowed => 'Notifications not allowed';
+
+  @override
+  String get settingLabel => 'Setting';
+
+  @override
+  String get failedToToggleNotificationSetting => 'Failed to update notification settings';
+
+  @override
+  String get noCurrentSettingsFound => 'No current settings found';
+
+  @override
+  String get failedToLoadNotificationSettings => 'Failed to load notification settings';
+
+  @override
+  String get noNotificationSettingsFound => 'No notification settings found';
 }

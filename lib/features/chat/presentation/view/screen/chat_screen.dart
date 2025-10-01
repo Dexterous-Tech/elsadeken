@@ -81,7 +81,7 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    
+
     // Refresh chat list when app comes back to foreground to ensure consistency
     if (state == AppLifecycleState.resumed && _hasLoadedInitially) {
       print('🔄 [ChatScreen] App resumed, refreshing chat list');
@@ -222,7 +222,8 @@ class _ChatScreenState extends State<ChatScreen>
               return ChatRoomItem(
                 chat: chat,
                 chatListCubit: context.read<ChatListCubit>(),
-                isInFavoritesList: _selectedTabIndex == 1, // Pass true if we're in favorites tab
+                isInFavoritesList: _selectedTabIndex ==
+                    1, // Pass true if we're in favorites tab
                 onTap: () {
                   // Mark this chat as read when opened
                   _markChatAsRead(chat);
@@ -256,8 +257,8 @@ class _ChatScreenState extends State<ChatScreen>
           SizedBox(height: 24.h),
           Text(
             _selectedTabIndex == 1
-                ? 'لا توجد محادثات مفضلة'
-                : 'لا يوجد رسائل حتى الآن',
+                ? AppLocalizations.of(context)!.noFavoriteChats
+                : AppLocalizations.of(context)!.noMessagesYetShort,
             style: AppTextStyles.font23ChineseBlackBoldLamaSans.copyWith(
               color: AppColors.darkerBlue,
             ),
@@ -275,6 +276,4 @@ class _ChatScreenState extends State<ChatScreen>
       context.read<ChatListCubit>().markChatAsRead(chat.id);
     }
   }
-
-
 }

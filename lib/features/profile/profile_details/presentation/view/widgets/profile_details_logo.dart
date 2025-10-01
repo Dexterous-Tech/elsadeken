@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -55,6 +56,7 @@ class ProfileDetailsLogo extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
+            textDirection: LocalizationService.instance.textDirection,
             children: [
               state is GetProfileDetailsLoading
                   ? Center(
@@ -88,12 +90,16 @@ class ProfileDetailsLogo extends StatelessWidget {
                               ),
                               child: Center(
                                 child: Text(
-                                  'عضو مميز',
+                                  AppLocalizations.of(context)!.specialMember,
                                   style: AppTextStyles.font14JetRegularLamaSans
                                       .copyWith(
                                     color: AppColors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
+                                  textAlign: LocalizationService
+                                      .instance.textAlignment,
+                                  textDirection: LocalizationService
+                                      .instance.textDirection,
                                 ),
                               ),
                             ),

@@ -5,6 +5,7 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/about_us/presentation/manager/about_us_cubit.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -41,7 +42,7 @@ class _AboutUsBodyState extends State<AboutUsBody> {
         textDirection: TextDirection.rtl,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ProfileHeader(title: 'نبذه عننا'),
+          ProfileHeader(title: AppLocalizations.of(context)!.aboutUs),
           verticalSpace(16),
           // Text(
           //   'من نحن',

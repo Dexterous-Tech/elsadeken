@@ -3368,7 +3368,7 @@ abstract class AppLocalizations {
   /// No description provided for @writeYourMessage.
   ///
   /// In en, this message translates to:
-  /// **'Write your message'**
+  /// **'Write your message...'**
   String get writeYourMessage;
 
   /// No description provided for @pleaseEnterMessageContent.
@@ -3622,6 +3622,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SAR'**
   String get priceInCurrency;
+
+  /// No description provided for @errorLoadingChatMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading chat messages'**
+  String get errorLoadingChatMessages;
+
+  /// No description provided for @noMessagesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet'**
+  String get noMessagesYet;
+
+  /// No description provided for @startConversationBySendingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Start conversation by sending a message'**
+  String get startConversationBySendingMessage;
+
+  /// No description provided for @thisConversationNoLongerExists.
+  ///
+  /// In en, this message translates to:
+  /// **'This conversation no longer exists'**
+  String get thisConversationNoLongerExists;
+
+  /// No description provided for @noFavoriteChats.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorite chats'**
+  String get noFavoriteChats;
+
+  /// No description provided for @noMessagesYetShort.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet'**
+  String get noMessagesYetShort;
+
+  /// No description provided for @typingIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is typing...'**
+  String typingIndicator(Object name);
+
+  /// No description provided for @confirmDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirmDefault;
+
+  /// No description provided for @cancelDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelDefault;
+
+  /// No description provided for @errorOccurred.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred'**
+  String get errorOccurred;
+
+  /// No description provided for @errorUpdatingChatList.
+  ///
+  /// In en, this message translates to:
+  /// **'Error updating chat list'**
+  String get errorUpdatingChatList;
+
+  /// No description provided for @failedToReportUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to report user'**
+  String get failedToReportUser;
+
+  /// No description provided for @errorReportingUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Error reporting user'**
+  String get errorReportingUser;
+
+  /// No description provided for @failedToUnreportUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unreport user'**
+  String get failedToUnreportUser;
+
+  /// No description provided for @errorUnreportingUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Error unreporting user'**
+  String get errorUnreportingUser;
+
+  /// No description provided for @failedToMuteUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to mute user'**
+  String get failedToMuteUser;
+
+  /// No description provided for @errorMutingUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Error muting user'**
+  String get errorMutingUser;
+
+  /// No description provided for @failedToDeleteChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete chat'**
+  String get failedToDeleteChat;
+
+  /// No description provided for @errorDeletingChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Error deleting chat'**
+  String get errorDeletingChat;
+
+  /// No description provided for @failedToDeleteAllChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete all chats'**
+  String get failedToDeleteAllChats;
+
+  /// No description provided for @errorDeletingAllChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Error deleting all chats'**
+  String get errorDeletingAllChats;
+
+  /// No description provided for @failedToLoadFavoritesList.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load favorites list'**
+  String get failedToLoadFavoritesList;
+
+  /// No description provided for @errorLoadingFavoritesList.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading favorites list'**
+  String get errorLoadingFavoritesList;
+
+  /// No description provided for @failedToUpdateFavoriteStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update favorite status'**
+  String get failedToUpdateFavoriteStatus;
+
+  /// No description provided for @errorUpdatingFavoriteStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Error updating favorite status'**
+  String get errorUpdatingFavoriteStatus;
+
+  /// No description provided for @failedToRemoveFromFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to remove from favorites'**
+  String get failedToRemoveFromFavorites;
+
+  /// No description provided for @errorRemovingFromFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Error removing from favorites'**
+  String get errorRemovingFromFavorites;
+
+  /// No description provided for @termsAndConditionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms and Conditions'**
+  String get termsAndConditionsTitle;
+
+  /// No description provided for @noTermsAndConditionsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No terms and conditions available'**
+  String get noTermsAndConditionsAvailable;
+
+  /// No description provided for @notificationSettingUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'{setting} updated'**
+  String notificationSettingUpdated(Object setting);
+
+  /// No description provided for @willNotifyWhenAddedToFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'You will be notified when added to favorites'**
+  String get willNotifyWhenAddedToFavorites;
+
+  /// No description provided for @willNotifyOnProfileVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'You will be notified when your profile is visited'**
+  String get willNotifyOnProfileVisit;
+
+  /// No description provided for @willNotifyWhenAddedToIgnoreList.
+  ///
+  /// In en, this message translates to:
+  /// **'You will be notified when added to ignore list'**
+  String get willNotifyWhenAddedToIgnoreList;
+
+  /// No description provided for @willNotifyOnNewMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'You will be notified when receiving new messages'**
+  String get willNotifyOnNewMessages;
+
+  /// No description provided for @willNotifyOnSuccessStories.
+  ///
+  /// In en, this message translates to:
+  /// **'You will be notified when success stories are published'**
+  String get willNotifyOnSuccessStories;
+
+  /// No description provided for @notificationsAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications allowed'**
+  String get notificationsAllowed;
+
+  /// No description provided for @willNotNotifyWhenAddedToFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'You will not be notified when added to favorites'**
+  String get willNotNotifyWhenAddedToFavorites;
+
+  /// No description provided for @willNotNotifyOnProfileVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'You will not be notified when your profile is visited'**
+  String get willNotNotifyOnProfileVisit;
+
+  /// No description provided for @willNotNotifyWhenAddedToIgnoreList.
+  ///
+  /// In en, this message translates to:
+  /// **'You will not be notified when added to ignore list'**
+  String get willNotNotifyWhenAddedToIgnoreList;
+
+  /// No description provided for @willNotNotifyOnNewMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'You will not be notified when receiving new messages'**
+  String get willNotNotifyOnNewMessages;
+
+  /// No description provided for @willNotNotifyOnSuccessStories.
+  ///
+  /// In en, this message translates to:
+  /// **'You will not be notified when success stories are published'**
+  String get willNotNotifyOnSuccessStories;
+
+  /// No description provided for @notificationsNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications not allowed'**
+  String get notificationsNotAllowed;
+
+  /// No description provided for @settingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Setting'**
+  String get settingLabel;
+
+  /// No description provided for @failedToToggleNotificationSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update notification settings'**
+  String get failedToToggleNotificationSetting;
+
+  /// No description provided for @noCurrentSettingsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No current settings found'**
+  String get noCurrentSettingsFound;
+
+  /// No description provided for @failedToLoadNotificationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load notification settings'**
+  String get failedToLoadNotificationSettings;
+
+  /// No description provided for @noNotificationSettingsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No notification settings found'**
+  String get noNotificationSettingsFound;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
