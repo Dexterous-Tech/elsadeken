@@ -8,12 +8,12 @@ import '../../../../../../core/theme/app_color.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/spacing.dart';
 import '../../../../../../core/services/localization_service.dart';
-import '../../../../../../core/widgets/language_toggle.dart';
 import '../../../../../../core/helper/localization_helper.dart';
 import '../../manager/notification_settings_profile_cubit.dart';
 import 'profile_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class ProfileBody extends StatelessWidget {
   const ProfileBody({super.key});
@@ -23,8 +23,6 @@ class ProfileBody extends StatelessWidget {
     return ListenableBuilder(
       listenable: LocalizationService.instance,
       builder: (context, child) {
-        final localizationService = LocalizationService.instance;
-
         return SafeArea(
           child: Container(
             color: AppColors.darkSunray,
@@ -40,8 +38,7 @@ class ProfileBody extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            LocalizationHelper.getLocalizedText(
-                                'الحساب الشخصي', 'Personal Account'),
+                            AppLocalizations.of(context)!.personalAccount,
                             style: AppTextStyles.font20WhiteBoldLamaSans,
                           ),
                           verticalSpace(19),

@@ -10,6 +10,8 @@ part 'notification_settings_state.dart';
 class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
   final NotificationSettingRepoInterface _notificationSettingRepo;
 
+  NotificationSettingDataModel? _currentSettings;
+
   NotificationSettingsCubit(this._notificationSettingRepo)
       : super(NotificationSettingsInitial());
 
@@ -28,15 +30,18 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
       final response = await _notificationSettingRepo.getNotificationSettings();
 
       if (response.data != null) {
-        log('Response data type: ${response.data.runtimeType}');
-        log('Response data: ${response.data}');
+        _currentSettings = response.data;
+
+        final settingsData = _currentSettings!;
+        log('Response data type: ${settingsData.runtimeType}');
+        log('Response data: ${settingsData}');
 
         // Convert the single data object to a list format for UI
-        log('About to call toSettingsList() on: ${response.data}');
-        log('Available methods: ${response.data.runtimeType.toString()}');
+        log('About to call toSettingsList() on: ${settingsData}');
+        log('Available methods: ${settingsData.runtimeType.toString()}');
 
         // Convert settings to list with localized titles
-        List<Map<String, dynamic>> settingsList = response.data!.toSettingsList(
+        List<Map<String, dynamic>> settingsList = settingsData.toSettingsList(
           whoAddedMeToFavorites: whoAddedMeToFavorites,
           profileVisits: profileVisits,
           whoAddedMeToIgnoreList: whoAddedMeToIgnoreList,
@@ -67,34 +72,42 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
     required String toggleError,
   }) async {
     try {
-      // Get current settings to create the update request
-      final currentResponse =
-          await _notificationSettingRepo.getNotificationSettings();
-      if (currentResponse.data == null) {
-        throw Exception(noCurrentSettingsError);
+      // Use cached settings to create the update request. Fallback to API if cache is empty.
+      NotificationSettingDataModel? currentData = _currentSettings;
+      if (currentData == null) {
+        final currentResponse =
+            await _notificationSettingRepo.getNotificationSettings();
+        if (currentResponse.data == null) {
+          throw Exception(noCurrentSettingsError);
+        }
+        currentData = currentResponse.data!;
+        _currentSettings = currentData;
       }
 
-      final currentData = currentResponse.data!;
       final id = currentData.id ?? 0;
 
-      // Create update request with ALL fields - the changed field gets new value, others keep current values
-      UpdateNotificationSettingRequestModel updateRequest =
-          UpdateNotificationSettingRequestModel(
-        favoriteList: settingId == 'favorite_list'
-            ? (isActive ? 1 : 0)
-            : (currentData.favoriteList == true ? 1 : 0),
-        visitProfile: settingId == 'visit_profile'
-            ? (isActive ? 1 : 0)
-            : (currentData.visitProfile == true ? 1 : 0),
-        ignoreList: settingId == 'ignore_list'
-            ? (isActive ? 1 : 0)
-            : (currentData.ignoreList == true ? 1 : 0),
-        message: settingId == 'message'
-            ? (isActive ? 1 : 0)
-            : (currentData.message == true ? 1 : 0),
-        blog: settingId == 'blog'
-            ? (isActive ? 1 : 0)
-            : (currentData.blog == true ? 1 : 0),
+      final updatedValues = <String, bool>{
+        'favorite_list': settingId == 'favorite_list'
+            ? isActive
+            : currentData.favoriteList ?? false,
+        'visit_profile': settingId == 'visit_profile'
+            ? isActive
+            : currentData.visitProfile ?? false,
+        'ignore_list': settingId == 'ignore_list'
+            ? isActive
+            : currentData.ignoreList ?? false,
+        'message':
+            settingId == 'message' ? isActive : currentData.message ?? false,
+        'blog': settingId == 'blog' ? isActive : currentData.blog ?? false,
+      };
+
+      // Create update request with ALL fields so backend receives the complete state.
+      final updateRequest = UpdateNotificationSettingRequestModel(
+        favoriteList: updatedValues['favorite_list']! ? 1 : 0,
+        visitProfile: updatedValues['visit_profile']! ? 1 : 0,
+        ignoreList: updatedValues['ignore_list']! ? 1 : 0,
+        message: updatedValues['message']! ? 1 : 0,
+        blog: updatedValues['blog']! ? 1 : 0,
       );
 
       // Send update request
@@ -103,16 +116,31 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
         updateRequest,
       );
 
+      currentData.favoriteList = updatedValues['favorite_list']!;
+      currentData.visitProfile = updatedValues['visit_profile']!;
+      currentData.ignoreList = updatedValues['ignore_list']!;
+      currentData.message = updatedValues['message']!;
+      currentData.blog = updatedValues['blog']!;
+      _currentSettings = currentData;
+
       log('Setting $settingId updated to: ${isActive ? 1 : 0}');
 
       // Update local state without reloading from API
       final currentState = state;
+      List<Map<String, dynamic>>? currentSettingsList;
       if (currentState is NotificationSettingsLoaded) {
-        final updatedSettings = currentState.settings.map((setting) {
+        currentSettingsList = currentState.settings;
+      } else if (currentState is NotificationSettingsSuccess) {
+        currentSettingsList = currentState.settings;
+      }
+
+      if (currentSettingsList != null) {
+        final updatedSettings = currentSettingsList.map((setting) {
           if (setting['id'] == settingId) {
+            final newValue = updatedValues[settingId] ?? isActive;
             return {
               ...setting,
-              'value': isActive,
+              'value': newValue,
             };
           }
           return setting;

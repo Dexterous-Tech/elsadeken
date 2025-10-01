@@ -22,6 +22,18 @@ class SharedPreferencesHelper {
     return await flutterSecureStorage.read(key: key) ?? '';
   }
 
+  static Future<void> saveUserImage(String imageUrl) async {
+    await setSecuredString(SharedPreferencesKey.userImageKey, imageUrl);
+  }
+
+  static Future<String> getUserImage() async {
+    return await getSecuredString(SharedPreferencesKey.userImageKey);
+  }
+
+  static Future<void> deleteUserImage() async {
+    await deleteSecuredString(SharedPreferencesKey.userImageKey);
+  }
+
   static Future<void> deleteSecuredString(String key) async {
     debugPrint("FlutterSecureStorage : deleteSecuredString with key : $key");
     await flutterSecureStorage.delete(key: key);
@@ -38,6 +50,7 @@ class SharedPreferencesHelper {
     await flutterSecureStorage.delete(key: SharedPreferencesKey.privacySetting);
     await flutterSecureStorage.delete(key: SharedPreferencesKey.deviceToken);
     await flutterSecureStorage.delete(key: SharedPreferencesKey.userDataKey);
+    await flutterSecureStorage.delete(key: SharedPreferencesKey.userImageKey);
   }
 
   /// Clear all app state data (for logout)

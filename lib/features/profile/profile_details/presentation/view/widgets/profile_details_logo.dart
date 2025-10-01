@@ -81,7 +81,7 @@ class ProfileDetailsLogo extends StatelessWidget {
                             top: 0,
                             bottom: -130,
                             child: Container(
-                              width: 170.w,
+                              width: 180.w,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   // fit: BoxFit.cover,

@@ -5,6 +5,7 @@ import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/repo/manage_profile_repo.dart';
 import 'package:elsadeken/features/profile/profile/data/models/profile_action_model.dart';
+import 'dart:convert';
 import 'dart:io';
 
 part 'manage_profile_state.dart';
@@ -59,6 +60,14 @@ class ManageProfileCubit extends Cubit<ManageProfileState> {
           SharedPreferencesKey.isBlocked);
 
       // Save isBlocked from profile response (convert 1/0 to bool)
+      await SharedPreferencesHelper.deleteSecuredString(
+          SharedPreferencesKey.userDataKey);
+      if (r.data != null) {
+        final userJson = jsonEncode(r.data!.toJson());
+        await SharedPreferencesHelper.setSecuredString(
+            SharedPreferencesKey.userDataKey, userJson);
+      }
+
       if (r.data?.isBlocked != null) {
         bool isBlocked = r.data!.isBlocked == 1;
         await SharedPreferencesHelper.setBool(
@@ -68,6 +77,13 @@ class ManageProfileCubit extends Cubit<ManageProfileState> {
         if (isBlocked) {
           await _handleBlockedUser();
         }
+      }
+
+      await SharedPreferencesHelper.deleteUserImage();
+
+      final imageUrl = r.data?.image ?? '';
+      if (imageUrl.isNotEmpty) {
+        await SharedPreferencesHelper.saveUserImage(imageUrl);
       }
 
       emit(ManageProfileSuccess(r));

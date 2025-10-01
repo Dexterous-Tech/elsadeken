@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_appBar.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
@@ -17,11 +18,9 @@ import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_state.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_state.dart';
-import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/chat/data/services/chat_message_service.dart';
-import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 
 class ChatConversationScreen extends StatefulWidget {
   final ChatRoomModel chatRoom;
@@ -65,12 +64,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
+    _receiverImage = widget.chatRoom.image;
+
     // Load chat messages immediately for faster UI
     _loadChatMessagesEarly();
 
-    // Load user profile and setup real-time connections in parallel
-    _loadCurrentUserProfile();
-    _loadReceiverProfile();
+    // Load cached user info and setup real-time connections in parallel
+    _loadCurrentUserFromCache();
     _setupRealTimeListeners();
     _setupScrollListener();
 
@@ -98,6 +98,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (state == AppLifecycleState.resumed) {
       // Check connection health on resume and re-establish if needed
       _checkPusherConnectionHealth();
+      _loadCurrentUserFromCache();
 
       // Minimal refresh - only if Pusher is not working
       if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null) {
@@ -197,7 +198,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       final chatMessage = message.toChatMessage(
         _currentUserId.toString(),
         widget.chatRoom.name,
-        _receiverImage, // Pass receiver's image as otherUserImage
+        _receiverImage.isNotEmpty
+            ? _receiverImage
+            : widget.chatRoom.image, // Pass receiver's image as otherUserImage
         _currentUserImage, // Pass current user's image
       );
 
@@ -291,17 +294,54 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     }
   }
 
-  void _loadCurrentUserProfile() {
-    context.read<ManageProfileCubit>().getProfile();
-  }
+  Future<void> _loadCurrentUserFromCache() async {
+    try {
+      final cachedUserJson = await SharedPreferencesHelper.getSecuredString(
+          SharedPreferencesKey.userDataKey);
+      final cachedImage = await SharedPreferencesHelper.getUserImage();
 
-  /// Load receiver profile to get their image
-  void _loadReceiverProfile() {
-    // Get receiver ID from chat room
-    final receiverId = widget.chatRoom.receiverId;
-    print(
-        '[ChatConversationScreen] Loading receiver profile for ID: $receiverId');
-    context.read<ProfileDetailsCubit>().getProfileDetails(receiverId);
+      int? cachedId = _currentUserId;
+      String cachedName = _currentUserName;
+      String resolvedImage = cachedImage;
+
+      if (cachedUserJson.isNotEmpty) {
+        final decoded = jsonDecode(cachedUserJson);
+        if (decoded is Map<String, dynamic>) {
+          final idValue = decoded['id'];
+          if (idValue is int) {
+            cachedId = idValue;
+          } else if (idValue != null) {
+            cachedId = int.tryParse(idValue.toString());
+          }
+
+          cachedName = decoded['name']?.toString() ?? cachedName;
+
+          if (resolvedImage.isEmpty) {
+            resolvedImage = decoded['image']?.toString() ?? resolvedImage;
+          }
+        }
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _currentUserId = cachedId;
+        _currentUserName = cachedName;
+        _currentUserImage = resolvedImage;
+      });
+
+      if (_currentUserId != null) {
+        if (!_isPusherSetup) {
+          await _initializeAndSubscribePusher();
+        }
+        _updateMessagesWithUserInfo();
+        _updateMessagesWithCorrectImages();
+      }
+    } catch (e) {
+      print('[ChatConversationScreen] Error loading cached user profile: $e');
+    }
   }
 
   /// Load chat messages early for faster UI response
@@ -356,7 +396,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (senderId == _currentUserId.toString()) {
       return _currentUserImage;
     } else {
-      return _receiverImage;
+      return _receiverImage.isNotEmpty ? _receiverImage : widget.chatRoom.image;
     }
   }
 
@@ -539,6 +579,23 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               print(
                   '[ChatConversationScreen] API messages loaded: ${state.chatMessages.messages.length} messages');
 
+              if (_currentUserId == null &&
+                  state.chatMessages.messages.isNotEmpty) {
+                final sampleMessage = state.chatMessages.messages.first;
+                final inferredId =
+                    sampleMessage.senderId == widget.chatRoom.receiverId
+                        ? sampleMessage.receiverId
+                        : sampleMessage.senderId;
+
+                setState(() {
+                  _currentUserId = inferredId;
+                });
+
+                if (!_isPusherSetup) {
+                  _initializeAndSubscribePusher();
+                }
+              }
+
               // Use current user info if available, otherwise use temporary values
               final currentUserId = _currentUserId?.toString() ?? 'temp_user';
               final currentUserImage =
@@ -548,7 +605,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 _messages = state.chatMessages.toChatMessages(
                   currentUserId,
                   widget.chatRoom.name,
-                  widget.chatRoom.image,
+                  _receiverImage.isNotEmpty
+                      ? _receiverImage
+                      : widget.chatRoom.image,
                   currentUserImage,
                 );
               });
@@ -599,43 +658,19 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
             }
           },
         ),
-        BlocListener<ManageProfileCubit, ManageProfileState>(
-          listener: (context, state) async {
-            if (state is ManageProfileSuccess && _currentUserId == null) {
-              setState(() {
-                _currentUserId = state.myProfileResponseModel.data?.id;
-                _currentUserName =
-                    state.myProfileResponseModel.data?.name ?? '';
-                _currentUserImage =
-                    state.myProfileResponseModel.data?.image ?? '';
-              });
-
-              // Update existing messages with correct user info if already loaded
-              _updateMessagesWithUserInfo();
-
-              // Setup Pusher in background - messages are already loading
-              _initializeAndSubscribePusher();
-            }
-          },
-        ),
-        BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
-          listener: (context, state) async {
-            if (state is GetProfileDetailsSuccess && _receiverImage.isEmpty) {
-              setState(() {
-                _receiverImage =
-                    state.profileDetailsResponseModel.data?.image ?? '';
-              });
-              print(
-                  '[ChatConversationScreen] Receiver image loaded: $_receiverImage');
-
-              // Update existing messages with correct sender/receiver images
-              _updateMessagesWithCorrectImages();
-            }
-          },
-        ),
         BlocListener<SendMessageCubit, SendMessagesState>(
           listener: (context, state) {
             if (state is SendMessagesLoaded) {
+              if (_currentUserId == null) {
+                setState(() {
+                  _currentUserId = state.sendMessageModel.data.senderId;
+                });
+
+                if (!_isPusherSetup) {
+                  _initializeAndSubscribePusher();
+                }
+              }
+
               // Add the sent message immediately to UI
               if (_currentUserId != null) {
                 final newMessage = ChatMessage(

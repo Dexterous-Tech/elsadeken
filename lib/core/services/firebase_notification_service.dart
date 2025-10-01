@@ -72,7 +72,7 @@ class FirebaseNotificationService {
     final localNotifications = FlutterLocalNotificationsPlugin();
     await localNotifications.initialize(
       const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings('@mipmap/launcher_icon'),
       ),
     );
 
@@ -90,7 +90,7 @@ class FirebaseNotificationService {
             channel.id,
             channel.name,
             channelDescription: channel.description,
-            icon: android.smallIcon ?? '@mipmap/ic_launcher',
+            icon: android.smallIcon ?? '@mipmap/launcher_icon',
           ),
         ),
       );
@@ -205,7 +205,7 @@ class FirebaseNotificationService {
   Future<void> _setupLocalNotifications() async {
     // Initialize local notifications
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/launcher_icon');
 
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings();
@@ -314,7 +314,7 @@ class FirebaseNotificationService {
               channel.id,
               channel.name,
               channelDescription: channel.description,
-              icon: android?.smallIcon ?? '@mipmap/ic_launcher',
+              icon: android?.smallIcon ?? '@mipmap/launcher_icon',
               // Add these for better foreground notification display
               importance: Importance.high,
               priority: Priority.high,
@@ -602,7 +602,7 @@ class FirebaseNotificationService {
               channel.id,
               channel.name,
               channelDescription: channel.description,
-              icon: '@mipmap/ic_launcher',
+              icon: '@mipmap/launcher_icon',
               importance: Importance.high,
               priority: Priority.high,
               showWhen: true,
