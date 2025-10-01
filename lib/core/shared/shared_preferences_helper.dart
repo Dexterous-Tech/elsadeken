@@ -70,6 +70,13 @@ class SharedPreferencesHelper {
   }
 
   /// Gets a boolean value from FlutterSecureStorage with given [key].
+  static Future<bool?> getBoolNullable(String key) async {
+    debugPrint('FlutterSecureStorage : getBoolNullable with key : ' + key);
+    final value = await flutterSecureStorage.read(key: key);
+    if (value == null) return null;
+    return value == 'true';
+  }
+
   static Future<bool> getBool(String key) async {
     debugPrint('FlutterSecureStorage : getBool with key : $key');
     final value = await flutterSecureStorage.read(key: key);
