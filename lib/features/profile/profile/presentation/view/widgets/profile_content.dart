@@ -17,7 +17,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
 
-
 import '../../../../../../core/di/injection_container.dart';
 import '../../../../../../core/widgets/language_toggle.dart';
 
@@ -67,7 +66,8 @@ class _ProfileContentState extends State<ProfileContent> {
                     SnackBar(
                       content: Text(
                         state.error,
-                        textDirection: TextDirection.rtl,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         textAlign: TextAlign.center,
                       ),
                       backgroundColor: AppColors.coralRed,
@@ -79,8 +79,9 @@ class _ProfileContentState extends State<ProfileContent> {
                     SnackBar(
                       content: Text(
                         state.logoutResponseModel.message ??
-                            'تم حذف الصورة بنجاح',
-                        textDirection: TextDirection.rtl,
+                            AppLocalizations.of(context)!.deleteImageSuccess,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         textAlign: TextAlign.center,
                       ),
                       backgroundColor: Colors.green,
@@ -97,7 +98,8 @@ class _ProfileContentState extends State<ProfileContent> {
                       SnackBar(
                         content: Text(
                           state.message,
-                          textDirection: TextDirection.rtl,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
                           textAlign: TextAlign.center,
                         ),
                         backgroundColor: Colors.green,
@@ -109,7 +111,8 @@ class _ProfileContentState extends State<ProfileContent> {
                       SnackBar(
                         content: Text(
                           state.message,
-                          textDirection: TextDirection.rtl,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
                           textAlign: TextAlign.center,
                         ),
                         backgroundColor: AppColors.coralRed,
@@ -214,7 +217,8 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                           ProfileContentItemModel(
                             image: AppImages.excellencePackageIcon,
-                            title: AppLocalizations.of(context)!.excellencePackage,
+                            title:
+                                AppLocalizations.of(context)!.excellencePackage,
                             onPressed: () {
                               context.pushNamed(
                                   AppRoutes.profileExcellencePackageScreen);
@@ -286,7 +290,8 @@ class _ProfileContentState extends State<ProfileContent> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!.personalInfo,
+                                          AppLocalizations.of(context)!
+                                              .personalInfo,
                                           style: AppTextStyles
                                               .font12GrayMediumLamaSans,
                                         ),
@@ -295,8 +300,10 @@ class _ProfileContentState extends State<ProfileContent> {
                                             items: personalInformation),
                                         verticalSpace(24),
                                         Text(
-                                          textDirection: LocalizationService.instance.textDirection,
-                                          AppLocalizations.of(context)!.appSettings,
+                                          textDirection: LocalizationService
+                                              .instance.textDirection,
+                                          AppLocalizations.of(context)!
+                                              .appSettings,
                                           style: AppTextStyles
                                               .font12GrayMediumLamaSans,
                                         ),
@@ -305,7 +312,8 @@ class _ProfileContentState extends State<ProfileContent> {
                                         // Notification item
                                         ProfileContentItem(
                                           image: AppImages.notificationIcon,
-                                          title: AppLocalizations.of(context)!.notifications,
+                                          title: AppLocalizations.of(context)!
+                                              .notifications,
                                           onPressed: () {
                                             // Navigate to notification screen
                                             // context.pushNamed(AppRoutes.notificationScreen);
@@ -328,8 +336,10 @@ class _ProfileContentState extends State<ProfileContent> {
                                             deleteImageDialog(context);
                                           },
                                           child: Row(
-                                            textDirection: LocalizationService.instance.textDirection,
-                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            textDirection: LocalizationService
+                                                .instance.textDirection,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
                                             children: [
                                               Icon(
                                                 Icons.delete_forever,
@@ -338,7 +348,8 @@ class _ProfileContentState extends State<ProfileContent> {
                                               ),
                                               horizontalSpace(16),
                                               Text(
-                                                AppLocalizations.of(context)!.deleteMyPhoto,
+                                                AppLocalizations.of(context)!
+                                                    .deleteMyPhoto,
                                                 style: AppTextStyles
                                                     .font14CharlestonGreenMediumLamaSans
                                                     .copyWith(
@@ -354,8 +365,11 @@ class _ProfileContentState extends State<ProfileContent> {
                                             logoutDialog(context);
                                           },
                                           child: Row(
-                                            textDirection: LocalizationService.instance.textDirection,
-                                            mainAxisAlignment: MainAxisAlignment.start,                                            children: [
+                                            textDirection: LocalizationService
+                                                .instance.textDirection,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
                                               Image.asset(
                                                 AppImages.logoutIcon,
                                                 width: 44.w,
@@ -363,7 +377,8 @@ class _ProfileContentState extends State<ProfileContent> {
                                               ),
                                               horizontalSpace(16),
                                               Text(
-                                                AppLocalizations.of(context)!.logout,
+                                                AppLocalizations.of(context)!
+                                                    .logout,
                                                 style: AppTextStyles
                                                     .font14CharlestonGreenMediumLamaSans
                                                     .copyWith(
@@ -392,34 +407,6 @@ class _ProfileContentState extends State<ProfileContent> {
       ),
     );
   }
-
-  // Widget _buildLanguageIndicator() {
-  //   return ListenableBuilder(
-  //     listenable: LocalizationService.instance,
-  //     builder: (context, child) {
-  //       final isArabic = LocalizationHelper.isArabic;
-  //       return Container(
-  //         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-  //         decoration: BoxDecoration(
-  //           color: isArabic ? Colors.green[100] : Colors.blue[100],
-  //           borderRadius: BorderRadius.circular(4),
-  //           border: Border.all(
-  //             color: isArabic ? Colors.green[300]! : Colors.blue[300]!,
-  //             width: 1,
-  //           ),
-  //         ),
-  //         child: Text(
-  //           isArabic ? 'عربي' : 'EN',
-  //           style: TextStyle(
-  //             fontSize: 10,
-  //             fontWeight: FontWeight.bold,
-  //             color: isArabic ? Colors.green[700] : Colors.blue[700],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   Widget _buildNotificationToggle(NotificationSettingsProfileState state) {
     bool isEnabled = false; // Default to false

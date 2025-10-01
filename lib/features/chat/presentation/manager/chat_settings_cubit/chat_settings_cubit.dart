@@ -101,7 +101,7 @@ class ChatSettingsCubit extends Cubit<ChatSettingsState> {
       }
     } catch (e) {
       print('[ChatSettingsCubit] Exception in loadChatSettings: $e');
-      emit(ChatSettingsError(errorMessage ?? 'حدث خطأ أثناء تحميل الإعدادات'));
+      emit(ChatSettingsError(errorMessage ?? 'errorLoadingSettings'));
     }
   }
 
@@ -114,7 +114,7 @@ class ChatSettingsCubit extends Cubit<ChatSettingsState> {
     if (state is! ChatSettingsLoaded) {
       print('[ChatSettingsCubit] Error: No current settings loaded');
       emit(ChatSettingsUpdateError(
-          errorMessage ?? 'لا يمكن تحديث الإعدادات قبل تحميلها'));
+          errorMessage ?? 'cannotUpdateSettingsBeforeLoading'));
       return;
     }
 
@@ -126,8 +126,8 @@ class ChatSettingsCubit extends Cubit<ChatSettingsState> {
     if (currentState.chatSettings.id == 0) {
       print(
           '[ChatSettingsCubit] No valid settings ID - user has no chat settings yet');
-      emit(ChatSettingsUpdateError(errorMessage ??
-          'لا توجد إعدادات محادثة - يرجى التواصل مع الدعم الفني'));
+      emit(ChatSettingsUpdateError(
+          errorMessage ?? 'noChatSettingsContactSupport'));
       return;
     }
 
@@ -163,7 +163,7 @@ class ChatSettingsCubit extends Cubit<ChatSettingsState> {
         print(
             '[ChatSettingsCubit] Update successful, emitting ChatSettingsUpdated');
         // Show success message in Arabic
-        emit(ChatSettingsUpdated(successMessage ?? 'تم تحديث البيانات بنجاح'));
+        emit(ChatSettingsUpdated(successMessage ?? 'dataUpdatedSuccessfully'));
         // Reload settings to get updated data
         print('[ChatSettingsCubit] Reloading settings...');
         await loadChatSettings();
@@ -174,31 +174,28 @@ class ChatSettingsCubit extends Cubit<ChatSettingsState> {
         // Show error message from API or default Arabic message
         final errorMessage = response.message.isNotEmpty
             ? response.message
-            : 'حدث خطأ أثناء تحديث الإعدادات';
+            : 'errorUpdatingSettings';
         emit(ChatSettingsUpdateError(errorMessage));
       }
     } on TimeoutException catch (e) {
       print('[ChatSettingsCubit] Timeout exception: $e');
-      emit(ChatSettingsUpdateError(
-          errorMessage ?? 'انتهت مهلة الاتصال - يرجى المحاولة مرة أخرى'));
+      emit(ChatSettingsUpdateError(errorMessage ?? 'connectionTimeoutRetry'));
     } catch (e) {
       print('[ChatSettingsCubit] Exception occurred: $e');
       print('[ChatSettingsCubit] Exception type: ${e.runtimeType}');
       // Provide more specific error messages based on the error type
-      String finalErrorMessage =
-          errorMessage ?? 'حدث خطأ أثناء تحديث الإعدادات';
+      String finalErrorMessage = errorMessage ?? 'errorUpdatingSettings';
 
       if (e.toString().contains('405')) {
-        finalErrorMessage = 'خطأ في طريقة الطلب - يرجى المحاولة مرة أخرى';
+        finalErrorMessage = 'requestMethodError';
       } else if (e.toString().contains('401')) {
-        finalErrorMessage = 'انتهت صلاحية الجلسة - يرجى إعادة تسجيل الدخول';
+        finalErrorMessage = 'sessionExpiredRelogin';
       } else if (e.toString().contains('500')) {
-        finalErrorMessage = 'خطأ في الخادم - يرجى المحاولة لاحقاً';
+        finalErrorMessage = 'serverErrorTryLater';
       } else if (e.toString().contains('timeout')) {
-        finalErrorMessage = 'انتهت مهلة الاتصال - يرجى التحقق من الإنترنت';
+        finalErrorMessage = 'connectionTimeoutCheckInternet';
       } else if (e.toString().contains('404')) {
-        finalErrorMessage =
-            'الإعدادات غير موجودة - يرجى التواصل مع الدعم الفني';
+        finalErrorMessage = 'settingsNotFoundContactSupport';
       }
 
       print('[ChatSettingsCubit] Emitting error: $finalErrorMessage');

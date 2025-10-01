@@ -79,10 +79,12 @@ class ChatMessageBubble extends StatelessWidget {
                   bottomLeft: Radius.circular(!isCurrentUser ? 16.r : 4.r),
                   bottomRight: Radius.circular(!isCurrentUser ? 4.r : 16.r),
                 ),
-                border: !isCurrentUser ? Border.all(
-                  color: Colors.grey.shade200,
-                  width: 1,
-                ) : null,
+                border: !isCurrentUser
+                    ? Border.all(
+                        color: Colors.grey.shade200,
+                        width: 1,
+                      )
+                    : null,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.05),
@@ -111,7 +113,8 @@ class ChatMessageBubble extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        TimeFormatter.formatMessageTime(message.timestamp),
+                        TimeFormatter.formatMessageTime(
+                            message.timestamp),
                         style: TextStyle(
                           fontSize: 11.sp,
                           color: Colors.grey[600],

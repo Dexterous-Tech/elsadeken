@@ -23,6 +23,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     }, (logoutResponseModel) async {
       // Clear all app state data
       await SharedPreferencesHelper.clearAllAppState();
+      await SharedPreferencesHelper.deleteUserImage();
       // await DioFactory.resetDio();
       emit(LogoutSuccess(logoutResponseModel));
     });

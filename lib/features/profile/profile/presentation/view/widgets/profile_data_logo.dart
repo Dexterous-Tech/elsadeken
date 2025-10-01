@@ -73,8 +73,9 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
                         arguments:
                             state.myProfileResponseModel.data?.photoVisibility);
                     // Always refresh the profile data when returning from the image screen
-                    if (context.mounted)
+                    if (context.mounted) {
                       context.read<ManageProfileCubit>().getProfile();
+                    }
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
