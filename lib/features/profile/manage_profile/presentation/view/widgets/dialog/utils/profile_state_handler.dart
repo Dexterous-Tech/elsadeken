@@ -83,23 +83,23 @@ class ProfileStateHandler {
 
       // Get error message
       String errorMessage = '';
-      if (state is UpdateProfileLoginDataFailure)
+      if (state is UpdateProfileLoginDataFailure) {
         errorMessage = state.error;
-      else if (state is UpdateProfileLocationDataFailure)
+      } else if (state is UpdateProfileLocationDataFailure) {
         errorMessage = state.error;
-      else if (state is UpdateProfileMarriageDataFailure)
+      } else if (state is UpdateProfileMarriageDataFailure) {
         errorMessage = state.error;
-      else if (state is UpdateProfilePhysicalDataFailure)
+      } else if (state is UpdateProfilePhysicalDataFailure) {
         errorMessage = state.error;
-      else if (state is UpdateProfileReligiousDataFailure)
+      } else if (state is UpdateProfileReligiousDataFailure) {
         errorMessage = state.error;
-      else if (state is UpdateProfileWorkDataFailure)
+      } else if (state is UpdateProfileWorkDataFailure) {
         errorMessage = state.error;
-      else if (state is UpdateProfileAboutMeDataFailure)
+      } else if (state is UpdateProfileAboutMeDataFailure) {
         errorMessage = state.error;
-      else if (state is UpdateProfileAboutPartnerDataFailure)
+      } else if (state is UpdateProfileAboutPartnerDataFailure) {
         errorMessage = state.error;
-
+      }
       // Show error dialog
       errorDialog(
         context: context,

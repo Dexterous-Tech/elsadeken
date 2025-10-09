@@ -13,10 +13,10 @@ class FilterBottomSheet extends StatefulWidget {
   final String? selectedCountryName;
 
   const FilterBottomSheet({
-    Key? key,
+    super.key,
     this.selectedCountryId,
     this.selectedCountryName,
-  }) : super(key: key);
+  });
 
   @override
   State<FilterBottomSheet> createState() => _FilterBottomSheetState();
@@ -254,11 +254,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                                         : const _Country(id: 0, name: 'all');
 
                                     // Return the filter data to the parent screen
-                                    Navigator.of(context).maybePop({
-                                      'id':
-                                          selected.id == 0 ? null : selected.id,
-                                      'name': selected.name,
-                                    });
+                                    if (context.mounted) {
+                                      Navigator.of(context).maybePop({
+                                        'id': selected.id == 0
+                                            ? null
+                                            : selected.id,
+                                        'name': selected.name,
+                                      });
+                                    }
                                   }
                                 },
                         ),

@@ -26,7 +26,7 @@ import 'package:elsadeken/features/profile/excellence_package/presentation/manag
 import 'package:elsadeken/features/profile/excellence_package/presentation/manager/packages_cubit/cubit/packages_state.dart';
 
 class ExcellencePackageBody extends StatefulWidget {
-  ExcellencePackageBody({super.key});
+  const ExcellencePackageBody({super.key});
 
   @override
   State<ExcellencePackageBody> createState() => _ExcellencePackageBodyState();
@@ -136,7 +136,7 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
   }
 
   @override
-  Widget build(BuildContext _context) {
+  Widget build(BuildContext context) {
     return CustomProfileBody(
       contentBody: BlocProvider(
         create: (context) => sl<PackagesCubit>()..getPackages(),
@@ -182,11 +182,11 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
               children: [
                 ProfileHeader(
                     title:
-                        AppLocalizations.of(_context)!.excellencePackageTitle),
+                        AppLocalizations.of(context)!.excellencePackageTitle),
                 verticalSpace(42),
                 Center(
                   child: Text(
-                    AppLocalizations.of(_context)!.benefits,
+                    AppLocalizations.of(context)!.benefits,
                     style: AppTextStyles.font22BistreSemiBoldLamaSans.copyWith(
                       color: AppColors.jet,
                       fontWeight: FontWeightHelper.medium,
@@ -199,8 +199,8 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   textDirection: LocalizationService.instance.textDirection,
-                  children: List.generate(getItems(_context).length, (item) {
-                    final card = getItems(_context)[item];
+                  children: List.generate(getItems(context).length, (item) {
+                    final card = getItems(context)[item];
                     return ExcellencePackageItem(
                       title: card['title']!,
                       subTitle: card['subTitle']!,
@@ -210,7 +210,7 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                 verticalSpace(32),
                 GestureDetector(
                   onTap: () {
-                    _context.pushNamed(AppRoutes.profileMyExcellenceScreen);
+                    context.pushNamed(AppRoutes.profileMyExcellenceScreen);
                   },
                   child: Container(
                     width: double.infinity,
@@ -224,7 +224,7 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                             width: 32.w, height: 32.h),
                         SizedBox(width: 18),
                         Text(
-                          AppLocalizations.of(_context)!.currentBenefits,
+                          AppLocalizations.of(context)!.currentBenefits,
                           style: AppTextStyles
                               .font21PhilippineBronzeMediumLamaSans,
                           textDirection:
@@ -261,7 +261,7 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                     children: [
                       Center(
                         child: Text(
-                          AppLocalizations.of(_context)!.prices,
+                          AppLocalizations.of(context)!.prices,
                           style: AppTextStyles.font18JetMediumLamaSans.copyWith(
                             fontSize: 23.sp,
                           ),
@@ -315,7 +315,7 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                       verticalSpace(32),
                       Center(
                         child: Text(
-                          AppLocalizations.of(_context)!.paymentMethods,
+                          AppLocalizations.of(context)!.paymentMethods,
                           style: AppTextStyles.font18JetMediumLamaSans.copyWith(
                             fontSize: 23.sp,
                           ),
@@ -331,7 +331,7 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                           padding: EdgeInsets.symmetric(vertical: 20.h),
                           child: Center(
                             child: Text(
-                              AppLocalizations.of(_context)!
+                              AppLocalizations.of(context)!
                                   .youAreAlreadyPremium,
                               style: AppTextStyles.font16BlackSemiBoldLamaSans
                                   .copyWith(

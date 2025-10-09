@@ -8,7 +8,6 @@ import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../../core/theme/app_text_styles.dart';
@@ -184,6 +183,7 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
 
                     Row(
                       textDirection: LocalizationService.instance.textDirection,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomRadio(
                           value: agreedToTerms,
@@ -194,24 +194,27 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                           },
                         ),
                         horizontalSpace(10),
-                        GestureDetector(
-                          onTap: () {
-                            context
-                                .pushNamed(AppRoutes.termsAndConditionsScreen);
-                          },
-                          child: Text(
-                            AppLocalizations.of(context)!
-                                .agreeToTermsAndConditions,
-                            textDirection:
-                                LocalizationService.instance.textDirection,
-                            style:
-                                AppTextStyles.font14PumpkinOrangeBoldLamaSans,
+                        Flexible(
+                          child: GestureDetector(
+                            onTap: () {
+                              context.pushNamed(
+                                  AppRoutes.termsAndConditionsScreen);
+                            },
+                            child: Text(
+                              AppLocalizations.of(context)!
+                                  .agreeToTermsAndConditions,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                              textAlign:
+                                  LocalizationService.instance.textAlignment,
+                              style:
+                                  AppTextStyles.font14PumpkinOrangeBoldLamaSans,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    verticalSpace(40),
-                    Spacer(),
+                    Expanded(child: verticalSpace(40)),
                     BlocBuilder<SignupCubit, SignupState>(
                       builder: (context, state) {
                         return CustomNextAndPreviousButton(

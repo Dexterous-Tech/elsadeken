@@ -56,54 +56,67 @@ class ListsCubit extends Cubit<ListsState> {
       return;
     }
 
-    print('[ListsCubit] Starting to load lists... (forceRefresh: $forceRefresh)');
+    print(
+        '[ListsCubit] Starting to load lists... (forceRefresh: $forceRefresh)');
     final stopwatch = Stopwatch()..start();
     emit(ListsLoading());
     _isLoading = true;
-    
+
     try {
       print('[ListsCubit] Loading nationalities and countries in parallel...');
-      
+
       // Load nationalities and countries in parallel
       final nationalitiesFuture = _repository.getNationalities();
       final countriesFuture = _repository.getCountries();
-      
+
       final results = await Future.wait([nationalitiesFuture, countriesFuture]);
-      
+
       stopwatch.stop();
-      print('[ListsCubit] Both requests completed in ${stopwatch.elapsedMilliseconds}ms');
-      
-      final nationalitiesResponse = results[0] as ApiResponseModel<List<NationalityModel>>;
-      final countriesResponse = results[1] as ApiResponseModel<List<CountryModel>>;
-      
-      print('[ListsCubit] Nationalities response: ${nationalitiesResponse.isSuccess} - ${nationalitiesResponse.message}');
-      print('[ListsCubit] Countries response: ${countriesResponse.isSuccess} - ${countriesResponse.message}');
-      print('[ListsCubit] Nationalities count: ${nationalitiesResponse.data?.length ?? 0}');
-      print('[ListsCubit] Countries count: ${countriesResponse.data?.length ?? 0}');
-      
+      print(
+          '[ListsCubit] Both requests completed in ${stopwatch.elapsedMilliseconds}ms');
+
+      final nationalitiesResponse =
+          results[0] as ApiResponseModel<List<NationalityModel>>;
+      final countriesResponse =
+          results[1] as ApiResponseModel<List<CountryModel>>;
+
+      print(
+          '[ListsCubit] Nationalities response: ${nationalitiesResponse.isSuccess} - ${nationalitiesResponse.message}');
+      print(
+          '[ListsCubit] Countries response: ${countriesResponse.isSuccess} - ${countriesResponse.message}');
+      print(
+          '[ListsCubit] Nationalities count: ${nationalitiesResponse.data?.length ?? 0}');
+      print(
+          '[ListsCubit] Countries count: ${countriesResponse.data?.length ?? 0}');
+
       if (nationalitiesResponse.isSuccess && countriesResponse.isSuccess) {
-        final fromCache = nationalitiesResponse.message?.contains('Cached') == true || 
-                         countriesResponse.message?.contains('Cached') == true;
-        
-        print('[ListsCubit] Both successful, emitting ListsLoaded (fromCache: $fromCache)');
-        print('[ListsCubit] Performance: ${fromCache ? 'CACHE HIT' : 'API CALL'} - ${stopwatch.elapsedMilliseconds}ms');
-        
+        final fromCache =
+            nationalitiesResponse.message.contains('Cached') == true ||
+                countriesResponse.message.contains('Cached') == true;
+
+        print(
+            '[ListsCubit] Both successful, emitting ListsLoaded (fromCache: $fromCache)');
+        print(
+            '[ListsCubit] Performance: ${fromCache ? 'CACHE HIT' : 'API CALL'} - ${stopwatch.elapsedMilliseconds}ms');
+
         emit(ListsLoaded(
           nationalities: nationalitiesResponse.data ?? [],
           countries: countriesResponse.data ?? [],
           fromCache: fromCache,
         ));
       } else {
-        final errorMessage = !nationalitiesResponse.isSuccess 
-            ? nationalitiesResponse.message 
+        final errorMessage = !nationalitiesResponse.isSuccess
+            ? nationalitiesResponse.message
             : countriesResponse.message;
         print('[ListsCubit] Error occurred: $errorMessage');
         emit(ListsError(errorMessage));
       }
     } catch (e) {
       stopwatch.stop();
-      print('[ListsCubit] Exception occurred after ${stopwatch.elapsedMilliseconds}ms: $e');
-      emit(const ListsError('Error loading lists')); // Using English as fallback since no context available
+      print(
+          '[ListsCubit] Exception occurred after ${stopwatch.elapsedMilliseconds}ms: $e');
+      emit(const ListsError(
+          'Error loading lists')); // Using English as fallback since no context available
     } finally {
       _isLoading = false;
     }
@@ -160,4 +173,3 @@ class ListsCubit extends Cubit<ListsState> {
     return [];
   }
 }
-

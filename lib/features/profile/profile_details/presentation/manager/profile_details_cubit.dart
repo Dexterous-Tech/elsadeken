@@ -1,7 +1,6 @@
 import 'package:elsadeken/features/profile/profile_details/data/models/profile_details_action_response_model.dart';
 import 'package:elsadeken/features/profile/profile_details/data/models/profile_details_response_model.dart';
 import 'package:elsadeken/features/profile/profile_details/data/repo/profile_details_repo.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'profile_details_state.dart';

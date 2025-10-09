@@ -11,12 +11,11 @@ import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
 import 'package:elsadeken/features/results/presentation/view/widgets/result_card.dart';
 
 class SearchResultsView extends StatefulWidget {
-  const SearchResultsView({Key? key}) : super(key: key);
+  const SearchResultsView({super.key});
 
   @override
   State<SearchResultsView> createState() => _SearchResultsViewState();
 }
-
 
 class _SearchResultsViewState extends State<SearchResultsView> {
   @override
@@ -38,7 +37,8 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                 return CustomProfileBody(
                     contentBody: Column(
                   children: [
-                    ProfileHeader(title: AppLocalizations.of(context)!.searchResults),
+                    ProfileHeader(
+                        title: AppLocalizations.of(context)!.searchResults),
                     verticalSpace(42),
                     Expanded(
                         child:
@@ -49,7 +49,8 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                 final results = state.results;
                 return Column(
                   children: [
-                    ProfileHeader(title: AppLocalizations.of(context)!.searchResults),
+                    ProfileHeader(
+                        title: AppLocalizations.of(context)!.searchResults),
                     verticalSpace(42),
                     Container(
                       width: double.infinity,
@@ -57,9 +58,11 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                           horizontal: 20, vertical: 12),
                       color: Colors.white,
                       child: Text(
-                        AppLocalizations.of(context)!.resultsCount(results.length),
+                        AppLocalizations.of(context)!
+                            .resultsCount(results.length),
                         textAlign: LocalizationService.instance.textAlignment,
-                        textDirection: LocalizationService.instance.textDirection,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         style: const TextStyle(
                             color: Color(0xFFD4AF37),
                             fontSize: 14,
@@ -99,7 +102,8 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                 return CustomProfileBody(
                     contentBody: Column(
                   children: [
-                    ProfileHeader(title: AppLocalizations.of(context)!.searchResults),
+                    ProfileHeader(
+                        title: AppLocalizations.of(context)!.searchResults),
                     verticalSpace(42),
                     Expanded(
                         child: Center(
@@ -112,11 +116,13 @@ class _SearchResultsViewState extends State<SearchResultsView> {
               return CustomProfileBody(
                   contentBody: Column(
                 children: [
-                  ProfileHeader(title: AppLocalizations.of(context)!.searchResults),
+                  ProfileHeader(
+                      title: AppLocalizations.of(context)!.searchResults),
                   verticalSpace(42),
                   Expanded(
                       child: Center(
-                          child: Text(AppLocalizations.of(context)!.startSearchToShowResults))),
+                          child: Text(AppLocalizations.of(context)!
+                              .startSearchToShowResults))),
                 ],
               ));
             },

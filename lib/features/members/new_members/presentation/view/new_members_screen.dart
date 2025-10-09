@@ -17,7 +17,7 @@ import '../../../../../core/theme/app_color.dart';
 import '../../../gender_filter.dart';
 
 class NewMembersView extends StatefulWidget {
-  const NewMembersView({Key? key, this.countryId}) : super(key: key);
+  const NewMembersView({super.key, this.countryId});
 
   final int? countryId;
 
@@ -76,9 +76,9 @@ class _NewMembersViewState extends State<NewMembersView> {
     }
   }
 
-  Future<void> _onRefresh() async {
-    // We'll handle this in the build method where context is available
-  }
+  // Future<void> _onRefresh() async {
+  //   // We'll handle this in the build method where context is available
+  // }
 
   List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
     // Debug: Print unique gender values to help identify what the API returns
@@ -182,17 +182,19 @@ class _NewMembersViewState extends State<NewMembersView> {
                                     },
                                   );
                                   // Push a new provider scope with updated loader
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (_) => BlocProvider<
-                                          MembersListCubit<UsersDataModel>>(
-                                        create: (_) => newCubit..fetch(),
-                                        child: NewMembersView(
-                                          countryId: _selectedCountryId,
+                                  if (context.mounted) {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (_) => BlocProvider<
+                                            MembersListCubit<UsersDataModel>>(
+                                          create: (_) => newCubit..fetch(),
+                                          child: NewMembersView(
+                                            countryId: _selectedCountryId,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  }
                                 }
                               },
                               child: Row(

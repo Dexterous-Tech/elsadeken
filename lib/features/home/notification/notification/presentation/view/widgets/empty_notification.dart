@@ -1,5 +1,4 @@
 import 'package:elsadeken/core/helper/app_images.dart';
-import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';

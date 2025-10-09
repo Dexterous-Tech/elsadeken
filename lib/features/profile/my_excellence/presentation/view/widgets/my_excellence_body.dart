@@ -95,7 +95,7 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
   }
 
   @override
-  Widget build(BuildContext _context) {
+  Widget build(BuildContext context) {
     return CustomProfileBody(
       contentBody: BlocProvider(
         create: (context) => sl<PackagesCubit>()..getPackages(),
@@ -142,7 +142,7 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
               children: [
                 ProfileHeader(
                     title:
-                        AppLocalizations.of(_context)!.excellencePackageTitle),
+                        AppLocalizations.of(context)!.excellencePackageTitle),
                 verticalSpace(42),
                 if (isLoadingFeatures) ...[
                   Column(
@@ -175,7 +175,7 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                         verticalSpace(16),
                         ElevatedButton(
                           onPressed: _loadFeatures,
-                          child: Text(AppLocalizations.of(_context)!.retry),
+                          child: Text(AppLocalizations.of(context)!.retry),
                         ),
                       ],
                     ),
@@ -203,7 +203,7 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                 verticalSpace(15),
                 Center(
                   child: Text(
-                    AppLocalizations.of(_context)!.excellencePackageTitle,
+                    AppLocalizations.of(context)!.excellencePackageTitle,
                     style: AppTextStyles.font20LightOrangeMediumLamaSans,
                     textDirection: LocalizationService.instance.textDirection,
                     textAlign: LocalizationService.instance.textAlignment,
@@ -211,7 +211,7 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                 ),
                 verticalSpace(16),
                 Text(
-                  AppLocalizations.of(_context)!.excellencePackageDescription,
+                  AppLocalizations.of(context)!.excellencePackageDescription,
                   style: AppTextStyles.font19JetRegularLamaSans,
                   textAlign: LocalizationService.instance.textAlignment,
                   textDirection: LocalizationService.instance.textDirection,
@@ -223,7 +223,7 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                     padding: EdgeInsets.symmetric(vertical: 20.h),
                     child: Center(
                       child: Text(
-                        AppLocalizations.of(_context)!.youAreAlreadyPremium,
+                        AppLocalizations.of(context)!.youAreAlreadyPremium,
                         style:
                             AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                           color: AppColors.philippineBronze,

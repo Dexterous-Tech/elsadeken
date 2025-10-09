@@ -14,10 +14,10 @@ class PersonDetailsView extends StatefulWidget {
   final String imageUrl;
 
   const PersonDetailsView({
-    Key? key,
+    super.key,
     required this.personId,
     required this.imageUrl,
-  }) : super(key: key);
+  });
 
   @override
   State<PersonDetailsView> createState() => _PersonDetailsViewState();
@@ -113,7 +113,9 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
                     ),
                   )
                 : person == null
-                    ? Center(child: Text(AppLocalizations.of(context)!.noDataFoundShort))
+                    ? Center(
+                        child: Text(
+                            AppLocalizations.of(context)!.noDataFoundShort))
                     : SafeArea(
                         child: Stack(
                           children: [

@@ -131,7 +131,7 @@ class _MembersProfileCountryState extends State<MembersProfileCountry> {
                 color: AppColors.darkSunray,
                 fontWeight: FontWeightHelper.semiBold),
           ),
-          content: Container(
+          content: SizedBox(
             width: double.maxFinite,
             height: 300,
             child: ListView.builder(

@@ -18,7 +18,7 @@ import '../../../../profile/widgets/profile_header.dart';
 import '../../../gender_filter.dart';
 
 class OnlineMembersView extends StatefulWidget {
-  const OnlineMembersView({Key? key}) : super(key: key);
+  const OnlineMembersView({super.key});
 
   @override
   State<OnlineMembersView> createState() => _OnlineMembersViewState();
@@ -72,9 +72,9 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
     }
   }
 
-  Future<void> _onRefresh() async {
-    // We'll handle this in the build method where context is available
-  }
+  // Future<void> _onRefresh() async {
+  //   // We'll handle this in the build method where context is available
+  // }
 
   List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
     // Debug: Print unique gender values to help identify what the API returns
@@ -130,37 +130,37 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
     }
   }
 
-  String _getLocationText(UsersDataModel member) {
-    final country = member.attribute?.country;
-    final city = member.attribute?.city;
-
-    // Helper function to check if a string is valid
-    bool isValidString(String? str) {
-      return str != null &&
-          str.isNotEmpty &&
-          str != 'لا يوجد' &&
-          str != 'null' &&
-          str != 'undefined' &&
-          str.trim().isNotEmpty;
-    }
-
-    final hasValidCountry = isValidString(country);
-    final hasValidCity = isValidString(city);
-
-    if (!hasValidCountry && !hasValidCity) {
-      return AppLocalizations.of(context)!.notSpecified;
-    }
-
-    if (hasValidCountry && hasValidCity) {
-      return '$country، $city';
-    }
-
-    if (hasValidCountry) {
-      return country!;
-    }
-
-    return city!;
-  }
+  // String _getLocationText(UsersDataModel member) {
+  //   final country = member.attribute?.country;
+  //   final city = member.attribute?.city;
+  //
+  //   // Helper function to check if a string is valid
+  //   bool isValidString(String? str) {
+  //     return str != null &&
+  //         str.isNotEmpty &&
+  //         str != 'لا يوجد' &&
+  //         str != 'null' &&
+  //         str != 'undefined' &&
+  //         str.trim().isNotEmpty;
+  //   }
+  //
+  //   final hasValidCountry = isValidString(country);
+  //   final hasValidCity = isValidString(city);
+  //
+  //   if (!hasValidCountry && !hasValidCity) {
+  //     return AppLocalizations.of(context)!.notSpecified;
+  //   }
+  //
+  //   if (hasValidCountry && hasValidCity) {
+  //     return '$country، $city';
+  //   }
+  //
+  //   if (hasValidCountry) {
+  //     return country!;
+  //   }
+  //
+  //   return city!;
+  // }
 
   @override
   Widget build(BuildContext context) {

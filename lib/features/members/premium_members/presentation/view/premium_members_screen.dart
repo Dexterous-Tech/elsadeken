@@ -17,7 +17,7 @@ import '../../../gender_filter.dart';
 import '../../../online_members/presentation/view/widgets/filter_buttom_sheet.dart';
 
 class PremiumMembersView extends StatefulWidget {
-  const PremiumMembersView({Key? key, this.countryName}) : super(key: key);
+  const PremiumMembersView({super.key, this.countryName});
 
   final String? countryName;
 
@@ -191,16 +191,18 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                                   },
                                 );
                                 // Push a new provider scope with updated loader
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (_) => BlocProvider<
-                                        MembersListCubit<UsersDataModel>>(
-                                      create: (_) => newCubit..fetch(),
-                                      child: PremiumMembersView(
-                                          countryName: _selectedCountryName),
+                                if (context.mounted) {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (_) => BlocProvider<
+                                          MembersListCubit<UsersDataModel>>(
+                                        create: (_) => newCubit..fetch(),
+                                        child: PremiumMembersView(
+                                            countryName: _selectedCountryName),
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                }
                               }
                             },
                             child: Row(

@@ -1,5 +1,4 @@
 // File: lib/presentation/widgets/search_button.dart
-import 'package:elsadeken/features/results/presentation/view/results_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 
@@ -29,7 +28,6 @@ class SearchButton extends StatelessWidget {
       ),
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
-
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.transparent,
           shadowColor: AppColors.transparent,

@@ -34,10 +34,10 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
 
         final settingsData = _currentSettings!;
         log('Response data type: ${settingsData.runtimeType}');
-        log('Response data: ${settingsData}');
+        log('Response data: $settingsData');
 
         // Convert the single data object to a list format for UI
-        log('About to call toSettingsList() on: ${settingsData}');
+        log('About to call toSettingsList() on: $settingsData');
         log('Available methods: ${settingsData.runtimeType.toString()}');
 
         // Convert settings to list with localized titles

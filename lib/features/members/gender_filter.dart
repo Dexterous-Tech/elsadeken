@@ -6,11 +6,11 @@ class GenderFilter extends StatelessWidget {
   final VoidCallback onTap;
 
   const GenderFilter({
-    Key? key,
+    super.key,
     required this.text,
     required this.isActive,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

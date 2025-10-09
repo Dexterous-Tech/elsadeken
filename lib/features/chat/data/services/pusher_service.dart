@@ -82,7 +82,8 @@ class PusherService {
       log('🔄 Initializing WebSocket connection to EU cluster...');
       log('🌍 Cluster: ${PusherConfig.cluster}, App Key: ${PusherConfig.appKey}');
 
-      final wsUrl = 'wss://ws-${PusherConfig.cluster}.pusher.com/app/${PusherConfig.appKey}?protocol=7&client=dart&version=1.0&flash=false';
+      final wsUrl =
+          'wss://ws-${PusherConfig.cluster}.pusher.com/app/${PusherConfig.appKey}?protocol=7&client=dart&version=1.0&flash=false';
       log('🔗 Connecting to: $wsUrl');
 
       _webSocketChannel = WebSocketChannel.connect(Uri.parse(wsUrl));
@@ -103,7 +104,6 @@ class PusherService {
         onConnectionError?.call('Failed to connect to EU cluster');
         _scheduleReconnection();
       }
-
     } catch (e) {
       log('❌ WebSocket initialization failed: $e');
       log('💥 === PUSHER INITIALIZATION FAILED ===');
@@ -117,7 +117,8 @@ class PusherService {
   }
 
   /// Setup WebSocket listener and wait for connection establishment
-  Future<void> _setupWebSocketListenerAndWaitForConnection({int timeoutSeconds = 10}) async {
+  Future<void> _setupWebSocketListenerAndWaitForConnection(
+      {int timeoutSeconds = 10}) async {
     if (_webSocketChannel == null) {
       throw Exception('WebSocket channel is null');
     }
@@ -130,7 +131,8 @@ class PusherService {
     timeoutTimer = Timer(Duration(seconds: timeoutSeconds), () {
       if (!completer.isCompleted) {
         log('⏰ Connection timeout after $timeoutSeconds seconds');
-        completer.completeError(TimeoutException('Connection timeout after $timeoutSeconds seconds'));
+        completer.completeError(TimeoutException(
+            'Connection timeout after $timeoutSeconds seconds'));
       }
     });
 
@@ -138,7 +140,7 @@ class PusherService {
     _webSocketChannel!.stream.listen(
       (message) {
         log('📨 WebSocket message received: ${message.toString().substring(0, message.toString().length > 100 ? 100 : message.toString().length)}...');
-        
+
         // Handle connection establishment during initial setup
         if (!_isConnected && !completer.isCompleted) {
           try {
@@ -155,7 +157,7 @@ class PusherService {
             log('⚠️ Error parsing initial message: $e');
           }
         }
-        
+
         // Handle all messages through the main handler
         _handleWebSocketMessage(message);
       },
@@ -163,7 +165,8 @@ class PusherService {
         log('❌ WebSocket stream closed');
         timeoutTimer?.cancel();
         if (!completer.isCompleted) {
-          completer.completeError(Exception('WebSocket closed before connection established'));
+          completer.completeError(
+              Exception('WebSocket closed before connection established'));
         }
         _handleConnectionDeath();
       },
@@ -199,7 +202,7 @@ class PusherService {
   void _startHeartbeat() {
     log('💓 Starting heartbeat mechanism...');
     _stopHeartbeat();
-    
+
     _pingTimer = Timer.periodic(Duration(seconds: 30), (timer) {
       log('💓 Heartbeat timer triggered - checking connection...');
       if (_isConnected && _webSocketChannel != null) {
@@ -210,7 +213,7 @@ class PusherService {
         _stopHeartbeat();
       }
     });
-    
+
     log('💓 Heartbeat started successfully (30s intervals)');
   }
 
@@ -228,7 +231,7 @@ class PusherService {
   /// Send ping to keep connection alive
   void _sendPing() {
     log('💓 Attempting to send ping...');
-    
+
     if (_waitingForPong) {
       log('💔 Still waiting for previous pong - connection appears dead');
       _handleConnectionDeath();
@@ -238,10 +241,10 @@ class PusherService {
     try {
       final pingMessage = jsonEncode({'event': 'pusher:ping'});
       log('💓 Sending ping message: $pingMessage');
-      
+
       _webSocketChannel!.sink.add(pingMessage);
       _waitingForPong = true;
-      
+
       // Set timeout for pong response
       _pongTimer = Timer(Duration(seconds: 10), () {
         if (_waitingForPong) {
@@ -249,7 +252,7 @@ class PusherService {
           _handleConnectionDeath();
         }
       });
-      
+
       log('💓 Ping sent successfully, waiting for pong...');
     } catch (e) {
       log('💔 Failed to send ping: $e');
@@ -280,7 +283,8 @@ class PusherService {
       return await _socketIdCompleter!.future.timeout(
         Duration(seconds: timeoutSeconds),
         onTimeout: () {
-          throw TimeoutException('Socket ID not received within $timeoutSeconds seconds');
+          throw TimeoutException(
+              'Socket ID not received within $timeoutSeconds seconds');
         },
       );
     } catch (e) {
@@ -302,7 +306,7 @@ class PusherService {
 
     log('💓 Stopping heartbeat mechanism...');
     _stopHeartbeat();
-    
+
     log('🔄 Cancelling reconnection timer...');
     _reconnectionTimer?.cancel();
     _reconnectionTimer = null;
@@ -317,14 +321,14 @@ class PusherService {
       }
       _webSocketChannel = null;
     }
-    
+
     log('🧹 Cleaning up state variables...');
     _isConnected = false;
     _currentChannelName = null;
     _reconnectionAttempts = 0;
     _lastSocketId = null;
     _socketIdCompleter = null;
-    
+
     log('✅ === PUSHER DISPOSE COMPLETED ===');
   }
 
@@ -333,7 +337,8 @@ class PusherService {
 
     if (_reconnectionAttempts >= _maxReconnectionAttempts) {
       log('❌ Maximum reconnection attempts ($_maxReconnectionAttempts) reached.');
-      onConnectionError?.call('Failed to connect after $_maxReconnectionAttempts attempts.');
+      onConnectionError
+          ?.call('Failed to connect after $_maxReconnectionAttempts attempts.');
       return;
     }
 
@@ -342,7 +347,7 @@ class PusherService {
     final delay = _baseReconnectionDelay * (1 << _reconnectionAttempts);
     _reconnectionAttempts++;
 
-    log('🔄 Scheduling reconnection attempt $_reconnectionAttempts in ${delay} seconds...');
+    log('🔄 Scheduling reconnection attempt $_reconnectionAttempts in $delay seconds...');
 
     _reconnectionTimer = Timer(Duration(seconds: delay), () async {
       if (!_isConnected) {
@@ -360,7 +365,8 @@ class PusherService {
   }
 
   /// Subscribe to a private chat channel with improved socket ID handling
-  Future<void> subscribeToChatChannel(int chatRoomId, String bearerToken) async {
+  Future<void> subscribeToChatChannel(
+      int chatRoomId, String bearerToken) async {
     final channelName = 'private-chat.$chatRoomId';
     log('🔔 Starting subscription process for channel: $channelName');
 
@@ -377,7 +383,7 @@ class PusherService {
     }
 
     log('🔍 Checking connection status - isConnected: $_isConnected, hasChannel: ${_webSocketChannel != null}');
-    
+
     if (!_isConnected || _webSocketChannel == null) {
       log('🔄 WebSocket not connected, initializing first...');
       await initialize();
@@ -387,7 +393,8 @@ class PusherService {
 
     if (!_isConnected || _webSocketChannel == null) {
       log('❌ Failed to establish WebSocket connection for subscription');
-      onConnectionError?.call('Failed to establish connection for subscription');
+      onConnectionError
+          ?.call('Failed to establish connection for subscription');
       return;
     }
 
@@ -402,10 +409,11 @@ class PusherService {
 
       // Request authentication from Laravel backend
       log('🔐 Requesting authentication from backend...');
-      final authUrl = 'https://elsadkeen.sharetrip-ksa.com/api/broadcasting/auth';
+      final authUrl =
+          'https://elsadkeen.sharetrip-ksa.com/api/broadcasting/auth';
       log('🔐 Auth URL: $authUrl');
       log('🔐 Auth payload: socket_id=$socketId, channel_name=$channelName');
-      
+
       final response = await http.post(
         Uri.parse(authUrl),
         headers: {
@@ -442,7 +450,8 @@ class PusherService {
         log('✅ Subscription request sent for $channelName');
       } else {
         log('❌ Auth request failed: ${response.statusCode} ${response.body}');
-        onConnectionError?.call('Authentication failed: ${response.statusCode}');
+        onConnectionError
+            ?.call('Authentication failed: ${response.statusCode}');
       }
     } catch (e) {
       log('❌ Subscription error: $e');
@@ -467,12 +476,12 @@ class PusherService {
 
       if (eventType == 'pusher:connection_established') {
         log('🎉 Processing connection established event...');
-        
+
         if (!_isConnected) {
           _isConnected = true;
           log('✅ Connection status updated to: $_isConnected');
         }
-        
+
         final socketData = jsonDecode(data['data']);
         _lastSocketId = socketData['socket_id'];
         log('🆔 Socket ID received: $_lastSocketId');
@@ -490,26 +499,20 @@ class PusherService {
         onConnectionEstablished?.call('Connected');
         ChatMessageService.instance.setPusherConnectionStatus(true);
         log('✅ Pusher fully connected with socket ID: $_lastSocketId');
-
       } else if (eventType == 'pusher:subscription_succeeded') {
         log('✅ Subscription succeeded for $_currentChannelName');
-
       } else if (eventType == 'pusher:subscription_error') {
         log('❌ Subscription failed: ${data['data']}');
         onConnectionError?.call('Subscription failed: ${data['data']}');
         _currentChannelName = null; // Reset on subscription failure
-
       } else if (_isMessageEvent(eventType)) {
         log('💬 Message event received: $eventType');
         _processMessageEvent(data);
-
       } else if (eventType == 'pusher:pong') {
         _handlePong();
-
       } else if (eventType == 'pusher:error') {
         log('⚠️ Pusher error: ${data['data']}');
         onConnectionError?.call('Pusher error: ${data['data']}');
-
       } else {
         log('ℹ️ Other event: $eventType');
         // Try to process unknown events as potential messages
@@ -565,7 +568,8 @@ class PusherService {
             log('🔍 Unknown event looks like a message, processing...');
             _processMessage(parsed);
           }
-        } else if (eventData is Map<String, dynamic> && _looksLikeMessage(eventData)) {
+        } else if (eventData is Map<String, dynamic> &&
+            _looksLikeMessage(eventData)) {
           log('🔍 Unknown event looks like a message, processing...');
           _processMessage(eventData);
         }
@@ -639,17 +643,17 @@ class PusherService {
     try {
       log('💓 Stopping heartbeat...');
       _stopHeartbeat();
-      
+
       log('🚪 Unsubscribing from channels...');
       unsubscribeFromChatChannel();
-      
+
       log('🔌 Closing WebSocket connection...');
       _webSocketChannel?.sink.close(status.goingAway);
       _webSocketChannel = null;
       _isConnected = false;
       _lastSocketId = null;
       _socketIdCompleter = null;
-      
+
       log('✅ === PUSHER DISCONNECT COMPLETED ===');
     } catch (e) {
       log('❌ Error disconnecting: $e');
@@ -697,7 +701,6 @@ class PusherService {
     };
   }
 
-
   /// Get comprehensive network and connection diagnostics
   Future<Map<String, dynamic>> getDetailedDiagnostics() async {
     try {
@@ -730,7 +733,6 @@ class PusherService {
       };
     }
   }
-
 
   // Debug methods
   void simulateMessageReceived(String messageText, int chatId) {

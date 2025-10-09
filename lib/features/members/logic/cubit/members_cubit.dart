@@ -36,7 +36,7 @@ class MembersListCubit<T> extends Cubit<MembersListState<T>> {
   MembersListCubit(this.loader) : super(MembersListInitial<T>());
 
   /// loader function that should return either:
-  /// 1. List<T> directly, or
+  /// 1. List directly, or
   /// 2. UsersResponseModel with data property
   final Future<dynamic> Function({int? page}) loader;
 
@@ -113,11 +113,11 @@ class MembersListCubit<T> extends Cubit<MembersListState<T>> {
     } catch (e) {
       // Handle API errors gracefully
       String errorMessage;
-      
+
       if (e is DioException) {
         final apiError = ApiErrorHandler.handle(e);
         errorMessage = apiError.displayMessage;
-        
+
         // Provide more user-friendly messages for common server errors
         if (apiError.statusCode == 500) {
           errorMessage = 'حدث خطأ في الخادم. يرجى المحاولة لاحقاً';
@@ -130,7 +130,7 @@ class MembersListCubit<T> extends Cubit<MembersListState<T>> {
         // For non-API errors, provide a generic message
         errorMessage = 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى';
       }
-      
+
       emit(MembersListError<T>(errorMessage));
     }
   }

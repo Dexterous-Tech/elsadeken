@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
-import 'package:elsadeken/features/chat/presentation/widgets/chat_appBar.dart';
+import 'package:elsadeken/features/chat/presentation/widgets/chat_app_bar.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -268,11 +268,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         return;
       }
 
-      // Set auth token
-      context.read<PusherCubit>().setAuthToken(token);
+      if (mounted) {
+        // Set auth token
+        context.read<PusherCubit>().setAuthToken(token);
 
-      // Initialize Pusher
-      await context.read<PusherCubit>().initialize();
+        // Initialize Pusher
+        await context.read<PusherCubit>().initialize();
+      }
 
       // Small delay to ensure initialization completes
       await Future.delayed(Duration(milliseconds: 1000));
@@ -280,7 +282,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       // Subscribe to chat channel if not temporary
       if (!widget.chatRoom.id.startsWith('temp_')) {
         final chatRoomId = int.tryParse(widget.chatRoom.id);
-        if (chatRoomId != null) {
+        if (chatRoomId != null && mounted) {
           await context
               .read<PusherCubit>()
               .subscribeToChatChannel(chatRoomId, token);
@@ -958,7 +960,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                       onPressed: _sendMessage,
                       style: IconButton.styleFrom(
                         backgroundColor:
-                            AppColors.primaryOrange.withOpacity(0.1),
+                            AppColors.primaryOrange.withValues(alpha: 0.1),
                         shape: CircleBorder(),
                         padding: EdgeInsets.all(8.w),
                       ),

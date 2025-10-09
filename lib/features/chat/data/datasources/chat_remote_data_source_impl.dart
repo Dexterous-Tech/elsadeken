@@ -13,11 +13,11 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
   void _initializeMockData() {
     _mockChatRooms = _getMockChatRooms();
-    
+
     // Initialize messages for each chat room
-    _mockChatRooms.forEach((room) {
+    for (var room in _mockChatRooms) {
       _mockMessages[room.id] = _getMockChatMessages(room.id);
-    });
+    }
   }
 
   @override
@@ -33,8 +33,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
   @override
   Future<void> sendMessage(String roomId, String message) async {
-    print("ChatRemoteDataSourceImpl: Adding message '$message' to room $roomId");
-    
+    print(
+        "ChatRemoteDataSourceImpl: Adding message '$message' to room $roomId");
+
     // Create new message
     final newMessage = ChatMessageModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -55,7 +56,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     }
 
     // Update chat room's last message and time
-    final chatRoomIndex = _mockChatRooms.indexWhere((room) => room.id == roomId);
+    final chatRoomIndex =
+        _mockChatRooms.indexWhere((room) => room.id == roomId);
     if (chatRoomIndex != -1) {
       final oldRoom = _mockChatRooms[chatRoomIndex];
       _mockChatRooms[chatRoomIndex] = ChatRoomModel(
@@ -78,7 +80,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override
   Future<void> markAsRead(String roomId) async {
     print("ChatRemoteDataSourceImpl: Marking room $roomId as read");
-    
+
     // Mark all messages in the room as read
     if (_mockMessages[roomId] != null) {
       for (int i = 0; i < _mockMessages[roomId]!.length; i++) {
@@ -99,7 +101,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     }
 
     // Update chat room's unread count
-    final chatRoomIndex = _mockChatRooms.indexWhere((room) => room.id == roomId);
+    final chatRoomIndex =
+        _mockChatRooms.indexWhere((room) => room.id == roomId);
     if (chatRoomIndex != -1) {
       final oldRoom = _mockChatRooms[chatRoomIndex];
       _mockChatRooms[chatRoomIndex] = ChatRoomModel(
@@ -121,22 +124,22 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override
   Future<void> deleteChat(String roomId) async {
     print("ChatRemoteDataSourceImpl: Deleting chat room $roomId");
-    
+
     // Remove chat room
     _mockChatRooms.removeWhere((room) => room.id == roomId);
-    
+
     // Remove messages
     _mockMessages.remove(roomId);
-    
+
     await Future.delayed(const Duration(milliseconds: 400));
   }
 
   @override
   Future<void> markAllAsRead() async {
     print("ChatRemoteDataSourceImpl: Marking all chats as read");
-    
+
     // Mark all messages in all rooms as read
-    _mockMessages.values.forEach((messages) {
+    for (var messages in _mockMessages.values) {
       for (int i = 0; i < messages.length; i++) {
         final message = messages[i];
         if (message.senderId != 'current_user') {
@@ -152,38 +155,38 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           );
         }
       }
-    });
+    }
 
     // Update all chat rooms' unread counts
     for (int i = 0; i < _mockChatRooms.length; i++) {
       final oldRoom = _mockChatRooms[i];
-             _mockChatRooms[i] = ChatRoomModel(
-         id: oldRoom.id,
-         name: oldRoom.name,
-         image: oldRoom.image,
-         lastMessage: oldRoom.lastMessage,
-         lastMessageTime: oldRoom.lastMessageTime,
-         unreadCount: 0,
-         isOnline: oldRoom.isOnline,
-         isFavorite: oldRoom.isFavorite,
-         receiverId: oldRoom.receiverId,
-       );
+      _mockChatRooms[i] = ChatRoomModel(
+        id: oldRoom.id,
+        name: oldRoom.name,
+        image: oldRoom.image,
+        lastMessage: oldRoom.lastMessage,
+        lastMessageTime: oldRoom.lastMessageTime,
+        unreadCount: 0,
+        isOnline: oldRoom.isOnline,
+        isFavorite: oldRoom.isFavorite,
+        receiverId: oldRoom.receiverId,
+      );
     }
-    
+
     await Future.delayed(const Duration(milliseconds: 300));
   }
 
   @override
   Future<void> deleteAllChats() async {
     print("ChatRemoteDataSourceImpl: Deleting all chats");
-    
+
     // Clear all data
     _mockChatRooms.clear();
     _mockMessages.clear();
-    
+
     // Reinitialize with fresh data
     _initializeMockData();
-    
+
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
@@ -256,7 +259,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '1',
           senderName: 'محمد القحطاني',
-          senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+          senderImage:
+              'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
           message: 'مرحبا كيف حالك ؟',
           timestamp: DateTime.now().subtract(const Duration(minutes: 10)),
           isRead: true,
@@ -266,7 +270,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: 'current_user',
           senderName: 'أنا',
-          senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+          senderImage:
+              'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
           message: 'أهلا وسهلا، الحمد لله',
           timestamp: DateTime.now().subtract(const Duration(minutes: 8)),
           isRead: true,
@@ -276,7 +281,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '1',
           senderName: 'محمد القحطاني',
-          senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+          senderImage:
+              'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
           message: 'ممتاز، هل تريد أن نلتقي؟',
           timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
           isRead: false,
@@ -289,7 +295,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '2',
           senderName: 'فاطمة علي',
-          senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+          senderImage:
+              'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
           message: 'أهلا وسهلا',
           timestamp: DateTime.now().subtract(const Duration(hours: 2)),
           isRead: true,
@@ -299,9 +306,11 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: 'current_user',
           senderName: 'أنا',
-          senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+          senderImage:
+              'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
           message: 'أهلا وسهلا بك',
-          timestamp: DateTime.now().subtract(const Duration(hours: 1, minutes: 55)),
+          timestamp:
+              DateTime.now().subtract(const Duration(hours: 1, minutes: 55)),
           isRead: true,
         ),
         ChatMessageModel(
@@ -309,7 +318,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '2',
           senderName: 'فاطمة علي',
-          senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+          senderImage:
+              'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
           message: 'شكرا لك',
           timestamp: DateTime.now().subtract(const Duration(hours: 1)),
           isRead: true,
@@ -322,7 +332,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '4',
           senderName: 'سارة أحمد',
-          senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+          senderImage:
+              'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
           message: 'مرحبا، كيف حالك؟',
           timestamp: DateTime.now().subtract(const Duration(hours: 3)),
           isRead: true,
@@ -332,9 +343,11 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: 'current_user',
           senderName: 'أنا',
-          senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+          senderImage:
+              'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
           message: 'أهلا وسهلا، الحمد لله',
-          timestamp: DateTime.now().subtract(const Duration(hours: 2, minutes: 30)),
+          timestamp:
+              DateTime.now().subtract(const Duration(hours: 2, minutes: 30)),
           isRead: true,
         ),
         ChatMessageModel(
@@ -342,14 +355,15 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '4',
           senderName: 'سارة أحمد',
-          senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+          senderImage:
+              'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
           message: 'هل تريد أن نلتقي في المطعم؟',
           timestamp: DateTime.now().subtract(const Duration(hours: 2)),
           isRead: false,
         ),
       ];
     }
-    
+
     return [
       ChatMessageModel(
         id: '1',

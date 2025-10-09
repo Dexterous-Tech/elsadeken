@@ -28,8 +28,9 @@ class UpdateProfileLoginDataRequestModel {
     if (name != null && name!.isNotEmpty) map['name'] = name;
     if (email != null && email!.isNotEmpty) map['email'] = email;
     if (phone != null && phone!.isNotEmpty) map['phone'] = phone;
-    if (countryCode != null && countryCode!.isNotEmpty)
+    if (countryCode != null && countryCode!.isNotEmpty) {
       map['country_code'] = countryCode;
+    }
     if (password != null && password!.isNotEmpty) map['password'] = password;
     if (passwordConfirmation != null && passwordConfirmation!.isNotEmpty) {
       map['password_confirmation'] = passwordConfirmation;

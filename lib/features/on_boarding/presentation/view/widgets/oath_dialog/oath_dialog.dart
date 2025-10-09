@@ -206,8 +206,10 @@ Future<void> oathDialog({
                                   // Mark onboarding as completed
                                   await SharedPreferencesHelper
                                       .setIsOnboardingCompleted(true);
-                                  context.pushNamed(AppRoutes.signupScreen,
-                                      arguments: 'male');
+                                  if (context.mounted) {
+                                    context.pushNamed(AppRoutes.signupScreen,
+                                        arguments: 'male');
+                                  }
                                 }
                               : () {},
                           // verticalPadding: 17.32.h,
@@ -223,8 +225,10 @@ Future<void> oathDialog({
                                   // Mark onboarding as completed
                                   await SharedPreferencesHelper
                                       .setIsOnboardingCompleted(true);
-                                  context.pushNamed(AppRoutes.signupScreen,
-                                      arguments: 'female');
+                                  if (context.mounted) {
+                                    context.pushNamed(AppRoutes.signupScreen,
+                                        arguments: 'female');
+                                  }
                                 }
                               : () {},
                           // verticalPadding: 17.32.h,

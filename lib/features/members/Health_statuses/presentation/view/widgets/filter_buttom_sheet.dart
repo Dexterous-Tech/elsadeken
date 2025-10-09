@@ -10,8 +10,8 @@ import '../../../../../../core/di/injection_container.dart';
 
 class FilterHealthStatues extends StatefulWidget {
   const FilterHealthStatues({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<FilterHealthStatues> createState() => _FilterHealthStatuesState();
@@ -270,20 +270,22 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                                                 id: 0, name: 'all');
 
                                     // Return the filter data to the parent screen
-                                    Navigator.of(context).maybePop({
-                                      'health': {
-                                        'id': selectedHealth.id == 0
-                                            ? null
-                                            : selectedHealth.id,
-                                        'name': selectedHealth.name,
-                                      },
-                                      'country': {
-                                        'id': selectedCountry.id == 0
-                                            ? null
-                                            : selectedCountry.id,
-                                        'name': selectedCountry.name,
-                                      },
-                                    });
+                                    if (context.mounted) {
+                                      Navigator.of(context).maybePop({
+                                        'health': {
+                                          'id': selectedHealth.id == 0
+                                              ? null
+                                              : selectedHealth.id,
+                                          'name': selectedHealth.name,
+                                        },
+                                        'country': {
+                                          'id': selectedCountry.id == 0
+                                              ? null
+                                              : selectedCountry.id,
+                                          'name': selectedCountry.name,
+                                        },
+                                      });
+                                    }
                                   }
                                 },
                         ),

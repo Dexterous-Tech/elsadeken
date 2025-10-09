@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 
@@ -12,9 +11,9 @@ class ChatOptionsCard extends StatelessWidget {
   final ChatListCubit chatListCubit;
 
   const ChatOptionsCard({
-    Key? key,
+    super.key,
     required this.chatListCubit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +21,11 @@ class ChatOptionsCard extends StatelessWidget {
       margin: EdgeInsets.all(16.w),
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color:  const Color(0xFFF7D4D8),
+        color: const Color(0xFFF7D4D8),
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -37,31 +36,31 @@ class ChatOptionsCard extends StatelessWidget {
         children: [
           // Message Settings
           _buildOptionItem(
-            image_icon: AppImages.settingsIcon,
+            imageIcon: AppImages.settingsIcon,
             text: AppLocalizations.of(context)!.messageSettings,
             iconColor: Colors.grey.shade100,
             onTap: () {
               Navigator.pushNamed(context, AppRoutes.chatSettingsScreen);
             },
           ),
-          
+
           Divider(height: 1.h, color: Colors.grey[300]),
-          
+
           // Delete Chats
           _buildOptionItem(
-            image_icon: AppImages.deleteChatIcon,
+            imageIcon: AppImages.deleteChatIcon,
             text: AppLocalizations.of(context)!.deleteAllChats,
             iconColor: Colors.blue,
             onTap: () {
               _showDeleteAllChatsConfirmationDialog(context);
             },
           ),
-          
+
           Divider(height: 1.h, color: Colors.grey[300]),
-          
+
           // Mark All as Read
           _buildOptionItem(
-            image_icon: AppImages.readChatIcon,
+            imageIcon: AppImages.readChatIcon,
             text: AppLocalizations.of(context)!.markAllAsRead,
             iconColor: Colors.green,
             onTap: () {
@@ -75,7 +74,7 @@ class ChatOptionsCard extends StatelessWidget {
   }
 
   Widget _buildOptionItem({
-    required String image_icon,
+    required String imageIcon,
     required String text,
     required Color iconColor,
     required VoidCallback onTap,
@@ -88,7 +87,7 @@ class ChatOptionsCard extends StatelessWidget {
         child: Row(
           children: [
             Image.asset(
-              image_icon,
+              imageIcon,
               width: 28.w,
               height: 28.h,
             ),
@@ -155,7 +154,7 @@ class ChatOptionsCard extends StatelessWidget {
   //   );
   // }
 
-    void _showMarkAllAsReadConfirmationDialog(BuildContext context) {
+  void _showMarkAllAsReadConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -196,7 +195,7 @@ class ChatOptionsCard extends StatelessWidget {
                     // Show success snackbar
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content:  Text(
+                        content: Text(
                           AppLocalizations.of(context)!.doneReadCont,
                           style: TextStyle(
                             color: Colors.white,
@@ -270,7 +269,7 @@ class ChatOptionsCard extends StatelessWidget {
                     // Show success snackbar
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content:  Text(
+                        content: Text(
                           AppLocalizations.of(context)!.delteDone,
                           style: TextStyle(
                             color: Colors.white,
@@ -292,7 +291,6 @@ class ChatOptionsCard extends StatelessWidget {
                       color: Colors.red,
                     ),
                     textAlign: TextAlign.center,
-
                   ),
                 ),
               ],

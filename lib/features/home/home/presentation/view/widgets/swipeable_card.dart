@@ -305,7 +305,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                                       Colors.transparent,
                                       Colors.grey.withValues(alpha: 0.3)
                                     ],
-                                    stops: [0.7, 1],// from -> to
+                                    stops: [0.7, 1], // from -> to
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                   ),
@@ -546,6 +546,25 @@ class _SwipeableCardState extends State<SwipeableCard>
                                     print(
                                         '🆕 [SwipeableCard] No existing chat room found, creating new temporary chat');
                                     // Create new temporary chat room for new conversation
+                                    if (context.mounted) {
+                                      Navigator.pushNamed(
+                                        context,
+                                        AppRoutes.chatConversationScreen,
+                                        arguments: {
+                                          "chatRoom": ChatRoomModel.fromUser(
+                                            userId: widget.user.id,
+                                            userName: widget.user.name,
+                                            userImage: widget.user.imageUrl,
+                                          ),
+                                        },
+                                      );
+                                    }
+                                  }
+                                } catch (e) {
+                                  print(
+                                      '❌ [SwipeableCard] Error in message icon onTap: $e');
+                                  // Fallback to creating new chat
+                                  if (context.mounted) {
                                     Navigator.pushNamed(
                                       context,
                                       AppRoutes.chatConversationScreen,
@@ -558,21 +577,6 @@ class _SwipeableCardState extends State<SwipeableCard>
                                       },
                                     );
                                   }
-                                } catch (e) {
-                                  print(
-                                      '❌ [SwipeableCard] Error in message icon onTap: $e');
-                                  // Fallback to creating new chat
-                                  Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.chatConversationScreen,
-                                    arguments: {
-                                      "chatRoom": ChatRoomModel.fromUser(
-                                        userId: widget.user.id,
-                                        userName: widget.user.name,
-                                        userImage: widget.user.imageUrl,
-                                      ),
-                                    },
-                                  );
                                 }
                               },
                               child: Container(

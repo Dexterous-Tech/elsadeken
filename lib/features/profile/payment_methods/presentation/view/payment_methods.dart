@@ -75,7 +75,7 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                                       SharedPreferencesKey.isFeatured, true);
 
                                   // Show success message
-                                  if (mounted) {
+                                  if (currentContext.mounted) {
                                     ScaffoldMessenger.of(currentContext)
                                         .showSnackBar(
                                       SnackBar(
@@ -97,7 +97,7 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                                   }
 
                                   // Close bottom sheet and return selected package
-                                  if (mounted) {
+                                  if (currentContext.mounted) {
                                     Navigator.of(currentContext).pop({
                                       "selectedPackage": package,
                                     });
@@ -105,11 +105,11 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                                 } catch (e) {
                                   // Store context and localizations before async operations
                                   final currentContext = context;
-                                  final localizations =
-                                      AppLocalizations.of(currentContext)!;
 
                                   // Show error message
-                                  if (mounted) {
+                                  if (currentContext.mounted) {
+                                    final localizations =
+                                        AppLocalizations.of(currentContext)!;
                                     ScaffoldMessenger.of(currentContext)
                                         .showSnackBar(
                                       SnackBar(

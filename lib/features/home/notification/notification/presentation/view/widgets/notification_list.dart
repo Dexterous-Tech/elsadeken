@@ -1,6 +1,5 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
-import 'package:elsadeken/features/home/notification/notification/services/local_notification_service.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,13 +16,13 @@ class NotificationListWidget extends StatelessWidget {
   final VoidCallback? onRefresh;
 
   const NotificationListWidget({
-    Key? key,
+    super.key,
     required this.notifications,
     required this.scrollController,
     required this.hasNextPage,
     required this.isLoadingMore,
     this.onRefresh,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -25,8 +25,8 @@ class ChatSettingsScreen extends StatefulWidget {
 
 class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   bool _isOnline = true;
-  bool _newMessagesNotification = false;
-  bool _profilePictureNotification = false;
+  // bool _newMessagesNotification = false;
+  // bool _profilePictureNotification = false;
   String _selectedAgeCategory = '';
   String _selectedNationalities = '';
   String _selectedCountries = '';
@@ -44,7 +44,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   int _originalCountryId = 0;
 
   // Track if initial settings have been loaded
-  bool _hasLoadedInitialSettings = false;
+  // bool _hasLoadedInitialSettings = false;
 
   @override
   void initState() {
@@ -370,39 +370,39 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(80.h),
-      child: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            width: double.infinity,
-            alignment: Alignment.bottomRight,
-            decoration: BoxDecoration(
-              color: AppColors.white,
-            ),
-            child: ProfileHeader(
-                title: AppLocalizations.of(context)!.messageSettings),
-          ),
-          // Decorative background image above header but non-interactive
-          IgnorePointer(
-            ignoring: true,
-            child: Positioned(
-              top: 0,
-              left: -20,
-              child: Image.asset(
-                AppImages.starProfile,
-                width: 400.w,
-                height: 250.h,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // PreferredSizeWidget _buildAppBar() {
+  //   return PreferredSize(
+  //     preferredSize: Size.fromHeight(80.h),
+  //     child: Stack(
+  //       children: [
+  //         Container(
+  //           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+  //           width: double.infinity,
+  //           alignment: Alignment.bottomRight,
+  //           decoration: BoxDecoration(
+  //             color: AppColors.white,
+  //           ),
+  //           child: ProfileHeader(
+  //               title: AppLocalizations.of(context)!.messageSettings),
+  //         ),
+  //         // Decorative background image above header but non-interactive
+  //         IgnorePointer(
+  //           ignoring: true,
+  //           child: Positioned(
+  //             top: 0,
+  //             left: -20,
+  //             child: Image.asset(
+  //               AppImages.starProfile,
+  //               width: 400.w,
+  //               height: 250.h,
+  //               fit: BoxFit.cover,
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildBody(ChatSettingsState state) {
     // Show loading indicator
@@ -504,7 +504,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
             return Container(
               // padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
               decoration: BoxDecoration(
-                color: const Color(0xFFfbecef).withOpacity(0.3),
+                color: const Color(0xFFfbecef).withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: _buildSettingRow(
@@ -557,7 +557,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         Container(
           padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
           decoration: BoxDecoration(
-            color: const Color(0xFFfbecef).withOpacity(0.3),
+            color: const Color(0xFFfbecef).withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Column(
@@ -593,40 +593,40 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     );
   }
 
-  Widget _buildNotificationSettingsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          AppLocalizations.of(context)!.notifications,
-          style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        SizedBox(height: 8.h),
-        _buildSettingRow(
-          title: AppLocalizations.of(context)!.newMessages,
-          subtitle: '',
-          trailing: Transform.scale(
-            scale: 0.8,
-            child: Switch(
-              value: _newMessagesNotification,
-              onChanged: (value) {
-                setState(() {
-                  _newMessagesNotification = value;
-                });
-              },
-              activeColor: Colors.orangeAccent,
-              activeTrackColor: Colors.black,
-              inactiveThumbColor: Colors.red,
-              inactiveTrackColor: Colors.white,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _buildNotificationSettingsSection() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.center,
+  //     children: [
+  //       Text(
+  //         AppLocalizations.of(context)!.notifications,
+  //         style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
+  //           fontSize: 18.sp,
+  //           fontWeight: FontWeight.w600,
+  //         ),
+  //       ),
+  //       SizedBox(height: 8.h),
+  //       _buildSettingRow(
+  //         title: AppLocalizations.of(context)!.newMessages,
+  //         subtitle: '',
+  //         trailing: Transform.scale(
+  //           scale: 0.8,
+  //           child: Switch(
+  //             value: _newMessagesNotification,
+  //             onChanged: (value) {
+  //               setState(() {
+  //                 _newMessagesNotification = value;
+  //               });
+  //             },
+  //             activeColor: Colors.orangeAccent,
+  //             activeTrackColor: Colors.black,
+  //             inactiveThumbColor: Colors.red,
+  //             inactiveTrackColor: Colors.white,
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildSettingRow({
     required String title,
@@ -638,8 +638,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
       child: InkWell(
-        splashColor: Colors.blue.withOpacity(0.3),
-        highlightColor: Colors.blue.withOpacity(0.1),
+        splashColor: Colors.blue.withValues(alpha: 0.3),
+        highlightColor: Colors.blue.withValues(alpha: 0.1),
         onTap: onTap != null
             ? () {
                 print('Tapped on: $title'); // Debug print
@@ -1142,7 +1142,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withValues(alpha: 0.2),
               width: 0.5,
             ),
           ),

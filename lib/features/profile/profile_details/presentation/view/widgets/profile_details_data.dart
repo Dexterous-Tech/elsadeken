@@ -180,8 +180,9 @@ class ProfileDetailsData extends StatelessWidget {
 
   // Helper methods to extract data from state
   String _getRegisteredSince(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final createdAt = state.profileDetailsResponseModel.data?.createdAt;
       if (createdAt == null) return AppLocalizations.of(context)!.notAvailable;
@@ -229,8 +230,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getLastVisit(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final lastSeen = state.profileDetailsResponseModel.data?.lastSeen;
       if (lastSeen == null) return AppLocalizations.of(context)!.notAvailable;
@@ -291,8 +293,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getCountry(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final country =
           state.profileDetailsResponseModel.data?.attribute?.country;
@@ -302,8 +305,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getResidence(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final country =
           state.profileDetailsResponseModel.data?.attribute?.nationality;
@@ -313,8 +317,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getCity(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final city = state.profileDetailsResponseModel.data?.attribute?.city;
       return city ?? AppLocalizations.of(context)!.notAvailable;
@@ -323,8 +328,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getMarriageType(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final marriageType =
           state.profileDetailsResponseModel.data?.attribute?.typeOfMarriage;
@@ -334,8 +340,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getMaritalStatus(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final maritalStatus =
           state.profileDetailsResponseModel.data?.attribute?.maritalStatus;
@@ -345,8 +352,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getChildren(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final children =
           state.profileDetailsResponseModel.data?.attribute?.children;
@@ -357,8 +365,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getSkinColor(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final skinColor =
           state.profileDetailsResponseModel.data?.attribute?.skinColor;
@@ -368,8 +377,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getHeight(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final height = state.profileDetailsResponseModel.data?.attribute?.height;
       if (height == null) return AppLocalizations.of(context)!.notAvailable;
@@ -379,8 +389,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getWeight(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final weight = state.profileDetailsResponseModel.data?.attribute?.weight;
       if (weight == null) return AppLocalizations.of(context)!.notAvailable;
@@ -390,8 +401,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getEducation(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final qualification =
           state.profileDetailsResponseModel.data?.attribute?.qualification;
@@ -401,8 +413,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getFinancialStatus(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final financialSituation =
           state.profileDetailsResponseModel.data?.attribute?.financialSituation;
@@ -412,19 +425,21 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getIncome(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final income = state.profileDetailsResponseModel.data?.attribute?.income;
       if (income == null) return AppLocalizations.of(context)!.notAvailable;
-      return '$income';
+      return income;
     }
     return AppLocalizations.of(context)!.notAvailable;
   }
 
   String _getHealthStatus(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final healthCondition =
           state.profileDetailsResponseModel.data?.attribute?.healthCondition;
@@ -434,8 +449,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getSmoking(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final smoking =
           state.profileDetailsResponseModel.data?.attribute?.smoking;
@@ -446,8 +462,9 @@ class ProfileDetailsData extends StatelessWidget {
 
   String _getReligiousCommitment(
       ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final religiousCommitment = state
           .profileDetailsResponseModel.data?.attribute?.religiousCommitment;
@@ -457,8 +474,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getHijabTitle(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final gender = state.profileDetailsResponseModel.data?.gender;
 
@@ -473,8 +491,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getHijab(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final gender = state.profileDetailsResponseModel.data?.gender;
 
@@ -503,8 +522,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getLifePartner(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final lifePartner =
           state.profileDetailsResponseModel.data?.attribute?.lifePartner;
@@ -514,8 +534,9 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   String _getAboutMe(ProfileDetailsState state, BuildContext context) {
-    if (state is GetProfileDetailsLoading)
+    if (state is GetProfileDetailsLoading) {
       return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final aboutMe =
           state.profileDetailsResponseModel.data?.attribute?.aboutMe;

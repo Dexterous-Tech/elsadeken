@@ -1,5 +1,4 @@
 import 'package:elsadeken/core/helper/app_images.dart';
-import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/widgets/custom_image_network.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

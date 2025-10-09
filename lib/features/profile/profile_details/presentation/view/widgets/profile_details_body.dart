@@ -285,56 +285,60 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                             );
                           }
                         } else {
-                          print(
-                              '🆕 [ProfileDetails] No existing chat room found, creating new temporary chat');
-                          // Get user data from the current state if available
-                          final cubit = context.read<ProfileDetailsCubit>();
-                          final state = cubit.state;
+                          if (context.mounted) {
+                            print(
+                                '🆕 [ProfileDetails] No existing chat room found, creating new temporary chat');
+                            // Get user data from the current state if available
+                            final cubit = context.read<ProfileDetailsCubit>();
+                            final state = cubit.state;
 
-                          String userName = 'User';
-                          String userImage = '';
+                            String userName = 'User';
+                            String userImage = '';
 
-                          if (state is GetProfileDetailsSuccess) {
-                            final userData =
-                                state.profileDetailsResponseModel.data;
-                            if (userData != null) {
-                              userName = userData.name ?? 'User';
-                              userImage = userData.image ?? '';
+                            if (state is GetProfileDetailsSuccess) {
+                              final userData =
+                                  state.profileDetailsResponseModel.data;
+                              if (userData != null) {
+                                userName = userData.name ?? 'User';
+                                userImage = userData.image ?? '';
+                              }
+                            } else if (widget.user != null) {
+                              // Fallback to passed user data if available
+                              userName = widget.user!.name ?? 'User';
+                              userImage = widget.user!.image ?? '';
                             }
-                          } else if (widget.user != null) {
-                            // Fallback to passed user data if available
-                            userName = widget.user!.name ?? 'User';
-                            userImage = widget.user!.image ?? '';
-                          }
 
-                          // Create new temporary chat room for new conversation
+                            // Create new temporary chat room for new conversation
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.chatConversationScreen,
+                              arguments: {
+                                "chatRoom": ChatRoomModel.fromUser(
+                                  userId: widget.userId,
+                                  userName: userName,
+                                  userImage: userImage,
+                                ),
+                              },
+                            );
+                          }
+                        }
+                      } catch (e) {
+                        print(
+                            '❌ [ProfileDetails] Error in message icon onTap: $e');
+                        // Fallback to creating new chat
+                        if (context.mounted) {
                           Navigator.pushNamed(
                             context,
                             AppRoutes.chatConversationScreen,
                             arguments: {
                               "chatRoom": ChatRoomModel.fromUser(
                                 userId: widget.userId,
-                                userName: userName,
-                                userImage: userImage,
+                                userName: widget.user?.name ?? 'User',
+                                userImage: widget.user?.image ?? '',
                               ),
                             },
                           );
                         }
-                      } catch (e) {
-                        print(
-                            '❌ [ProfileDetails] Error in message icon onTap: $e');
-                        // Fallback to creating new chat
-                        Navigator.pushNamed(
-                          context,
-                          AppRoutes.chatConversationScreen,
-                          arguments: {
-                            "chatRoom": ChatRoomModel.fromUser(
-                              userId: widget.userId,
-                              userName: widget.user?.name ?? 'User',
-                              userImage: widget.user?.image ?? '',
-                            ),
-                          },
-                        );
                       }
                     },
                     child: CustomContainer(
@@ -432,7 +436,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
+                      color: Colors.green.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(

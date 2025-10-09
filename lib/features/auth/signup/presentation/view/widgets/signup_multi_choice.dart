@@ -33,7 +33,7 @@ class SignupMultiChoice extends StatefulWidget {
 class _SignupMultiChoiceState extends State<SignupMultiChoice> {
   String? _selected;
   final ScrollController _scrollController = ScrollController();
-  bool _needsScroll = false;
+  bool needsScroll = false;
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _SignupMultiChoiceState extends State<SignupMultiChoice> {
   void _checkIfScrollNeeded() {
     if (_scrollController.hasClients) {
       setState(() {
-        _needsScroll = _scrollController.position.maxScrollExtent > 0;
+        needsScroll = _scrollController.position.maxScrollExtent > 0;
       });
     }
   }

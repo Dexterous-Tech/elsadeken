@@ -1,6 +1,5 @@
 import '../../domain/entities/success_storie.dart';
 import '../../domain/repository/success_storie_repo.dart';
-import '../models/success_story_model.dart';
 import '../datasources/success_story_api.dart';
 import '../../../../../core/networking/api_services.dart';
 
@@ -22,5 +21,5 @@ class SuccessStoryRepositoryImpl implements SuccessStoryRepository {
   factory SuccessStoryRepositoryImpl.create(ApiServices apiServices) {
     final api = SuccessStoryApi(apiServices);
     return SuccessStoryRepositoryImpl(api);
-  } 
+  }
 }

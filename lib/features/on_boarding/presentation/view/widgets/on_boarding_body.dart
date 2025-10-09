@@ -70,7 +70,9 @@ class OnBoardingBody extends StatelessWidget {
                           await SharedPreferencesHelper
                               .setIsOnboardingCompleted(true);
                           // Navigate to login screen
-                          context.pushNamed(AppRoutes.loginScreen);
+                          if (context.mounted) {
+                            context.pushNamed(AppRoutes.loginScreen);
+                          }
                         },
                         // verticalPadding: 17.h,
                         buttonWidget: Row(
@@ -102,7 +104,8 @@ class OnBoardingBody extends StatelessWidget {
                         oathDialog(context: context);
                       },
                       child: Text(
-                        AppLocalizations.of(context)!.freeRegistrationOnboarding,
+                        AppLocalizations.of(context)!
+                            .freeRegistrationOnboarding,
                         style: AppTextStyles.font16CulturedMediumPlexSans
                             .copyWith(color: AppColors.white),
                       ),

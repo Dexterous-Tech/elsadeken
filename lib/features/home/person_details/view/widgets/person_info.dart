@@ -16,7 +16,7 @@ import '../../../../profile/profile_details/presentation/manager/profile_details
 class PersonInfoSheet extends StatefulWidget {
   final PersonModel person;
 
-  const PersonInfoSheet({Key? key, required this.person}) : super(key: key);
+  const PersonInfoSheet({super.key, required this.person});
 
   @override
   State<PersonInfoSheet> createState() => _PersonInfoSheetState();
@@ -94,8 +94,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
 
   /// Format the lastSeen date string to a readable format
   String _getLastVisit(String? lastSeen) {
-    if (lastSeen == null || lastSeen.isEmpty)
+    if (lastSeen == null || lastSeen.isEmpty) {
       return AppLocalizations.of(context)!.currentlyOnline;
+    }
 
     try {
       // Parse the lastSeen date
@@ -349,7 +350,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -471,7 +472,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -563,7 +564,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -604,7 +605,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                 print(
                     '✅ [PersonInfo] Found existing chat room: ${existingChatRoom.id}, navigating to it');
                 // Navigate to existing chat room
-                if (context.mounted) {
+                if (mounted) {
                   Navigator.pushNamed(
                     context,
                     AppRoutes.chatConversationScreen,
@@ -617,6 +618,24 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                 print(
                     '🆕 [PersonInfo] No existing chat room found, creating new temporary chat');
                 // Create new temporary chat room for new conversation
+                if (mounted) {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.chatConversationScreen,
+                    arguments: {
+                      "chatRoom": ChatRoomModel.fromUser(
+                        userId: _currentPerson.id,
+                        userName: _currentPerson.name,
+                        userImage: _currentPerson.image,
+                      ),
+                    },
+                  );
+                }
+              }
+            } catch (e) {
+              print('❌ [PersonInfo] Error in message icon onTap: $e');
+              // Fallback to creating new chat
+              if (mounted) {
                 Navigator.pushNamed(
                   context,
                   AppRoutes.chatConversationScreen,
@@ -629,20 +648,6 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                   },
                 );
               }
-            } catch (e) {
-              print('❌ [PersonInfo] Error in message icon onTap: $e');
-              // Fallback to creating new chat
-              Navigator.pushNamed(
-                context,
-                AppRoutes.chatConversationScreen,
-                arguments: {
-                  "chatRoom": ChatRoomModel.fromUser(
-                    userId: _currentPerson.id,
-                    userName: _currentPerson.name,
-                    userImage: _currentPerson.image,
-                  ),
-                },
-              );
             }
           },
           child: Container(
@@ -653,7 +658,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),

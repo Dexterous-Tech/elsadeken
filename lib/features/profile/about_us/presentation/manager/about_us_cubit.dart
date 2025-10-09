@@ -1,8 +1,7 @@
-import 'package:bloc/bloc.dart';
 import 'package:elsadeken/features/profile/about_us/data/models/about_us_model.dart';
 import 'package:elsadeken/features/profile/about_us/data/repo/abouts_us_repo.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 
 part 'about_us_state.dart';
 

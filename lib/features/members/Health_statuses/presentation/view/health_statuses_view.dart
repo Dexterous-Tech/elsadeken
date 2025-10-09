@@ -202,7 +202,7 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                     builder: (context) =>
                                         const FilterHealthStatues(),
                                   );
-                                  if (result != null) {
+                                  if (result != null && context.mounted) {
                                     _onFilterChanged(result, context);
                                   }
                                 },

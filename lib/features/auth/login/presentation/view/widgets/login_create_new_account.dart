@@ -32,8 +32,10 @@ class LoginCreateNewAccount extends StatelessWidget {
               ..onTap = () async {
                 // Mark onboarding as completed
                 await SharedPreferencesHelper.setIsOnboardingCompleted(true);
-                context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);
-                oathDialog(context: context);
+                if (context.mounted) {
+                  context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);
+                  oathDialog(context: context);
+                }
               },
           ),
         ],

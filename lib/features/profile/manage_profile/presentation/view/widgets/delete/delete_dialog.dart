@@ -77,7 +77,10 @@ Future<void> deleteProfileDialog(BuildContext context) async {
                     // Clear all app state data
                     await SharedPreferencesHelper.clearAllAppState();
                     // Navigate to onboarding screen
-                    context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);
+                    if (context.mounted) {
+                      context
+                          .pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);
+                    }
                   }
                 });
                 // Show success message briefly
@@ -229,13 +232,13 @@ class _DeleteContentWidgetState extends State<_DeleteContentWidget> {
                     obscureText: !isPasswordVisible,
                     keyboardType: TextInputType.visiblePassword,
                     suffixIcon: IconButton(
-                      icon:  Icon(
-                            isPasswordVisible
-                                ? CupertinoIcons.eye_slash_fill
-                                : CupertinoIcons.eye_fill,
-                            size: 16,
-                            color: AppColors.lightTaupe,
-                          ),
+                      icon: Icon(
+                        isPasswordVisible
+                            ? CupertinoIcons.eye_slash_fill
+                            : CupertinoIcons.eye_fill,
+                        size: 16,
+                        color: AppColors.lightTaupe,
+                      ),
                       onPressed: () {
                         setState(() {
                           isPasswordVisible = !isPasswordVisible;

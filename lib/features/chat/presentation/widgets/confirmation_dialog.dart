@@ -13,7 +13,7 @@ class ConfirmationDialog extends StatelessWidget {
   final VoidCallback? onCancel;
 
   const ConfirmationDialog({
-    Key? key,
+    super.key,
     required this.title,
     required this.message,
     this.confirmText = '',
@@ -21,7 +21,7 @@ class ConfirmationDialog extends StatelessWidget {
     this.confirmColor = Colors.red,
     required this.onConfirm,
     this.onCancel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

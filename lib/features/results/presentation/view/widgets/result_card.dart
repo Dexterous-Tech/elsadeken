@@ -24,7 +24,7 @@ class PersonCardWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -114,7 +114,8 @@ class PersonCardWidget extends StatelessWidget {
                               fontSize: 13,
                               color: Colors.black,
                             ),
-                            textDirection: LocalizationService.instance.textDirection,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                           ),
                         ),
                       ],
@@ -124,7 +125,8 @@ class PersonCardWidget extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                 decoration: BoxDecoration(
                   color: const Color(0xFFD4AF37),
                   borderRadius: BorderRadius.circular(20),

@@ -38,7 +38,7 @@ class ChatRoomItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -69,7 +69,8 @@ class ChatRoomItem extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    chat.lastMessage?.body ?? AppLocalizations.of(context)!.noResults,
+                    chat.lastMessage?.body ??
+                        AppLocalizations.of(context)!.noResults,
                     style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans
                         .copyWith(
                       fontSize: 14.sp,
@@ -202,7 +203,8 @@ class ChatRoomItem extends StatelessWidget {
                       Expanded(
                         child: Text(
                           chat.otherUser.name,
-                          style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
+                          style: AppTextStyles.font14BlackSemiBoldLamaSans
+                              .copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -224,7 +226,8 @@ class ChatRoomItem extends StatelessWidget {
                     SizedBox(height: 8.h),
                     Row(
                       children: [
-                        Icon(Icons.message, size: 16.sp, color: Colors.grey[600]),
+                        Icon(Icons.message,
+                            size: 16.sp, color: Colors.grey[600]),
                         SizedBox(width: 8.w),
                         Expanded(
                           child: Text(
@@ -241,11 +244,13 @@ class ChatRoomItem extends StatelessWidget {
                     SizedBox(height: 8.h),
                     Row(
                       children: [
-                        Icon(Icons.mark_email_unread, size: 16.sp, color: Colors.orange),
+                        Icon(Icons.mark_email_unread,
+                            size: 16.sp, color: Colors.orange),
                         SizedBox(width: 8.w),
                         Text(
                           ' ${chat.unreadCount}',
-                          style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
+                          style: AppTextStyles.font14BlackSemiBoldLamaSans
+                              .copyWith(
                             color: Colors.orange,
                             fontWeight: FontWeight.bold,
                           ),
@@ -256,7 +261,6 @@ class ChatRoomItem extends StatelessWidget {
                 ],
               ),
             ),
-
           ],
         ),
         actions: [
@@ -275,16 +279,18 @@ class ChatRoomItem extends StatelessWidget {
           TextButton(
             onPressed: () {
               print('✅ Delete confirmed by user');
-              print('🗑️ Deleting chat ID: ${chat.id} (${chat.otherUser.name})');
+              print(
+                  '🗑️ Deleting chat ID: ${chat.id} (${chat.otherUser.name})');
               Navigator.of(context).pop();
-              
+
               // Call the cubit method to delete this specific chat
               chatListCubit.deleteOneChat(chat.id);
 
               // Show success snackbar with chat details
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(AppLocalizations.of(context)!.chatDeletedSuccess(chat.otherUser.name)),
+                  content: Text(AppLocalizations.of(context)!
+                      .chatDeletedSuccess(chat.otherUser.name)),
                   backgroundColor: Colors.red,
                   duration: Duration(seconds: 3),
                 ),
@@ -305,7 +311,7 @@ class ChatRoomItem extends StatelessWidget {
 
   void _handleReportUnreport(BuildContext context) {
     final bool isReported = chat.isReported;
-    
+
     // Show confirmation dialog
     showDialog(
       context: context,
@@ -314,14 +320,14 @@ class ChatRoomItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
         ),
         title: Text(
-          isReported 
+          isReported
               ? AppLocalizations.of(context)!.confirmUnreport
               : AppLocalizations.of(context)!.confirmReport,
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
         content: Text(
-          isReported 
+          isReported
               ? AppLocalizations.of(context)!.areYouSureUnreport
               : AppLocalizations.of(context)!.areYouSureReport,
           style: AppTextStyles.font16BlackSemiBoldLamaSans,
@@ -340,15 +346,16 @@ class ChatRoomItem extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              
+
               if (isReported) {
                 // Call the cubit method to unreport this user
                 chatListCubit.unreportUser(chat.id);
-                
+
                 // Show success snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(AppLocalizations.of(context)!.unreportSuccessful),
+                    content:
+                        Text(AppLocalizations.of(context)!.unreportSuccessful),
                     backgroundColor: Colors.green,
                   ),
                 );
@@ -359,7 +366,8 @@ class ChatRoomItem extends StatelessWidget {
                 // Show success snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(AppLocalizations.of(context)!.reportSuccessful),
+                    content:
+                        Text(AppLocalizations.of(context)!.reportSuccessful),
                     backgroundColor: Colors.orange,
                   ),
                 );
@@ -379,7 +387,7 @@ class ChatRoomItem extends StatelessWidget {
 
   void _muteChat(BuildContext context) {
     final bool isCurrentlyMuted = chat.isMuted;
-    
+
     // Show confirmation dialog
     showDialog(
       context: context,
@@ -388,14 +396,14 @@ class ChatRoomItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
         ),
         title: Text(
-          isCurrentlyMuted 
+          isCurrentlyMuted
               ? AppLocalizations.of(context)!.confirmUnmute
               : AppLocalizations.of(context)!.confirmMute,
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
           textAlign: TextAlign.center,
         ),
         content: Text(
-          isCurrentlyMuted 
+          isCurrentlyMuted
               ? AppLocalizations.of(context)!.areYouSureUnmute
               : AppLocalizations.of(context)!.areYouSureMute,
           style: AppTextStyles.font16BlackSemiBoldLamaSans,
@@ -420,10 +428,11 @@ class ChatRoomItem extends StatelessWidget {
               // Show success snackbar
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(isCurrentlyMuted 
+                  content: Text(isCurrentlyMuted
                       ? AppLocalizations.of(context)!.chatUnmutedSuccess
                       : AppLocalizations.of(context)!.chatMutedSuccess),
-                  backgroundColor: isCurrentlyMuted ? Colors.green : Colors.grey,
+                  backgroundColor:
+                      isCurrentlyMuted ? Colors.green : Colors.grey,
                 ),
               );
             },
@@ -441,31 +450,32 @@ class ChatRoomItem extends StatelessWidget {
 
   void _toggleFavorite(BuildContext context) {
     final bool isCurrentlyFavorite = chat.isFavorite;
-    
+
     // Debug: Print the current favorite status
-    print('🔍 [ChatRoomItem] Chat ID: ${chat.id}, isFavorite: $isCurrentlyFavorite');
+    print(
+        '🔍 [ChatRoomItem] Chat ID: ${chat.id}, isFavorite: $isCurrentlyFavorite');
     print('🔍 [ChatRoomItem] Chat otherUser: ${chat.otherUser.name}');
     print('🔍 [ChatRoomItem] isInFavoritesList: $isInFavoritesList');
-    
+
     // Use the toggle method from cubit
     chatListCubit.addChatToFavorite(chat.id);
-    
+
     // Show appropriate snackbar based on current state and context
     String message;
     Color backgroundColor;
-    
+
     if (isInFavoritesList) {
       // In favorites list, always show "removed successfully"
       message = AppLocalizations.of(context)!.removeFromFavoritesSuccess;
       backgroundColor = Colors.grey;
     } else {
       // In all chats list, show based on current state
-      message = isCurrentlyFavorite 
+      message = isCurrentlyFavorite
           ? AppLocalizations.of(context)!.removeFromFavoritesSuccess
           : AppLocalizations.of(context)!.addToFavoritesSuccess;
       backgroundColor = isCurrentlyFavorite ? Colors.grey : Colors.pink;
     }
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -473,8 +483,6 @@ class ChatRoomItem extends StatelessWidget {
       ),
     );
   }
-
-
 
   /// Get background color based on chat status
   Color _getBackgroundColor() {

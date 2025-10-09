@@ -1537,7 +1537,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get youShouldChooseNationalityFirst => 'يرجى اختيار الجنسية أولاً';
 
   @override
-  String get aboutPartner => 'ما هي مواصفات شريكه حياتك التي ترغب الارتباط بها ؟';
+  String get aboutPartner => 'ما هي مواصفات شريك/ة حياتك ؟';
 
   @override
   String get writeHint => 'اكتب';

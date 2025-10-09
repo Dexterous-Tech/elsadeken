@@ -17,7 +17,7 @@ import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../profile/widgets/profile_header.dart';
 
 class ViewersView extends StatefulWidget {
-  const ViewersView({Key? key}) : super(key: key);
+  const ViewersView({super.key});
 
   @override
   State<ViewersView> createState() => _ViewersViewState();
@@ -25,7 +25,7 @@ class ViewersView extends StatefulWidget {
 
 class _ViewersViewState extends State<ViewersView> {
   ScrollController? _scrollController;
-  bool _isLoadingMore = false;
+  final bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -38,38 +38,38 @@ class _ViewersViewState extends State<ViewersView> {
     super.dispose();
   }
 
-  void _loadMoreUsers(BuildContext context) {
-    final cubit = context.read<MembersListCubit<UsersDataModel>>();
-    final state = cubit.state;
+  // void _loadMoreUsers(BuildContext context) {
+  //   final cubit = context.read<MembersListCubit<UsersDataModel>>();
+  //   final state = cubit.state;
+  //
+  //   if (state is MembersListLoaded<UsersDataModel> &&
+  //       state.hasNextPage &&
+  //       !_isLoadingMore) {
+  //     final nextPage = state.currentPage + 1;
+  //     print(
+  //         'Loading more viewers: current page ${state.currentPage}, next page $nextPage');
+  //     setState(() {
+  //       _isLoadingMore = true;
+  //     });
+  //     cubit.fetch(page: nextPage).then((_) {
+  //       if (mounted) {
+  //         setState(() {
+  //           _isLoadingMore = false;
+  //         });
+  //         print('Pagination loading completed');
+  //       }
+  //     });
+  //   }
+  // }
 
-    if (state is MembersListLoaded<UsersDataModel> &&
-        state.hasNextPage &&
-        !_isLoadingMore) {
-      final nextPage = state.currentPage + 1;
-      print(
-          'Loading more viewers: current page ${state.currentPage}, next page $nextPage');
-      setState(() {
-        _isLoadingMore = true;
-      });
-      cubit.fetch(page: nextPage).then((_) {
-        if (mounted) {
-          setState(() {
-            _isLoadingMore = false;
-          });
-          print('Pagination loading completed');
-        }
-      });
-    }
-  }
-
-  void _onScroll(BuildContext context) {
-    if (_scrollController?.position.pixels != null &&
-        _scrollController!.position.pixels >=
-            _scrollController!.position.maxScrollExtent - 200) {
-      print('Scroll threshold reached, triggering pagination');
-      _loadMoreUsers(context);
-    }
-  }
+  // void _onScroll(BuildContext context) {
+  //   if (_scrollController?.position.pixels != null &&
+  //       _scrollController!.position.pixels >=
+  //           _scrollController!.position.maxScrollExtent - 200) {
+  //     print('Scroll threshold reached, triggering pagination');
+  //     _loadMoreUsers(context);
+  //   }
+  // }
 
   Future<void> _onRefresh() async {
     // We'll handle this in the build method where context is available
@@ -212,11 +212,13 @@ class _ViewersViewState extends State<ViewersView> {
                                   ),
                                   SizedBox(height: 16.h),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 32.w),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 32.w),
                                     child: Text(
                                       state.message,
                                       textAlign: TextAlign.center,
-                                      style: AppTextStyles.font14DesiredMediumLamaSans,
+                                      style: AppTextStyles
+                                          .font14DesiredMediumLamaSans,
                                     ),
                                   ),
                                   SizedBox(height: 24.h),

@@ -18,7 +18,7 @@ class ChatOptionsPopup extends StatelessWidget {
   final bool isInFavoritesList;
 
   const ChatOptionsPopup({
-    Key? key,
+    super.key,
     required this.onDelete,
     required this.onMute,
     required this.onBlock,
@@ -27,7 +27,7 @@ class ChatOptionsPopup extends StatelessWidget {
     this.isChatReported = false,
     this.isChatMuted = false,
     this.isInFavoritesList = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +65,8 @@ class ChatOptionsPopup extends StatelessWidget {
                 _buildOptionItem(
                   context,
                   imagePath: 'assets/images/icons/mute.png',
-                  text: isChatMuted 
-                      ? AppLocalizations.of(context)!.unmuteChat 
+                  text: isChatMuted
+                      ? AppLocalizations.of(context)!.unmuteChat
                       : AppLocalizations.of(context)!.muteChat,
                   onTap: () {
                     Navigator.pop(context);
@@ -82,8 +82,8 @@ class ChatOptionsPopup extends StatelessWidget {
                 _buildOptionItem(
                   context,
                   imagePath: 'assets/images/icons/block-user.png',
-                  text: isChatReported 
-                      ? AppLocalizations.of(context)!.unreportUser 
+                  text: isChatReported
+                      ? AppLocalizations.of(context)!.unreportUser
                       : AppLocalizations.of(context)!.blockUser,
                   onTap: () {
                     Navigator.pop(context);
@@ -134,8 +134,8 @@ class ChatOptionsPopup extends StatelessWidget {
       return AppLocalizations.of(context)!.removeFromFavorites;
     } else {
       // In all chats list, show based on current favorite status
-      return isChatFavorite 
-          ? AppLocalizations.of(context)!.removeFromFavorites 
+      return isChatFavorite
+          ? AppLocalizations.of(context)!.removeFromFavorites
           : AppLocalizations.of(context)!.addToFavorites;
     }
   }

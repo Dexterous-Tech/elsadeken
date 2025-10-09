@@ -87,7 +87,7 @@ class ChatMessageBubble extends StatelessWidget {
                     : null,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -113,8 +113,7 @@ class ChatMessageBubble extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        TimeFormatter.formatMessageTime(
-                            message.timestamp),
+                        TimeFormatter.formatMessageTime(message.timestamp),
                         style: TextStyle(
                           fontSize: 11.sp,
                           color: Colors.grey[600],

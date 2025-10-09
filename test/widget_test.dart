@@ -5,12 +5,11 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/core/routes/app_routing.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:elsadeken/main.dart';
-
-import '../lib/core/di/injection_container.dart';
 
 void main() {
   setUpAll(() async {
