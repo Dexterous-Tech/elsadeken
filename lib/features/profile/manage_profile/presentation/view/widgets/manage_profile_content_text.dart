@@ -12,12 +12,14 @@ class ManageProfileContentText extends StatelessWidget {
     this.isLoading = false,
     this.textColor,
     this.textStyle,
+    this.textAlign,
   });
 
   final String text;
   final bool isLoading;
   final Color? textColor;
   final TextStyle? textStyle;
+  final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,7 @@ class ManageProfileContentText extends StatelessWidget {
       text.isEmpty ? AppLocalizations.of(context)!.notSpecified : text,
 
       textDirection: LocalizationService.instance.textDirection,
-      textAlign: LocalizationService.instance.convertTextAlignment,
+      textAlign: textAlign ?? LocalizationService.instance.convertTextAlignment,
       style: textStyle ??
           AppTextStyles.font18PhilippineBronzeRegularLamaSans.copyWith(
             color: textColor,

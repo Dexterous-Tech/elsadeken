@@ -83,15 +83,15 @@ class ManageProfileAppearance extends StatelessWidget {
           label: AppLocalizations.of(context)!.weight,
           hint: AppLocalizations.of(context)!.enterWeightInKg,
           currentValue: profileData?.attribute?.weight?.toString() ?? '',
-          type: ManageProfileFieldType.text,
-          keyboardType: TextInputType.number,
+          type: ManageProfileFieldType.dropdown,
+          keyValueOptions: _getWeightOptions(),
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.height,
           hint: AppLocalizations.of(context)!.enterHeightInCm,
           currentValue: profileData?.attribute?.height?.toString() ?? '',
-          type: ManageProfileFieldType.text,
-          keyboardType: TextInputType.number,
+          type: ManageProfileFieldType.dropdown,
+          keyValueOptions: _getHeightOptions(),
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.skinColor,
@@ -111,5 +111,23 @@ class ManageProfileAppearance extends StatelessWidget {
     );
 
     manageProfileDialog(context, dialogData);
+  }
+
+  /// Get weight options (30-200)
+  Map<String, String> _getWeightOptions() {
+    Map<String, String> weightOptions = {};
+    for (int i = 30; i <= 200; i++) {
+      weightOptions[i.toString()] = i.toString();
+    }
+    return weightOptions;
+  }
+
+  /// Get height options (50-220)
+  Map<String, String> _getHeightOptions() {
+    Map<String, String> heightOptions = {};
+    for (int i = 50; i <= 220; i++) {
+      heightOptions[i.toString()] = i.toString();
+    }
+    return heightOptions;
   }
 }

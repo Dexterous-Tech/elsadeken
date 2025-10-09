@@ -26,4 +26,5 @@ class SharedPreferencesKey {
   static const String signupCurrentStepKey = 'SIGNUP_CURRENT_STEP';
   static const String signupGenderKey = 'SIGNUP_GENDER';
   static const String signupTimestampKey = 'SIGNUP_TIMESTAMP';
+  static const String isSingleKey = 'IS_SINGLE';
 }

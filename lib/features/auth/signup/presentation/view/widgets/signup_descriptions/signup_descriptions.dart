@@ -5,6 +5,8 @@ import 'package:elsadeken/core/widgets/custom_radio.dart';
 import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -75,10 +77,15 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
           successDialog(
               context: context,
               message: state.registerInformationResponseModel.message,
-              onPressed: () {
+              onPressed: () async {
                 Navigator.pop(context);
+                // Clear the isSingle key from shared preferences
+                await SharedPreferencesHelper.deleteSecuredString(
+                    SharedPreferencesKey.isSingleKey);
                 // Navigate to login (data is already cleared in cubit)
-                context.pushReplacementNamed(AppRoutes.loginScreen);
+                if (context.mounted) {
+                  context.pushReplacementNamed(AppRoutes.loginScreen);
+                }
               });
         }
       },

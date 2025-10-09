@@ -27,7 +27,8 @@ class ManageProfileWritingContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Determine which field to use based on the label
-    final isLifePartner = label.contains(AppLocalizations.of(context)!.partnerDescription);
+    final isLifePartner =
+        label.contains(AppLocalizations.of(context)!.partnerDescription);
     final content = isLifePartner
         ? profileData?.attribute?.lifePartner ?? ''
         : profileData?.attribute?.aboutMe ?? '';
@@ -48,6 +49,7 @@ class ManageProfileWritingContent extends StatelessWidget {
           ),
           child: ManageProfileContentText(
             text: content,
+            textAlign: LocalizationService.instance.textAlignment,
             isLoading: isLoading,
             textStyle: AppTextStyles.font18PhilippineBronzeRegularLamaSans,
           ),
@@ -66,7 +68,8 @@ class ManageProfileWritingContent extends StatelessWidget {
     final updateProfileCubit = context.read<UpdateProfileCubit>();
 
     // Determine which field to use based on the label
-    final isLifePartner = label.contains(AppLocalizations.of(context)!.partnerDescription);
+    final isLifePartner =
+        label.contains(AppLocalizations.of(context)!.partnerDescription);
     final currentValue = isLifePartner
         ? profileData?.attribute?.lifePartner ?? ''
         : profileData?.attribute?.aboutMe ?? '';

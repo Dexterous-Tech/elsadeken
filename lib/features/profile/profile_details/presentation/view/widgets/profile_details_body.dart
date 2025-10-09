@@ -57,11 +57,11 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
           if (userData != null) {
             setState(() {
               _currentUser = _currentUser?.copyWith(
-                isFavorite: userData.isFavorite,
-                isIgnore: userData.isIgnore,
-                name: userData.name,
-                image: userData.image,
-              );
+                  isFavorite: userData.isFavorite,
+                  isIgnore: userData.isIgnore,
+                  name: userData.name,
+                  image: userData.image,
+                  isBlocked: userData.isBlocked);
             });
           }
         }
@@ -150,30 +150,41 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                             });
                       }
                     },
-                    child: (_currentUser?.isIgnore ?? false)
+                    child: (_currentUser?.isBlocked ?? false)
                         ? Opacity(
-                            opacity: 0.3, // Make it very transparent/hidden
+                            opacity: 0.3,
                             child: CustomContainer(
                               img: AppImages.like,
                               color: Colors.grey.withValues(alpha: 0.3),
                               text: AppLocalizations.of(context)!.interest,
-                              onTap: null, // Disable tap when ignored
+                              onTap: null, // Disable tap when blocked
                             ),
                           )
-                        : CustomContainer(
-                            img: AppImages.like,
-                            color: (_currentUser?.isFavorite ?? false)
-                                ? AppColors.green.withValues(alpha: 0.07)
-                                : AppColors.lightPink.withValues(alpha: 0.07),
-                            text: (_currentUser?.isFavorite ?? false)
-                                ? AppLocalizations.of(context)!.liked
-                                : AppLocalizations.of(context)!.interest,
-                            onTap: () {
-                              context
-                                  .read<ProfileDetailsCubit>()
-                                  .likeUser(widget.userId);
-                            },
-                          ),
+                        : (_currentUser?.isIgnore ?? false)
+                            ? Opacity(
+                                opacity: 0.3,
+                                child: CustomContainer(
+                                  img: AppImages.like,
+                                  color: Colors.grey.withValues(alpha: 0.3),
+                                  text: AppLocalizations.of(context)!.interest,
+                                  onTap: null, // Disable tap when ignored
+                                ),
+                              )
+                            : CustomContainer(
+                                img: AppImages.like,
+                                color: (_currentUser?.isFavorite ?? false)
+                                    ? AppColors.green.withValues(alpha: 0.07)
+                                    : AppColors.lightPink
+                                        .withValues(alpha: 0.07),
+                                text: (_currentUser?.isFavorite ?? false)
+                                    ? AppLocalizations.of(context)!.liked
+                                    : AppLocalizations.of(context)!.interest,
+                                onTap: () {
+                                  context
+                                      .read<ProfileDetailsCubit>()
+                                      .likeUser(widget.userId);
+                                },
+                              ),
                   ),
                   BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
                     listenWhen: (context, current) =>
@@ -211,37 +222,50 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                             });
                       }
                     },
-                    child: (_currentUser?.isIgnore ?? false)
+                    child: (_currentUser?.isBlocked ?? false)
                         ? Opacity(
-                            opacity: 0.3, // Make it very transparent/hidden
+                            opacity: 0.3,
                             child: CustomContainer(
                               img: AppImages.thumbDown,
                               color: Colors.grey.withValues(alpha: 0.3),
-                              text: AppLocalizations.of(context)!.ignored,
-                              onTap: null, // Disable tap when ignored
+                              text: AppLocalizations.of(context)!.reported,
+                              onTap: null, // Disable tap when blocked
                             ),
                           )
-                        : (_currentUser?.isFavorite ?? false)
+                        : (_currentUser?.isIgnore ?? false)
                             ? Opacity(
-                                opacity: 0.3, // Make it very transparent/hidden
+                                opacity: 0.3,
                                 child: CustomContainer(
                                   img: AppImages.thumbDown,
                                   color: Colors.grey.withValues(alpha: 0.3),
                                   text: AppLocalizations.of(context)!.ignore,
-                                  onTap: null, // Disable tap when favorited
+                                  onTap: null, // Disable tap when ignored
                                 ),
                               )
-                            : CustomContainer(
-                                img: AppImages.thumbDown,
-                                color:
-                                    AppColors.lightPink.withValues(alpha: 0.07),
-                                text: AppLocalizations.of(context)!.ignore,
-                                onTap: () {
-                                  context
-                                      .read<ProfileDetailsCubit>()
-                                      .ignoreUser(widget.userId);
-                                },
-                              ),
+                            : (_currentUser?.isFavorite ?? false)
+                                ? Opacity(
+                                    opacity: 0.3,
+                                    child: CustomContainer(
+                                      img: AppImages.thumbDown,
+                                      color: Colors.grey.withValues(alpha: 0.3),
+                                      text:
+                                          AppLocalizations.of(context)!.ignore,
+                                      onTap: null, // Disable tap when favorited
+                                    ),
+                                  )
+                                : CustomContainer(
+                                    img: AppImages.thumbDown,
+                                    color: AppColors.lightPink
+                                        .withValues(alpha: 0.07),
+                                    text: (_currentUser?.isIgnore ?? false)
+                                        ? AppLocalizations.of(context)!.ignored
+                                        : AppLocalizations.of(context)!.ignore,
+                                    onTap: () {
+                                      context
+                                          .read<ProfileDetailsCubit>()
+                                          .ignoreUser(widget.userId);
+                                    },
+                                  ),
                   ),
                   GestureDetector(
                     onTap: () async {
@@ -360,6 +384,16 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                         errorDialog(context: context, error: state.error);
                       } else if (state is ReportUserSuccess) {
                         context.pop();
+                        setState(() {
+                          _currentUser = _currentUser?.copyWith(
+                            isBlocked: !(_currentUser?.isBlocked ?? false),
+                          );
+                        });
+                        // Reload profile data to get updated information
+                        context
+                            .read<ProfileDetailsCubit>()
+                            .getProfileDetails(widget.userId);
+
                         successDialog(
                             context: context,
                             message: state.profileDetailsActionResponseModel
@@ -367,14 +401,15 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                                 AppLocalizations.of(context)!.reported,
                             onPressed: () {
                               context.pop();
-                              context.pop();
                             });
                       }
                     },
                     child: CustomContainer(
                       img: AppImages.block,
                       color: AppColors.lightRed.withValues(alpha: 0.07),
-                      text: AppLocalizations.of(context)!.report,
+                      text: (_currentUser?.isBlocked ?? false)
+                          ? AppLocalizations.of(context)!.reported
+                          : AppLocalizations.of(context)!.report,
                       onTap: () {
                         context
                             .read<ProfileDetailsCubit>()

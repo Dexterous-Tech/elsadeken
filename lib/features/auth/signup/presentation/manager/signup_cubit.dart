@@ -248,6 +248,12 @@ class SignupCubit extends Cubit<SignupState> {
   Future<void> registerInformation() async {
     emit(RegisterInformationLoading());
 
+    // Check if user is single and set children number to 0
+    bool isSingle = maritalStatusController.text.toLowerCase() == 'single';
+    if (isSingle) {
+      childrenNumberController.text = "0";
+    }
+
     // Add safety checks for required fields
     if (nationalIdController.text.isEmpty ||
         countryIdController.text.isEmpty ||

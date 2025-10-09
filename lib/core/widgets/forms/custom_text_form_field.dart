@@ -34,6 +34,7 @@ class CustomTextFormField extends StatelessWidget {
     this.borderColor,
     this.inputFormatters,
     this.style,
+    this.readOnly = false,
   });
 
   final String? hintText;
@@ -63,6 +64,7 @@ class CustomTextFormField extends StatelessWidget {
   final Color? borderColor;
   final List<TextInputFormatter>? inputFormatters;
   final TextStyle? style;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +76,7 @@ class CustomTextFormField extends StatelessWidget {
         style: style ?? AppTextStyles.font16ChineseBlackMediumLamaSans,
         obscureText: obscureText ?? false,
         controller: controller,
+        readOnly: readOnly,
         validator: (value) {
           return validator(value);
         },

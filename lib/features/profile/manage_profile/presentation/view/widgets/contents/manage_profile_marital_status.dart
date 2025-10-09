@@ -101,16 +101,16 @@ class ManageProfileMaritalStatus extends StatelessWidget {
           label: AppLocalizations.of(context)!.age,
           hint: AppLocalizations.of(context)!.enterAge,
           currentValue: profileData?.attribute?.age?.toString() ?? '',
-          type: ManageProfileFieldType.text,
-          keyboardType: TextInputType.number,
+          type: ManageProfileFieldType.dropdown,
+          keyValueOptions: _getAgeOptions(),
           isRequired: false, // Make optional
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.numberOfChildren,
           hint: AppLocalizations.of(context)!.enterNumberOfChildren,
           currentValue: profileData?.attribute?.children?.toString() ?? '',
-          type: ManageProfileFieldType.text,
-          keyboardType: TextInputType.number,
+          type: ManageProfileFieldType.dropdown,
+          keyValueOptions: _getChildrenOptions(),
           isRequired: false, // Make optional
         ),
       ],
@@ -170,6 +170,24 @@ class ManageProfileMaritalStatus extends StatelessWidget {
         'multi': AppLocalizations.of(context)!.noObjectionToPolygamy,
       };
     }
+  }
+
+  /// Get age options (18-99)
+  Map<String, String> _getAgeOptions() {
+    Map<String, String> ageOptions = {};
+    for (int i = 18; i <= 99; i++) {
+      ageOptions[i.toString()] = i.toString();
+    }
+    return ageOptions;
+  }
+
+  /// Get children options (0-20)
+  Map<String, String> _getChildrenOptions() {
+    Map<String, String> childrenOptions = {};
+    for (int i = 0; i <= 20; i++) {
+      childrenOptions[i.toString()] = i.toString();
+    }
+    return childrenOptions;
   }
 
   /// Helper method to map API marital status values to display values

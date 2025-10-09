@@ -169,6 +169,16 @@ class SharedPreferencesHelper {
     return await getSecuredString(SharedPreferencesKey.signupGenderKey);
   }
 
+  /// Save isSingle status
+  static Future<void> setIsSingle(bool isSingle) async {
+    await setBool(SharedPreferencesKey.isSingleKey, isSingle);
+  }
+
+  /// Load isSingle status
+  static Future<bool> getIsSingle() async {
+    return await getBool(SharedPreferencesKey.isSingleKey);
+  }
+
   /// Check if signup data exists and is recent (within 24 hours)
   static Future<bool> hasRecentSignupData(
       {Duration maxAge = const Duration(hours: 24)}) async {
@@ -195,6 +205,7 @@ class SharedPreferencesHelper {
       await deleteSecuredString(SharedPreferencesKey.signupCurrentStepKey);
       await deleteSecuredString(SharedPreferencesKey.signupGenderKey);
       await deleteSecuredString(SharedPreferencesKey.signupTimestampKey);
+      await deleteSecuredString(SharedPreferencesKey.isSingleKey);
       debugPrint('Signup data cleared successfully');
     } catch (e) {
       debugPrint('Error clearing signup data: $e');

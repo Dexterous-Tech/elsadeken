@@ -219,6 +219,56 @@ class _ManageProfileDialogContentState
     _loadRequiredData();
   }
 
+  /// Get visible fields based on current selections (for dynamic field visibility)
+  List<ManageProfileField> _getVisibleFields() {
+    List<ManageProfileField> visibleFields = [];
+
+    for (var field in widget.data.fields) {
+      // For social status dialog, check if children field should be visible
+      if (widget.data.dialogType == ManageProfileDialogType.socialStatus &&
+          field.label == AppLocalizations.of(context)!.numberOfChildren) {
+        // Check if marital status is single
+        final maritalStatusField = widget.data.fields.firstWhere(
+          (f) => f.label == AppLocalizations.of(context)!.maritalStatus,
+          orElse: () => ManageProfileField(
+            label: '',
+            hint: '',
+            currentValue: '',
+            type: ManageProfileFieldType.text,
+          ),
+        );
+
+        final currentMaritalStatus =
+            widget.selectedValues[maritalStatusField.label];
+        if (_isSingleStatus(currentMaritalStatus)) {
+          // Hide children field if single
+          continue;
+        }
+      }
+
+      visibleFields.add(field);
+    }
+
+    return visibleFields;
+  }
+
+  /// Check if the marital status indicates single status
+  bool _isSingleStatus(String? maritalStatus) {
+    if (maritalStatus == null || maritalStatus.isEmpty) return false;
+
+    final statusLower = maritalStatus.toLowerCase().trim();
+
+    // Check for single status values (both Arabic and English)
+    if (statusLower == 'single' ||
+        statusLower == 'أعزب' ||
+        statusLower == 'أنسة' ||
+        statusLower == 'عزباء') {
+      return true;
+    }
+
+    return false;
+  }
+
   void _loadRequiredData() {
     // Only load data if SignUpListsCubit is available
     if (widget.data.signUpListsCubit == null) return;
@@ -357,7 +407,7 @@ class _ManageProfileDialogContentState
               ),
               verticalSpace(10),
               // Fields
-              ...widget.data.fields.map((field) {
+              ..._getVisibleFields().map((field) {
                 return Padding(
                   padding: EdgeInsetsDirectional.only(bottom: 16.h),
                   child:
