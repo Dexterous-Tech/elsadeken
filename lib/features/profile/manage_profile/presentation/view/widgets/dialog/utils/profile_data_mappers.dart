@@ -178,6 +178,25 @@ class ProfileDataMappers {
     }
   }
 
+  /// Get job ID by job name
+  static int? getJobIdByName(
+    String jobName,
+    Map<String, List<GeneralInfoResponseModels>> generalDataLists,
+  ) {
+    try {
+      final jobs = generalDataLists['jobs'];
+      if (jobs != null && jobs.isNotEmpty) {
+        final job = jobs.firstWhere(
+          (item) => item.name == jobName,
+        );
+        return job.id;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   /// Convert marital status from localized text to API value
   static String? mapMaritalStatusToApiValue(String maritalStatus) {
     if (maritalStatus.isEmpty) return null;

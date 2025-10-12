@@ -49,9 +49,7 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
 
   void _validatePhone(String? value) {
     setState(() {
-      if (value.isNullOrEmpty()) {
-        phoneErrorMessage = AppLocalizations.of(context)!.phoneRequired;
-      } else if (value!.length < 8) {
+      if (!value.isNullOrEmpty() && value!.length < 8) {
         phoneErrorMessage = AppLocalizations.of(context)!.phoneMinLength;
       } else {
         phoneErrorMessage = null;

@@ -52,6 +52,9 @@ class ProfileStateHandler {
     } else if (state is IncomesSuccess) {
       generalDataLists['incomes'] = state.generalList;
       setState();
+    } else if (state is JobsSuccess) {
+      generalDataLists['jobs'] = state.generalList;
+      setState();
     }
   }
 

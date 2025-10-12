@@ -37,7 +37,7 @@ class ManageProfileJob extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: AppLocalizations.of(context)!.financialStatus,
+          title: AppLocalizations.of(context)!.financialStatusTitle,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.financialSituation ?? '',
             isLoading: isLoading,
@@ -93,7 +93,7 @@ class ManageProfileJob extends StatelessWidget {
           dataType: ManageProfileFieldDataType.qualification,
         ),
         ManageProfileField(
-          label: AppLocalizations.of(context)!.financialStatus,
+          label: AppLocalizations.of(context)!.financialStatusTitle,
           hint: AppLocalizations.of(context)!.chooseFinancialStatus,
           currentValue: profileData?.attribute?.financialSituation ?? '',
           type: ManageProfileFieldType.dropdown,
@@ -101,10 +101,10 @@ class ManageProfileJob extends StatelessWidget {
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.job,
-          hint: AppLocalizations.of(context)!.enterJob,
+          hint: AppLocalizations.of(context)!.whatIsYourJob,
           currentValue: profileData?.attribute?.job ?? '',
-          type: ManageProfileFieldType.text,
-          keyboardType: TextInputType.text,
+          type: ManageProfileFieldType.dropdown,
+          dataType: ManageProfileFieldDataType.job,
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.monthlyIncome,

@@ -18,10 +18,49 @@ class SearchResultsView extends StatefulWidget {
 }
 
 class _SearchResultsViewState extends State<SearchResultsView> {
+  ScrollController? _scrollController;
+  bool _isLoadingMore = false;
+
   @override
   void initState() {
     super.initState();
     context.read<SearchCubit>().performSearch();
+  }
+
+  @override
+  void dispose() {
+    _scrollController?.dispose();
+    super.dispose();
+  }
+
+  void _loadMoreUsers(BuildContext context) {
+    final cubit = context.read<SearchCubit>();
+    final state = cubit.state;
+
+    if (state is SearchSuccess && state.hasNextPage && !_isLoadingMore) {
+      print(
+          'Loading more search results: current page ${state.currentPage}, next page ${state.currentPage + 1}');
+      setState(() {
+        _isLoadingMore = true;
+      });
+      cubit.loadMoreResults().then((_) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = false;
+          });
+          print('Pagination loading completed');
+        }
+      });
+    }
+  }
+
+  void _onScroll(BuildContext context) {
+    if (_scrollController?.position.pixels != null &&
+        _scrollController!.position.pixels >=
+            _scrollController!.position.maxScrollExtent - 200) {
+      print('Scroll threshold reached, triggering pagination');
+      _loadMoreUsers(context);
+    }
   }
 
   @override
@@ -71,26 +110,70 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                     ),
                     const SizedBox(height: 8),
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: results.length,
-                        itemBuilder: (context, index) {
-                          final person = results[index];
-                          return PersonCardWidget(
-                            onTap: () {
-                              // Debug: Print the person ID and its type
-                              print(
-                                  'Person ID before navigation: ${person.id} (type: ${person.id.runtimeType})');
-                              context.pushNamed(AppRoutes.profileDetailsScreen,
-                                  arguments: person.id);
+                      child: Builder(
+                        builder: (context) {
+                          // Initialize scroll controller here where context is available
+                          _scrollController ??= ScrollController()
+                            ..addListener(() => _onScroll(context));
+
+                          return RefreshIndicator(
+                            onRefresh: () async {
+                              context
+                                  .read<SearchCubit>()
+                                  .performSearch(page: 1);
                             },
-                            personData: PersonData(
-                              name: person.name,
-                              age: person.age,
-                              location: '${person.city}, ${person.country}',
-                              country: person.country,
-                              city: person.city,
-                              profileImageUrl: person.profileImage,
-                              isOnline: person.isOnline,
+                            child: ListView.builder(
+                              controller: _scrollController,
+                              itemCount:
+                                  results.length + (_isLoadingMore ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index == results.length && _isLoadingMore) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Center(
+                                      child: Column(
+                                        children: [
+                                          CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            AppLocalizations.of(context)!
+                                                .loadingMore,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                final person = results[index];
+                                return PersonCardWidget(
+                                  onTap: () {
+                                    // Debug: Print the person ID and its type
+                                    print(
+                                        'Person ID before navigation: ${person.id} (type: ${person.id.runtimeType})');
+                                    context.pushNamed(
+                                        AppRoutes.profileDetailsScreen,
+                                        arguments: person.id);
+                                  },
+                                  personData: PersonData(
+                                    name: person.name,
+                                    age: person.age,
+                                    location:
+                                        '${person.city}, ${person.country}',
+                                    country: person.country,
+                                    city: person.city,
+                                    profileImageUrl: person.profileImage,
+                                    isOnline: person.isOnline,
+                                  ),
+                                );
+                              },
                             ),
                           );
                         },

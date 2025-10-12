@@ -7,11 +7,13 @@ import '../../../../../core/theme/app_color.dart';
 class SearchTextField extends StatelessWidget {
   final String hintText;
   final Function(String) onChanged;
+  final void Function() onTap;
 
   const SearchTextField({
     super.key,
     required this.hintText,
     required this.onChanged,
+    required this.onTap,
   });
 
   @override
@@ -31,7 +33,8 @@ class SearchTextField extends StatelessWidget {
           hintStyle: TextStyle(color: AppColors.jet),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          suffixIcon: Icon(Icons.search, color: AppColors.jet),
+          suffixIcon: GestureDetector(
+              onTap: onTap, child: Icon(Icons.search, color: AppColors.jet)),
         ),
       ),
     );

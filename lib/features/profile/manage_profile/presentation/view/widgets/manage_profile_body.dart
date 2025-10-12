@@ -70,7 +70,8 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 textDirection: LocalizationService.instance.textDirection,
                 children: [
-                  ProfileHeader(title: AppLocalizations.of(context)!.editMyData),
+                  ProfileHeader(
+                      title: AppLocalizations.of(context)!.editMyData),
                   verticalSpace(28),
                   ManageProfileCard(
                     title: AppLocalizations.of(context)!.loginData,
@@ -81,7 +82,8 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
                   ),
                   verticalSpace(10),
                   ManageProfileCard(
-                    title: AppLocalizations.of(context)!.nationalityAndResidence,
+                    title:
+                        AppLocalizations.of(context)!.nationalityAndResidence,
                     cardContent: ManageProfileNationalCountry(
                       profileData: profileData,
                       isLoading: isLoading,
@@ -121,7 +123,7 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
                   ),
                   verticalSpace(10),
                   ManageProfileCard(
-                    title: AppLocalizations.of(context)!.partnerDescription,
+                    title: AppLocalizations.of(context)!.lifePartner,
                     cardContent: ManageProfileWritingContent(
                       label: AppLocalizations.of(context)!.partnerDescription,
                       profileData: profileData,

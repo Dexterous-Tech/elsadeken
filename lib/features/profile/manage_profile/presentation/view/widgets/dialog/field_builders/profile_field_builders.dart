@@ -341,6 +341,14 @@ class DropdownFieldBuilder extends ProfileFieldBuilder {
               isLoading = true;
             }
             break;
+          case ManageProfileFieldDataType.job:
+            final jobs = generalDataLists['jobs'];
+            if (jobs != null && jobs.isNotEmpty) {
+              items = jobs.map((item) => item.name ?? '').toList();
+            } else if (state is JobsLoading) {
+              isLoading = true;
+            }
+            break;
         }
 
         return Column(
@@ -354,7 +362,7 @@ class DropdownFieldBuilder extends ProfileFieldBuilder {
                   ? TextAlign.right
                   : TextAlign.left,
             ),
-            verticalSpace(2),
+            verticalSpace(4),
             isLoading
                 ? Container(
                     height: 50.h,

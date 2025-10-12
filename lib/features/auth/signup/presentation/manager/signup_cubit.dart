@@ -317,7 +317,7 @@ class SignupCubit extends Cubit<SignupState> {
         educationalQualification:
             int.parse(educationalQualificationController.text),
         financialSituation: int.parse(financialSituationController.text),
-        job: jobController.text,
+        job: int.parse(jobController.text),
         income: int.parse(incomeController.text),
         healthCondition: int.parse(healthConditionController.text),
         aboutMe: aboutMeController.text,

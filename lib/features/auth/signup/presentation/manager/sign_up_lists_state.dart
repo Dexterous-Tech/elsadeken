@@ -130,3 +130,17 @@ final class IncomesSuccess extends SignUpListsState {
 
   IncomesSuccess(this.generalList);
 }
+
+final class JobsLoading extends SignUpListsState {}
+
+final class JobsFailure extends SignUpListsState {
+  final String error;
+
+  JobsFailure(this.error);
+}
+
+final class JobsSuccess extends SignUpListsState {
+  final List<GeneralInfoResponseModels> generalList;
+
+  JobsSuccess(this.generalList);
+}

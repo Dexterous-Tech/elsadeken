@@ -46,7 +46,7 @@ class ManageProfileLoginData extends StatelessWidget {
         ManageProfileContentItem(
           title: AppLocalizations.of(context)!.phoneNumber,
           itemContent: ManageProfileContentText(
-            text: _formatPhoneNumber(),
+            text: _formatPhoneNumber(context),
             isLoading: isLoading,
           ),
         ),
@@ -115,7 +115,7 @@ class ManageProfileLoginData extends StatelessWidget {
     }
   }
 
-  String _formatPhoneNumber() {
+  String _formatPhoneNumber(context) {
     final countryCode = profileData?.countryCode ?? '';
     final phone = profileData?.phone ?? '';
 
@@ -128,7 +128,7 @@ class ManageProfileLoginData extends StatelessWidget {
     }
 
     if (phone.isEmpty) {
-      return countryCode;
+      return AppLocalizations.of(context)!.noData;
     }
 
     return '\u200E$countryCode $phone';

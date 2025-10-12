@@ -103,6 +103,7 @@ enum ManageProfileFieldDataType {
   financialSituation,
   healthCondition,
   income,
+  job,
 }
 
 Future<void> manageProfileDialog(

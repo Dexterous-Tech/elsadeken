@@ -120,7 +120,8 @@ class _CustomCarouselTextFieldState extends State<CustomCarouselTextField> {
               textDirection: LocalizationService.instance.textDirection,
             ),
             verticalSpace(20),
-            // Carousel
+
+            // Smooth ListWheelScrollView (replaces CarouselSlider)
             Expanded(
               child: Container(
                 height: carouselHeight,
@@ -131,10 +132,9 @@ class _CustomCarouselTextFieldState extends State<CustomCarouselTextField> {
                 ),
                 child: Stack(
                   children: [
-                    // Selection indicator (highlighted middle item) - positioned exactly in center
+                    // Selection indicator (highlighted middle item)
                     Positioned(
-                      top: (carouselHeight - 50.h) /
-                          2, // Center vertically using dynamic height
+                      top: (carouselHeight - 50.h) / 2,
                       left: 0,
                       right: 0,
                       child: Container(
@@ -145,49 +145,53 @@ class _CustomCarouselTextFieldState extends State<CustomCarouselTextField> {
                         ),
                       ),
                     ),
-                    // Carousel
-                    CarouselSlider.builder(
-                      carouselController: _carouselController,
-                      itemCount: widget.items.length,
-                      itemBuilder: (context, index, realIndex) {
-                        final item = widget.items[index];
-                        final isSelected = index == _currentIndex;
 
-                        return GestureDetector(
-                          onTap: () {
-                            // Select item and close modal immediately
-                            setState(() {
-                              _textController.text = item;
-                              _selectedValue = item;
-                            });
-                            widget.onChanged(item);
-                            Navigator.pop(context);
-                          },
-                          child: Center(
-                            child: Text(
-                              item,
-                              style: isSelected
-                                  ? AppTextStyles.font20JetRegularLamaSans
-                                  : AppTextStyles
-                                      .font16ChineseBlackMediumLamaSans,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        );
+                    // Smooth scrollable picker
+                    ListWheelScrollView.useDelegate(
+                      physics: const FixedExtentScrollPhysics(),
+                      controller: FixedExtentScrollController(
+                        initialItem: _currentIndex,
+                      ),
+                      itemExtent: 50.h,
+                      perspective: 0.002, // very subtle 3D for smoothness
+                      onSelectedItemChanged: (index) {
+                        setState(() {
+                          _currentIndex = index;
+                          _selectedValue = widget.items[index];
+                          _textController.text = _selectedValue;
+                        });
+                        widget.onChanged(_selectedValue);
                       },
-                      options: CarouselOptions(
-                        scrollDirection: Axis.vertical,
-                        height: carouselHeight,
-                        viewportFraction: 0.25,
-                        enlargeCenterPage: true,
-                        enableInfiniteScroll: false,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _currentIndex = index;
-                            _selectedValue = widget.items[index];
-                          });
+                      childDelegate: ListWheelChildBuilderDelegate(
+                        builder: (context, index) {
+                          if (index < 0 || index >= widget.items.length) {
+                            return null;
+                          }
+                          final item = widget.items[index];
+                          final isSelected = index == _currentIndex;
+                          return GestureDetector(
+                            onTap: () {
+                              // Select item and close immediately
+                              setState(() {
+                                _textController.text = item;
+                                _selectedValue = item;
+                              });
+                              widget.onChanged(item);
+                              Navigator.pop(context);
+                            },
+                            child: Center(
+                              child: Text(
+                                item,
+                                style: isSelected
+                                    ? AppTextStyles.font20JetRegularLamaSans
+                                    : AppTextStyles
+                                        .font16ChineseBlackMediumLamaSans,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
                         },
-                        initialPage: _currentIndex,
+                        childCount: widget.items.length,
                       ),
                     ),
                   ],

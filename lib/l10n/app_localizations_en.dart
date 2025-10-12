@@ -1320,7 +1320,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterPasswordToConfirmDeletion => 'Enter your password to confirm account deletion';
 
   @override
-  String get lifePartner => 'Life Partner';
+  String get lifePartner => 'Specifications of a future life partner';
 
   @override
   String get writeAboutLifePartner => 'Write about your life partner\'s characteristics';
@@ -1967,4 +1967,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noNotificationSettingsFound => 'No notification settings found';
+
+  @override
+  String get financialStatusTitle => 'Financial Status';
+
+  @override
+  String get country_residence => 'Country of residence';
 }

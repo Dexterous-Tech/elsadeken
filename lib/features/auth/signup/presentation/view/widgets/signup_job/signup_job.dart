@@ -2,15 +2,12 @@ import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_choice_loading.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../../../core/services/localization_service.dart';
-import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../../core/theme/spacing.dart';
-import '../../../../../../../core/widgets/forms/custom_text_form_field.dart';
 import '../../../../data/models/general_info_models.dart';
 import '../custom_next_and_previous_button.dart';
 import '../signup_multi_choice.dart';
@@ -31,13 +28,16 @@ class SignupJob extends StatefulWidget {
 class _SignupJobState extends State<SignupJob> {
   GeneralInfoResponseModels? _selectedHealth;
   GeneralInfoResponseModels? _selectedIncomes;
+  GeneralInfoResponseModels? _selectedJobs;
 
   List<GeneralInfoResponseModels> _healthOptions = [];
   List<GeneralInfoResponseModels> _incomesOptions = [];
+  List<GeneralInfoResponseModels> _jobsOptions = [];
 
   // Track loading states separately
   bool _isLoadingHealthConditions = true;
   bool _isLoadingIncomes = true;
+  bool _isLoadingJobs = true;
 
   @override
   void initState() {
@@ -45,6 +45,7 @@ class _SignupJobState extends State<SignupJob> {
     // Load health conditions when widget initializes
     context.read<SignUpListsCubit>().getHealthConditions();
     context.read<SignUpListsCubit>().getIncomes();
+    context.read<SignUpListsCubit>().getJobs();
   }
 
   @override
@@ -59,19 +60,33 @@ class _SignupJobState extends State<SignupJob> {
                 state.generalList.cast<GeneralInfoResponseModels>();
             _isLoadingHealthConditions = false;
           });
-        } else if (state is IncomesSuccess) {
+        }
+        if (state is IncomesSuccess) {
           setState(() {
             _incomesOptions =
                 state.generalList.cast<GeneralInfoResponseModels>();
             _isLoadingIncomes = false;
           });
-        } else if (state is HealthConditionsLoading) {
+        }
+        if (state is JobsSuccess) {
+          setState(() {
+            _jobsOptions = state.generalList.cast<GeneralInfoResponseModels>();
+            _isLoadingJobs = false;
+          });
+        }
+        if (state is HealthConditionsLoading) {
           setState(() {
             _isLoadingHealthConditions = true;
           });
-        } else if (state is IncomesLoading) {
+        }
+        if (state is IncomesLoading) {
           setState(() {
             _isLoadingIncomes = true;
+          });
+        }
+        if (state is JobsLoading) {
+          setState(() {
+            _isLoadingJobs = true;
           });
         }
       },
@@ -86,71 +101,34 @@ class _SignupJobState extends State<SignupJob> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   textDirection: LocalizationService.instance.textDirection,
                   children: [
-                    Text(AppLocalizations.of(context)!.whatIsYourJob,
-                        textDirection:
-                            LocalizationService.instance.textDirection,
-                        style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                    verticalSpace(16),
-                    CustomTextFormField(
-                      controller: cubit.jobController,
-                      keyboardType: TextInputType.text,
-                      hintText: AppLocalizations.of(context)!.jobHint,
-                      inputFormatters: [
-                        // Allow only Arabic & English letters and spaces (no numbers or links)
-                        FilteringTextInputFormatter.allow(
-                            RegExp(r'[a-zA-Z\u0600-\u06FF\s]')),
-                        LengthLimitingTextInputFormatter(
-                            50), // Limit to 50 characters
-                      ],
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return AppLocalizations.of(context)!.jobRequired;
-                        }
-                        if (value.trim().length > 50) {
-                          return AppLocalizations.of(context)!.jobTooLong;
-                        }
-                        // Extra safety: block if it looks like a link
-                        if (RegExp(r'https?://|www\.|\.com').hasMatch(value)) {
-                          return AppLocalizations.of(context)!.jobNoLinks;
-                        }
-                        return null;
-                      },
-                    ),
-                    verticalSpace(40),
-
-                    // Text(AppLocalizations.of(context)!.whatIsYourMonthlyIncome,
-                    //     textDirection:
-                    //         LocalizationService.instance.textDirection,
-                    //     style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                    // verticalSpace(16),
-                    // // Income field
-                    // CustomTextFormField(
-                    //   controller: cubit.incomeController,
-                    //   keyboardType: TextInputType.number,
-                    //   hintText: '',
-                    //   inputFormatters: [
-                    //     FilteringTextInputFormatter.digitsOnly, // ✅ Only digits
-                    //     LengthLimitingTextInputFormatter(
-                    //         9), // Limit to reasonable length (e.g., no phone number length)
-                    //   ],
-                    //   validator: (value) {
-                    //     if (value == null || value.trim().isEmpty) {
-                    //       return AppLocalizations.of(context)!.incomeRequired;
-                    //     }
-                    //
-                    //     final income = int.tryParse(value);
-                    //     if (income == null) {
-                    //       return AppLocalizations.of(context)!
-                    //           .pleaseEnterValidNumber;
-                    //     }
-                    //     if (income < 0) {
-                    //       return AppLocalizations.of(context)!
-                    //           .incomeCannotBeNegative;
-                    //     }
-                    //
-                    //     return null;
-                    //   },
-                    // ),
+                    //  job
+                    if (_isLoadingJobs)
+                      SignupChoiceLoading(
+                        title: AppLocalizations.of(context)!.whatIsYourJob,
+                      )
+                    else
+                      SignupMultiChoice(
+                        height: 170.h,
+                        title: AppLocalizations.of(context)!.whatIsYourJob,
+                        options:
+                            _jobsOptions.map((job) => job.name ?? '').toList(),
+                        selected: _selectedJobs?.name,
+                        onChanged: (newStatus) {
+                          final selectedJob = _jobsOptions.firstWhere(
+                            (job) => job.name == newStatus,
+                            orElse: () => GeneralInfoResponseModels(),
+                          );
+                          setState(() {
+                            _selectedJobs = selectedJob;
+                          });
+                          // Store the ID in the signup cubit
+                          if (selectedJob.id != null) {
+                            context.read<SignupCubit>().jobController.text =
+                                selectedJob.id.toString();
+                          }
+                        },
+                      ),
+                    verticalSpace(20),
 
                     // Income Selection
                     if (_isLoadingIncomes)
@@ -183,7 +161,7 @@ class _SignupJobState extends State<SignupJob> {
                         },
                       ),
 
-                    verticalSpace(40),
+                    verticalSpace(20),
 
                     // Health Condition Selection
                     if (_isLoadingHealthConditions)
@@ -237,7 +215,7 @@ class _SignupJobState extends State<SignupJob> {
 
   bool _canProceedToNext(SignupCubit cubit) {
     // Must have job title
-    bool hasJob = cubit.jobController.text.trim().isNotEmpty;
+    bool hasJob = _selectedJobs != null;
 
     // Must have income
     // bool hasIncome = cubit.incomeController.text.trim().isNotEmpty;

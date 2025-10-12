@@ -2618,7 +2618,7 @@ abstract class AppLocalizations {
   /// No description provided for @lifePartner.
   ///
   /// In en, this message translates to:
-  /// **'Life Partner'**
+  /// **'Specifications of a future life partner'**
   String get lifePartner;
 
   /// No description provided for @writeAboutLifePartner.
@@ -3904,6 +3904,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No notification settings found'**
   String get noNotificationSettingsFound;
+
+  /// No description provided for @financialStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Financial Status'**
+  String get financialStatusTitle;
+
+  /// No description provided for @country_residence.
+  ///
+  /// In en, this message translates to:
+  /// **'Country of residence'**
+  String get country_residence;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

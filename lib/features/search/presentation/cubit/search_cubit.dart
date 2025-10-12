@@ -89,13 +89,43 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   Future<void> performSearch({int page = 1}) async {
-    emit(SearchLoading());
+    if (page == 1) {
+      emit(SearchLoading());
+    }
     try {
       final results =
           await searchUseCase.searchUsers(_currentFilter, page: page);
-      emit(SearchSuccess(results));
+
+      if (state is SearchSuccess && page > 1) {
+        // Append results for pagination
+        final currentState = state as SearchSuccess;
+        final updatedResults = [...currentState.results, ...results];
+        emit(SearchSuccess(
+          updatedResults,
+          currentPage: page,
+          lastPage: page + 1, // Assuming there might be more pages
+        ));
+      } else {
+        // First page or fresh search
+        emit(SearchSuccess(
+          results,
+          currentPage: page,
+          lastPage: results.length >= 10
+              ? page + 1
+              : page, // Assuming 10 items per page
+        ));
+      }
     } catch (e) {
       emit(SearchError(e.toString()));
+    }
+  }
+
+  Future<void> loadMoreResults() async {
+    if (state is SearchSuccess) {
+      final currentState = state as SearchSuccess;
+      if (currentState.hasNextPage) {
+        await performSearch(page: currentState.currentPage + 1);
+      }
     }
   }
 }

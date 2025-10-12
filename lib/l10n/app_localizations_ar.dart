@@ -1321,7 +1321,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterPasswordToConfirmDeletion => 'أدخل كلمة المرور لتأكيد حذف الحساب';
 
   @override
-  String get lifePartner => 'شريك الحياة';
+  String get lifePartner => 'مواصفات شريك الحياه المستقبلي';
 
   @override
   String get writeAboutLifePartner => 'اكتب عن مواصفات شريك حياتك';
@@ -1968,4 +1968,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noNotificationSettingsFound => 'لا توجد إعدادات إشعارات';
+
+  @override
+  String get financialStatusTitle => 'الوضع المادي';
+
+  @override
+  String get country_residence => 'الدولة المقيم فيها';
 }

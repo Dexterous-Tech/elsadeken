@@ -140,7 +140,7 @@ class ProfileDetailsData extends StatelessWidget {
             ),
             verticalSpace(16),
             ProfileDetailsCard(
-              cardTitle: AppLocalizations.of(context)!.futureSpouseDescription,
+              cardTitle: AppLocalizations.of(context)!.lifePartner,
               cardContent: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                 child: Text(

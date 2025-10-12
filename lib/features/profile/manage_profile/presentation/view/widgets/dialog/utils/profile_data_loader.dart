@@ -38,6 +38,9 @@ class ProfileDataLoader {
         case ManageProfileFieldDataType.income:
           signUpListsCubit.getIncomes();
           break;
+        case ManageProfileFieldDataType.job:
+          signUpListsCubit.getJobs();
+          break;
         case ManageProfileFieldDataType.city:
           // Cities will be loaded when country is selected
           break;

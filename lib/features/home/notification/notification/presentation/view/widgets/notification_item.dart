@@ -24,9 +24,17 @@ class NotificationItemWidget extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
         decoration: BoxDecoration(
-          color: notification.readAt == null
-              ? Color(0xffE0A25E).withValues(alpha: 0.1)
-              : Color(0xffFFFAFC),
+          gradient: notification.readAt == null
+              ? LinearGradient(
+                  end: Alignment.bottomCenter,
+                  begin: Alignment.topCenter,
+                  colors: [
+                    Color(0xffF8ECD6).withValues(alpha: 0.1),
+                    Color(0xffF8ECD6),
+                  ],
+                )
+              : null,
+          color: notification.readAt == null ? null : Color(0xffFFFAFC),
         ),
         child: Row(
           crossAxisAlignment:
@@ -81,6 +89,10 @@ class NotificationItemWidget extends StatelessWidget {
                 ],
               ),
             ),
+
+            Spacer(),
+
+            Container(),
           ],
         ),
       ),

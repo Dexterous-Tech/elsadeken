@@ -66,25 +66,27 @@ class UsersResponseModel {
 }
 
 class UsersDataModel {
-  UsersDataModel(
-      {this.id,
-      this.name,
-      this.email,
-      this.countryCode,
-      this.phone,
-      this.gender,
-      this.image,
-      this.fcmToken,
-      this.token,
-      this.isFeatured,
-      this.createdAt,
-      this.lastSeen,
-      this.attribute,
-      this.visitedAtDate,
-      this.visitedAtTime,
-      this.isFavorite,
-      this.isIgnore,
-      this.isBlocked});
+  UsersDataModel({
+    this.id,
+    this.name,
+    this.email,
+    this.countryCode,
+    this.phone,
+    this.gender,
+    this.image,
+    this.fcmToken,
+    this.token,
+    this.isFeatured,
+    this.createdAt,
+    this.lastSeen,
+    this.attribute,
+    this.visitedAtDate,
+    this.visitedAtTime,
+    this.isFavorite,
+    this.isIgnore,
+    this.isBlocked,
+    this.isOnline,
+  });
 
   UsersDataModel.fromJson(dynamic json) {
     id = json['id'];
@@ -110,6 +112,9 @@ class UsersDataModel {
     isBlocked = json['is_blocked'] == true ||
         json['is_blocked'] == 'true' ||
         json['is_blocked'] == 1;
+    isOnline = json['is_online'] == true ||
+        json['is_online'] == 'true' ||
+        json['is_online'] == 1;
     attribute = json['attribute'] != null
         ? UsersAttributeModel.fromJson(json['attribute'])
         : null;
@@ -131,6 +136,7 @@ class UsersDataModel {
   bool? isFavorite;
   bool? isIgnore;
   bool? isBlocked;
+  bool? isOnline;
   UsersAttributeModel? attribute;
 
   Map<String, dynamic> toJson() {
@@ -152,6 +158,7 @@ class UsersDataModel {
     map['is_favorite'] = isFavorite;
     map['is_ignore'] = isIgnore;
     map['is_blocked'] = isBlocked;
+    map['is_online'] = isOnline;
     map['attribute'] = attribute;
     return map;
   }
@@ -174,6 +181,7 @@ class UsersDataModel {
     bool? isFavorite,
     bool? isIgnore,
     bool? isBlocked,
+    bool? isOnline,
     UsersAttributeModel? attribute,
   }) {
     return UsersDataModel(
@@ -194,6 +202,7 @@ class UsersDataModel {
       isFavorite: isFavorite ?? this.isFavorite,
       isIgnore: isIgnore ?? this.isIgnore,
       isBlocked: isBlocked ?? this.isBlocked,
+      isOnline: isOnline ?? this.isOnline,
       attribute: attribute ?? this.attribute,
     );
   }

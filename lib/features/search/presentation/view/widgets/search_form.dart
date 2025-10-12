@@ -82,7 +82,10 @@ class _SearchFormState extends State<SearchForm> {
 
   bool get _isFemale {
     final value = (userGender ?? '').trim().toLowerCase();
-    return value == 'female' || value == 'f' || value == 'أنثى' || value == 'انثى';
+    return value == 'female' ||
+        value == 'f' ||
+        value == 'أنثى' ||
+        value == 'انثى';
   }
 
   @override
@@ -181,12 +184,28 @@ class _SearchFormState extends State<SearchForm> {
         children: [
           // Search Fields
           SearchTextField(
+            onTap: () {
+              context.read<SearchCubit>().performSearch();
+              Navigator.pushNamed(
+                context,
+                AppRoutes.searchResultScreen,
+                arguments: context.read<SearchCubit>(),
+              );
+            },
             hintText: AppLocalizations.of(context)!.searchByUsername,
             onChanged: (value) =>
                 context.read<SearchCubit>().updateUsername(value),
           ),
           SizedBox(height: 16),
           SearchTextField(
+            onTap: () {
+              context.read<SearchCubit>().performSearch();
+              Navigator.pushNamed(
+                context,
+                AppRoutes.searchResultScreen,
+                arguments: context.read<SearchCubit>(),
+              );
+            },
             hintText: AppLocalizations.of(context)!.quickSearch,
             onChanged: (value) =>
                 context.read<SearchCubit>().updateQuickSearch(value),
@@ -203,9 +222,11 @@ class _SearchFormState extends State<SearchForm> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Text(AppLocalizations.of(context)!.error(snapshot.error.toString()));
+                    return Text(AppLocalizations.of(context)!
+                        .error(snapshot.error.toString()));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Text(AppLocalizations.of(context)!.noNationalitiesAvailable);
+                    return Text(
+                        AppLocalizations.of(context)!.noNationalitiesAvailable);
                   }
 
                   final nationalityObjects = snapshot.data!;
@@ -232,16 +253,17 @@ class _SearchFormState extends State<SearchForm> {
               //
               SizedBox(height: 12),
 
-
               FutureBuilder<List<NationalCountryResponseModel>>(
                 future: _countries, // الفيوتشر اللي بيرجع الجنسيات
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Text(AppLocalizations.of(context)!.error(snapshot.error.toString()));
+                    return Text(AppLocalizations.of(context)!
+                        .error(snapshot.error.toString()));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Text(AppLocalizations.of(context)!.noNationalitiesAvailable);
+                    return Text(
+                        AppLocalizations.of(context)!.noNationalitiesAvailable);
                   }
 
                   final countryObjects = snapshot.data!;
@@ -296,9 +318,11 @@ class _SearchFormState extends State<SearchForm> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Text(AppLocalizations.of(context)!.error(snapshot.error.toString()));
+                    return Text(AppLocalizations.of(context)!
+                        .error(snapshot.error.toString()));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Text(AppLocalizations.of(context)!.noCitiesAvailable);
+                    return Text(
+                        AppLocalizations.of(context)!.noCitiesAvailable);
                   }
 
                   // ✅ تحويل الجنسيات من موديل إلى List<String>
@@ -447,8 +471,8 @@ class _SearchFormState extends State<SearchForm> {
             title: AppLocalizations.of(context)!.sortResults,
             children: [
               DropdownField(
-                label: AppLocalizations.of(context)!.mostVisitedFirst,
-                hint: '',
+                label: '',
+                hint: AppLocalizations.of(context)!.mostVisitedFirst,
                 items: [
                   AppLocalizations.of(context)!.mostVisitedFirst,
                   AppLocalizations.of(context)!.newestFirst,
@@ -470,8 +494,8 @@ class _SearchFormState extends State<SearchForm> {
               } else if (state is SearchSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                      content:
-                          Text(AppLocalizations.of(context)!.foundResults(state.results.length.toString()))),
+                      content: Text(AppLocalizations.of(context)!
+                          .foundResults(state.results.length.toString()))),
                 );
               }
             },

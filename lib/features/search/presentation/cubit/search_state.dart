@@ -23,11 +23,30 @@ class SearchLoading extends SearchState {}
 
 class SearchSuccess extends SearchState {
   final List<UserProfile> results;
+  final int currentPage;
+  final int lastPage;
+  final bool hasNextPage;
 
-  const SearchSuccess(this.results);
+  const SearchSuccess(
+    this.results, {
+    this.currentPage = 1,
+    this.lastPage = 1,
+  }) : hasNextPage = currentPage < lastPage;
 
   @override
-  List<Object?> get props => [results];
+  List<Object?> get props => [results, currentPage, lastPage, hasNextPage];
+
+  SearchSuccess copyWith({
+    List<UserProfile>? results,
+    int? currentPage,
+    int? lastPage,
+  }) {
+    return SearchSuccess(
+      results ?? this.results,
+      currentPage: currentPage ?? this.currentPage,
+      lastPage: lastPage ?? this.lastPage,
+    );
+  }
 }
 
 class SearchError extends SearchState {

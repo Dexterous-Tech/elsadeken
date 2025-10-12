@@ -560,7 +560,7 @@
   "deleteAccount": "Delete Account",
   "enterPasswordToConfirmDeletion": "Enter your password to confirm account deletion",
   
-  "lifePartner": "Life Partner",
+  "lifePartner": "Specifications of a future life partner",
   "writeAboutLifePartner": "Write about your life partner's characteristics",
   "aboutMe": "About Me",
   "writeAboutYourself": "Write about yourself",
@@ -867,5 +867,8 @@
   "failedToToggleNotificationSetting": "Failed to update notification settings",
   "noCurrentSettingsFound": "No current settings found",
   "failedToLoadNotificationSettings": "Failed to load notification settings",
-  "noNotificationSettingsFound": "No notification settings found"
+  "noNotificationSettingsFound": "No notification settings found",
+  "financialStatusTitle": "Financial Status",
+  "country_residence" : "Country of residence"
+
 }

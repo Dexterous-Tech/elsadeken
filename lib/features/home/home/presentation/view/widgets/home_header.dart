@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/di/injection_container.dart';
+import '../../../../../../core/routes/app_routes.dart';
 
 class HomeHeader extends StatefulWidget {
   const HomeHeader({super.key});
@@ -44,67 +46,72 @@ class _HomeHeaderState extends State<HomeHeader> {
                     AppLocalizations.of(context)!.unknown;
                 final image = profileData?.image ?? '';
 
-                return Row(
-                  textDirection: LocalizationService.instance.textDirection,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: CustomImageNetwork(
-                        width: 64.w,
-                        height: 64.h,
-                        image: image.isNotEmpty
-                            ? image
-                            : 'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
+                return GestureDetector(
+                  onTap: () {
+                    context.pushNamed(AppRoutes.manageProfileScreen);
+                  },
+                  child: Row(
+                    textDirection: LocalizationService.instance.textDirection,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: CustomImageNetwork(
+                          width: 64.w,
+                          height: 64.h,
+                          image: image.isNotEmpty
+                              ? image
+                              : 'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        textDirection:
-                            LocalizationService.instance.textDirection,
-                        children: [
-                          Text(
-                            name,
-                            style: AppTextStyles.font16BlackSemiBoldLamaSans,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textDirection:
-                                LocalizationService.instance.textDirection,
-                          ),
-                          Row(
-                            textDirection:
-                                LocalizationService.instance.textDirection,
-                            children: [
-                              Image.asset(
-                                'assets/images/home/home_location.png',
-                                width: 15.w,
-                                height: 18.h,
-                              ),
-                              SizedBox(width: 10.w),
-                              Expanded(
-                                child: Text(
-                                  '$country, $city',
-                                  maxLines: 2, // ✅ allow up to 2 lines
-                                  overflow: TextOverflow.ellipsis,
-                                  softWrap: true,
-                                  textDirection: LocalizationService
-                                      .instance.textDirection,
-                                  style: AppTextStyles
-                                      .font15BistreSemiBoldLamaSans
-                                      .copyWith(
-                                    color:
-                                        AppColors.black.withValues(alpha: 0.87),
-                                    fontWeight: FontWeightHelper.medium,
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                          children: [
+                            Text(
+                              name,
+                              style: AppTextStyles.font16BlackSemiBoldLamaSans,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                            ),
+                            Row(
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                              children: [
+                                Image.asset(
+                                  'assets/images/home/home_location.png',
+                                  width: 15.w,
+                                  height: 18.h,
+                                ),
+                                SizedBox(width: 10.w),
+                                Expanded(
+                                  child: Text(
+                                    '$country, $city',
+                                    maxLines: 2, // ✅ allow up to 2 lines
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: true,
+                                    textDirection: LocalizationService
+                                        .instance.textDirection,
+                                    style: AppTextStyles
+                                        .font15BistreSemiBoldLamaSans
+                                        .copyWith(
+                                      color: AppColors.black
+                                          .withValues(alpha: 0.87),
+                                      fontWeight: FontWeightHelper.medium,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               } else if (state is ManageProfileFailure) {
                 return Row(

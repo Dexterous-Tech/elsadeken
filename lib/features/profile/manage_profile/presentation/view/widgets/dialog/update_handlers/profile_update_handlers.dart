@@ -179,7 +179,7 @@ class JobUpdateHandler extends ProfileUpdateHandler {
             '';
     final financialSituationName =
         controllers[AppLocalizations.of(context)!.financialStatus]?.text ?? '';
-    final jobTitle = controllers[AppLocalizations.of(context)!.job]?.text ?? '';
+    final jobName = controllers[AppLocalizations.of(context)!.job]?.text ?? '';
     final incomeName =
         controllers[AppLocalizations.of(context)!.monthlyIncome]?.text ?? '';
     final healthConditionName =
@@ -191,6 +191,7 @@ class JobUpdateHandler extends ProfileUpdateHandler {
     final financialSituationId =
         ProfileDataMappers.getFinancialSituationIdByName(
             financialSituationName, generalDataLists);
+    final jobId = ProfileDataMappers.getJobIdByName(jobName, generalDataLists);
     final incomeId =
         ProfileDataMappers.getIncomeIdByName(incomeName, generalDataLists);
     final healthConditionId = ProfileDataMappers.getHealthConditionIdByName(
@@ -199,7 +200,7 @@ class JobUpdateHandler extends ProfileUpdateHandler {
     cubit.updateProfileWorkData(
       qualificationId: qualificationId?.toString(),
       income: incomeId,
-      job: jobTitle.isNotEmpty ? jobTitle : null,
+      job: jobId?.toString(),
       healthConditionId: healthConditionId?.toString(),
       financialSituationId: financialSituationId?.toString(),
     );
@@ -322,24 +323,30 @@ class EducationUpdateHandler extends ProfileUpdateHandler {
             '';
     final financialSituationName =
         controllers[AppLocalizations.of(context)!.financialStatus]?.text ?? '';
-    final jobTitle = controllers[AppLocalizations.of(context)!.job]?.text ?? '';
-    final monthlyIncomeStr =
+    final jobName = controllers[AppLocalizations.of(context)!.job]?.text ?? '';
+    final incomeName =
         controllers[AppLocalizations.of(context)!.monthlyIncome]?.text ?? '';
     final healthConditionName =
         controllers[AppLocalizations.of(context)!.healthStatus]?.text ?? '';
 
-    // Convert income string to number
-    int? income =
-        monthlyIncomeStr.isNotEmpty ? int.tryParse(monthlyIncomeStr) : null;
+    // Get IDs from names using mapping functions
+    final qualificationId = ProfileDataMappers.getQualificationIdByName(
+        qualificationName, generalDataLists);
+    final financialSituationId =
+        ProfileDataMappers.getFinancialSituationIdByName(
+            financialSituationName, generalDataLists);
+    final jobId = ProfileDataMappers.getJobIdByName(jobName, generalDataLists);
+    final incomeId =
+        ProfileDataMappers.getIncomeIdByName(incomeName, generalDataLists);
+    final healthConditionId = ProfileDataMappers.getHealthConditionIdByName(
+        healthConditionName, generalDataLists);
 
     cubit.updateProfileWorkData(
-      qualificationId: qualificationName.isNotEmpty ? qualificationName : null,
-      income: income,
-      job: jobTitle.isNotEmpty ? jobTitle : null,
-      healthConditionId:
-          healthConditionName.isNotEmpty ? healthConditionName : null,
-      financialSituationId:
-          financialSituationName.isNotEmpty ? financialSituationName : null,
+      qualificationId: qualificationId?.toString(),
+      income: incomeId,
+      job: jobId?.toString(),
+      healthConditionId: healthConditionId?.toString(),
+      financialSituationId: financialSituationId?.toString(),
     );
   }
 }

@@ -559,7 +559,7 @@
   "deleteAccount": "حذف الحساب",
   "enterPasswordToConfirmDeletion": "أدخل كلمة المرور لتأكيد حذف الحساب",
   
-  "lifePartner": "شريك الحياة",
+  "lifePartner": "مواصفات شريك الحياه المستقبلي",
   "writeAboutLifePartner": "اكتب عن مواصفات شريك حياتك",
   "aboutMe": "نبذة عني",
   "writeAboutYourself": "اكتب عن نفسك",
@@ -865,5 +865,7 @@
   "failedToToggleNotificationSetting": "فشل في تحديث إعدادات الإشعارات",
   "noCurrentSettingsFound": "لم يتم العثور على الإعدادات الحالية",
   "failedToLoadNotificationSettings": "فشل في تحميل إعدادات الإشعارات",
-  "noNotificationSettingsFound": "لا توجد إعدادات إشعارات"
+  "noNotificationSettingsFound": "لا توجد إعدادات إشعارات",
+  "financialStatusTitle" : "الوضع المادي",
+  "country_residence" : "الدولة المقيم فيها"
 }

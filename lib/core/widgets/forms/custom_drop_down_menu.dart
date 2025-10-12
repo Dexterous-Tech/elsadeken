@@ -63,12 +63,12 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
       textDirection: LocalizationService.instance.textDirection,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+       widget.label.isEmpty ? SizedBox.shrink() :  Text(
           widget.label,
           style: AppTextStyles.font18JetMediumLamaSans,
           textAlign: TextAlign.start,
         ),
-        verticalSpace(8),
+        verticalSpace(  widget.label.isEmpty ? 0  : 8),
         Container(
           padding: EdgeInsets.symmetric(
             horizontal: 12.w,
@@ -81,6 +81,7 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
             child: DropdownButton<String>(
               isExpanded: true,
               value: selectedValue,
+           dropdownColor: Colors.white,
               hint: Text(
                 widget.hint,
                 style: AppTextStyles.font16ChineseBlackMediumLamaSans,
