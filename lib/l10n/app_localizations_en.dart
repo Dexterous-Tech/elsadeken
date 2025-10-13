@@ -1973,4 +1973,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get country_residence => 'Country of residence';
+
+  @override
+  String get shareLinkCreated => 'Share link created';
+
+  @override
+  String get linkedCopied => 'Link copied successfully!';
+
+  @override
+  String get errorCopyLink => 'Error copying link';
+
+  @override
+  String get copySharingLink => 'Copy the share link';
+
+  @override
+  String get checkOutProfile => 'Check out this profile';
+
+  @override
+  String get noShareLinkAvailable => 'No share link available';
 }

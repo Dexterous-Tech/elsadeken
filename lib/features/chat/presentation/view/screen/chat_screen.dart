@@ -234,7 +234,9 @@ class _ChatScreenState extends State<ChatScreen>
                     arguments: {"chatRoom": chat.toChatRoomModel()},
                   );
                 },
-                onLongPress: null, // Let ChatRoomItem handle its own long press
+                onLongPress: null,
+                isOnline: chat.lastMessage?.isOnline ??
+                    false, // Let ChatRoomItem handle its own long press
               );
             },
           );

@@ -105,8 +105,9 @@ class Attribute {
   final String prayer;
   final String smoking;
   final String hijab;
+  final String beard;
   final String job;
-  final int income;
+  final String income;
   final String lifePartner;
   final String aboutMe;
 
@@ -129,6 +130,7 @@ class Attribute {
     required this.prayer,
     required this.smoking,
     required this.hijab,
+    required this.beard,
     required this.job,
     required this.income,
     required this.lifePartner,
@@ -167,11 +169,10 @@ class Attribute {
         smoking: json['smoking']?.toString() ?? '',
         hijab: json['hijab']?.toString() ?? '',
         job: json['job']?.toString() ?? '',
-        income: json['income'] is int
-            ? json['income']
-            : int.tryParse(json['income']?.toString() ?? '0') ?? 0,
+        income: json['income']?.toString() ?? '',
         lifePartner: json['life_partner']?.toString() ?? '',
         aboutMe: json['about_me']?.toString() ?? '',
+        beard: json['beard']?.toString() ?? '',
       );
     } catch (e) {
       print("Error parsing Attribute: $e");

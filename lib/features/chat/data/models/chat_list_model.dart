@@ -130,9 +130,12 @@ class ChatData {
 
   factory ChatData.fromJson(Map<String, dynamic> json) {
     // Check multiple possible field names for favorite status
-    final isFavoriteValue = json['is_favorite'] ?? json['favourite'] ?? json['isFavorite'];
-    final isFavorite = isFavoriteValue == 1 || isFavoriteValue == true || isFavoriteValue == '1';
-    
+    final isFavoriteValue =
+        json['is_favorite'] ?? json['favourite'] ?? json['isFavorite'];
+    final isFavorite = isFavoriteValue == 1 ||
+        isFavoriteValue == true ||
+        isFavoriteValue == '1';
+
     return ChatData(
       id: json['id'] ?? 0,
       lastMessage: json['last_message'] != null
@@ -198,20 +201,21 @@ class LastMessage {
   final String body;
   final int isReported;
   final int isMuted;
+  final bool? isOnline;
   final int? reportedByUserId;
   final String createdAt;
 
-  LastMessage({
-    required this.id,
-    required this.chatId,
-    required this.senderId,
-    required this.receiverId,
-    required this.body,
-    required this.isReported,
-    required this.isMuted,
-    this.reportedByUserId,
-    required this.createdAt,
-  });
+  LastMessage(
+      {required this.id,
+      required this.chatId,
+      required this.senderId,
+      required this.receiverId,
+      required this.body,
+      required this.isReported,
+      required this.isMuted,
+      this.reportedByUserId,
+      required this.createdAt,
+      this.isOnline});
 
   factory LastMessage.fromJson(Map<String, dynamic> json) {
     return LastMessage(
@@ -222,6 +226,7 @@ class LastMessage {
       body: json['body'] ?? '',
       isReported: json['is_reported'] ?? 0,
       isMuted: json['is_muted'] ?? 0,
+      isOnline: json['is_online'] ?? false,
       reportedByUserId: json['reported_by_user_id'],
       createdAt: json['created_at'] ?? '',
     );

@@ -16,7 +16,6 @@ import 'package:elsadeken/core/helper/app_images.dart';
 import '../../../../../core/theme/app_color.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../profile/widgets/profile_header.dart';
-import '../../../gender_filter.dart';
 
 class HealthStatusesView extends StatefulWidget {
   const HealthStatusesView({super.key});
@@ -26,7 +25,6 @@ class HealthStatusesView extends StatefulWidget {
 }
 
 class _HealthStatusesViewState extends State<HealthStatusesView> {
-  String _activeFilter = 'all'; // Will be localized in UI
   int? _selectedHealthId;
   String _selectedHealthName = '';
   int? _selectedCountryId;
@@ -75,29 +73,6 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
             _scrollController!.position.maxScrollExtent - 200) {
       print('Scroll threshold reached, triggering pagination');
       _loadMoreUsers(context);
-    }
-  }
-
-  List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
-    // Debug: Print unique gender values to help identify what the API returns
-    final uniqueGenders = allMembers.map((m) => m.gender).toSet();
-    print('🔍 Health Statuses - Unique gender values from API: $uniqueGenders');
-
-    switch (_activeFilter) {
-      case 'males':
-        return allMembers.where((member) {
-          final gender = member.gender?.toLowerCase();
-          // Handle both Arabic and English gender values
-          return gender == 'ذكر' || gender == 'male' || gender == 'm';
-        }).toList();
-      case 'females':
-        return allMembers.where((member) {
-          final gender = member.gender?.toLowerCase();
-          // Handle both Arabic and English gender values
-          return gender == 'انثى' || gender == 'female' || gender == 'f';
-        }).toList();
-      default:
-        return allMembers;
     }
   }
 
@@ -225,49 +200,6 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 16),
-                        Padding(
-                          padding: const EdgeInsetsDirectional.symmetric(
-                              horizontal: 24.0),
-                          child: Container(
-                            padding: EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF5F1E8),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: GenderFilter(
-                                    text: AppLocalizations.of(context)!.all,
-                                    isActive: _activeFilter == 'all',
-                                    onTap: () =>
-                                        setState(() => _activeFilter = 'all'),
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: GenderFilter(
-                                    text: AppLocalizations.of(context)!.males,
-                                    isActive: _activeFilter == 'males',
-                                    onTap: () =>
-                                        setState(() => _activeFilter = 'males'),
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: GenderFilter(
-                                    text: AppLocalizations.of(context)!.females,
-                                    isActive: _activeFilter == 'females',
-                                    onTap: () => setState(
-                                        () => _activeFilter = 'females'),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                         if (_selectedHealthName.isNotEmpty &&
                                 _selectedHealthName != 'all' ||
                             _selectedCountryName.isNotEmpty &&
@@ -389,8 +321,7 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                               );
                             }
                             if (state is MembersListLoaded<UsersDataModel>) {
-                              final allMembers = state.items;
-                              final items = _getFilteredMembers(allMembers);
+                              final items = state.items;
                               return Expanded(
                                 child: Column(
                                   children: [

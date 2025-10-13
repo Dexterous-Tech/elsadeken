@@ -15,6 +15,7 @@ class ChatRoomItem extends StatelessWidget {
   final VoidCallback? onLongPress;
   final ChatListCubit chatListCubit;
   final bool isInFavoritesList;
+  final bool isOnline;
 
   const ChatRoomItem({
     super.key,
@@ -23,6 +24,7 @@ class ChatRoomItem extends StatelessWidget {
     required this.chatListCubit,
     this.onLongPress,
     this.isInFavoritesList = false,
+    required this.isOnline,
   });
 
   @override
@@ -49,8 +51,9 @@ class ChatRoomItem extends StatelessWidget {
             ProfileImageWidget(
               imageUrl: chat.otherUser.image,
               size: 50,
-              showOnlineIndicator: false,
+              showOnlineIndicator: true,
               unreadCount: chat.unreadCount,
+              isOnline: isOnline,
             ),
             SizedBox(width: 12.w),
             Expanded(

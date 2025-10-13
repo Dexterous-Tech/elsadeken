@@ -14,7 +14,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/helper/app_images.dart';
 import '../../../../../core/theme/app_color.dart';
-import '../../../gender_filter.dart';
 
 class NewMembersView extends StatefulWidget {
   const NewMembersView({super.key, this.countryId});
@@ -26,9 +25,7 @@ class NewMembersView extends StatefulWidget {
 }
 
 class _NewMembersViewState extends State<NewMembersView> {
-  String _activeFilter = 'all'; // Will be localized in UI
   int? _selectedCountryId;
-  List<UsersDataModel> _allMembers = [];
   ScrollController? _scrollController;
   bool _isLoadingMore = false;
 
@@ -73,33 +70,6 @@ class _NewMembersViewState extends State<NewMembersView> {
             _scrollController!.position.maxScrollExtent - 200) {
       print('Scroll threshold reached, triggering pagination');
       _loadMoreUsers(context);
-    }
-  }
-
-  // Future<void> _onRefresh() async {
-  //   // We'll handle this in the build method where context is available
-  // }
-
-  List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
-    // Debug: Print unique gender values to help identify what the API returns
-    final uniqueGenders = allMembers.map((m) => m.gender).toSet();
-    print('🔍 New Members - Unique gender values from API: $uniqueGenders');
-
-    switch (_activeFilter) {
-      case 'males':
-        return allMembers.where((member) {
-          final gender = member.gender?.toLowerCase();
-          // Handle both Arabic and English gender values
-          return gender == 'ذكر' || gender == 'male' || gender == 'm';
-        }).toList();
-      case 'females':
-        return allMembers.where((member) {
-          final gender = member.gender?.toLowerCase();
-          // Handle both Arabic and English gender values
-          return gender == 'انثى' || gender == 'female' || gender == 'f';
-        }).toList();
-      default:
-        return allMembers;
     }
   }
 
@@ -216,51 +186,6 @@ class _NewMembersViewState extends State<NewMembersView> {
                           ),
                         ),
                         SizedBox(height: 16),
-                        Padding(
-                          padding: const EdgeInsetsDirectional.symmetric(
-                              horizontal: 24.0),
-                          child: Container(
-                            padding: EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF5F1E8),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: GenderFilter(
-                                    text: AppLocalizations.of(context)!.all,
-                                    isActive: _activeFilter == 'all',
-                                    onTap: () {
-                                      setState(() => _activeFilter = 'all');
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: GenderFilter(
-                                    text: AppLocalizations.of(context)!.males,
-                                    isActive: _activeFilter == 'males',
-                                    onTap: () {
-                                      setState(() => _activeFilter = 'males');
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: GenderFilter(
-                                    text: AppLocalizations.of(context)!.females,
-                                    isActive: _activeFilter == 'females',
-                                    onTap: () {
-                                      setState(() => _activeFilter = 'females');
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                         BlocBuilder<MembersListCubit<UsersDataModel>,
                             MembersListState<UsersDataModel>>(
                           builder: (context, state) {
@@ -296,8 +221,7 @@ class _NewMembersViewState extends State<NewMembersView> {
                               );
                             }
                             if (state is MembersListLoaded<UsersDataModel>) {
-                              _allMembers = state.items;
-                              final items = _getFilteredMembers(_allMembers);
+                              final items = state.items;
                               return Expanded(
                                 child: Column(
                                   children: [

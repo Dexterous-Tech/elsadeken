@@ -869,6 +869,15 @@
   "failedToLoadNotificationSettings": "Failed to load notification settings",
   "noNotificationSettingsFound": "No notification settings found",
   "financialStatusTitle": "Financial Status",
-  "country_residence" : "Country of residence"
+  "country_residence" : "Country of residence",
+  "shareLinkCreated": "Share link created",
+  "linkedCopied" : "Link copied successfully!",
+  "errorCopyLink" : "Error copying link",
+  "copySharingLink" : "Copy the share link",
+  "checkOutProfile" : "Check out this profile",
+  "noShareLinkAvailable" : "No share link available"
+
+
+
 
 }

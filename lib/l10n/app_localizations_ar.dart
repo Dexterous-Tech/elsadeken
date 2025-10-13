@@ -1471,7 +1471,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get whatIsYourNationality => 'ما هي جنسيتك ؟';
 
   @override
-  String get whatIsYourCountry => 'ما هي دولتك ؟';
+  String get whatIsYourCountry => 'ما هي دولتك المقيم فيها؟';
 
   @override
   String get whatIsYourCity => 'ما هي مديتنك ؟';
@@ -1974,4 +1974,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get country_residence => 'الدولة المقيم فيها';
+
+  @override
+  String get shareLinkCreated => 'تم انشاء رابط مشاركة';
+
+  @override
+  String get linkedCopied => 'تم نسخ الرابط بنجاح!';
+
+  @override
+  String get errorCopyLink => 'خطأ في نسخ الراب';
+
+  @override
+  String get copySharingLink => 'أنسخ رابط المشاركة';
+
+  @override
+  String get checkOutProfile => 'تحقق من هذا الملف الشخصي';
+
+  @override
+  String get noShareLinkAvailable => 'لا يوجد رابط للمشاركة متاح';
 }

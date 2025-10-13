@@ -36,7 +36,7 @@ class ManageProfileNationalCountry extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: AppLocalizations.of(context)!.country,
+          title: AppLocalizations.of(context)!.country_residence,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.country ?? '',
             isLoading: isLoading,
@@ -78,7 +78,7 @@ class ManageProfileNationalCountry extends StatelessWidget {
           isRequired: false, // Make optional
         ),
         ManageProfileField(
-          label: AppLocalizations.of(context)!.country,
+          label: AppLocalizations.of(context)!.country_residence,
           hint: AppLocalizations.of(context)!.chooseCountry,
           currentValue: profileData?.attribute?.country ?? '',
           type: ManageProfileFieldType.dropdown,

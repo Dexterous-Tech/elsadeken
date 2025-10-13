@@ -13,7 +13,6 @@ import 'package:elsadeken/core/helper/app_images.dart';
 
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../profile/widgets/profile_header.dart';
-import '../../../gender_filter.dart';
 import '../../../online_members/presentation/view/widgets/filter_buttom_sheet.dart';
 
 class PremiumMembersView extends StatefulWidget {
@@ -26,7 +25,6 @@ class PremiumMembersView extends StatefulWidget {
 }
 
 class _PremiumMembersViewState extends State<PremiumMembersView> {
-  String _activeFilter = 'all';
   String? _selectedCountryName;
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
@@ -78,29 +76,6 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
 
   Future<void> _onRefresh() async {
     context.read<MembersListCubit<UsersDataModel>>().fetch(page: 1);
-  }
-
-  List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
-    // Debug: Print unique gender values to help identify what the API returns
-    final uniqueGenders = allMembers.map((m) => m.gender).toSet();
-    print('🔍 Premium Members - Unique gender values from API: $uniqueGenders');
-
-    switch (_activeFilter) {
-      case 'males':
-        return allMembers.where((member) {
-          final gender = member.gender?.toLowerCase();
-          // Handle both Arabic and English gender values
-          return gender == 'ذكر' || gender == 'male' || gender == 'm';
-        }).toList();
-      case 'females':
-        return allMembers.where((member) {
-          final gender = member.gender?.toLowerCase();
-          // Handle both Arabic and English gender values
-          return gender == 'انثى' || gender == 'female' || gender == 'f';
-        }).toList();
-      default:
-        return allMembers;
-    }
   }
 
   @override
@@ -224,48 +199,6 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                       ),
                     ),
                     SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsetsDirectional.symmetric(
-                          horizontal: 24.0),
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF5F1E8),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
-                              child: GenderFilter(
-                                text: AppLocalizations.of(context)!.all,
-                                isActive: _activeFilter == 'all',
-                                onTap: () =>
-                                    setState(() => _activeFilter = 'all'),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: GenderFilter(
-                                text: AppLocalizations.of(context)!.males,
-                                isActive: _activeFilter == 'males',
-                                onTap: () =>
-                                    setState(() => _activeFilter = 'males'),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: GenderFilter(
-                                text: AppLocalizations.of(context)!.females,
-                                isActive: _activeFilter == 'females',
-                                onTap: () =>
-                                    setState(() => _activeFilter = 'females'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                     BlocBuilder<MembersListCubit<UsersDataModel>,
                         MembersListState<UsersDataModel>>(
                       builder: (context, state) {
@@ -302,8 +235,7 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                           );
                         }
                         if (state is MembersListLoaded<UsersDataModel>) {
-                          final allMembers = state.items;
-                          final items = _getFilteredMembers(allMembers);
+                          final items = state.items;
                           return Expanded(
                             child: Column(
                               children: [

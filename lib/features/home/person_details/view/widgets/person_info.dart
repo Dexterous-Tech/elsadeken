@@ -318,9 +318,27 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
           ),
           textDirection: LocalizationService.instance.textDirection,
         ),
-        const SizedBox(height: 8),
+        verticalSpace(8),
         Text(
           p.attribute.aboutMe,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
+            height: 1.5,
+          ),
+        ),
+        verticalSpace(16),
+        Text(
+          AppLocalizations.of(context)!.lifePartner,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+          textDirection: LocalizationService.instance.textDirection,
+        ),
+        verticalSpace(8),
+        Text(
+          p.attribute.lifePartner,
           style: const TextStyle(
             fontSize: 14,
             color: Colors.grey,
@@ -464,6 +482,38 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         'label': AppLocalizations.of(context)!.weight,
         'value': "${p.attribute.weight} ${AppLocalizations.of(context)!.kg}"
       },
+      {
+        'label': AppLocalizations.of(context)!.educationalQualification,
+        'value': p.attribute.qualification
+      },
+      {
+        'label': AppLocalizations.of(context)!.financialStatusTitle,
+        'value': p.attribute.financialSituation
+      },
+      {
+        'label': AppLocalizations.of(context)!.monthlyIncome,
+        'value': p.attribute.income
+      },
+      {
+        'label': AppLocalizations.of(context)!.healthStatus,
+        'value': p.attribute.healthCondition
+      },
+      {
+        'label': AppLocalizations.of(context)!.smoking,
+        'value': p.attribute.smoking
+      },
+      {
+        'label': AppLocalizations.of(context)!.religiousCommitment,
+        'value': p.attribute.religiousCommitment
+      },
+      {
+        'label': p.gender == 'male' || p.gender == 'ذكر'
+            ? AppLocalizations.of(context)!.beard
+            : AppLocalizations.of(context)!.hijab,
+        'value': p.gender == 'male' || p.gender == 'ذكر'
+            ? p.attribute.beard
+            : p.attribute.hijab,
+      },
     ];
 
     return Container(
@@ -528,7 +578,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          item['value']!,
+                          item['value']!.isEmpty
+                              ? AppLocalizations.of(context)!.noData
+                              : item['value']!,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Color.fromARGB(255, 46, 34, 30),

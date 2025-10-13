@@ -7,7 +7,6 @@ import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
 import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
 import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
-import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/custom_container.dart';
@@ -15,11 +14,9 @@ import 'package:elsadeken/features/profile/profile_details/presentation/view/wid
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_logo.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
-
+import 'package:share_plus/share_plus.dart';
 import '../../../../../../core/routes/app_routes.dart';
 import '../../../../../chat/data/models/chat_room_model.dart';
 import '../../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
@@ -87,20 +84,43 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                         current is ShareUserSuccess,
                     listener: (context, state) {
                       if (state is ShareUserLoading) {
-                        loadingDialog(context);
+                        // loadingDialog(context);
                       } else if (state is ShareUserFailure) {
                         context.pop();
                         errorDialog(context: context, error: state.error);
-                      } else if (state is ShareUserSuccess) {
-                        context.pop();
-                        _showShareSuccessDialog(
-                          context: context,
-                          message:
-                              state.profileDetailsActionResponseModel.message ??
-                                  'تم انشاء رابط مشاركة',
-                          shareUrl: state
-                              .profileDetailsActionResponseModel.data?.shareUrl,
-                        );
+                      }
+                      // else if (state is ShareUserSuccess) {
+                      //   context.pop();
+                      //   _showShareSuccessDialog(
+                      //     context: context,
+                      //     message: state
+                      //             .profileDetailsActionResponseModel.message ??
+                      //         AppLocalizations.of(context)!.shareLinkCreated,
+                      //     shareUrl: state
+                      //         .profileDetailsActionResponseModel.data?.shareUrl,
+                      //   );
+                      // }
+                      else if (state is ShareUserSuccess) {
+                        // context.pop(); // close loading dialog if open
+
+                        final shareUrl = state
+                            .profileDetailsActionResponseModel.data?.shareUrl;
+
+                        if (shareUrl != null && shareUrl.isNotEmpty) {
+                          // ✅ New API syntax
+                          SharePlus.instance.share(
+                            ShareParams(
+                              text:
+                                  '${AppLocalizations.of(context)!.checkOutProfile}: \n$shareUrl',
+                              subject: 'User Profile',
+                            ),
+                          );
+                        } else {
+                          errorDialog(
+                              context: context,
+                              error: AppLocalizations.of(context)!
+                                  .noShareLinkAvailable);
+                        }
                       }
                     },
                     child: CustomContainer(
@@ -250,7 +270,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                                       color: Colors.grey.withValues(alpha: 0.3),
                                       text:
                                           AppLocalizations.of(context)!.ignore,
-                                      onTap: null, // Disable tap when favorited
+                                      onTap: null,
                                     ),
                                   )
                                 : CustomContainer(
@@ -270,9 +290,6 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                   GestureDetector(
                     onTap: () async {
                       try {
-                        print(
-                            '🔍 [ProfileDetails] Message icon tapped for user ID: ${widget.userId}');
-
                         // Check if there's an existing chat room first
                         final chatListCubit = context.read<ChatListCubit>();
 
@@ -280,24 +297,18 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
 
                         // Check if chat list is already loaded, if not, load it
                         if (chatListCubit.state is! ChatListLoaded) {
-                          print(
-                              '🔄 [ProfileDetails] Chat list not loaded, loading now...');
                           await chatListCubit.forceRefreshChatList();
 
                           // Wait a bit for the state to update
                           await Future.delayed(
                               const Duration(milliseconds: 500));
-                        } else {
-                          print('✅ [ProfileDetails] Chat list already loaded');
-                        }
+                        } else {}
 
                         // Find existing chat room between current user and this profile user
                         final existingChatRoom =
                             chatListCubit.findExistingChatRoom(widget.userId);
 
                         if (existingChatRoom != null) {
-                          print(
-                              '✅ [ProfileDetails] Found existing chat room: ${existingChatRoom.id}, navigating to it');
                           // Navigate to existing chat room
                           if (context.mounted) {
                             Navigator.pushNamed(
@@ -310,8 +321,6 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                           }
                         } else {
                           if (context.mounted) {
-                            print(
-                                '🆕 [ProfileDetails] No existing chat room found, creating new temporary chat');
                             // Get user data from the current state if available
                             final cubit = context.read<ProfileDetailsCubit>();
                             final state = cubit.state;
@@ -347,8 +356,6 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                           }
                         }
                       } catch (e) {
-                        print(
-                            '❌ [ProfileDetails] Error in message icon onTap: $e');
                         // Fallback to creating new chat
                         if (context.mounted) {
                           Navigator.pushNamed(
@@ -429,144 +436,153 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
     );
   }
 
-  void _showShareSuccessDialog({
-    required BuildContext context,
-    required String message,
-    String? shareUrl,
-  }) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, result) {
-          if (!didPop) {
-            Navigator.pop(context, true);
-          }
-        },
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            backgroundColor: Colors.transparent,
-            child: Container(
-              width: 370,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              decoration: ShapeDecoration(
-                color: AppColors.white,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.transparent),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Success icon
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                      size: 50,
-                    ),
-                  ),
-                  verticalSpace(20),
-
-                  // Success message
-                  Text(
-                    message,
-                    textAlign: TextAlign.center,
-                    textDirection: TextDirection.rtl,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  verticalSpace(20),
-
-                  // Share URL display (if available)
-                  if (shareUrl != null && shareUrl.isNotEmpty) ...[
-                    GestureDetector(
-                      onTap: () async {
-                        try {
-                          await Clipboard.setData(
-                              ClipboardData(text: shareUrl));
-                          if (context.mounted) {
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'تم نسخ الرابط بنجاح!',
-                                  textDirection: TextDirection.rtl,
-                                ),
-                                backgroundColor: Colors.green,
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          }
-                        } catch (e) {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'خطأ في نسخ الرابط: $e',
-                                  textDirection: TextDirection.rtl,
-                                ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.link,
-                            color: Colors.blue,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'أنسخ رابط المشاركة',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    verticalSpace(20),
-                  ],
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: CustomElevatedButton(
-                      onPressed: () {
-                        context.pop();
-                      },
-                      textButton: AppLocalizations.of(context)!.continueButton,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  // void _showShareSuccessDialog({
+  //   required BuildContext context,
+  //   required String message,
+  //   String? shareUrl,
+  // }) {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (context) => PopScope(
+  //       canPop: false,
+  //       onPopInvokedWithResult: (didPop, result) {
+  //         if (!didPop) {
+  //           Navigator.pop(context, true);
+  //         }
+  //       },
+  //       child: BackdropFilter(
+  //         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+  //         child: Dialog(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(20),
+  //           ),
+  //           backgroundColor: Colors.transparent,
+  //           child: Container(
+  //             width: 370,
+  //             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+  //             decoration: ShapeDecoration(
+  //               color: AppColors.white,
+  //               shape: RoundedRectangleBorder(
+  //                 side: BorderSide(color: Colors.transparent),
+  //                 borderRadius: BorderRadius.circular(20),
+  //               ),
+  //             ),
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               crossAxisAlignment: CrossAxisAlignment.center,
+  //               textDirection: LocalizationService.instance.textDirection,
+  //               children: [
+  //                 // Success icon
+  //                 Container(
+  //                   width: 80,
+  //                   height: 80,
+  //                   decoration: BoxDecoration(
+  //                     color: Colors.green.withValues(alpha: 0.1),
+  //                     shape: BoxShape.circle,
+  //                   ),
+  //                   child: const Icon(
+  //                     Icons.check_circle,
+  //                     color: Colors.green,
+  //                     size: 50,
+  //                   ),
+  //                 ),
+  //                 verticalSpace(20),
+  //
+  //                 // Success message
+  //                 Text(
+  //                   message,
+  //                   textAlign: TextAlign.center,
+  //                   textDirection: LocalizationService.instance.textDirection,
+  //                   style: const TextStyle(
+  //                     fontSize: 18,
+  //                     fontWeight: FontWeight.w600,
+  //                     color: Colors.black87,
+  //                   ),
+  //                 ),
+  //                 verticalSpace(20),
+  //
+  //                 // Share URL display (if available)
+  //                 if (shareUrl != null && shareUrl.isNotEmpty) ...[
+  //                   GestureDetector(
+  //                     onTap: () async {
+  //                       try {
+  //                         await Clipboard.setData(
+  //                             ClipboardData(text: shareUrl));
+  //                         if (context.mounted) {
+  //                           Navigator.pop(context);
+  //                           ScaffoldMessenger.of(context).showSnackBar(
+  //                             SnackBar(
+  //                               content: Text(
+  //                                 AppLocalizations.of(context)!.linkedCopied,
+  //                                 textDirection: LocalizationService
+  //                                     .instance.textDirection,
+  //                                 textAlign: LocalizationService
+  //                                     .instance.textAlignment,
+  //                               ),
+  //                               backgroundColor: Colors.green,
+  //                               duration: Duration(seconds: 2),
+  //                             ),
+  //                           );
+  //                         }
+  //                       } catch (e) {
+  //                         if (context.mounted) {
+  //                           ScaffoldMessenger.of(context).showSnackBar(
+  //                             SnackBar(
+  //                               content: Text(
+  //                                 '${AppLocalizations.of(context)!.errorCopyLink} : $e',
+  //                                 textDirection: LocalizationService
+  //                                     .instance.textDirection,
+  //                                 textAlign: LocalizationService
+  //                                     .instance.textAlignment,
+  //                               ),
+  //                               backgroundColor: Colors.red,
+  //                             ),
+  //                           );
+  //                         }
+  //                       }
+  //                     },
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.center,
+  //                       textDirection:
+  //                           LocalizationService.instance.textDirection,
+  //                       children: [
+  //                         const Icon(
+  //                           Icons.link,
+  //                           color: Colors.blue,
+  //                           size: 24,
+  //                         ),
+  //                         const SizedBox(width: 8),
+  //                         Text(
+  //                           AppLocalizations.of(context)!.copySharingLink,
+  //                           style: const TextStyle(
+  //                             fontSize: 16,
+  //                             fontWeight: FontWeight.w600,
+  //                             color: Colors.black87,
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                   verticalSpace(20),
+  //                 ],
+  //
+  //                 SizedBox(
+  //                   width: double.infinity,
+  //                   child: CustomElevatedButton(
+  //                     onPressed: () {
+  //                       context.pop();
+  //                     },
+  //                     textButton: AppLocalizations.of(context)!.continueButton,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

@@ -104,7 +104,8 @@ class ProfileDetailsData extends StatelessWidget {
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: AppLocalizations.of(context)!.financialStatus,
+                    itemTitle:
+                        AppLocalizations.of(context)!.financialStatusTitle,
                     itemSubTitle: _getFinancialStatus(state, context),
                     loading: isLoading,
                   ),

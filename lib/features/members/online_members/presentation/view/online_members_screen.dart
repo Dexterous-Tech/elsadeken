@@ -15,7 +15,6 @@ import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_list
 
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../profile/widgets/profile_header.dart';
-import '../../../gender_filter.dart';
 
 class OnlineMembersView extends StatefulWidget {
   const OnlineMembersView({super.key});
@@ -25,10 +24,8 @@ class OnlineMembersView extends StatefulWidget {
 }
 
 class _OnlineMembersViewState extends State<OnlineMembersView> {
-  String _activeFilter = 'all';
   int? _selectedCountryId;
   String _selectedCountryName = '';
-  List<UsersDataModel> _allMembers = [];
   ScrollController? _scrollController;
   bool _isLoadingMore = false;
 
@@ -70,47 +67,6 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
             _scrollController!.position.maxScrollExtent - 200) {
       _loadMoreUsers(context);
     }
-  }
-
-  // Future<void> _onRefresh() async {
-  //   // We'll handle this in the build method where context is available
-  // }
-
-  List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
-    // Debug: Print unique gender values to help identify what the API returns
-    final uniqueGenders = allMembers.map((m) => m.gender).toSet();
-    print('🔍 Online Members - Unique gender values from API: $uniqueGenders');
-
-    switch (_activeFilter) {
-      case 'males':
-        return allMembers.where((member) {
-          final gender = member.gender?.toLowerCase();
-          // Handle both Arabic and English gender values
-          return gender == 'ذكر' || gender == 'male' || gender == 'm';
-        }).toList();
-      case 'females':
-        return allMembers.where((member) {
-          final gender = member.gender?.toLowerCase();
-          // Handle both Arabic and English gender values
-          return gender == 'انثى' || gender == 'female' || gender == 'f';
-        }).toList();
-      default:
-        return allMembers;
-    }
-  }
-
-  void _applyFilters() {
-    // This method is now handled by the BlocBuilder in the UI
-    // The filtering is done in _getFilteredMembers method
-    setState(() {
-      // Trigger rebuild to apply filters
-    });
-  }
-
-  void _onGenderFilterChanged(String filter) {
-    setState(() {
-      _activeFilter = filter;
-    });
   }
 
   void _onCountryFilterChanged(Map<String, dynamic> filterData) {
@@ -271,48 +227,6 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 16),
-                        Padding(
-                          padding: const EdgeInsetsDirectional.symmetric(
-                              horizontal: 24.0),
-                          child: Container(
-                            padding: EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF5F1E8),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: GenderFilter(
-                                    text: AppLocalizations.of(context)!.all,
-                                    isActive: _activeFilter == 'all',
-                                    onTap: () => _onGenderFilterChanged('all'),
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: GenderFilter(
-                                    text: AppLocalizations.of(context)!.males,
-                                    isActive: _activeFilter == 'males',
-                                    onTap: () =>
-                                        _onGenderFilterChanged('males'),
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: GenderFilter(
-                                    text: AppLocalizations.of(context)!.females,
-                                    isActive: _activeFilter == 'females',
-                                    onTap: () =>
-                                        _onGenderFilterChanged('females'),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                         if (_selectedCountryName.isNotEmpty &&
                             _selectedCountryName != 'all')
                           Padding(
@@ -339,7 +253,6 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                       _selectedCountryId = null;
                                       _selectedCountryName = '';
                                     });
-                                    _applyFilters();
                                   },
                                   child: Text(
                                     AppLocalizations.of(context)!.clearFilter,
@@ -385,8 +298,7 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                               );
                             }
                             if (state is MembersListLoaded<UsersDataModel>) {
-                              _allMembers = state.items;
-                              final items = _getFilteredMembers(_allMembers);
+                              final items = state.items;
                               return Expanded(
                                 child: Column(
                                   children: [

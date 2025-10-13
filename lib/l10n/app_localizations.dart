@@ -3916,6 +3916,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Country of residence'**
   String get country_residence;
+
+  /// No description provided for @shareLinkCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Share link created'**
+  String get shareLinkCreated;
+
+  /// No description provided for @linkedCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied successfully!'**
+  String get linkedCopied;
+
+  /// No description provided for @errorCopyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Error copying link'**
+  String get errorCopyLink;
+
+  /// No description provided for @copySharingLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the share link'**
+  String get copySharingLink;
+
+  /// No description provided for @checkOutProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out this profile'**
+  String get checkOutProfile;
+
+  /// No description provided for @noShareLinkAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No share link available'**
+  String get noShareLinkAvailable;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

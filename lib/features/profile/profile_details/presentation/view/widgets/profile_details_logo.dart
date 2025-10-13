@@ -27,7 +27,6 @@ class ProfileDetailsLogo extends StatelessWidget {
         String age = AppLocalizations.of(context)!.noData;
         bool isLoading = state is GetProfileDetailsLoading;
         bool isFeatured = false;
-        bool isOnline = false;
 
         if (state is GetProfileDetailsSuccess) {
           final userData = state.profileDetailsResponseModel.data;
@@ -50,7 +49,6 @@ class ProfileDetailsLogo extends StatelessWidget {
 
             // Check if user is featured
             isFeatured = userData.isFeatured == 1;
-            isOnline = userData.isOnline == true;
           }
         }
 
@@ -76,26 +74,6 @@ class ProfileDetailsLogo extends StatelessWidget {
                             image: image,
                             width: 145.w,
                             height: 145.h,
-                          ),
-                        ),
-                        Positioned(
-                          right: -10,
-                          top: 0,
-                          bottom: -50,
-                          child: Container(
-                            width: 28.w,
-                            height: 28.h,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color:
-                                  isOnline ? AppColors.green : AppColors.gray,
-                              border: isOnline
-                                  ? Border.all(
-                                      color: Colors.white,
-                                      width: 1,
-                                    )
-                                  : null,
-                            ),
                           ),
                         ),
                         if (isFeatured)
