@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
@@ -21,7 +22,7 @@ class ChatOptionsCard extends StatelessWidget {
       margin: EdgeInsets.all(16.w),
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7D4D8),
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
@@ -31,44 +32,48 @@ class ChatOptionsCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Message Settings
-          _buildOptionItem(
-            imageIcon: AppImages.settingsIcon,
-            text: AppLocalizations.of(context)!.messageSettings,
-            iconColor: Colors.grey.shade100,
-            onTap: () {
-              Navigator.pushNamed(context, AppRoutes.chatSettingsScreen);
-            },
-          ),
-
-          Divider(height: 1.h, color: Colors.grey[300]),
-
-          // Delete Chats
-          _buildOptionItem(
-            imageIcon: AppImages.deleteChatIcon,
-            text: AppLocalizations.of(context)!.deleteAllChats,
-            iconColor: Colors.blue,
-            onTap: () {
-              _showDeleteAllChatsConfirmationDialog(context);
-            },
-          ),
-
-          Divider(height: 1.h, color: Colors.grey[300]),
-
-          // Mark All as Read
-          _buildOptionItem(
-            imageIcon: AppImages.readChatIcon,
-            text: AppLocalizations.of(context)!.markAllAsRead,
-            iconColor: Colors.green,
-            onTap: () {
-              // Show confirmation dialog
-              _showMarkAllAsReadConfirmationDialog(context);
-            },
-          ),
-        ],
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Message Settings
+            _buildOptionItem(
+              imageIcon: AppImages.settingsIcon,
+              text: AppLocalizations.of(context)!.messageSettings,
+              iconColor: Colors.grey.shade100,
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.chatSettingsScreen);
+              },
+            ),
+            verticalSpace(10),
+            Divider(height: 1.h, color: Colors.grey[300]),
+            verticalSpace(8),
+            // Delete Chats
+            _buildOptionItem(
+              imageIcon: AppImages.deleteChatIcon,
+              text: AppLocalizations.of(context)!.deleteAllChats,
+              iconColor: Colors.blue,
+              onTap: () {
+                _showDeleteAllChatsConfirmationDialog(context);
+              },
+            ),
+            verticalSpace(10),
+            Divider(height: 1.h, color: Colors.grey[300]),
+            verticalSpace(8),
+            // Mark All as Read
+            _buildOptionItem(
+              imageIcon: AppImages.readChatIcon,
+              text: AppLocalizations.of(context)!.markAllAsRead,
+              iconColor: Colors.green,
+              onTap: () {
+                // Show confirmation dialog
+                _showMarkAllAsReadConfirmationDialog(context);
+              },
+            ),
+            verticalSpace(10),
+          ],
+        ),
       ),
     );
   }
@@ -82,31 +87,31 @@ class ChatOptionsCard extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8.r),
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
-        child: Row(
-          children: [
-            Image.asset(
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(80),
+            child: Image.asset(
               imageIcon,
-              width: 28.w,
-              height: 28.h,
+              width: 25.w,
+              height: 25.h,
             ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Text(
-                text,
-                style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
-                  color: AppColors.darkerBlue,
-                ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Text(
+              text,
+              style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
+                color: AppColors.darkerBlue,
               ),
             ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.black,
-              size: 16.sp,
-            ),
-          ],
-        ),
+          ),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.black,
+            size: 16.sp,
+          ),
+        ],
       ),
     );
   }
@@ -232,6 +237,7 @@ class ChatOptionsCard extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           alignment: Alignment.center,
+          backgroundColor: AppColors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
           ),
@@ -245,55 +251,50 @@ class ChatOptionsCard extends StatelessWidget {
             style: AppTextStyles.font16BlackSemiBoldLamaSans,
             textAlign: TextAlign.center,
           ),
+          actionsAlignment: MainAxisAlignment.center,
           actions: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    AppLocalizations.of(context)!.cancel,
-                    style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                      color: Colors.grey[600],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                AppLocalizations.of(context)!.cancel,
+                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                  color: Colors.grey[600],
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    // Call the cubit method to delete all chats
-                    chatListCubit.deleteAllChats();
+                textAlign: TextAlign.center,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // Call the cubit method to delete all chats
+                chatListCubit.deleteAllChats();
 
-                    // Show success snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          AppLocalizations.of(context)!.delteDone,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.red,
-                        duration: const Duration(seconds: 3),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                // Show success snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      AppLocalizations.of(context)!.delteDone,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
                       ),
-                    );
-                  },
-                  child: Text(
-                    AppLocalizations.of(context)!.delete,
-                    style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                      color: Colors.red,
                     ),
-                    textAlign: TextAlign.center,
+                    backgroundColor: Colors.red,
+                    duration: const Duration(seconds: 3),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
+                );
+              },
+              child: Text(
+                AppLocalizations.of(context)!.delete,
+                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                  color: Colors.red,
                 ),
-              ],
+                textAlign: TextAlign.center,
+              ),
             )
           ],
         );

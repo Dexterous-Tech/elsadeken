@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -89,23 +90,41 @@ class ChatRoomItem extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Mute icon if chat is muted
+                if (_isChatReported())
+                  Container(
+                    margin: EdgeInsets.only(right: 4.w),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100).r,
+                      child: Image.asset(
+                        AppImages.blockedIcon,
+                        width: 25.w,
+                        height: 25.h,
+                      ),
+                    ),
+                  ),
                 if (_isChatMuted())
                   Container(
                     margin: EdgeInsets.only(right: 4.w),
-                    child: Icon(
-                      Icons.volume_off,
-                      size: 16.sp,
-                      color: Colors.grey[600],
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100).r,
+                      child: Image.asset(
+                        AppImages.mutedIcon,
+                        width: 25.w,
+                        height: 25.h,
+                      ),
                     ),
                   ),
                 // Favorite icon if chat is in favorites
                 if (chat.isFavorite)
                   Container(
                     margin: EdgeInsets.only(right: 4.w),
-                    child: Icon(
-                      Icons.star,
-                      size: 16.sp,
-                      color: Colors.amber,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100).r,
+                      child: Image.asset(
+                        AppImages.heartIcon,
+                        width: 25.w,
+                        height: 25.h,
+                      ),
                     ),
                   ),
                 SizedBox(
@@ -174,6 +193,7 @@ class ChatRoomItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
+        backgroundColor: Colors.white,
         title: Text(
           AppLocalizations.of(context)!.confirmDeletion,
           style: AppTextStyles.font23ChineseBlackBoldLamaSans,
@@ -266,6 +286,7 @@ class ChatRoomItem extends StatelessWidget {
             ),
           ],
         ),
+        actionsAlignment: MainAxisAlignment.center,
         actions: [
           TextButton(
             onPressed: () {
@@ -322,6 +343,8 @@ class ChatRoomItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
+        backgroundColor: Colors.white,
+        actionsAlignment: MainAxisAlignment.center,
         title: Text(
           isReported
               ? AppLocalizations.of(context)!.confirmUnreport
@@ -395,6 +418,7 @@ class ChatRoomItem extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
@@ -412,6 +436,7 @@ class ChatRoomItem extends StatelessWidget {
           style: AppTextStyles.font16BlackSemiBoldLamaSans,
           textAlign: TextAlign.center,
         ),
+        actionsAlignment: MainAxisAlignment.center,
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),

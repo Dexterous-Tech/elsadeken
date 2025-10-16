@@ -33,7 +33,7 @@ class NotificationListWidget extends StatelessWidget {
       onRefresh: () async {
         onRefresh?.call();
       },
-      color: Colors.deepOrange,
+      color: AppColors.darkSunray,
       child: ListView.builder(
         controller: scrollController,
         itemCount:

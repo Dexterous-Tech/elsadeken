@@ -357,10 +357,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get report => 'ابلاغ';
 
   @override
-  String get liked => 'تم الاعجاب';
+  String get liked => 'الغاء الاهتمام';
 
   @override
-  String get ignored => 'تم التجاهل';
+  String get ignored => 'فك التجاهل';
 
   @override
   String get reported => 'تم الابلاغ';
@@ -1552,7 +1552,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get textCannotContainLinks => 'لا يمكن أن يحتوي النص على روابط';
 
   @override
-  String get agreeToTermsAndConditions => 'أوافق على سياسة الخصوصية وضوابط الاستخدام';
+  String get agreeTo => 'أوافق على سياسة ';
+
+  @override
+  String get termsAndConditionsAgree => 'الخصوصية وضوابط الاستخدام';
 
   @override
   String get whatIsYourEducationalQualification => 'ما هو المؤهل التعليمي ؟';

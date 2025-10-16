@@ -22,19 +22,12 @@ class DeleteProfile extends StatelessWidget {
       child: Row(
         textDirection: LocalizationService.instance.textDirection,
         children: [
-          Container(
-            width: 50.w,
-            height: 50.h,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color(0xffFFEBEB),
-            ),
-            child: Center(
-              child: Image.asset(
-                AppImages.deleteProfile,
-                width: 35.w,
-                height: 35.h,
-              ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(50).r,
+            child: Image.asset(
+              AppImages.blockUserIcon,
+              width: 50.w,
+              height: 50.h,
             ),
           ),
           horizontalSpace(16),

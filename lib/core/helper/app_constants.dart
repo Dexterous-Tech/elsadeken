@@ -11,6 +11,7 @@ class AppConstants {
   static const String specialMembersPath = 'assets/images/special_members/';
   static const String blogPath = 'assets/images/blog/';
   static const String chatPath = 'assets/images/chat/';
+  static const String iconsPath = 'assets/images/icons/';
   static const String membersPath = 'assets/images/members/';
 
   static const String notificationAssetsPath = 'assets/images/notification/';

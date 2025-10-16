@@ -92,7 +92,16 @@ class MembersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.cosmicLatte,
+            AppColors.antiqueWhite,
+          ],
+        ),
+      ),
       child: Stack(
         alignment: Alignment.topCenter,
         children: [

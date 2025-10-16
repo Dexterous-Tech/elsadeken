@@ -196,8 +196,15 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         builder: (context, scrollController) {
           return Container(
             decoration: const BoxDecoration(
-              color: Colors.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.cosmicLatte,
+                  AppColors.antiqueWhite,
+                ],
+              ),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,

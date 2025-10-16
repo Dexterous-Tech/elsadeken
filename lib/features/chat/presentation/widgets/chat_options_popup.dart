@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -49,7 +50,7 @@ class ChatOptionsPopup extends StatelessWidget {
                 // Delete Chat
                 _buildOptionItem(
                   context,
-                  imagePath: 'assets/images/icons/trash.png',
+                  imagePath: AppImages.trashIcon,
                   text: AppLocalizations.of(context)!.deleteChat,
                   onTap: () {
                     Navigator.pop(context);
@@ -64,7 +65,7 @@ class ChatOptionsPopup extends StatelessWidget {
                 // Mute/Unmute
                 _buildOptionItem(
                   context,
-                  imagePath: 'assets/images/icons/mute.png',
+                  imagePath: AppImages.muteIcon,
                   text: isChatMuted
                       ? AppLocalizations.of(context)!.unmuteChat
                       : AppLocalizations.of(context)!.muteChat,
@@ -81,7 +82,7 @@ class ChatOptionsPopup extends StatelessWidget {
                 // Block User / Unreport User
                 _buildOptionItem(
                   context,
-                  imagePath: 'assets/images/icons/block-user.png',
+                  imagePath: AppImages.blockUserIcon,
                   text: isChatReported
                       ? AppLocalizations.of(context)!.unreportUser
                       : AppLocalizations.of(context)!.blockUser,
@@ -98,7 +99,7 @@ class ChatOptionsPopup extends StatelessWidget {
                 // Add to Favorites / Remove from Favorites
                 _buildOptionItem(
                   context,
-                  imagePath: 'assets/images/icons/heart.png',
+                  imagePath: AppImages.heartIcon,
                   text: _getFavoritesText(context),
                   onTap: () {
                     Navigator.pop(context);
@@ -171,12 +172,15 @@ class ChatOptionsPopup extends StatelessWidget {
                     ),
                   ),
                   horizontalSpace(16),
-                  Image.asset(
-                    imagePath,
-                    width: 24.w,
-                    height: 24.w,
-                    color: iconColor,
-                    fit: BoxFit.contain,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(100).r,
+                    child: Image.asset(
+                      imagePath,
+                      width: 37.w,
+                      height: 37.w,
+                      color: iconColor,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ],
               ),

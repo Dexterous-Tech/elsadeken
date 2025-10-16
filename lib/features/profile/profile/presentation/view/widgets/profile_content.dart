@@ -272,7 +272,7 @@ class _ProfileContentState extends State<ProfileContent> {
                             bottom: 19.h,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.white,
+                            color: AppColors.seashellColor,
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(40),
                               topRight: Radius.circular(40),
@@ -341,10 +341,14 @@ class _ProfileContentState extends State<ProfileContent> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [
-                                              Icon(
-                                                Icons.delete_forever,
-                                                size: 40,
-                                                color: AppColors.coralRed,
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(50).r,
+                                                child: Image.asset(
+                                                  AppImages.trashIcon,
+                                                  width: 44.w,
+                                                  height: 44.h,
+                                                ),
                                               ),
                                               horizontalSpace(16),
                                               Text(
@@ -370,10 +374,14 @@ class _ProfileContentState extends State<ProfileContent> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [
-                                              Image.asset(
-                                                AppImages.logoutIcon,
-                                                width: 44.w,
-                                                height: 44.h,
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(50).r,
+                                                child: Image.asset(
+                                                  AppImages.logoutIcon,
+                                                  width: 44.w,
+                                                  height: 44.h,
+                                                ),
                                               ),
                                               horizontalSpace(16),
                                               Text(
@@ -388,6 +396,8 @@ class _ProfileContentState extends State<ProfileContent> {
                                             ],
                                           ),
                                         ),
+
+                                        verticalSpace(80)
                                       ],
                                     ),
                                   ),

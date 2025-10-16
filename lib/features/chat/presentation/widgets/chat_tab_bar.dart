@@ -22,17 +22,16 @@ class ChatTabBar extends StatefulWidget {
 
 class _ChatTabBarState extends State<ChatTabBar> {
   List<String> get tabs => [
-    AppLocalizations.of(context)!.selectAll,
-    AppLocalizations.of(context)!.favoritesList
-  ];
+        AppLocalizations.of(context)!.selectAll,
+        AppLocalizations.of(context)!.favoritesList
+      ];
 
   @override
   Widget build(BuildContext context) {
     return Container(
-
       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
       decoration: BoxDecoration(
-        color: AppColors.lighterOrange,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(10).r,
       ),
       child: Row(
@@ -50,9 +49,7 @@ class _ChatTabBarState extends State<ChatTabBar> {
                 padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: isSelected
-                      ? AppColors.desire.withValues(alpha: 0.474)
-                      : Colors.transparent,
+                  color: isSelected ? AppColors.congoPink : Colors.transparent,
                 ),
                 child: Center(
                   child: Text(

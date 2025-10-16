@@ -26,7 +26,7 @@ class ManageProfileCard extends StatelessWidget {
       ),
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        color: AppColors.lightCarminePink.withValues(alpha: 0.05),
+        color: AppColors.white,
       ),
       child: Column(
         textDirection: LocalizationService.instance.textDirection,

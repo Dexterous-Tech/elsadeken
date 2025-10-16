@@ -13,7 +13,7 @@ class ContainerSuccessWay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.lighterOrange,
+      color: AppColors.white,
       padding: EdgeInsets.symmetric(vertical: 15.h),
       child: Center(
         child: Text(

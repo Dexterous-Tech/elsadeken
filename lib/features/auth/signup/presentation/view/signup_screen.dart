@@ -2,6 +2,7 @@ import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/theme/app_color.dart';
 import 'widgets/signup_body.dart';
 import 'package:flutter/material.dart';
 
@@ -73,9 +74,22 @@ class _SignupScreenState extends State<SignupScreen> {
           onTap: () {
             FocusScope.of(context).unfocus(); // Close keyboard
           },
-          child: SignupBody(
-            gender: _currentGender,
-            initialStep: _currentStep,
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.cosmicLatte,
+                  AppColors.antiqueWhite,
+                ],
+              ),
+            ),
+            child: SignupBody(
+              gender: _currentGender,
+              initialStep: _currentStep,
+            ),
           ),
         ),
       ),

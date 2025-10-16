@@ -1,18 +1,17 @@
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomContainer extends StatelessWidget {
   const CustomContainer({
     super.key,
     required this.img,
-    required this.color,
     required this.text,
     this.onTap,
   });
 
   final String text;
   final String img;
-  final Color color;
   final void Function()? onTap;
 
   @override
@@ -21,15 +20,13 @@ class CustomContainer extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: onTap,
-          child: Container(
-            width: 47,
-            height: 67,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: color,
-            ),
-            child: Image.asset(img),
-          ),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(100).r,
+              child: Image.asset(
+                img,
+                width: 47.w,
+                height: 47.h,
+              )),
         ),
         Text(
           text,

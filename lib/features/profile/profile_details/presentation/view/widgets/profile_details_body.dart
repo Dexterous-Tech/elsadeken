@@ -1,7 +1,6 @@
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
-import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/custom_arrow_back.dart';
 import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
@@ -74,7 +73,7 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
               verticalSpace(20),
               Row(
                 // spacing: 37.75,
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
@@ -125,7 +124,6 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                     },
                     child: CustomContainer(
                       img: AppImages.share,
-                      color: AppColors.lightBlue.withValues(alpha: 0.07),
                       text: AppLocalizations.of(context)!.share,
                       onTap: () {
                         context
@@ -175,7 +173,6 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                             opacity: 0.3,
                             child: CustomContainer(
                               img: AppImages.like,
-                              color: Colors.grey.withValues(alpha: 0.3),
                               text: AppLocalizations.of(context)!.interest,
                               onTap: null, // Disable tap when blocked
                             ),
@@ -185,17 +182,12 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                                 opacity: 0.3,
                                 child: CustomContainer(
                                   img: AppImages.like,
-                                  color: Colors.grey.withValues(alpha: 0.3),
                                   text: AppLocalizations.of(context)!.interest,
                                   onTap: null, // Disable tap when ignored
                                 ),
                               )
                             : CustomContainer(
                                 img: AppImages.like,
-                                color: (_currentUser?.isFavorite ?? false)
-                                    ? AppColors.green.withValues(alpha: 0.07)
-                                    : AppColors.lightPink
-                                        .withValues(alpha: 0.07),
                                 text: (_currentUser?.isFavorite ?? false)
                                     ? AppLocalizations.of(context)!.liked
                                     : AppLocalizations.of(context)!.interest,
@@ -247,137 +239,141 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                             opacity: 0.3,
                             child: CustomContainer(
                               img: AppImages.thumbDown,
-                              color: Colors.grey.withValues(alpha: 0.3),
                               text: AppLocalizations.of(context)!.reported,
                               onTap: null, // Disable tap when blocked
                             ),
                           )
-                        : (_currentUser?.isIgnore ?? false)
+                        : (_currentUser?.isFavorite ?? false)
                             ? Opacity(
                                 opacity: 0.3,
                                 child: CustomContainer(
                                   img: AppImages.thumbDown,
-                                  color: Colors.grey.withValues(alpha: 0.3),
                                   text: AppLocalizations.of(context)!.ignore,
-                                  onTap: null, // Disable tap when ignored
+                                  onTap: null,
                                 ),
                               )
-                            : (_currentUser?.isFavorite ?? false)
-                                ? Opacity(
-                                    opacity: 0.3,
-                                    child: CustomContainer(
-                                      img: AppImages.thumbDown,
-                                      color: Colors.grey.withValues(alpha: 0.3),
-                                      text:
-                                          AppLocalizations.of(context)!.ignore,
-                                      onTap: null,
-                                    ),
-                                  )
-                                : CustomContainer(
-                                    img: AppImages.thumbDown,
-                                    color: AppColors.lightPink
-                                        .withValues(alpha: 0.07),
-                                    text: (_currentUser?.isIgnore ?? false)
-                                        ? AppLocalizations.of(context)!.ignored
-                                        : AppLocalizations.of(context)!.ignore,
-                                    onTap: () {
-                                      context
-                                          .read<ProfileDetailsCubit>()
-                                          .ignoreUser(widget.userId);
-                                    },
-                                  ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      try {
-                        // Check if there's an existing chat room first
-                        final chatListCubit = context.read<ChatListCubit>();
-
-                        // Check if chat list is already loaded, if not, load it silently
-
-                        // Check if chat list is already loaded, if not, load it
-                        if (chatListCubit.state is! ChatListLoaded) {
-                          await chatListCubit.forceRefreshChatList();
-
-                          // Wait a bit for the state to update
-                          await Future.delayed(
-                              const Duration(milliseconds: 500));
-                        } else {}
-
-                        // Find existing chat room between current user and this profile user
-                        final existingChatRoom =
-                            chatListCubit.findExistingChatRoom(widget.userId);
-
-                        if (existingChatRoom != null) {
-                          // Navigate to existing chat room
-                          if (context.mounted) {
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.chatConversationScreen,
-                              arguments: {
-                                "chatRoom": existingChatRoom,
-                              },
-                            );
-                          }
-                        } else {
-                          if (context.mounted) {
-                            // Get user data from the current state if available
-                            final cubit = context.read<ProfileDetailsCubit>();
-                            final state = cubit.state;
-
-                            String userName = 'User';
-                            String userImage = '';
-
-                            if (state is GetProfileDetailsSuccess) {
-                              final userData =
-                                  state.profileDetailsResponseModel.data;
-                              if (userData != null) {
-                                userName = userData.name ?? 'User';
-                                userImage = userData.image ?? '';
-                              }
-                            } else if (widget.user != null) {
-                              // Fallback to passed user data if available
-                              userName = widget.user!.name ?? 'User';
-                              userImage = widget.user!.image ?? '';
-                            }
-
-                            // Create new temporary chat room for new conversation
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.chatConversationScreen,
-                              arguments: {
-                                "chatRoom": ChatRoomModel.fromUser(
-                                  userId: widget.userId,
-                                  userName: userName,
-                                  userImage: userImage,
-                                ),
-                              },
-                            );
-                          }
-                        }
-                      } catch (e) {
-                        // Fallback to creating new chat
-                        if (context.mounted) {
-                          Navigator.pushNamed(
-                            context,
-                            AppRoutes.chatConversationScreen,
-                            arguments: {
-                              "chatRoom": ChatRoomModel.fromUser(
-                                userId: widget.userId,
-                                userName: widget.user?.name ?? 'User',
-                                userImage: widget.user?.image ?? '',
+                            : CustomContainer(
+                                img: AppImages.thumbDown,
+                                text: (_currentUser?.isIgnore ?? false)
+                                    ? AppLocalizations.of(context)!.ignored
+                                    : AppLocalizations.of(context)!.ignore,
+                                onTap: () {
+                                  context
+                                      .read<ProfileDetailsCubit>()
+                                      .ignoreUser(widget.userId);
+                                },
                               ),
-                            },
-                          );
-                        }
-                      }
-                    },
-                    child: CustomContainer(
-                      img: AppImages.message,
-                      color: AppColors.orangeLight.withValues(alpha: 0.07),
-                      text: AppLocalizations.of(context)!.chats,
-                    ),
                   ),
+                  (_currentUser?.isBlocked ?? false)
+                      ? Opacity(
+                          opacity: 0.3,
+                          child: CustomContainer(
+                            img: AppImages.message,
+                            text: AppLocalizations.of(context)!.chats,
+                            onTap: null,
+                          ),
+                        )
+                      : (_currentUser?.isIgnore ?? false)
+                          ? Opacity(
+                              opacity: 0.3,
+                              child: CustomContainer(
+                                img: AppImages.message,
+                                text: AppLocalizations.of(context)!.chats,
+                                onTap: null,
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: () async {
+                                try {
+                                  // Check if there's an existing chat room first
+                                  final chatListCubit =
+                                      context.read<ChatListCubit>();
+
+                                  // Check if chat list is already loaded, if not, load it silently
+
+                                  // Check if chat list is already loaded, if not, load it
+                                  if (chatListCubit.state is! ChatListLoaded) {
+                                    await chatListCubit.forceRefreshChatList();
+
+                                    // Wait a bit for the state to update
+                                    await Future.delayed(
+                                        const Duration(milliseconds: 500));
+                                  } else {}
+
+                                  // Find existing chat room between current user and this profile user
+                                  final existingChatRoom = chatListCubit
+                                      .findExistingChatRoom(widget.userId);
+
+                                  if (existingChatRoom != null) {
+                                    // Navigate to existing chat room
+                                    if (context.mounted) {
+                                      Navigator.pushNamed(
+                                        context,
+                                        AppRoutes.chatConversationScreen,
+                                        arguments: {
+                                          "chatRoom": existingChatRoom,
+                                        },
+                                      );
+                                    }
+                                  } else {
+                                    if (context.mounted) {
+                                      // Get user data from the current state if available
+                                      final cubit =
+                                          context.read<ProfileDetailsCubit>();
+                                      final state = cubit.state;
+
+                                      String userName = 'User';
+                                      String userImage = '';
+
+                                      if (state is GetProfileDetailsSuccess) {
+                                        final userData = state
+                                            .profileDetailsResponseModel.data;
+                                        if (userData != null) {
+                                          userName = userData.name ?? 'User';
+                                          userImage = userData.image ?? '';
+                                        }
+                                      } else if (widget.user != null) {
+                                        // Fallback to passed user data if available
+                                        userName = widget.user!.name ?? 'User';
+                                        userImage = widget.user!.image ?? '';
+                                      }
+
+                                      // Create new temporary chat room for new conversation
+                                      Navigator.pushNamed(
+                                        context,
+                                        AppRoutes.chatConversationScreen,
+                                        arguments: {
+                                          "chatRoom": ChatRoomModel.fromUser(
+                                            userId: widget.userId,
+                                            userName: userName,
+                                            userImage: userImage,
+                                          ),
+                                        },
+                                      );
+                                    }
+                                  }
+                                } catch (e) {
+                                  // Fallback to creating new chat
+                                  if (context.mounted) {
+                                    Navigator.pushNamed(
+                                      context,
+                                      AppRoutes.chatConversationScreen,
+                                      arguments: {
+                                        "chatRoom": ChatRoomModel.fromUser(
+                                          userId: widget.userId,
+                                          userName: widget.user?.name ?? 'User',
+                                          userImage: widget.user?.image ?? '',
+                                        ),
+                                      },
+                                    );
+                                  }
+                                }
+                              },
+                              child: CustomContainer(
+                                img: AppImages.message,
+                                text: AppLocalizations.of(context)!.chats,
+                              ),
+                            ),
                   BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
                     listenWhen: (context, current) =>
                         current is ReportUserLoading ||
@@ -413,7 +409,6 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                     },
                     child: CustomContainer(
                       img: AppImages.block,
-                      color: AppColors.lightRed.withValues(alpha: 0.07),
                       text: (_currentUser?.isBlocked ?? false)
                           ? AppLocalizations.of(context)!.reported
                           : AppLocalizations.of(context)!.report,

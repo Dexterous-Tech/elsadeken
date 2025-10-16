@@ -7,6 +7,7 @@ import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:elsadeken/features/auth/signup/data/models/national_country_models.dart';
 import 'package:elsadeken/features/auth/signup/data/models/general_info_models.dart';
 import '../../../../../../core/di/injection_container.dart';
+import '../../../../../../core/theme/app_color.dart';
 
 class FilterHealthStatues extends StatefulWidget {
   const FilterHealthStatues({
@@ -83,17 +84,23 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
       create: (context) => sl<SignUpListsCubit>(),
       child: Directionality(
         textDirection: LocalizationService.instance.textDirection,
-        child: SafeArea(
-          top: false,
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: media.size.height * 0.7,
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: media.size.height * 0.5,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.cosmicLatte,
+                AppColors.antiqueWhite,
+              ],
             ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(20)),
-            ),
+          ),
+          child: SafeArea(
+            top: false,
             child: Column(
               textDirection: LocalizationService.instance.textDirection,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -408,10 +415,10 @@ class _SquareCheck extends StatelessWidget {
       width: 22,
       height: 22,
       decoration: BoxDecoration(
-        color: value ? const Color(0xFF22C55E) : Colors.white,
+        color: value ? AppColors.congoPink : Colors.white,
         borderRadius: BorderRadius.circular(6),
         border: Border.all(
-          color: value ? const Color(0xFF22C55E) : const Color(0xFFCDCDCD),
+          color: value ? AppColors.congoPink : const Color(0xFFCDCDCD),
           width: 1.4,
         ),
       ),

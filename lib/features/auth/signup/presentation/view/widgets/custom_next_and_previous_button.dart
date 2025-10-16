@@ -39,7 +39,7 @@ class CustomNextAndPreviousButton extends StatelessWidget {
           child: CustomElevatedButton(
             onPressed: onPreviousPressed,
             textButton: AppLocalizations.of(context)!.previous,
-            backgroundColor: AppColors.desire.withValues(alpha: 0.474),
+            backgroundColor: AppColors.congoPink,
           ),
         ),
       ],

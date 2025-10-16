@@ -6,19 +6,17 @@ import 'package:elsadeken/core/networking/api_services.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
-import 'package:elsadeken/core/routes/app_routes.dart';
 
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
-import 'package:elsadeken/core/widgets/forms/custom_text_form_field.dart';
 import 'package:elsadeken/features/home/home/presentation/view/widgets/home_header.dart';
 import 'package:elsadeken/features/home/home/presentation/view/widgets/swipeable_card.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/features/profile/profile/presentation/view/widgets/profile_body.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
-import 'package:elsadeken/features/search/presentation/cubit/search_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,6 +39,7 @@ class HomeScreenWrapper extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => sl<ProfileDetailsCubit>()),
         BlocProvider(create: (context) => sl<ChatListCubit>()),
+        BlocProvider(create: (context) => sl<SignUpListsCubit>()),
       ],
       child: HomeScreen(initialTabIndex: initialTabIndex),
     );
@@ -65,22 +64,15 @@ class _HomeScreenState extends State<HomeScreen> {
   List<UserModel> currentUsers = [];
   bool isLoading = true;
   String? errorMessage;
-  final TextEditingController _searchController = TextEditingController();
   int currentPage = 1;
   bool hasMore = true;
+  int? selectedCountryId; // null means "All"
+  final ScrollController _carouselController = ScrollController();
 
-  Timer? _debounce;
-
-  _onSearchChanged(String query) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-
-    _debounce = Timer(const Duration(milliseconds: 600), () {
-      Navigator.pushNamed(
-        context,
-        AppRoutes.searchResultScreen,
-        arguments: context.read<SearchCubit>(),
-      );
-    });
+  @override
+  void dispose() {
+    _carouselController.dispose();
+    super.dispose();
   }
 
   @override
@@ -95,19 +87,14 @@ class _HomeScreenState extends State<HomeScreen> {
       print('🏠 [HomeScreen] Initial tab index set to: $_currentIndex');
     }
 
+    // Load countries for filter
+    context.read<SignUpListsCubit>().getCountries();
+
     _loadMatchesUsers();
 
     // Load chat list so SwipeableCard can access existing chat rooms
     print('🏠 [HomeScreen] Initializing and loading chat list...');
     _loadChatList();
-
-    _focusNode.addListener(() {
-      setState(() {
-        showHistory = _focusNode.hasFocus && _searchController.text.isEmpty;
-        showSuggestions = _searchController.text.isNotEmpty;
-        if (_searchController.text.isNotEmpty) {}
-      });
-    });
   }
 
   /// Load chat list with proper error handling and logging
@@ -156,13 +143,21 @@ class _HomeScreenState extends State<HomeScreen> {
           isLoading = true;
           errorMessage = null;
           currentUsers = [];
+          currentPage = 1;
         });
       }
 
       final apiService = await ApiServices.init();
+
+      // Build query parameters
+      Map<String, dynamic> queryParams = {'page': currentPage};
+      if (selectedCountryId != null) {
+        queryParams['country_id'] = selectedCountryId;
+      }
+
       final response = await apiService.get(
         endpoint: ApiConstants.matchesUsers,
-        queryParameters: {'page': currentPage},
+        queryParameters: queryParams,
         requiresAuth: true,
       );
 
@@ -211,46 +206,28 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  final FocusNode _focusNode = FocusNode();
-
-  List<String> filteredResults = [];
-  bool showHistory = false;
-  bool showSuggestions = false;
-
-  Future<void> _onSwipe(bool isLike) async {
-    if (currentUsers.isEmpty) return;
-
-    final swipedUser = currentUsers[0];
-    final tempUsers = List<UserModel>.from(currentUsers);
-
+  void _onCountrySelected(int? countryId) {
     setState(() {
-      currentUsers.removeAt(0);
+      selectedCountryId = countryId;
     });
+    _loadMatchesUsers();
+  }
 
+  // Handler for like action in carousel mode
+  Future<void> _onCarouselLike(int userId) async {
     try {
-      if (isLike) {
-        context.read<ProfileDetailsCubit>().likeUser(swipedUser.id);
+      context.read<ProfileDetailsCubit>().likeUser(userId);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.likedMessage,
-                textAlign: TextAlign.center),
-            backgroundColor: Colors.green,
-            duration: Duration(milliseconds: 800),
-          ),
-        );
-      } else {
-        print("User ${swipedUser.id} removed by swipe left");
-      }
-
-      if (currentUsers.length < 3 && hasMore) {
-        _loadMatchesUsers(loadMore: true);
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.likedMessage,
+              textAlign: TextAlign.center),
+          backgroundColor: Colors.green,
+          duration: Duration(milliseconds: 800),
+        ),
+      );
     } catch (e) {
       print("error: $e");
-      setState(() {
-        currentUsers = tempUsers;
-      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.actionFailed,
@@ -265,91 +242,150 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget buildHomeContent() {
     return Container(
       decoration: BoxDecoration(
-          gradient: LinearGradient(
-        end: Alignment.bottomCenter,
-        begin: Alignment.topCenter,
-        colors: [
-          Color(0xffF8ECD6).withValues(alpha: 0.1),
-          Color(0xffF8ECD6),
-        ],
-      )),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.cosmicLatte,
+            AppColors.antiqueWhite,
+          ],
+        ),
+      ),
       child: SafeArea(
-        child: LayoutBuilder(builder: (context, constraints) {
-          return SingleChildScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: IntrinsicHeight(
-                child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
-                  child: Column(
-                    crossAxisAlignment:
-                        LocalizationService.instance.startCrossAxisAlignment,
-                    textDirection: LocalizationService.instance.textDirection,
-                    children: [
-                      Column(
-                        children: [
-                          BlocProvider(
-                            create: (context) => sl<ManageProfileCubit>(),
-                            child: HomeHeader(),
-                          ),
-                          SizedBox(height: 21.h),
-                          Padding(
-                            padding: EdgeInsetsDirectional.only(
-                                start: 12.w, end: 12.w),
-                            child: CustomTextFormField(
-                              focusNode: _focusNode,
-                              onChanged: (value) {
-                                context
-                                    .read<SearchCubit>()
-                                    .updateUsername(value);
-                                _onSearchChanged(value);
-                              },
-                              hintText: AppLocalizations.of(context)!.search,
-                              validator: (value) {},
-                              suffixIcon: GestureDetector(
-                                onTap: () {},
-                                child: Icon(
-                                  Icons.search,
-                                  color: Color(0xff949494),
-                                  size: 19,
-                                ),
-                              ),
-                              hintStyle: TextStyle(
-                                fontWeight: FontWeightHelper.regular,
-                                color: Color(0xff949494),
-                                fontSize: 16.sp,
-                                fontFamily: FontFamilyHelper.lamaSansArabic,
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0xff949494),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          textDirection: LocalizationService.instance.textDirection,
+          children: [
+            // Header
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
+              child: BlocProvider(
+                create: (context) => sl<ManageProfileCubit>(),
+                child: HomeHeader(),
+              ),
+            ),
+
+            // Country Filter
+            verticalSpace(16),
+            Padding(
+              padding: EdgeInsetsDirectional.symmetric(horizontal: 23.w),
+              child: Text(
+                AppLocalizations.of(context)!.selectCountry,
+                style: AppTextStyles.font20JetRegularLamaSans
+                    .copyWith(color: AppColors.black),
+                textAlign: LocalizationService.instance.textAlignment,
+                textDirection: LocalizationService.instance.textDirection,
+              ),
+            ),
+            verticalSpace(14),
+            BlocBuilder<SignUpListsCubit, SignUpListsState>(
+              builder: (context, state) {
+                if (state is CountriesSuccess) {
+                  return SizedBox(
+                    height: 40.h,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.symmetric(horizontal: 23.w),
+                      itemCount: state.countriesList.length + 1, // +1 for "All"
+                      itemBuilder: (context, index) {
+                        // First item is "All"
+                        if (index == 0) {
+                          final isSelected = selectedCountryId == null;
+                          return GestureDetector(
+                            onTap: () => _onCountrySelected(null),
+                            child: Container(
+                              margin: EdgeInsetsDirectional.only(end: 12.w),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w, vertical: 10.h),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Color(0xffDBAE48)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(10).r,
+                                border: Border.all(
+                                  color: Color(0xffE1E1E1),
                                   width: 1,
                                 ),
-                                borderRadius: BorderRadius.circular(8),
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0xff949494),
-                                  width: 1.w,
+                              child: Center(
+                                child: Text(
+                                  LocalizationService.instance.currentLocale
+                                              .languageCode ==
+                                          'ar'
+                                      ? 'الكل'
+                                      : 'All',
+                                  style: TextStyle(
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Color(0xffDBAE48),
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeightHelper.medium,
+                                    fontFamily: FontFamilyHelper.lamaSansArabic,
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                            ),
+                          );
+                        }
+
+                        // Country items
+                        final country = state.countriesList[index - 1];
+                        final isSelected = selectedCountryId == country.id;
+
+                        return GestureDetector(
+                          onTap: () => _onCountrySelected(country.id),
+                          child: Container(
+                            margin: EdgeInsetsDirectional.only(end: 12.w),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20.w, vertical: 10.h),
+                            decoration: BoxDecoration(
+                              color:
+                                  isSelected ? Color(0xffDBAE48) : Colors.white,
+                              borderRadius: BorderRadius.circular(10).r,
+                              border: Border.all(
+                                color: Color(0xffE1E1E1),
+                                width: 1,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                country.name ?? '',
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Color(0xffDBAE48),
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeightHelper.medium,
+                                  fontFamily: FontFamilyHelper.lamaSansArabic,
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(height: 16.h),
-                        ],
-                      ),
-                      if (isLoading)
-                        Center(child: CircularProgressIndicator())
-                      else if (errorMessage != null)
-                        Center(
+                        );
+                      },
+                    ),
+                  );
+                } else if (state is CountriesLoading) {
+                  return SizedBox(
+                    height: 50.h,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                return SizedBox.shrink();
+              },
+            ),
+
+            SizedBox(height: 20.h),
+
+            // Cards Carousel
+            Expanded(
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : errorMessage != null
+                      ? Center(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              verticalSpace(150),
                               Text(
                                 AppLocalizations.of(context)!
                                     .failedToLoadMatches,
@@ -365,70 +401,97 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                         )
-                      else if (currentUsers.isEmpty)
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            // crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              verticalSpace(150),
-                              Icon(Icons.favorite_outline,
-                                  size: 80.w, color: Colors.grey[400]),
-                              SizedBox(height: 16.h),
-                              Text(
-                                AppLocalizations.of(context)!.noNewMatches,
-                                style: TextStyle(
-                                    fontSize: 18.sp, color: Colors.grey[600]),
+                      : currentUsers.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.favorite_outline,
+                                      size: 80.w, color: Colors.grey[400]),
+                                  SizedBox(height: 16.h),
+                                  Text(
+                                    AppLocalizations.of(context)!.noNewMatches,
+                                    style: TextStyle(
+                                        fontSize: 18.sp,
+                                        color: Colors.grey[600]),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        )
-                      else
-                        Container(
-                          height: 600.h,
-                          margin: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: Stack(
-                            children: currentUsers
-                                .asMap()
-                                .entries
-                                .map((entry) {
-                                  final index = entry.key;
-                                  final user = entry.value;
-
-                                  final isTopCard = index == 0;
-                                  final isSecondCard = index == 1;
-
-                                  double scale = 1.0;
-                                  double verticalOffset = 0.0.h;
-
-                                  if (isSecondCard) {
-                                    scale = 0.95;
-                                    verticalOffset = 20.h;
-                                  } else if (!isTopCard) {
-                                    scale = 0.9;
-                                    verticalOffset = 40.h;
-                                  }
-
-                                  return SwipeableCard(
-                                    user: user,
-                                    onSwipe: isTopCard ? _onSwipe : null,
-                                    isTop: isTopCard,
-                                    scale: scale,
-                                    verticalOffset: verticalOffset,
+                            )
+                          : ListView.builder(
+                              controller: _carouselController,
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              itemCount:
+                                  currentUsers.length + (hasMore ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                // Load more button at the end
+                                if (index == currentUsers.length) {
+                                  return Center(
+                                    child: GestureDetector(
+                                      onTap: () =>
+                                          _loadMatchesUsers(loadMore: true),
+                                      child: Container(
+                                        width: 100.w,
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 8.w),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.refresh,
+                                              size: 40.w,
+                                              color: Color(0xffDBAE48),
+                                            ),
+                                            SizedBox(height: 8.h),
+                                            Text(
+                                              LocalizationService
+                                                          .instance
+                                                          .currentLocale
+                                                          .languageCode ==
+                                                      'ar'
+                                                  ? 'المزيد'
+                                                  : 'Load More',
+                                              style: TextStyle(
+                                                color: Color(0xffDBAE48),
+                                                fontSize: 14.sp,
+                                                fontWeight:
+                                                    FontWeightHelper.medium,
+                                                fontFamily: FontFamilyHelper
+                                                    .lamaSansArabic,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   );
-                                })
-                                .toList()
-                                .reversed
-                                .toList(),
-                          ),
-                        )
-                    ],
-                  ),
-                ),
-              ),
+                                }
+
+                                // User card
+                                final user = currentUsers[index];
+                                return Container(
+                                  width:
+                                      MediaQuery.of(context).size.width - 64.w,
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 8.w, vertical: 10.h),
+                                  child: SwipeableCard(
+                                    user: user,
+                                    onSwipe:
+                                        null, // Disable swipe in carousel mode
+                                    onLike:
+                                        _onCarouselLike, // Enable like in carousel mode
+                                    isTop: false, // Not swipeable
+                                    scale: 1.0,
+                                    verticalOffset: 0,
+                                  ),
+                                );
+                              },
+                            ),
             ),
-          );
-        }),
+          ],
+        ),
       ),
     );
   }
@@ -436,13 +499,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget getBody() {
     switch (_currentIndex) {
       case 0:
-        return GestureDetector(
-            behavior: HitTestBehavior
-                .translucent, // Ensures taps are detected on empty space
-            onTap: () {
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
-            child: buildHomeContent());
+        return buildHomeContent();
       case 1:
         return ChatPage();
       case 2:

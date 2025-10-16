@@ -171,17 +171,28 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                                   keyboardType: TextInputType.phone,
                                   hintText:
                                       AppLocalizations.of(context)!.phoneNumber,
-                                  onChanged: _validatePhone,
+                                  // onChanged: _validatePhone,
                                   inputFormatters: [
                                     FilteringTextInputFormatter
                                         .digitsOnly, // ✅ Only numbers
                                   ],
                                   borderColor: phoneErrorMessage != null
                                       ? AppColors.red
-                                      : AppColors
-                                          .brown, // Change border color based on error
-                                  validator: (value) =>
-                                      null, // Empty validator to prevent height changes
+                                      : AppColors.brown,
+                                  errorText: null, // removes default error
+                                  errorStyle: const TextStyle(height: 0),
+                                  validator: (value) {
+                                    if (!value.isNullOrEmpty() &&
+                                        value!.length < 8) {
+                                      setState(() {
+                                        phoneErrorMessage =
+                                            AppLocalizations.of(context)!
+                                                .phoneMinLength;
+                                      });
+                                      return null;
+                                    }
+                                    return null;
+                                  }, // Empty validator to prevent height changes
                                 ),
                               ),
                             ],

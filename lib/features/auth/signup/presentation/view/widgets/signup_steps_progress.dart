@@ -25,8 +25,8 @@ class SignupStepsProgress extends StatelessWidget {
         child: LinearProgressIndicator(
           value: progress,
           backgroundColor:
-              AppColors.seashell, // Or AppColor.gainsboro as in your example
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.philippineBronze),
+              AppColors.white, // Or AppColor.gainsboro as in your example
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.congoPink),
           minHeight: 10.h, // Using .h for responsive height
           borderRadius: BorderRadius.circular(100).r, // For rounded corners
         ),

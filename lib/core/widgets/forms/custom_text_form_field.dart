@@ -35,6 +35,8 @@ class CustomTextFormField extends StatelessWidget {
     this.inputFormatters,
     this.style,
     this.readOnly = false,
+    this.errorText,
+    this.errorStyle,
   });
 
   final String? hintText;
@@ -65,6 +67,8 @@ class CustomTextFormField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final TextStyle? style;
   final bool readOnly;
+  final String? errorText;
+  final TextStyle? errorStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +96,6 @@ class CustomTextFormField extends StatelessWidget {
         inputFormatters: inputFormatters,
         decoration: InputDecoration(
           hintTextDirection: LocalizationService.instance.textDirection,
-
           hintText: hintText,
           hintStyle: hintStyle ??
               AppTextStyles.font16PaleBrownRegularLamaSans.copyWith(
@@ -110,10 +113,12 @@ class CustomTextFormField extends StatelessWidget {
           fillColor: fillBackgroundColor ?? AppColors.snow,
           errorMaxLines: 3,
           // RTL error text styling
-          errorStyle: TextStyle(
-            fontSize: 12.sp,
-            color: Colors.red,
-          ),
+          errorStyle: errorStyle ??
+              TextStyle(
+                fontSize: 12.sp,
+                color: Colors.red,
+              ),
+          errorText: errorText,
           border: border ??
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16).r,

@@ -8,12 +8,16 @@ class CustomArrowBack extends StatelessWidget {
     this.onPressed,
     this.color,
     this.size,
+    this.shape,
+    this.sizeContainer,
   });
 
   final Color? background;
   final VoidCallback? onPressed;
   final Color? color;
   final double? size;
+  final BoxShape? shape;
+  final double? sizeContainer;
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +47,12 @@ class CustomArrowBack extends StatelessWidget {
         }
       },
       child: Container(
-        width: 30.w,
-        height: 30.h,
+        width: sizeContainer != null ? sizeContainer?.w : 30.w,
+        height: sizeContainer != null ? sizeContainer?.h : 30.h,
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
+          shape: shape ?? BoxShape.circle,
           color: background ?? Colors.transparent,
+          borderRadius: shape != null ? BorderRadius.circular(8).r : null,
         ),
         child: Center(
           child: Icon(

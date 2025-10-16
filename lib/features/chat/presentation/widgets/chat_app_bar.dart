@@ -32,7 +32,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xfffef6ee),
+      backgroundColor: const Color(0xffF0E7D6),
       elevation: 0,
       leading: CustomArrowBack(onPressed: onBack),
       title: BlocProvider<ChatMessagesCubit>(

@@ -31,6 +31,7 @@ class _LoginFormState extends State<LoginForm> {
     return Form(
       key: cubit.formKey,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start, // ✅ will flip in RTL
         textDirection: LocalizationService.instance.textDirection,
         children: [

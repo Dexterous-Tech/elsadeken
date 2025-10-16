@@ -63,20 +63,30 @@ class _NotificationSettingsContentState
     return Directionality(
       textDirection: LocalizationService.instance.textDirection, // K
       child: Scaffold(
-        backgroundColor: AppColors.white,
-        body: CustomProfileBody(
-          contentBody: Column(
-            crossAxisAlignment:
-                LocalizationService.instance.startCrossAxisAlignment,
-            textDirection: LocalizationService.instance.textDirection, // K
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.cosmicLatte,
+                AppColors.antiqueWhite,
+              ],
+            ),
+          ),
+          child: CustomProfileBody(
+            contentBody: Column(
+              crossAxisAlignment:
+                  LocalizationService.instance.startCrossAxisAlignment,
+              textDirection: LocalizationService.instance.textDirection, // K
 
-            children: [
-              _buildAppBar(),
-              SizedBox(height: 12.h),
-              Expanded(
-                child: _buildSettingsContent(),
-              ),
-            ],
+              children: [
+                _buildAppBar(),
+                SizedBox(height: 12.h),
+                _buildSettingsContent(),
+              ],
+            ),
           ),
         ),
       ),
@@ -89,6 +99,8 @@ class _NotificationSettingsContentState
       padding:
           EdgeInsetsDirectional.symmetric(horizontal: 16.w, vertical: 12.h),
       child: ProfileHeader(
+          sizeContainer: 40,
+          shape: BoxShape.rectangle,
           title: AppLocalizations.of(context)!.notificationSettings),
     );
   }
@@ -188,73 +200,71 @@ class _NotificationSettingsContentState
 
   Widget _buildSettingsList(List<Map<String, dynamic>> settings) {
     return Container(
+      height: 420.h,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(8.r),
-          topRight: Radius.circular(8.r),
-        ),
+        borderRadius: BorderRadius.circular(8).r,
       ),
-      child: ListView.separated(
-        shrinkWrap: true,
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-          vertical: 8.h,
-        ),
-        itemCount: settings.length,
-        separatorBuilder: (_, __) => Divider(
-          color: Colors.grey[300],
-          thickness: 1,
-          height: 16.h,
-        ),
-        itemBuilder: (context, index) {
-          final setting = settings[index];
-          return Transform.scale(
-            scale: 0.8,
-            child: SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                setting['title'] ?? '',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 8.h,
+      ),
+      child: Column(
+        children: [
+          for (int i = 0; i < settings.length; i++) ...[
+            Transform.scale(
+              scale: 0.8,
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  settings[i]['title'] ?? '',
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                  textDirection: LocalizationService.instance.textDirection,
                 ),
-                textDirection: LocalizationService.instance.textDirection,
+                value: settings[i]['value'] ?? false,
+                onChanged: (bool newValue) {
+                  final settingId = settings[i]['id'];
+                  if (settingId != null) {
+                    final localizations = AppLocalizations.of(context)!;
+
+                    String settingTitle =
+                        _getSettingTitle(settingId, localizations);
+                    String actionDescription = _getActionDescription(
+                        settingId, newValue, localizations);
+
+                    context
+                        .read<home.NotificationSettingsCubit>()
+                        .toggleNotificationSetting(
+                          settingId,
+                          newValue,
+                          settingTitle: settingTitle,
+                          actionDescription: actionDescription,
+                          noCurrentSettingsError:
+                              localizations.noCurrentSettingsFound,
+                          toggleError:
+                              localizations.failedToToggleNotificationSetting,
+                        );
+                  }
+                },
+                activeColor: AppColors.primaryOrange,
+                activeTrackColor:
+                    AppColors.primaryOrange.withValues(alpha: 0.3),
+                inactiveThumbColor: AppColors.white,
+                inactiveTrackColor: AppColors.grey,
               ),
-              value: setting['value'] ?? false,
-              onChanged: (bool newValue) {
-                final settingId = setting['id'];
-                if (settingId != null) {
-                  final localizations = AppLocalizations.of(context)!;
-
-                  // Get localized strings based on settingId and newValue
-                  String settingTitle =
-                      _getSettingTitle(settingId, localizations);
-                  String actionDescription =
-                      _getActionDescription(settingId, newValue, localizations);
-
-                  context
-                      .read<home.NotificationSettingsCubit>()
-                      .toggleNotificationSetting(
-                        settingId,
-                        newValue,
-                        settingTitle: settingTitle,
-                        actionDescription: actionDescription,
-                        noCurrentSettingsError:
-                            localizations.noCurrentSettingsFound,
-                        toggleError:
-                            localizations.failedToToggleNotificationSetting,
-                      );
-                }
-              },
-              activeColor: AppColors.primaryOrange,
-              activeTrackColor: AppColors.primaryOrange.withValues(alpha: 0.3),
-              inactiveThumbColor: AppColors.white,
-              inactiveTrackColor: AppColors.grey,
             ),
-          );
-        },
+            if (i != settings.length - 1)
+              Divider(
+                color: Colors.grey[300],
+                thickness: 1,
+                height: 16.h,
+              ),
+          ],
+        ],
       ),
     );
   }

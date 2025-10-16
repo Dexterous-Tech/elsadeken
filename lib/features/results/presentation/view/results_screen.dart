@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
@@ -68,7 +69,6 @@ class _SearchResultsViewState extends State<SearchResultsView> {
     return Directionality(
       textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
-        backgroundColor: Colors.white,
         body: CustomProfileBody(
           contentBody: BlocBuilder<SearchCubit, SearchState>(
             builder: (context, state) {
@@ -95,17 +95,13 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 12),
-                      color: Colors.white,
                       child: Text(
                         AppLocalizations.of(context)!
                             .resultsCount(results.length),
                         textAlign: LocalizationService.instance.textAlignment,
                         textDirection:
                             LocalizationService.instance.textDirection,
-                        style: const TextStyle(
-                            color: Color(0xFFD4AF37),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500),
+                        style: AppTextStyles.font14BlackSemiBoldLamaSans,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -122,7 +118,9 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                                   .read<SearchCubit>()
                                   .performSearch(page: 1);
                             },
-                            child: ListView.builder(
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) =>
+                                  verticalSpace(16),
                               controller: _scrollController,
                               itemCount:
                                   results.length + (_isLoadingMore ? 1 : 0),

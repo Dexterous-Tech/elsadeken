@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_app_bar.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
@@ -952,7 +953,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                     margin: EdgeInsets.only(right: 8.w),
                     child: IconButton(
                       icon: Image.asset(
-                        'assets/images/icons/send.png',
+                        AppImages.sendIcon,
                         width: 24.w,
                         height: 24.w,
                         color: AppColors.primaryOrange,

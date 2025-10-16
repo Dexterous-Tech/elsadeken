@@ -108,7 +108,7 @@ class _SignupJobState extends State<SignupJob> {
                       )
                     else
                       SignupMultiChoice(
-                        height: 170.h,
+                        height: 120.h,
                         title: AppLocalizations.of(context)!.whatIsYourJob,
                         options:
                             _jobsOptions.map((job) => job.name ?? '').toList(),
@@ -138,7 +138,7 @@ class _SignupJobState extends State<SignupJob> {
                       )
                     else
                       SignupMultiChoice(
-                        height: 170.h,
+                        height: 120.h,
                         title: AppLocalizations.of(context)!
                             .whatIsYourMonthlyIncome,
                         options: _incomesOptions
@@ -171,7 +171,7 @@ class _SignupJobState extends State<SignupJob> {
                       )
                     else
                       SignupMultiChoice(
-                        height: 170.h,
+                        height: 120.h,
                         title: AppLocalizations.of(context)!
                             .whatIsYourHealthStatus,
                         options: _healthOptions

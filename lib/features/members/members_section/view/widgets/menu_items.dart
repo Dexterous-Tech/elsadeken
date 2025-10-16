@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
   Widget build(BuildContext context) {
     // final isHighlighted = _isPressed;
     // final textColor = isHighlighted ? Colors.white : Colors.black;
-    final bgColor = _isPressed ? Color(0xffF0E7D6) : widget.backgroundColor;
+    final bgColor = _isPressed ? Color(0xffF0E7D6) : AppColors.white;
 
     return GestureDetector(
       onTap: () async {

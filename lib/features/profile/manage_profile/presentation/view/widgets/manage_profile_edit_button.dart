@@ -17,9 +17,9 @@ class ManageProfileEditButton extends StatelessWidget {
     return SizedBox(
         width: double.infinity,
         child: CustomElevatedButton(
-          backgroundColor: AppColors.desire.withValues(alpha: 0.474),
+          backgroundColor: AppColors.meatBrown,
           height: 50.h,
-          radius: 8,
+          radius: 30,
           onPressed: onPressed ?? () {},
           textButton: AppLocalizations.of(context)!.modify,
         ));

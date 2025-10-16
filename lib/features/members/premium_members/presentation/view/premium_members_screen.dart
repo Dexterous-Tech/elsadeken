@@ -91,237 +91,252 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
     return Directionality(
       textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Positioned(
-              top: 0,
-              left: -20,
-              child: Image.asset(
-                AppImages.starProfile,
-                width: 488.w,
-                height: 325.h,
-              ),
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.cosmicLatte,
+                AppColors.antiqueWhite,
+              ],
             ),
-            SafeArea(
-              child: BlocProvider<MembersListCubit<UsersDataModel>>(
-                create: (_) => cubit,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
-                      child: ProfileHeader(
-                          title: AppLocalizations.of(context)!.premiumMembers,
-                          titleStyle: AppTextStyles.font20WhiteBoldLamaSans
-                              .copyWith(color: AppColors.black)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsetsDirectional.all(24.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        textDirection:
-                            LocalizationService.instance.textDirection,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.premiumMembers,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          SizedBox(width: 20),
-                          GestureDetector(
-                            onTap: () async {
-                              final result = await showModalBottomSheet<
-                                  Map<String, dynamic>>(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) => FilterBottomSheet(
-                                  selectedCountryId:
-                                      null, // We'll use country name instead
-                                ),
-                              );
-                              if (result != null) {
-                                print(
-                                    '🔍 Premium Members Screen - Filter result: $result');
-                                setState(() {
-                                  _selectedCountryName =
-                                      result['name'] as String?;
-                                });
-                                print(
-                                    '🔍 Premium Members Screen - Selected country name: $_selectedCountryName');
-                                // Recreate cubit with country filter
-                                final newCubit =
-                                    MembersListCubit<UsersDataModel>(
-                                  ({int? page}) async {
-                                    print(
-                                        '🔍 Premium Members Screen - Creating new cubit with country: $_selectedCountryName');
-                                    final response =
-                                        await sl<MembersRepository>()
-                                            .getDistinguishedMembers(
-                                                countryName:
-                                                    _selectedCountryName);
-                                    return response.data ?? [];
-                                  },
-                                );
-                                // Push a new provider scope with updated loader
-                                if (context.mounted) {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (_) => BlocProvider<
-                                          MembersListCubit<UsersDataModel>>(
-                                        create: (_) => newCubit..fetch(),
-                                        child: PremiumMembersView(
-                                            countryName: _selectedCountryName),
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }
-                            },
-                            child: Row(
-                              textDirection:
-                                  LocalizationService.instance.textDirection,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.filter,
-                                  style: TextStyle(
-                                      color: Color(0xFFD4AF37), fontSize: 18),
-                                ),
-                                SizedBox(width: 6),
-                                Icon(Icons.arrow_forward_ios,
-                                    size: 16, color: Color(0xFFD4AF37)),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    BlocBuilder<MembersListCubit<UsersDataModel>,
-                        MembersListState<UsersDataModel>>(
-                      builder: (context, state) {
-                        if (state is MembersListLoading<UsersDataModel>) {
-                          return Padding(
-                            padding: EdgeInsets.only(top: 24),
-                            child: Center(
-                                child: CircularProgressIndicator(
-                              color: AppColors.beer,
-                            )),
-                          );
-                        }
-                        if (state is MembersListError<UsersDataModel>) {
-                          return Expanded(
-                            child: Center(
-                              child: Text(
-                                state.message,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                            ),
-                          );
-                        }
-                        if (state is MembersListEmpty<UsersDataModel>) {
-                          return Expanded(
-                            child: Center(
-                              child: Text(
-                                AppLocalizations.of(context)!.noPremiumMembers,
-                                textAlign: TextAlign.center,
-                                textDirection:
-                                    LocalizationService.instance.textDirection,
-                              ),
-                            ),
-                          );
-                        }
-                        if (state is MembersListLoaded<UsersDataModel>) {
-                          final items = state.items;
-                          return Expanded(
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 12),
-                                  color: Colors.white,
-                                  child: Text(
-                                    AppLocalizations.of(context)!
-                                        .premiumMembersCount(items.length),
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Color(0xFFD4AF37),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Expanded(
-                                  child: RefreshIndicator(
-                                    onRefresh: _onRefresh,
-                                    child: ListView.builder(
-                                      controller: _scrollController,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16),
-                                      itemCount: items.length +
-                                          (_isLoadingMore ? 1 : 0),
-                                      itemBuilder: (context, index) {
-                                        if (index == items.length &&
-                                            _isLoadingMore) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Center(
-                                              child: Column(
-                                                children: [
-                                                  CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                  ),
-                                                  const SizedBox(height: 8),
-                                                  Text(
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .loadingMore,
-                                                    textAlign: TextAlign.center,
-                                                    textDirection:
-                                                        LocalizationService
-                                                            .instance
-                                                            .textDirection,
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }
-
-                                        final m = items[index];
-                                        return Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 12),
-                                          child: ContainerItem(
-                                            favUser: m,
-                                            isSpecial: true,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                  ],
+          ),
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Positioned(
+                top: 0,
+                left: -20,
+                child: Image.asset(
+                  AppImages.starProfile,
+                  width: 488.w,
+                  height: 325.h,
                 ),
               ),
-            ),
-          ],
+              SafeArea(
+                child: BlocProvider<MembersListCubit<UsersDataModel>>(
+                  create: (_) => cubit,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        child: ProfileHeader(
+                            title: AppLocalizations.of(context)!.premiumMembers,
+                            titleStyle: AppTextStyles.font20WhiteBoldLamaSans
+                                .copyWith(color: AppColors.black)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsetsDirectional.all(24.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.premiumMembers,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            SizedBox(width: 20),
+                            GestureDetector(
+                              onTap: () async {
+                                final result = await showModalBottomSheet<
+                                    Map<String, dynamic>>(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) => FilterBottomSheet(
+                                    selectedCountryId:
+                                        null, // We'll use country name instead
+                                  ),
+                                );
+                                if (result != null) {
+                                  print(
+                                      '🔍 Premium Members Screen - Filter result: $result');
+                                  setState(() {
+                                    _selectedCountryName =
+                                        result['name'] as String?;
+                                  });
+                                  print(
+                                      '🔍 Premium Members Screen - Selected country name: $_selectedCountryName');
+                                  // Recreate cubit with country filter
+                                  final newCubit =
+                                      MembersListCubit<UsersDataModel>(
+                                    ({int? page}) async {
+                                      print(
+                                          '🔍 Premium Members Screen - Creating new cubit with country: $_selectedCountryName');
+                                      final response =
+                                          await sl<MembersRepository>()
+                                              .getDistinguishedMembers(
+                                                  countryName:
+                                                      _selectedCountryName);
+                                      return response.data ?? [];
+                                    },
+                                  );
+                                  // Push a new provider scope with updated loader
+                                  if (context.mounted) {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (_) => BlocProvider<
+                                            MembersListCubit<UsersDataModel>>(
+                                          create: (_) => newCubit..fetch(),
+                                          child: PremiumMembersView(
+                                              countryName:
+                                                  _selectedCountryName),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                              child: Row(
+                                textDirection:
+                                    LocalizationService.instance.textDirection,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.filter,
+                                    style: TextStyle(
+                                        color: Color(0xFFD4AF37), fontSize: 18),
+                                  ),
+                                  SizedBox(width: 6),
+                                  Icon(Icons.arrow_forward_ios,
+                                      size: 16, color: Color(0xFFD4AF37)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      BlocBuilder<MembersListCubit<UsersDataModel>,
+                          MembersListState<UsersDataModel>>(
+                        builder: (context, state) {
+                          if (state is MembersListLoading<UsersDataModel>) {
+                            return Padding(
+                              padding: EdgeInsets.only(top: 24),
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                color: AppColors.beer,
+                              )),
+                            );
+                          }
+                          if (state is MembersListError<UsersDataModel>) {
+                            return Expanded(
+                              child: Center(
+                                child: Text(
+                                  state.message,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            );
+                          }
+                          if (state is MembersListEmpty<UsersDataModel>) {
+                            return Expanded(
+                              child: Center(
+                                child: Text(
+                                  AppLocalizations.of(context)!
+                                      .noPremiumMembers,
+                                  textAlign: TextAlign.center,
+                                  textDirection: LocalizationService
+                                      .instance.textDirection,
+                                ),
+                              ),
+                            );
+                          }
+                          if (state is MembersListLoaded<UsersDataModel>) {
+                            final items = state.items;
+                            return Expanded(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 12),
+                                    child: Text(
+                                      AppLocalizations.of(context)!
+                                          .premiumMembersCount(items.length),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Color(0xFFD4AF37),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Expanded(
+                                    child: RefreshIndicator(
+                                      onRefresh: _onRefresh,
+                                      child: ListView.builder(
+                                        controller: _scrollController,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16),
+                                        itemCount: items.length +
+                                            (_isLoadingMore ? 1 : 0),
+                                        itemBuilder: (context, index) {
+                                          if (index == items.length &&
+                                              _isLoadingMore) {
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Center(
+                                                child: Column(
+                                                  children: [
+                                                    CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Text(
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .loadingMore,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      textDirection:
+                                                          LocalizationService
+                                                              .instance
+                                                              .textDirection,
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }
+
+                                          final m = items[index];
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 12),
+                                            child: ContainerItem(
+                                              favUser: m,
+                                              isSpecial: true,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

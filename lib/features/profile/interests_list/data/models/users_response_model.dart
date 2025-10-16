@@ -106,9 +106,9 @@ class UsersDataModel {
     isFavorite = json['is_favorite'] == true ||
         json['is_favorite'] == 'true' ||
         json['is_favorite'] == 1;
-    isIgnore = json['is_ignore'] == true ||
-        json['is_ignore'] == 'true' ||
-        json['is_ignore'] == 1;
+    isIgnore = json['is_ignored'] == true ||
+        json['is_ignored'] == 'true' ||
+        json['is_ignored'] == 1;
     isBlocked = json['is_blocked'] == true ||
         json['is_blocked'] == 'true' ||
         json['is_blocked'] == 1;
@@ -156,7 +156,7 @@ class UsersDataModel {
     map['visited_at_date'] = visitedAtDate;
     map['visited_at_time'] = visitedAtTime;
     map['is_favorite'] = isFavorite;
-    map['is_ignore'] = isIgnore;
+    map['is_ignored'] = isIgnore;
     map['is_blocked'] = isBlocked;
     map['is_online'] = isOnline;
     map['attribute'] = attribute;

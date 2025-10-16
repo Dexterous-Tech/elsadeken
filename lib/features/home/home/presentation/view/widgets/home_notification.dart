@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/features/home/notification/notification/presentation/manager/notification_count_cubit.dart';
@@ -40,19 +41,12 @@ class _HomeNotificationState extends State<HomeNotification> {
       clipBehavior: Clip.none,
       children: [
         GestureDetector(
-          child: Container(
-            width: 47.w,
-            height: 47.h,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color(0xffFCF8F5),
-            ),
-            child: Center(
-              child: Image.asset(
-                'assets/images/home/home_notification.png',
-                width: 22.w,
-                height: 20.h,
-              ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(50),
+            child: Image.asset(
+              AppImages.homeNotification,
+              width: 47.w,
+              height: 47.h,
             ),
           ),
           onTap: () async {
@@ -76,7 +70,7 @@ class _HomeNotificationState extends State<HomeNotification> {
           },
         ),
         Positioned(
-          bottom: -2.w,
+          bottom: 0,
           right: 0.h,
           child: BlocBuilder<NotificationCountCubit, NotificationCountState>(
             buildWhen: (context, current) =>
@@ -85,8 +79,8 @@ class _HomeNotificationState extends State<HomeNotification> {
                 current is NotificationCountSuccess,
             builder: (context, state) {
               return Container(
-                width: 20.w,
-                height: 20.h,
+                width: 14.w,
+                height: 14.h,
                 decoration:
                     BoxDecoration(shape: BoxShape.circle, color: AppColors.red),
                 child: Center(

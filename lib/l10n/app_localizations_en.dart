@@ -357,10 +357,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get report => 'Report';
 
   @override
-  String get liked => 'Liked';
+  String get liked => 'Cancel interest';
 
   @override
-  String get ignored => 'Ignored';
+  String get ignored => 'Untangle';
 
   @override
   String get reported => 'Reported';
@@ -1551,7 +1551,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get textCannotContainLinks => 'Text cannot contain links';
 
   @override
-  String get agreeToTermsAndConditions => 'I agree to the Privacy Policy and Terms of Use';
+  String get agreeTo => 'I agree to the policy of ';
+
+  @override
+  String get termsAndConditionsAgree => 'Privacy and Terms of Use';
 
   @override
   String get whatIsYourEducationalQualification => 'What is your educational qualification?';

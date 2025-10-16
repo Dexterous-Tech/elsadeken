@@ -30,7 +30,9 @@ class ProfileContentItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           textDirection: LocalizationService.instance.textDirection,
           children: [
-            Image.asset(image, width: 44.w, height: 44.h),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(50).r,
+                child: Image.asset(image, width: 44.w, height: 44.h)),
             horizontalSpace(16),
             Expanded(
               child: Text(

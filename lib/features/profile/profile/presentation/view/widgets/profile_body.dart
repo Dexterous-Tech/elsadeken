@@ -23,43 +23,40 @@ class ProfileBody extends StatelessWidget {
     return ListenableBuilder(
       listenable: LocalizationService.instance,
       builder: (context, child) {
-        return SafeArea(
-          child: Container(
-            color: AppColors.darkSunray,
-            child: BlocProvider(
-              create: (context) => sl<ProfileCubit>(),
-              child: Column(
-                crossAxisAlignment: LocalizationHelper.startCrossAxisAlignment,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 34.5.h),
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.personalAccount,
-                            style: AppTextStyles.font20WhiteBoldLamaSans,
-                          ),
-                          verticalSpace(19),
-                          BlocProvider(
-                            create: (context) => sl<ManageProfileCubit>(),
-                            child: ProfileDataLogo(),
-                          ),
-                        ],
-                      ),
+        return Container(
+          color: AppColors.darkSunray,
+          child: BlocProvider(
+            create: (context) => sl<ProfileCubit>(),
+            child: Column(
+              crossAxisAlignment: LocalizationHelper.startCrossAxisAlignment,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 50.5.h),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.personalAccount,
+                          style: AppTextStyles.font20WhiteBoldLamaSans,
+                        ),
+                        verticalSpace(19),
+                        BlocProvider(
+                          create: (context) => sl<ManageProfileCubit>(),
+                          child: ProfileDataLogo(),
+                        ),
+                      ],
                     ),
                   ),
-                  verticalSpace(15),
-                  Expanded(
-                    child: BlocProvider(
-                      create: (context) =>
-                          sl<NotificationSettingsProfileCubit>(),
-                      child: ProfileContent(),
-                    ),
+                ),
+                verticalSpace(15),
+                Expanded(
+                  child: BlocProvider(
+                    create: (context) => sl<NotificationSettingsProfileCubit>(),
+                    child: ProfileContent(),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );

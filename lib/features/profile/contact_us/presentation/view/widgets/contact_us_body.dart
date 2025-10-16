@@ -75,146 +75,153 @@ class _ContactUsBodyState extends State<ContactUsBody> {
       },
       builder: (context, state) {
         return CustomProfileBody(
-          contentBody: SingleChildScrollView(
-            child: Form(
-              key: ContactUsCubit.get(context).formKey,
-              child: Column(
-                textDirection: LocalizationService.instance.textDirection,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ProfileHeader(title: AppLocalizations.of(context)!.contactUs),
-                  verticalSpace(50),
-                  Container(
-                    padding: EdgeInsets.only(
-                        left: 13.w, right: 13.w, top: 13.h, bottom: 16.w),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10).r,
-                        color:
-                            AppColors.lightCarminePink.withValues(alpha: 0.05)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.premiumCardDescription,
-                          style: AppTextStyles.font13BlackMediumLamaSans
-                              .copyWith(
-                                  fontWeight: FontWeightHelper.regular,
-                                  color: AppColors.jet),
-                          textDirection:
-                              LocalizationService.instance.textDirection,
-                          textAlign: TextAlign.center,
-                        ),
-                        verticalSpace(32),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 34.w),
-                          child: Column(
-                            children: [
-                              CustomTextFormField(
-                                controller:
-                                    ContactUsCubit.get(context).emailController,
-                                hintText: AppLocalizations.of(context)!
-                                    .yourEmailAddress,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return AppLocalizations.of(context)!
-                                        .pleaseEnterEmail;
-                                  }
-                                  if (!RegExp(
-                                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                      .hasMatch(value)) {
-                                    return AppLocalizations.of(context)!
-                                        .pleaseEnterValidEmail;
-                                  }
-                                  return null;
-                                },
-                                borderColor: Color(0xffFFB74D),
-                              ),
-                              verticalSpace(8),
-                              CustomTextFormField(
-                                controller:
-                                    ContactUsCubit.get(context).titleController,
-                                hintText: AppLocalizations.of(context)!
-                                    .messageSubject,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return AppLocalizations.of(context)!
-                                        .pleaseEnterMessageSubject;
-                                  }
-                                  return null;
-                                },
-                                borderColor: Color(0xffFFB74D),
-                              ),
-                              verticalSpace(8),
-                              CustomTextFormField(
-                                controller: ContactUsCubit.get(context)
-                                    .descriptionController,
-                                hintText: AppLocalizations.of(context)!
-                                    .writeYourMessage,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return AppLocalizations.of(context)!
-                                        .pleaseEnterMessageContent;
-                                  }
-                                  if (value.length < 10) {
-                                    return AppLocalizations.of(context)!
-                                        .messageMustBeMoreThan10Chars;
-                                  }
-                                  return null;
-                                },
-                                maxLines: 5,
-                                borderColor: Color(0xffFFB74D),
-                              ),
-                              verticalSpace(16),
-                              CustomElevatedButton(
-                                height: 39.h,
-                                onPressed: () {
-                                  ContactUsCubit.get(context).contactUs();
-                                },
-                                textButton: AppLocalizations.of(context)!.send,
-                              ),
-                              verticalSpace(12),
-                              //
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  verticalSpace(16),
-                  Row(
+          contentBody: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Form(
+                  key: ContactUsCubit.get(context).formKey,
+                  child: Column(
                     textDirection: LocalizationService.instance.textDirection,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: () => openWhatsApp("966573743330"),
-                        child: Icon(
-                          FontAwesomeIcons.whatsapp,
-                          color: Color(0xff25D366),
-                          size: 30.sp,
+                      ProfileHeader(
+                          title: AppLocalizations.of(context)!.contactUs),
+                      verticalSpace(50),
+                      Container(
+                        padding: EdgeInsets.only(
+                            left: 13.w, right: 13.w, top: 13.h, bottom: 16.w),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10).r,
+                            color: AppColors.white),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!
+                                  .premiumCardDescription,
+                              style: AppTextStyles.font13BlackMediumLamaSans
+                                  .copyWith(
+                                      fontWeight: FontWeightHelper.regular,
+                                      color: AppColors.jet),
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                              textAlign: TextAlign.center,
+                            ),
+                            verticalSpace(32),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 34.w),
+                              child: Column(
+                                children: [
+                                  CustomTextFormField(
+                                    controller: ContactUsCubit.get(context)
+                                        .emailController,
+                                    hintText: AppLocalizations.of(context)!
+                                        .yourEmailAddress,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return AppLocalizations.of(context)!
+                                            .pleaseEnterEmail;
+                                      }
+                                      if (!RegExp(
+                                              r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                          .hasMatch(value)) {
+                                        return AppLocalizations.of(context)!
+                                            .pleaseEnterValidEmail;
+                                      }
+                                      return null;
+                                    },
+                                    borderColor: Color(0xffFFB74D),
+                                  ),
+                                  verticalSpace(8),
+                                  CustomTextFormField(
+                                    controller: ContactUsCubit.get(context)
+                                        .titleController,
+                                    hintText: AppLocalizations.of(context)!
+                                        .messageSubject,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return AppLocalizations.of(context)!
+                                            .pleaseEnterMessageSubject;
+                                      }
+                                      return null;
+                                    },
+                                    borderColor: Color(0xffFFB74D),
+                                  ),
+                                  verticalSpace(8),
+                                  CustomTextFormField(
+                                    controller: ContactUsCubit.get(context)
+                                        .descriptionController,
+                                    hintText: AppLocalizations.of(context)!
+                                        .writeYourMessage,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return AppLocalizations.of(context)!
+                                            .pleaseEnterMessageContent;
+                                      }
+                                      if (value.length < 10) {
+                                        return AppLocalizations.of(context)!
+                                            .messageMustBeMoreThan10Chars;
+                                      }
+                                      return null;
+                                    },
+                                    maxLines: 5,
+                                    borderColor: Color(0xffFFB74D),
+                                  ),
+                                  verticalSpace(16),
+                                  CustomElevatedButton(
+                                    height: 39.h,
+                                    onPressed: () {
+                                      ContactUsCubit.get(context).contactUs();
+                                    },
+                                    textButton:
+                                        AppLocalizations.of(context)!.send,
+                                  ),
+                                  verticalSpace(12),
+                                  //
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () => sendEmail("sadiqeen1@hotmail.com"),
-                        child: Icon(
-                          FontAwesomeIcons.envelope,
-                          color: Color(0xffEA4335),
-                          size: 30.sp,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => sendEmail("alsaadiqin@hotmail.com"),
-                        child: Icon(
-                          FontAwesomeIcons.headset,
-                          color: Color(0xff007BFF),
-                          size: 30.sp,
-                        ),
+                      verticalSpace(16),
+                      Row(
+                        textDirection:
+                            LocalizationService.instance.textDirection,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: () => openWhatsApp("966573743330"),
+                            child: Icon(
+                              FontAwesomeIcons.whatsapp,
+                              color: Color(0xff25D366),
+                              size: 30.sp,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => sendEmail("sadiqeen1@hotmail.com"),
+                            child: Icon(
+                              FontAwesomeIcons.envelope,
+                              color: Color(0xffEA4335),
+                              size: 30.sp,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => sendEmail("alsaadiqin@hotmail.com"),
+                            child: Icon(
+                              FontAwesomeIcons.headset,
+                              color: Color(0xff007BFF),
+                              size: 30.sp,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
+                ),
+              )
+            ],
           ),
         );
       },

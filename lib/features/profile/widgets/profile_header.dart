@@ -15,6 +15,8 @@ class ProfileHeader extends StatelessWidget {
     this.showBackButton = true,
     this.titleStyle,
     this.onPressed,
+    this.shape,
+    this.sizeContainer,
   });
 
   final String title;
@@ -22,6 +24,8 @@ class ProfileHeader extends StatelessWidget {
   final bool showBackButton;
   final TextStyle? titleStyle;
   final void Function()? onPressed;
+  final BoxShape? shape;
+  final double? sizeContainer;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -30,8 +34,10 @@ class ProfileHeader extends StatelessWidget {
       children: [
         if (showBackButton)
           CustomArrowBack(
+            sizeContainer: sizeContainer,
             background: background ?? AppColors.white,
             onPressed: onPressed,
+            shape: shape,
           )
         else
           SizedBox(

@@ -17,6 +17,7 @@ import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cub
 class SwipeableCard extends StatefulWidget {
   final UserModel user;
   final Function(bool)? onSwipe;
+  final Function(int)? onLike; // Callback for like in carousel mode
   final bool isTop;
   final double scale;
   final double verticalOffset;
@@ -24,6 +25,7 @@ class SwipeableCard extends StatefulWidget {
   const SwipeableCard({
     required this.user,
     this.onSwipe,
+    this.onLike,
     this.isTop = false,
     this.scale = 1.0,
     this.verticalOffset = 1.0,
@@ -73,19 +75,28 @@ class _SwipeableCardState extends State<SwipeableCard>
   }
 
   void _onPanStart(DragStartDetails details) {
-    if (!widget.isTop || _isProcessingAction) return;
+    // Disable swipe if onSwipe callback is null (carousel mode)
+    if (!widget.isTop || _isProcessingAction || widget.onSwipe == null) return;
     _isDragging = true;
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
-    if (!widget.isTop || !_isDragging || _isProcessingAction) return;
+    // Disable swipe if onSwipe callback is null (carousel mode)
+    if (!widget.isTop ||
+        !_isDragging ||
+        _isProcessingAction ||
+        widget.onSwipe == null) return;
     setState(() {
       _dragOffset += Offset(details.delta.dx, 0);
     });
   }
 
   void _onPanEnd(DragEndDetails details) {
-    if (!widget.isTop || !_isDragging || _isProcessingAction) return;
+    // Disable swipe if onSwipe callback is null (carousel mode)
+    if (!widget.isTop ||
+        !_isDragging ||
+        _isProcessingAction ||
+        widget.onSwipe == null) return;
     _isDragging = false;
 
     final threshold = MediaQuery.of(context).size.width * 0.3;
@@ -156,6 +167,17 @@ class _SwipeableCardState extends State<SwipeableCard>
   }
 
   void _handleButtonPress(bool isLike) {
+    // In carousel mode (onSwipe is null), use onLike callback
+    if (widget.onSwipe == null) {
+      // Carousel mode - just trigger the like action without animation
+      if (isLike && widget.onLike != null) {
+        widget.onLike!(widget.user.id);
+      }
+      // Dislike button does nothing in carousel mode
+      return;
+    }
+
+    // Swipe mode - animate the swipe
     if (!widget.isTop || _isProcessingAction) return;
     _animateSwipe(isLike);
   }
@@ -174,446 +196,440 @@ class _SwipeableCardState extends State<SwipeableCard>
             : (isAnimating ? _rotationAnimation.value : 0.0))
         : 0.0;
 
-    return Positioned(
-      top: 10.h,
-      left: 0.w,
-      right: 0.w,
-      child: Center(
-        child: AnimatedSlide(
-          duration: Duration(milliseconds: 300),
-          offset: Offset(0, widget.verticalOffset / 350),
-          child: AnimatedScale(
-            duration: Duration(milliseconds: 300),
-            scale: widget.scale,
-            child: GestureDetector(
-              onPanStart: _onPanStart,
-              onPanUpdate: _onPanUpdate,
-              onPanEnd: _onPanEnd,
-              onTap: () {
-                if (!_isProcessingAction) {
-                  print("Card tapped for user:");
-                  print("  User ID: ${widget.user.id}");
-                  print("  User Name: ${widget.user.name}");
-                  print("  User Image URL: ${widget.user.imageUrl}");
+    // Card content widget
+    final cardContent = GestureDetector(
+      onPanStart: _onPanStart,
+      onPanUpdate: _onPanUpdate,
+      onPanEnd: _onPanEnd,
+      onTap: () {
+        if (!_isProcessingAction) {
+          print("Card tapped for user:");
+          print("  User ID: ${widget.user.id}");
+          print("  User Name: ${widget.user.name}");
+          print("  User Image URL: ${widget.user.imageUrl}");
 
-                  Navigator.pushNamed(
-                    context,
-                    AppRoutes.personDetailsScreen,
-                    arguments: {
-                      'personId': widget.user.id,
-                      'imageUrl': widget.user.imageUrl,
-                    },
-                  );
-                }
-              },
-              child: Transform.translate(
-                offset: cardOffset,
-                child: Transform.rotate(
-                  angle: rotation,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width - 32.w,
-                    // 16w margin on each side
-                    constraints: BoxConstraints(
-                      maxWidth: 388.w,
-                    ),
-                    padding:
-                        EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12).r,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 10,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          height: 420.h,
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8).r,
-                                  child: widget.user.imageUrl.isNotEmpty
-                                      ? CachedNetworkImage(
-                                          imageUrl: widget.user.imageUrl,
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) =>
-                                              Container(
-                                            color: Colors.grey[200],
-                                            child: Center(
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                        Color>(
-                                                  Color(0xffFFB74D),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              Container(
-                                            color: Colors.grey[200],
-                                            child: Center(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.person,
-                                                    size: 60,
-                                                    color: Colors.grey[400],
-                                                  ),
-                                                  SizedBox(height: 8),
-                                                  Text(
-                                                    LocalizationHelper
-                                                        .getLocalizedText(
-                                                            'لا يمكن تحميل الصورة',
-                                                            'Image cannot be loaded.'),
-                                                    style: TextStyle(
-                                                      color: Colors.grey[600],
-                                                      fontSize: 12,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : Container(
-                                          color: Colors.grey[200],
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.person,
-                                              size: 60,
-                                              color: Colors.grey[400],
-                                            ),
-                                          ),
+          Navigator.pushNamed(
+            context,
+            AppRoutes.personDetailsScreen,
+            arguments: {
+              'personId': widget.user.id,
+              'imageUrl': widget.user.imageUrl,
+            },
+          );
+        }
+      },
+      child: Transform.translate(
+        offset: cardOffset,
+        child: Transform.rotate(
+          angle: rotation,
+          child: Container(
+            width: MediaQuery.of(context).size.width - 32.w,
+            // 16w margin on each side
+            constraints: BoxConstraints(
+              maxWidth: 388.w,
+            ),
+            padding: EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12).r,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 455.h,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8).r,
+                          child: widget.user.imageUrl.isNotEmpty
+                              ? CachedNetworkImage(
+                                  imageUrl: widget.user.imageUrl,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => Container(
+                                    color: Colors.grey[200],
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                          Color(0xffFFB74D),
                                         ),
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.grey.withValues(alpha: 0.3)
-                                    ],
-                                    stops: [0.7, 1], // from -> to
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  ),
-                                  borderRadius: BorderRadius.circular(
-                                      16), // optional rounded corners
-                                ),
-                              ),
-                              Positioned(
-                                top: 14.h,
-                                left: 0,
-                                right: 0,
-                                child: Center(
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 12.w,
-                                      vertical: 6.h,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffDBAE48),
-                                      borderRadius: BorderRadius.circular(8).r,
-                                    ),
-                                    child: Text(
-                                      LocalizationHelper.getLocalizedText(
-                                          ' نسبة تطابق ${widget.user.matchPercentage}%',
-                                          '${widget.user.matchPercentage}% Matching percentage'),
-                                      textDirection: LocalizationService
-                                          .instance.textDirection,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeightHelper.semiBold,
-                                        fontFamily:
-                                            FontFamilyHelper.lamaSansArabic,
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 14.h,
-                                left: 14.w,
-                                right: 14.w,
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 250.h),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black
-                                                .withValues(alpha: 0.08),
-                                            blurRadius: 12,
-                                            offset: Offset(0, 4),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
+                                  errorWidget: (context, url, error) =>
+                                      Container(
+                                    color: Colors.grey[200],
+                                    child: Center(
+                                      child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        textDirection: LocalizationService
-                                            .instance.textDirection,
+                                            MainAxisAlignment.center,
                                         children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            textDirection: LocalizationService
-                                                .instance.textDirection,
-                                            children: [
-                                              Text(
-                                                ' ${widget.user.age} ${AppLocalizations.of(context)!.year}, ${widget.user.name}',
-                                                textDirection:
-                                                    LocalizationService
-                                                        .instance.textDirection,
-                                                textAlign: LocalizationService
-                                                    .instance.textAlignment,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15.sp,
-                                                    fontWeight:
-                                                        FontWeightHelper.bold,
-                                                    fontFamily: FontFamilyHelper
-                                                        .lamaSansArabic),
-                                              ),
-                                              Text(
-                                                widget.user.profession,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 14.sp,
-                                                    fontWeight: FontWeightHelper
-                                                        .regular,
-                                                    fontFamily: FontFamilyHelper
-                                                        .lamaSansArabic),
-                                              ),
-                                            ],
+                                          Icon(
+                                            Icons.person,
+                                            size: 60,
+                                            color: Colors.grey[400],
                                           ),
-                                          Flexible(
-                                            child: Container(
-                                              padding: EdgeInsetsDirectional
-                                                  .symmetric(
-                                                horizontal: 26.5.w,
-                                                vertical: 11.h,
-                                              ),
-                                              constraints: BoxConstraints(
-                                                maxWidth: 150.w,
-                                                minWidth: 80.w,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: Color(0xffDBAE48),
-                                                borderRadius:
-                                                    BorderRadius.circular(15).r,
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  maxLines: 2,
-                                                  widget.user.location,
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    overflow:
-                                                        TextOverflow.visible,
-                                                    fontSize: 12.sp,
-                                                    fontWeight:
-                                                        FontWeightHelper.medium,
-                                                    fontFamily: FontFamilyHelper
-                                                        .lamaSansArabic,
-                                                  ),
-                                                  softWrap: true,
-                                                  overflow:
-                                                      TextOverflow.visible,
-                                                ),
-                                              ),
+                                          SizedBox(height: 8),
+                                          Text(
+                                            LocalizationHelper.getLocalizedText(
+                                                'لا يمكن تحميل الصورة',
+                                                'Image cannot be loaded.'),
+                                            style: TextStyle(
+                                              color: Colors.grey[600],
+                                              fontSize: 12,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ],
+                                  ),
+                                )
+                              : Container(
+                                  color: Colors.grey[200],
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 60,
+                                      color: Colors.grey[400],
+                                    ),
+                                  ),
                                 ),
-                              ),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.transparent,
+                              Colors.grey.withValues(alpha: 0.3)
                             ],
+                            stops: [0.7, 1], // from -> to
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          borderRadius: BorderRadius.circular(
+                              16), // optional rounded corners
+                        ),
+                      ),
+                      Positioned(
+                        top: 14.h,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                              vertical: 6.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xffDBAE48),
+                              borderRadius: BorderRadius.circular(8).r,
+                            ),
+                            child: Text(
+                              LocalizationHelper.getLocalizedText(
+                                  ' نسبة تطابق ${widget.user.matchPercentage}%',
+                                  '${widget.user.matchPercentage}% Matching percentage'),
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeightHelper.semiBold,
+                                fontFamily: FontFamilyHelper.lamaSansArabic,
+                              ),
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          height: 12.h,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          textDirection:
-                              LocalizationService.instance.textDirection,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      ),
+                      Positioned(
+                        bottom: 14.h,
+                        left: 14.w,
+                        right: 14.w,
+                        child: Column(
                           children: [
-                            GestureDetector(
-                              onTap: () => _handleButtonPress(false),
-                              child: Container(
-                                width: 44.w,
-                                height: 44.h,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.08),
-                                      blurRadius: 2,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.close,
-                                    color: Color(0xffE81925),
-                                    size: 14,
+                            SizedBox(height: 250.h),
+                            Container(
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.08),
+                                    blurRadius: 12,
+                                    offset: Offset(0, 4),
                                   ),
-                                ),
+                                ],
                               ),
-                            ),
-                            GestureDetector(
-                              onTap: () => _handleButtonPress(true),
-                              child: Container(
-                                width: 50.w,
-                                height: 50.h,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffEC4D58),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.favorite_border,
-                                    color: Colors.white,
-                                    size: 22,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                textDirection:
+                                    LocalizationService.instance.textDirection,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    textDirection: LocalizationService
+                                        .instance.textDirection,
+                                    children: [
+                                      Text(
+                                        ' ${widget.user.age} ${AppLocalizations.of(context)!.year}, ${widget.user.name}',
+                                        textDirection: LocalizationService
+                                            .instance.textDirection,
+                                        textAlign: LocalizationService
+                                            .instance.textAlignment,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeightHelper.bold,
+                                            fontFamily: FontFamilyHelper
+                                                .lamaSansArabic),
+                                      ),
+                                      Text(
+                                        widget.user.profession,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14.sp,
+                                            fontWeight:
+                                                FontWeightHelper.regular,
+                                            fontFamily: FontFamilyHelper
+                                                .lamaSansArabic),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () async {
-                                try {
-                                  print(
-                                      '🔍 [SwipeableCard] Message icon tapped for user ID: ${widget.user.id}');
-
-                                  // Check if there's an existing chat room first
-                                  final chatListCubit =
-                                      context.read<ChatListCubit>();
-
-                                  // Check if chat list is already loaded, if not, load it
-                                  if (chatListCubit.state is! ChatListLoaded) {
-                                    print(
-                                        '🔄 [SwipeableCard] Chat list not loaded, loading now...');
-                                    await chatListCubit.forceRefreshChatList();
-
-                                    // Wait a bit for the state to update
-                                    await Future.delayed(
-                                        const Duration(milliseconds: 500));
-                                  } else {
-                                    print(
-                                        '✅ [SwipeableCard] Chat list already loaded');
-                                  }
-
-                                  // Find existing chat room between current user and this profile user
-                                  final existingChatRoom = chatListCubit
-                                      .findExistingChatRoom(widget.user.id);
-
-                                  if (existingChatRoom != null) {
-                                    print(
-                                        '✅ [SwipeableCard] Found existing chat room: ${existingChatRoom.id}, navigating to it');
-                                    // Navigate to existing chat room
-                                    if (context.mounted) {
-                                      Navigator.pushNamed(
-                                        context,
-                                        AppRoutes.chatConversationScreen,
-                                        arguments: {
-                                          "chatRoom": existingChatRoom,
-                                        },
-                                      );
-                                    }
-                                  } else {
-                                    print(
-                                        '🆕 [SwipeableCard] No existing chat room found, creating new temporary chat');
-                                    // Create new temporary chat room for new conversation
-                                    if (context.mounted) {
-                                      Navigator.pushNamed(
-                                        context,
-                                        AppRoutes.chatConversationScreen,
-                                        arguments: {
-                                          "chatRoom": ChatRoomModel.fromUser(
-                                            userId: widget.user.id,
-                                            userName: widget.user.name,
-                                            userImage: widget.user.imageUrl,
+                                  Flexible(
+                                    child: Container(
+                                      padding: EdgeInsetsDirectional.symmetric(
+                                        horizontal: 26.5.w,
+                                        vertical: 11.h,
+                                      ),
+                                      constraints: BoxConstraints(
+                                        maxWidth: 150.w,
+                                        minWidth: 80.w,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffDBAE48),
+                                        borderRadius:
+                                            BorderRadius.circular(15).r,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          maxLines: 2,
+                                          widget.user.location,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            overflow: TextOverflow.visible,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeightHelper.medium,
+                                            fontFamily:
+                                                FontFamilyHelper.lamaSansArabic,
                                           ),
-                                        },
-                                      );
-                                    }
-                                  }
-                                } catch (e) {
-                                  print(
-                                      '❌ [SwipeableCard] Error in message icon onTap: $e');
-                                  // Fallback to creating new chat
-                                  if (context.mounted) {
-                                    Navigator.pushNamed(
-                                      context,
-                                      AppRoutes.chatConversationScreen,
-                                      arguments: {
-                                        "chatRoom": ChatRoomModel.fromUser(
-                                          userId: widget.user.id,
-                                          userName: widget.user.name,
-                                          userImage: widget.user.imageUrl,
+                                          softWrap: true,
+                                          overflow: TextOverflow.visible,
                                         ),
-                                      },
-                                    );
-                                  }
-                                }
-                              },
-                              child: Container(
-                                width: 44.w,
-                                height: 44.h,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.08),
-                                      blurRadius: 2,
-                                      offset: Offset(0, 2),
+                                      ),
                                     ),
-                                  ],
-                                ),
-                                child: Center(
-                                    child: Image.asset(
-                                  'assets/images/home/home_outline_message.png',
-                                  width: 18.w,
-                                  height: 18.h,
-                                )),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 24),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
+                SizedBox(
+                  height: 24.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  textDirection: LocalizationService.instance.textDirection,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () => _handleButtonPress(false),
+                      child: Container(
+                        width: 44.w,
+                        height: 44.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.08),
+                              blurRadius: 2,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.close,
+                            color: Color(0xffE81925),
+                            size: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => _handleButtonPress(true),
+                      child: Container(
+                        width: 50.w,
+                        height: 50.h,
+                        decoration: BoxDecoration(
+                          color: Color(0xffEC4D58),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.favorite_border,
+                            color: Colors.white,
+                            size: 22,
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        try {
+                          print(
+                              '🔍 [SwipeableCard] Message icon tapped for user ID: ${widget.user.id}');
+
+                          // Check if there's an existing chat room first
+                          final chatListCubit = context.read<ChatListCubit>();
+
+                          // Check if chat list is already loaded, if not, load it
+                          if (chatListCubit.state is! ChatListLoaded) {
+                            print(
+                                '🔄 [SwipeableCard] Chat list not loaded, loading now...');
+                            await chatListCubit.forceRefreshChatList();
+
+                            // Wait a bit for the state to update
+                            await Future.delayed(
+                                const Duration(milliseconds: 500));
+                          } else {
+                            print('✅ [SwipeableCard] Chat list already loaded');
+                          }
+
+                          // Find existing chat room between current user and this profile user
+                          final existingChatRoom = chatListCubit
+                              .findExistingChatRoom(widget.user.id);
+
+                          if (existingChatRoom != null) {
+                            print(
+                                '✅ [SwipeableCard] Found existing chat room: ${existingChatRoom.id}, navigating to it');
+                            // Navigate to existing chat room
+                            if (context.mounted) {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.chatConversationScreen,
+                                arguments: {
+                                  "chatRoom": existingChatRoom,
+                                },
+                              );
+                            }
+                          } else {
+                            print(
+                                '🆕 [SwipeableCard] No existing chat room found, creating new temporary chat');
+                            // Create new temporary chat room for new conversation
+                            if (context.mounted) {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.chatConversationScreen,
+                                arguments: {
+                                  "chatRoom": ChatRoomModel.fromUser(
+                                    userId: widget.user.id,
+                                    userName: widget.user.name,
+                                    userImage: widget.user.imageUrl,
+                                  ),
+                                },
+                              );
+                            }
+                          }
+                        } catch (e) {
+                          print(
+                              '❌ [SwipeableCard] Error in message icon onTap: $e');
+                          // Fallback to creating new chat
+                          if (context.mounted) {
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.chatConversationScreen,
+                              arguments: {
+                                "chatRoom": ChatRoomModel.fromUser(
+                                  userId: widget.user.id,
+                                  userName: widget.user.name,
+                                  userImage: widget.user.imageUrl,
+                                ),
+                              },
+                            );
+                          }
+                        }
+                      },
+                      child: Container(
+                        width: 44.w,
+                        height: 44.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.08),
+                              blurRadius: 2,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                            child: Image.asset(
+                          'assets/images/home/home_outline_message.png',
+                          width: 18.w,
+                          height: 18.h,
+                        )),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 24),
+              ],
             ),
           ),
         ),
       ),
     );
+
+    // In carousel mode (onSwipe is null), return card content directly
+    // In stack/swipe mode, wrap with Positioned for proper stacking
+    if (widget.onSwipe == null) {
+      // Carousel mode - no Positioned wrapper needed
+      return cardContent;
+    } else {
+      // Stack/Swipe mode - wrap with Positioned
+      return Positioned(
+        top: 10.h,
+        left: 0.w,
+        right: 0.w,
+        child: Center(
+          child: AnimatedSlide(
+            duration: Duration(milliseconds: 300),
+            offset: Offset(0, widget.verticalOffset / 350),
+            child: AnimatedScale(
+              duration: Duration(milliseconds: 300),
+              scale: widget.scale,
+              child: cardContent,
+            ),
+          ),
+        ),
+      );
+    }
   }
 }

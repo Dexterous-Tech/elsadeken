@@ -116,7 +116,18 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
                     ? Center(
                         child: Text(
                             AppLocalizations.of(context)!.noDataFoundShort))
-                    : SafeArea(
+                    : Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              AppColors.cosmicLatte,
+                              AppColors.antiqueWhite,
+                            ],
+                          ),
+                        ),
                         child: Stack(
                           children: [
                             PersonImageHeader(imageUrl: person!.image),

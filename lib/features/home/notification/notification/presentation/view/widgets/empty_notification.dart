@@ -17,10 +17,13 @@ class EmptyNotificationsWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              AppImages.emptyNotification,
-              width: 256.w,
-              height: 256.h,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(96).r,
+              child: Image.asset(
+                AppImages.emptyNotification,
+                width: 162.w,
+                height: 162.h,
+              ),
             ),
             verticalSpace(54),
             Text(

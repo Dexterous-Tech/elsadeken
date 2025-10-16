@@ -4,6 +4,7 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/manager/m
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/theme/app_color.dart';
 import 'widgets/manage_profile_body.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,19 @@ class ManageProfileScreen extends StatelessWidget {
               onTap: () {
                 FocusScope.of(context).unfocus(); // Close keyboard
               },
-              child: ManageProfileBody())),
+              child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.cosmicLatte,
+                        AppColors.antiqueWhite,
+                      ],
+                    ),
+                  ),
+                  child: ManageProfileBody()))),
     );
   }
 }

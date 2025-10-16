@@ -24,17 +24,18 @@ class NotificationItemWidget extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
         decoration: BoxDecoration(
-          gradient: notification.readAt == null
-              ? LinearGradient(
-                  end: Alignment.bottomCenter,
-                  begin: Alignment.topCenter,
-                  colors: [
-                    Color(0xffF8ECD6).withValues(alpha: 0.1),
-                    Color(0xffF8ECD6),
-                  ],
-                )
-              : null,
-          color: notification.readAt == null ? null : Color(0xffFFFAFC),
+          // gradient: notification.readAt == null
+          //     ? LinearGradient(
+          //         end: Alignment.bottomCenter,
+          //         begin: Alignment.topCenter,
+          //         colors: [
+          //           Color(0xffF8ECD6).withValues(alpha: 0.1),
+          //           Color(0xffF8ECD6),
+          //         ],
+          //       )
+          //     : null,
+          color:
+              notification.readAt == null ? Colors.white : Colors.transparent,
         ),
         child: Row(
           crossAxisAlignment:
@@ -43,8 +44,11 @@ class NotificationItemWidget extends StatelessWidget {
               LocalizationService.instance.textDirection, // Keep RTL for Arabic
           children: [
             /// 👉 ICON on the right
-            CustomImageNetwork(
-              image: notification.icon ?? '',
+            ClipRRect(
+              borderRadius: BorderRadius.circular(50).r,
+              child: CustomImageNetwork(
+                image: notification.icon ?? '',
+              ),
             ),
 
             SizedBox(width: 16.w),
@@ -89,10 +93,6 @@ class NotificationItemWidget extends StatelessWidget {
                 ],
               ),
             ),
-
-            Spacer(),
-
-            Container(),
           ],
         ),
       ),

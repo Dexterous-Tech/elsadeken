@@ -30,9 +30,9 @@ class _SearchFormState extends State<SearchForm> {
   int? cityId; // ده بيساوي let city_id;
   String? userGender; // Store user gender from shared preferences
 
-  late Future<List<NationalCountryResponseModel>> _nationalities;
-  late Future<List<NationalCountryResponseModel>> _countries;
-  late Future<List<CityResponseModels>> _cities;
+  Future<List<NationalCountryResponseModel>>? _nationalities;
+  Future<List<NationalCountryResponseModel>>? _countries;
+  Future<List<CityResponseModels>>? _cities;
 
   // Store skin colors and qualifications data
   List<GeneralInfoResponseModels> _skinColors = [];
@@ -219,7 +219,8 @@ class _SearchFormState extends State<SearchForm> {
               FutureBuilder<List<NationalCountryResponseModel>>(
                 future: _nationalities, // الفيوتشر اللي بيرجع الجنسيات
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+                  if (_nationalities == null ||
+                      snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Text(AppLocalizations.of(context)!
@@ -231,21 +232,30 @@ class _SearchFormState extends State<SearchForm> {
 
                   final nationalityObjects = snapshot.data!;
 
-                  final nationalities = nationalityObjects
-                      .map((e) => e.name ?? "")
-                      .where((name) => name.isNotEmpty)
-                      .toList();
+                  final nationalities = [
+                    AppLocalizations.of(context)!.all,
+                    ...nationalityObjects
+                        .map((e) => e.name ?? "")
+                        .where((name) => name.isNotEmpty)
+                        .toList()
+                  ];
 
                   return DropdownField(
                     label: AppLocalizations.of(context)!.nationality,
-                    hint: AppLocalizations.of(context)!.choose,
+                    hint: AppLocalizations.of(context)!.all,
+                    initialValue: AppLocalizations.of(context)!.all,
                     items: nationalities,
                     onChanged: (value) {
-                      final selected = snapshot.data!
-                          .firstWhere((element) => element.name == value);
-                      context
-                          .read<SearchCubit>()
-                          .updateNationality(selected.id.toString());
+                      if (value == AppLocalizations.of(context)!.all) {
+                        // Don't pass nationality parameter when "All" is selected
+                        context.read<SearchCubit>().updateNationality('');
+                      } else {
+                        final selected = snapshot.data!
+                            .firstWhere((element) => element.name == value);
+                        context
+                            .read<SearchCubit>()
+                            .updateNationality(selected.id.toString());
+                      }
                     },
                   );
                 },
@@ -256,7 +266,8 @@ class _SearchFormState extends State<SearchForm> {
               FutureBuilder<List<NationalCountryResponseModel>>(
                 future: _countries, // الفيوتشر اللي بيرجع الجنسيات
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+                  if (_countries == null ||
+                      snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Text(AppLocalizations.of(context)!
@@ -268,36 +279,57 @@ class _SearchFormState extends State<SearchForm> {
 
                   final countryObjects = snapshot.data!;
 
-                  final countries = countryObjects
-                      .map((e) => e.name ?? "")
-                      .where((name) => name.isNotEmpty)
-                      .toList();
+                  final countries = [
+                    AppLocalizations.of(context)!.all,
+                    ...countryObjects
+                        .map((e) => e.name ?? "")
+                        .where((name) => name.isNotEmpty)
+                        .toList()
+                  ];
 
                   return DropdownField(
                     label: AppLocalizations.of(context)!.country,
-                    hint: AppLocalizations.of(context)!.choose,
+                    hint: AppLocalizations.of(context)!.all,
+                    initialValue: AppLocalizations.of(context)!.all,
                     items: countries,
                     onChanged: (value) async {
                       if (value != null) {
-                        final selectedCountry = countryObjects.firstWhere(
-                          (element) => element.name == value,
-                        );
-
                         // Capture context before async operation
                         final searchCubit = context.read<SearchCubit>();
 
-                        final apiServices = await ApiServices.init();
-                        final signupDataSource = SignupDataSource(apiServices);
-                        final newCities = signupDataSource
-                            .getCities(selectedCountry.id.toString());
+                        if (value == AppLocalizations.of(context)!.all) {
+                          // Don't pass country parameter when "All" is selected
+                          // Reset cities to default
+                          final apiServices = await ApiServices.init();
+                          final signupDataSource =
+                              SignupDataSource(apiServices);
+                          final newCities = signupDataSource.getCities('1');
 
-                        setState(() {
-                          cityId = selectedCountry.id;
-                          _cities = newCities; // تحديث Future المدن
-                        });
+                          setState(() {
+                            cityId = 1;
+                            _cities = newCities;
+                          });
 
-                        searchCubit
-                            .updateCountry(selectedCountry.id.toString());
+                          searchCubit.updateCountry('');
+                        } else {
+                          final selectedCountry = countryObjects.firstWhere(
+                            (element) => element.name == value,
+                          );
+
+                          final apiServices = await ApiServices.init();
+                          final signupDataSource =
+                              SignupDataSource(apiServices);
+                          final newCities = signupDataSource
+                              .getCities(selectedCountry.id.toString());
+
+                          setState(() {
+                            cityId = selectedCountry.id;
+                            _cities = newCities; // تحديث Future المدن
+                          });
+
+                          searchCubit
+                              .updateCountry(selectedCountry.id.toString());
+                        }
                       }
                     },
                   );
@@ -315,7 +347,8 @@ class _SearchFormState extends State<SearchForm> {
               FutureBuilder<List<CityResponseModels>>(
                 future: _cities, // الفيوتشر اللي بيرجع الجنسيات
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+                  if (_cities == null ||
+                      snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Text(AppLocalizations.of(context)!
@@ -326,22 +359,31 @@ class _SearchFormState extends State<SearchForm> {
                   }
 
                   // ✅ تحويل الجنسيات من موديل إلى List<String>
-                  final cities = snapshot.data!
-                      .map((e) => e.name ?? "")
-                      .where((name) => name.isNotEmpty)
-                      .toList();
+                  final cities = [
+                    AppLocalizations.of(context)!.all,
+                    ...snapshot.data!
+                        .map((e) => e.name ?? "")
+                        .where((name) => name.isNotEmpty)
+                        .toList()
+                  ];
 
                   return DropdownField(
                     label: AppLocalizations.of(context)!.city,
-                    hint: AppLocalizations.of(context)!.choose,
+                    hint: AppLocalizations.of(context)!.all,
+                    initialValue: AppLocalizations.of(context)!.all,
                     items: cities,
                     onChanged: (value) {
-                      final selectedCity = snapshot.data!
-                          .firstWhere((element) => element.name == value);
+                      if (value == AppLocalizations.of(context)!.all) {
+                        // Don't pass city parameter when "All" is selected
+                        context.read<SearchCubit>().updateCity('');
+                      } else {
+                        final selectedCity = snapshot.data!
+                            .firstWhere((element) => element.name == value);
 
-                      context
-                          .read<SearchCubit>()
-                          .updateCity(selectedCity.id.toString());
+                        context
+                            .read<SearchCubit>()
+                            .updateCity(selectedCity.id.toString());
+                      }
                     },
                   );
                 },

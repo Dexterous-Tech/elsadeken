@@ -9,6 +9,7 @@ class DropdownField extends StatefulWidget {
   final String hint;
   final List<String> items;
   final Function(String?) onChanged;
+  final String? initialValue;
 
   const DropdownField({
     super.key,
@@ -16,6 +17,7 @@ class DropdownField extends StatefulWidget {
     required this.hint,
     required this.items,
     required this.onChanged,
+    this.initialValue,
   });
 
   @override
@@ -24,6 +26,12 @@ class DropdownField extends StatefulWidget {
 
 class _DropdownFieldState extends State<DropdownField> {
   String? selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.initialValue;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,6 @@ class _DropdownFieldState extends State<DropdownField> {
           ),
         ),
         SizedBox(width: 8),
-
         Expanded(
           child: Container(
             height: 40,
@@ -80,7 +87,6 @@ class _DropdownFieldState extends State<DropdownField> {
             ),
           ),
         ),
-
       ],
     );
   }

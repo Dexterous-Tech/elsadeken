@@ -162,10 +162,11 @@ class _CustomSearchableListState extends State<CustomSearchableList> {
               keyboardType: TextInputType.text,
               hintText: AppLocalizations.of(context)!.search,
               validator: (value) {},
-              suffixIcon: Icon(
-                Icons.search,
-                size: 25,
-                color: AppColors.paleBrown,
+              prefixIcon: SvgPicture.asset(
+                AppSvg.searchIcon,
+                width: 25.w,
+                height: 25.h,
+                fit: BoxFit.scaleDown,
               ),
               hintStyle: AppTextStyles.font16PaleBrownRegularLamaSans,
             ),

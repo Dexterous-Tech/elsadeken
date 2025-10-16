@@ -782,13 +782,13 @@ abstract class AppLocalizations {
   /// No description provided for @liked.
   ///
   /// In en, this message translates to:
-  /// **'Liked'**
+  /// **'Cancel interest'**
   String get liked;
 
   /// No description provided for @ignored.
   ///
   /// In en, this message translates to:
-  /// **'Ignored'**
+  /// **'Untangle'**
   String get ignored;
 
   /// No description provided for @reported.
@@ -3077,11 +3077,17 @@ abstract class AppLocalizations {
   /// **'Text cannot contain links'**
   String get textCannotContainLinks;
 
-  /// No description provided for @agreeToTermsAndConditions.
+  /// No description provided for @agreeTo.
   ///
   /// In en, this message translates to:
-  /// **'I agree to the Privacy Policy and Terms of Use'**
-  String get agreeToTermsAndConditions;
+  /// **'I agree to the policy of '**
+  String get agreeTo;
+
+  /// No description provided for @termsAndConditionsAgree.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy and Terms of Use'**
+  String get termsAndConditionsAgree;
 
   /// No description provided for @whatIsYourEducationalQualification.
   ///
