@@ -244,7 +244,7 @@ class _SwipeableCardState extends State<SwipeableCard>
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
-                  height: 455.h,
+                  height: 450.h,
                   child: Stack(
                     children: [
                       Positioned.fill(
