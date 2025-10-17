@@ -68,7 +68,12 @@ class ApiConstants {
   static String toggleNotify = '/user/notify';
 
   static const String defaultProfileImage =
-      'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';
+      'https://sadiqeen.com/assets/img/female.png';
+  static const String maleProfileImage =
+      'https://sadiqeen.com/assets/img/male.png';
+  
+  // broadcasting
+  static const String broadcastingAuthUrl = 'https://elsadkeen.sharetrip-ksa.com/api/broadcasting/auth';
 
   // members
   static String distinguishedMembers = '/user/members/distinguished';

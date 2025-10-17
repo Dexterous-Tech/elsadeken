@@ -356,100 +356,96 @@ class _SwipeableCardState extends State<SwipeableCard>
                         bottom: 14.h,
                         left: 14.w,
                         right: 14.w,
-                        child: Column(
-                          children: [
-                            SizedBox(height: 250.h),
-                            Container(
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.08),
-                                    blurRadius: 12,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 12,
+                                offset: Offset(0, 4),
                               ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                textDirection:
-                                    LocalizationService.instance.textDirection,
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
+                            children: [
+                              Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                textDirection: LocalizationService
+                                    .instance.textDirection,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  Text(
+                                    ' ${widget.user.age} ${AppLocalizations.of(context)!.year}, ${widget.user.name}',
                                     textDirection: LocalizationService
                                         .instance.textDirection,
-                                    children: [
-                                      Text(
-                                        ' ${widget.user.age} ${AppLocalizations.of(context)!.year}, ${widget.user.name}',
-                                        textDirection: LocalizationService
-                                            .instance.textDirection,
-                                        textAlign: LocalizationService
-                                            .instance.textAlignment,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeightHelper.bold,
-                                            fontFamily: FontFamilyHelper
-                                                .lamaSansArabic),
-                                      ),
-                                      Text(
-                                        widget.user.profession,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.sp,
-                                            fontWeight:
-                                                FontWeightHelper.regular,
-                                            fontFamily: FontFamilyHelper
-                                                .lamaSansArabic),
-                                      ),
-                                    ],
+                                    textAlign: LocalizationService
+                                        .instance.textAlignment,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeightHelper.bold,
+                                        fontFamily: FontFamilyHelper
+                                            .lamaSansArabic),
                                   ),
-                                  Flexible(
-                                    child: Container(
-                                      padding: EdgeInsetsDirectional.symmetric(
-                                        horizontal: 26.5.w,
-                                        vertical: 11.h,
-                                      ),
-                                      constraints: BoxConstraints(
-                                        maxWidth: 150.w,
-                                        minWidth: 80.w,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xffDBAE48),
-                                        borderRadius:
-                                            BorderRadius.circular(15).r,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          maxLines: 2,
-                                          widget.user.location,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            overflow: TextOverflow.visible,
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeightHelper.medium,
-                                            fontFamily:
-                                                FontFamilyHelper.lamaSansArabic,
-                                          ),
-                                          softWrap: true,
-                                          overflow: TextOverflow.visible,
-                                        ),
-                                      ),
-                                    ),
+                                  Text(
+                                    widget.user.profession,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.sp,
+                                        fontWeight:
+                                            FontWeightHelper.regular,
+                                        fontFamily: FontFamilyHelper
+                                            .lamaSansArabic),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
+                              Flexible(
+                                child: Container(
+                                  padding: EdgeInsetsDirectional.symmetric(
+                                    horizontal: 26.5.w,
+                                    vertical: 11.h,
+                                  ),
+                                  constraints: BoxConstraints(
+                                    maxWidth: 150.w,
+                                    minWidth: 80.w,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffDBAE48),
+                                    borderRadius:
+                                        BorderRadius.circular(15).r,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      maxLines: 2,
+                                      widget.user.location,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeightHelper.medium,
+                                        fontFamily:
+                                            FontFamilyHelper.lamaSansArabic,
+                                      ),
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
                 SizedBox(
-                  height: 24.h,
+                  height: 20.h,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -599,7 +595,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                     ),
                   ],
                 ),
-                SizedBox(height: 24),
+                SizedBox(height: 20.h),
               ],
             ),
           ),

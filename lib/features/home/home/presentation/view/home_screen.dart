@@ -67,17 +67,31 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPage = 1;
   bool hasMore = true;
   int? selectedCountryId; // null means "All"
-  final ScrollController _carouselController = ScrollController();
+  late PageController _pageController;
 
   @override
   void dispose() {
-    _carouselController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+
+    // Initialize PageController
+    _pageController = PageController(viewportFraction: 0.9);
+    
+    // Add listener to auto-load more when near the end
+    _pageController.addListener(() {
+      if (_pageController.hasClients && hasMore && !isLoading) {
+        final currentPage = _pageController.page ?? 0;
+        // Load more when user is 2 cards away from the end
+        if (currentPage >= currentUsers.length - 2) {
+          _loadMatchesUsers(loadMore: true);
+        }
+      }
+    });
 
     // Set initial tab index if provided
     if (widget.initialTabIndex != null &&
@@ -211,6 +225,10 @@ class _HomeScreenState extends State<HomeScreen> {
       selectedCountryId = countryId;
     });
     _loadMatchesUsers();
+    // Reset page to first card when filter changes
+    if (_pageController.hasClients) {
+      _pageController.jumpToPage(0);
+    }
   }
 
   // Handler for like action in carousel mode
@@ -266,116 +284,125 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             // Country Filter
-            verticalSpace(16),
-            Padding(
-              padding: EdgeInsetsDirectional.symmetric(horizontal: 23.w),
-              child: Text(
-                AppLocalizations.of(context)!.selectCountry,
-                style: AppTextStyles.font20JetRegularLamaSans
-                    .copyWith(color: AppColors.black),
-                textAlign: LocalizationService.instance.textAlignment,
+            Flexible(
+              flex: 0,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 textDirection: LocalizationService.instance.textDirection,
-              ),
-            ),
-            verticalSpace(14),
-            BlocBuilder<SignUpListsCubit, SignUpListsState>(
-              builder: (context, state) {
-                if (state is CountriesSuccess) {
-                  return SizedBox(
-                    height: 40.h,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.symmetric(horizontal: 23.w),
-                      itemCount: state.countriesList.length + 1, // +1 for "All"
-                      itemBuilder: (context, index) {
-                        // First item is "All"
-                        if (index == 0) {
-                          final isSelected = selectedCountryId == null;
-                          return GestureDetector(
-                            onTap: () => _onCountrySelected(null),
-                            child: Container(
-                              margin: EdgeInsetsDirectional.only(end: 12.w),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20.w, vertical: 10.h),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? Color(0xffDBAE48)
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(10).r,
-                                border: Border.all(
-                                  color: Color(0xffE1E1E1),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  LocalizationService.instance.currentLocale
-                                              .languageCode ==
-                                          'ar'
-                                      ? 'الكل'
-                                      : 'All',
-                                  style: TextStyle(
-                                    color: isSelected
-                                        ? Colors.white
-                                        : Color(0xffDBAE48),
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeightHelper.medium,
-                                    fontFamily: FontFamilyHelper.lamaSansArabic,
+                children: [
+                  verticalSpace(16),
+                  Padding(
+                    padding: EdgeInsetsDirectional.symmetric(horizontal: 23.w),
+                    child: Text(
+                      AppLocalizations.of(context)!.selectCountry,
+                      style: AppTextStyles.font20JetRegularLamaSans
+                          .copyWith(color: AppColors.black),
+                      textAlign: LocalizationService.instance.textAlignment,
+                      textDirection: LocalizationService.instance.textDirection,
+                    ),
+                  ),
+                  verticalSpace(14),
+                  BlocBuilder<SignUpListsCubit, SignUpListsState>(
+                    builder: (context, state) {
+                      if (state is CountriesSuccess) {
+                        return SizedBox(
+                          height: 40.h,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.symmetric(horizontal: 23.w),
+                            itemCount: state.countriesList.length + 1, // +1 for "All"
+                            itemBuilder: (context, index) {
+                              // First item is "All"
+                              if (index == 0) {
+                                final isSelected = selectedCountryId == null;
+                                return GestureDetector(
+                                  onTap: () => _onCountrySelected(null),
+                                  child: Container(
+                                    margin: EdgeInsetsDirectional.only(end: 12.w),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 20.w, vertical: 10.h),
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? Color(0xffDBAE48)
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(10).r,
+                                      border: Border.all(
+                                        color: Color(0xffE1E1E1),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        LocalizationService.instance.currentLocale
+                                                    .languageCode ==
+                                                'ar'
+                                            ? 'الكل'
+                                            : 'All',
+                                        style: TextStyle(
+                                          color: isSelected
+                                              ? Colors.white
+                                              : Color(0xffDBAE48),
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeightHelper.medium,
+                                          fontFamily: FontFamilyHelper.lamaSansArabic,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              // Country items
+                              final country = state.countriesList[index - 1];
+                              final isSelected = selectedCountryId == country.id;
+
+                              return GestureDetector(
+                                onTap: () => _onCountrySelected(country.id),
+                                child: Container(
+                                  margin: EdgeInsetsDirectional.only(end: 12.w),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20.w, vertical: 10.h),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isSelected ? Color(0xffDBAE48) : Colors.white,
+                                    borderRadius: BorderRadius.circular(10).r,
+                                    border: Border.all(
+                                      color: Color(0xffE1E1E1),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      country.name ?? '',
+                                      style: TextStyle(
+                                        color: isSelected
+                                            ? Colors.white
+                                            : Color(0xffDBAE48),
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeightHelper.medium,
+                                        fontFamily: FontFamilyHelper.lamaSansArabic,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          );
-                        }
-
-                        // Country items
-                        final country = state.countriesList[index - 1];
-                        final isSelected = selectedCountryId == country.id;
-
-                        return GestureDetector(
-                          onTap: () => _onCountrySelected(country.id),
-                          child: Container(
-                            margin: EdgeInsetsDirectional.only(end: 12.w),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20.w, vertical: 10.h),
-                            decoration: BoxDecoration(
-                              color:
-                                  isSelected ? Color(0xffDBAE48) : Colors.white,
-                              borderRadius: BorderRadius.circular(10).r,
-                              border: Border.all(
-                                color: Color(0xffE1E1E1),
-                                width: 1,
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                country.name ?? '',
-                                style: TextStyle(
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Color(0xffDBAE48),
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeightHelper.medium,
-                                  fontFamily: FontFamilyHelper.lamaSansArabic,
-                                ),
-                              ),
-                            ),
+                              );
+                            },
                           ),
                         );
-                      },
-                    ),
-                  );
-                } else if (state is CountriesLoading) {
-                  return SizedBox(
-                    height: 50.h,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-                return SizedBox.shrink();
-              },
+                      } else if (state is CountriesLoading) {
+                        return SizedBox(
+                          height: 50.h,
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+                      return SizedBox.shrink();
+                    },
+                  ),
+                  SizedBox(height: 20.h),
+                ],
+              ),
             ),
-
-            SizedBox(height: 20.h),
 
             // Cards Carousel
             Expanded(
@@ -384,6 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : errorMessage != null
                       ? Center(
                           child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
@@ -404,6 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       : currentUsers.isEmpty
                           ? Center(
                               child: Column(
+                                mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(Icons.favorite_outline,
@@ -418,10 +447,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ],
                               ),
                             )
-                          : ListView.builder(
-                              controller: _carouselController,
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          : PageView.builder(
+                              controller: _pageController,
                               itemCount:
                                   currentUsers.length + (hasMore ? 1 : 0),
                               itemBuilder: (context, index) {
@@ -471,10 +498,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                 // User card
                                 final user = currentUsers[index];
-                                return Container(
-                                  width:
-                                      MediaQuery.of(context).size.width - 64.w,
-                                  margin: EdgeInsets.symmetric(
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(
                                       horizontal: 8.w, vertical: 10.h),
                                   child: SwipeableCard(
                                     user: user,

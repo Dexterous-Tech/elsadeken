@@ -1,6 +1,7 @@
 import 'package:elsadeken/features/chat/data/datasources/chat_remote_data_source.dart';
 import 'package:elsadeken/features/chat/data/models/chat_message_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_room_model.dart';
+import 'package:elsadeken/core/networking/api_constants.dart';
 
 class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   // Mutable static data for development
@@ -42,7 +43,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       roomId: roomId,
       senderId: 'current_user',
       senderName: 'أنا',
-      senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+      senderImage: ApiConstants.defaultProfileImage,
       message: message,
       timestamp: DateTime.now(),
       isRead: false,
@@ -196,7 +197,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       ChatRoomModel(
         id: '1',
         name: 'محمد القحطاني',
-        image: 'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+        image: ApiConstants.maleProfileImage,
         lastMessage: 'مرحبا كيف حالك ؟',
         lastMessageTime: DateTime.now().subtract(const Duration(minutes: 5)),
         unreadCount: 2,
@@ -207,7 +208,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       ChatRoomModel(
         id: '2',
         name: 'فاطمة علي',
-        image: 'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+        image: ApiConstants.defaultProfileImage,
         lastMessage: 'شكرا لك',
         lastMessageTime: DateTime.now().subtract(const Duration(hours: 1)),
         unreadCount: 0,
@@ -218,7 +219,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       ChatRoomModel(
         id: '3',
         name: 'أحمد محمد',
-        image: 'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+        image: ApiConstants.maleProfileImage,
         lastMessage: 'أراك غدا',
         lastMessageTime: DateTime.now().subtract(const Duration(days: 1)),
         unreadCount: 1,
@@ -229,7 +230,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       ChatRoomModel(
         id: '4',
         name: 'سارة أحمد',
-        image: 'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+        image: ApiConstants.defaultProfileImage,
         lastMessage: 'هل تريد أن نلتقي في المطعم؟',
         lastMessageTime: DateTime.now().subtract(const Duration(hours: 2)),
         unreadCount: 3,
@@ -240,7 +241,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       ChatRoomModel(
         id: '5',
         name: 'علي حسن',
-        image: 'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+        image: ApiConstants.maleProfileImage,
         lastMessage: 'أشكرك على المساعدة',
         lastMessageTime: DateTime.now().subtract(const Duration(days: 2)),
         unreadCount: 0,
@@ -259,8 +260,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '1',
           senderName: 'محمد القحطاني',
-          senderImage:
-              'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+          senderImage: ApiConstants.maleProfileImage,
           message: 'مرحبا كيف حالك ؟',
           timestamp: DateTime.now().subtract(const Duration(minutes: 10)),
           isRead: true,
@@ -270,8 +270,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: 'current_user',
           senderName: 'أنا',
-          senderImage:
-              'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+          senderImage: ApiConstants.defaultProfileImage,
           message: 'أهلا وسهلا، الحمد لله',
           timestamp: DateTime.now().subtract(const Duration(minutes: 8)),
           isRead: true,
@@ -281,8 +280,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '1',
           senderName: 'محمد القحطاني',
-          senderImage:
-              'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+          senderImage: ApiConstants.maleProfileImage,
           message: 'ممتاز، هل تريد أن نلتقي؟',
           timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
           isRead: false,
@@ -295,8 +293,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '2',
           senderName: 'فاطمة علي',
-          senderImage:
-              'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+          senderImage: ApiConstants.defaultProfileImage,
           message: 'أهلا وسهلا',
           timestamp: DateTime.now().subtract(const Duration(hours: 2)),
           isRead: true,
@@ -306,8 +303,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: 'current_user',
           senderName: 'أنا',
-          senderImage:
-              'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+          senderImage: ApiConstants.maleProfileImage,
           message: 'أهلا وسهلا بك',
           timestamp:
               DateTime.now().subtract(const Duration(hours: 1, minutes: 55)),
@@ -318,8 +314,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '2',
           senderName: 'فاطمة علي',
-          senderImage:
-              'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+          senderImage: ApiConstants.defaultProfileImage,
           message: 'شكرا لك',
           timestamp: DateTime.now().subtract(const Duration(hours: 1)),
           isRead: true,
@@ -332,8 +327,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '4',
           senderName: 'سارة أحمد',
-          senderImage:
-              'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+          senderImage: ApiConstants.defaultProfileImage,
           message: 'مرحبا، كيف حالك؟',
           timestamp: DateTime.now().subtract(const Duration(hours: 3)),
           isRead: true,
@@ -343,8 +337,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: 'current_user',
           senderName: 'أنا',
-          senderImage:
-              'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+          senderImage: ApiConstants.maleProfileImage,
           message: 'أهلا وسهلا، الحمد لله',
           timestamp:
               DateTime.now().subtract(const Duration(hours: 2, minutes: 30)),
@@ -355,8 +348,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           roomId: roomId,
           senderId: '4',
           senderName: 'سارة أحمد',
-          senderImage:
-              'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png',
+          senderImage: ApiConstants.defaultProfileImage,
           message: 'هل تريد أن نلتقي في المطعم؟',
           timestamp: DateTime.now().subtract(const Duration(hours: 2)),
           isRead: false,
@@ -370,7 +362,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         roomId: roomId,
         senderId: 'other_user',
         senderName: 'مستخدم آخر',
-        senderImage: 'https://elsadkeen.sharetrip-ksa.com/assets/img/male.png',
+        senderImage: ApiConstants.maleProfileImage,
         message: 'مرحبا',
         timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
         isRead: true,

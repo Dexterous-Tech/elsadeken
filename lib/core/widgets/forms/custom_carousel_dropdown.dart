@@ -1,4 +1,5 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_controller.dart' show CarouselSliderController;
+import 'package:carousel_slider/carousel_slider.dart' show CarouselSlider, CarouselOptions;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
