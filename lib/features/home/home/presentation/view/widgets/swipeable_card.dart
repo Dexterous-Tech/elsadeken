@@ -249,7 +249,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                     children: [
                       Positioned.fill(
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8).r,
+                          borderRadius: BorderRadius.circular(16).r,
                           child: widget.user.imageUrl.isNotEmpty
                               ? CachedNetworkImage(
                                   imageUrl: widget.user.imageUrl,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/features/chat/data/models/pusher_message_model.dart';
 import 'package:elsadeken/features/chat/data/services/chat_message_service.dart';
 import 'package:http/http.dart' as http;
@@ -409,8 +410,7 @@ class PusherService {
 
       // Request authentication from Laravel backend
       log('🔐 Requesting authentication from backend...');
-      final authUrl =
-          'https://elsadkeen.sharetrip-ksa.com/api/broadcasting/auth';
+      final authUrl = '${ApiConstants.baseUrl}/broadcasting/auth';
       log('🔐 Auth URL: $authUrl');
       log('🔐 Auth payload: socket_id=$socketId, channel_name=$channelName');
 
