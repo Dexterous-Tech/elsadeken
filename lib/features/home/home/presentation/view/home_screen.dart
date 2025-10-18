@@ -347,10 +347,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ? Color(0xffDBAE48)
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(10).r,
-                                      border: Border.all(
-                                        color: Color(0xffE1E1E1),
-                                        width: 1,
-                                      ),
+                                      border: isSelected
+                                          ? null
+                                          : Border.all(
+                                              color: Color(0xffE1E1E1),
+                                              width: 1,
+                                            ),
                                     ),
                                     child: Center(
                                       child: Text(
