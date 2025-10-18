@@ -9,6 +9,8 @@ import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/custom_container.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/dialog/ignore_dialog.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/dialog/report_dialog.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_data.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_logo.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
@@ -183,7 +185,26 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                                 child: CustomContainer(
                                   img: AppImages.like,
                                   text: AppLocalizations.of(context)!.interest,
-                                  onTap: null, // Disable tap when ignored
+                                  onTap: () {
+                                    ignoreDialog(
+                                        afterSuccess: () {
+                                          setState(() {
+                                            _currentUser =
+                                                _currentUser?.copyWith(
+                                              isIgnore:
+                                                  !(_currentUser?.isIgnore ??
+                                                      false),
+                                            );
+                                          });
+                                        },
+                                        context: context,
+                                        message: AppLocalizations.of(context)!
+                                            .unignorePersonQu,
+                                        textButton:
+                                            AppLocalizations.of(context)!
+                                                .unignoreButton,
+                                        userId: widget.userId);
+                                  }, // Disable tap when ignored
                                 ),
                               )
                             : CustomContainer(
@@ -204,34 +225,13 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                         current is IgnoreUserFailure ||
                         current is IgnoreUserSuccess,
                     listener: (context, state) {
-                      if (state is IgnoreUserLoading) {
-                        loadingDialog(context);
-                      } else if (state is IgnoreUserFailure) {
-                        context.pop();
-                        errorDialog(context: context, error: state.error);
-                      } else if (state is IgnoreUserSuccess) {
-                        context.pop();
-
+                      if (state is IgnoreUserSuccess) {
                         // Update the current user's ignore status
                         setState(() {
                           _currentUser = _currentUser?.copyWith(
                             isIgnore: !(_currentUser?.isIgnore ?? false),
                           );
                         });
-
-                        // Reload profile data to get updated information
-                        context
-                            .read<ProfileDetailsCubit>()
-                            .getProfileDetails(widget.userId);
-
-                        successDialog(
-                            context: context,
-                            message: state.profileDetailsActionResponseModel
-                                    .message ??
-                                AppLocalizations.of(context)!.ignored,
-                            onPressed: () {
-                              context.pop();
-                            });
                       }
                     },
                     child: (_currentUser?.isBlocked ?? false)
@@ -258,9 +258,29 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                                     ? AppLocalizations.of(context)!.ignored
                                     : AppLocalizations.of(context)!.ignore,
                                 onTap: () {
-                                  context
-                                      .read<ProfileDetailsCubit>()
-                                      .ignoreUser(widget.userId);
+                                  ignoreDialog(
+                                      afterSuccess: () {
+                                        setState(() {
+                                          _currentUser = _currentUser?.copyWith(
+                                            isIgnore:
+                                                !(_currentUser?.isIgnore ??
+                                                    false),
+                                          );
+                                        });
+                                      },
+                                      context: context,
+                                      message: _currentUser?.isIgnore ?? false
+                                          ? AppLocalizations.of(context)!
+                                              .sureUnignoreQu
+                                          : AppLocalizations.of(context)!
+                                              .sureIgnoreQu,
+                                      textButton:
+                                          _currentUser?.isIgnore ?? false
+                                              ? AppLocalizations.of(context)!
+                                                  .unignoreButton
+                                              : AppLocalizations.of(context)!
+                                                  .yesIgnore,
+                                      userId: widget.userId);
                                 },
                               ),
                   ),
@@ -279,7 +299,24 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                               child: CustomContainer(
                                 img: AppImages.message,
                                 text: AppLocalizations.of(context)!.chats,
-                                onTap: null,
+                                onTap: () {
+                                  ignoreDialog(
+                                      afterSuccess: () {
+                                        setState(() {
+                                          _currentUser = _currentUser?.copyWith(
+                                            isIgnore:
+                                                !(_currentUser?.isIgnore ??
+                                                    false),
+                                          );
+                                        });
+                                      },
+                                      context: context,
+                                      message: AppLocalizations.of(context)!
+                                          .messageUnignoreQu,
+                                      textButton: AppLocalizations.of(context)!
+                                          .unignoreButton,
+                                      userId: widget.userId);
+                                },
                               ),
                             )
                           : GestureDetector(
@@ -379,43 +416,14 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                         current is ReportUserLoading ||
                         current is ReportUserFailure ||
                         current is ReportUserSuccess,
-                    listener: (context, state) {
-                      if (state is ReportUserLoading) {
-                        loadingDialog(context);
-                      } else if (state is ReportUserFailure) {
-                        context.pop();
-                        errorDialog(context: context, error: state.error);
-                      } else if (state is ReportUserSuccess) {
-                        context.pop();
-                        setState(() {
-                          _currentUser = _currentUser?.copyWith(
-                            isBlocked: !(_currentUser?.isBlocked ?? false),
-                          );
-                        });
-                        // Reload profile data to get updated information
-                        context
-                            .read<ProfileDetailsCubit>()
-                            .getProfileDetails(widget.userId);
-
-                        successDialog(
-                            context: context,
-                            message: state.profileDetailsActionResponseModel
-                                    .message ??
-                                AppLocalizations.of(context)!.reported,
-                            onPressed: () {
-                              context.pop();
-                            });
-                      }
-                    },
+                    listener: (context, state) {},
                     child: CustomContainer(
                       img: AppImages.block,
                       text: (_currentUser?.isBlocked ?? false)
                           ? AppLocalizations.of(context)!.reported
                           : AppLocalizations.of(context)!.report,
                       onTap: () {
-                        context
-                            .read<ProfileDetailsCubit>()
-                            .reportUser(widget.userId);
+                        reportDialog(context: context, userId: widget.userId);
                       },
                     ),
                   ),

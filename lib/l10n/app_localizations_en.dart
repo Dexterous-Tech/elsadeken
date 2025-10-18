@@ -360,7 +360,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get liked => 'Cancel interest';
 
   @override
-  String get ignored => 'Untangle';
+  String get ignored => 'Unignore';
 
   @override
   String get reported => 'Reported';
@@ -1994,4 +1994,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noShareLinkAvailable => 'No share link available';
+
+  @override
+  String get sureIgnoreQu => 'Are you sure you want to ignore this person?';
+
+  @override
+  String get yesIgnore => 'Sure Ignore';
+
+  @override
+  String get unignorePersonQu => 'To interact with this person, unignore them first';
+
+  @override
+  String get unignoreButton => 'Unignore';
+
+  @override
+  String get sureUnignoreQu => 'Are you sure you want to unignore this person?';
+
+  @override
+  String get messageUnignoreQu => 'To message this person, unignore them first';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get sureReportQu => 'Are you sure you want to report this person?';
+
+  @override
+  String get yesReport => 'Yes Report';
+
+  @override
+  String get reportReasonQu => 'What is the reason for reporting?';
+
+  @override
+  String get selectReportReason => 'Select the reason for reporting';
 }

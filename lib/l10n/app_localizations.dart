@@ -788,7 +788,7 @@ abstract class AppLocalizations {
   /// No description provided for @ignored.
   ///
   /// In en, this message translates to:
-  /// **'Untangle'**
+  /// **'Unignore'**
   String get ignored;
 
   /// No description provided for @reported.
@@ -3958,6 +3958,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No share link available'**
   String get noShareLinkAvailable;
+
+  /// No description provided for @sureIgnoreQu.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to ignore this person?'**
+  String get sureIgnoreQu;
+
+  /// No description provided for @yesIgnore.
+  ///
+  /// In en, this message translates to:
+  /// **'Sure Ignore'**
+  String get yesIgnore;
+
+  /// No description provided for @unignorePersonQu.
+  ///
+  /// In en, this message translates to:
+  /// **'To interact with this person, unignore them first'**
+  String get unignorePersonQu;
+
+  /// No description provided for @unignoreButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Unignore'**
+  String get unignoreButton;
+
+  /// No description provided for @sureUnignoreQu.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to unignore this person?'**
+  String get sureUnignoreQu;
+
+  /// No description provided for @messageUnignoreQu.
+  ///
+  /// In en, this message translates to:
+  /// **'To message this person, unignore them first'**
+  String get messageUnignoreQu;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @sureReportQu.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to report this person?'**
+  String get sureReportQu;
+
+  /// No description provided for @yesReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes Report'**
+  String get yesReport;
+
+  /// No description provided for @reportReasonQu.
+  ///
+  /// In en, this message translates to:
+  /// **'What is the reason for reporting?'**
+  String get reportReasonQu;
+
+  /// No description provided for @selectReportReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the reason for reporting'**
+  String get selectReportReason;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

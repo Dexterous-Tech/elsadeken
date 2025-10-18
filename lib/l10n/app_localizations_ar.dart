@@ -1995,4 +1995,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noShareLinkAvailable => 'لا يوجد رابط للمشاركة متاح';
+
+  @override
+  String get sureIgnoreQu => 'هل أنت متأكد من تجاهل هذا الشخص؟';
+
+  @override
+  String get yesIgnore => 'نعم  تجاهل';
+
+  @override
+  String get unignorePersonQu => 'لكي تهتم بهذا الشخص فك التجاهل أولاً';
+
+  @override
+  String get unignoreButton => 'فك التجاهل';
+
+  @override
+  String get sureUnignoreQu => 'هل أنت متأكد من فك تجاهل هذا الشخص؟';
+
+  @override
+  String get messageUnignoreQu => 'لكي تراسل هذا الشخص فك التجاهل أولاً';
+
+  @override
+  String get back => 'عودة';
+
+  @override
+  String get sureReportQu => 'هل أنت متأكد من الإبلاغ عن هذا الشخص؟';
+
+  @override
+  String get yesReport => 'نعم إبلاغ';
+
+  @override
+  String get reportReasonQu => 'ما هو سبب الإبلاغ؟';
+
+  @override
+  String get selectReportReason => 'اختر سبب الإبلاغ';
 }

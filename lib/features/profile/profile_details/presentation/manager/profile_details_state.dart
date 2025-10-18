@@ -73,3 +73,17 @@ class ShareUserSuccess extends ProfileDetailsState {
 
   ShareUserSuccess(this.profileDetailsActionResponseModel);
 }
+
+class ReportReasonLoading extends ProfileDetailsState {}
+
+class ReportReasonFailure extends ProfileDetailsState {
+  final String error;
+
+  ReportReasonFailure(this.error);
+}
+
+class ReportReasonSuccess extends ProfileDetailsState {
+  final List<GeneralInfoResponseModels> generalInfoResponseModels;
+
+  ReportReasonSuccess(this.generalInfoResponseModels);
+}

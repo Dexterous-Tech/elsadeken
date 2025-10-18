@@ -7,6 +7,8 @@ import 'package:elsadeken/features/profile/profile_details/data/data_source/prof
 import 'package:elsadeken/features/profile/profile_details/data/models/profile_details_action_response_model.dart';
 import 'package:elsadeken/features/profile/profile_details/data/models/profile_details_response_model.dart';
 
+import '../../../../auth/signup/data/models/general_info_models.dart';
+
 abstract class ProfileDetailsRepoInterface {
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> ignoreUser(
       int userId);
@@ -15,9 +17,11 @@ abstract class ProfileDetailsRepoInterface {
   Future<Either<ApiErrorModel, ProfileDetailsResponseModel>> getProfileDetails(
       int userId);
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> reportUser(
-      int userId);
+      int userId, int reasonId);
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> shareUser(
       int userId);
+  Future<Either<ApiErrorModel, List<GeneralInfoResponseModels>>> getGeneralInfo(
+      String endpoint);
 }
 
 class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
@@ -71,9 +75,10 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
 
   @override
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> reportUser(
-      int userId) async {
+      int userId, int reasonId) async {
     try {
-      var response = await profileDetailsDataSource.reportUser(userId);
+      var response =
+          await profileDetailsDataSource.reportUser(userId, reasonId);
       return Right(response);
     } catch (error) {
       log("error in report user $error");
@@ -92,6 +97,21 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
       return Right(response);
     } catch (error) {
       log("error in share user $error");
+      if (error is ApiErrorModel) {
+        return Left(error);
+      }
+      return Left(ApiErrorHandler.handle(error));
+    }
+  }
+
+  @override
+  Future<Either<ApiErrorModel, List<GeneralInfoResponseModels>>> getGeneralInfo(
+      String endpoint) async {
+    try {
+      var response = await profileDetailsDataSource.getGeneralInfo(endpoint);
+      return Right(response);
+    } catch (error) {
+      log("error in general info $endpoint $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

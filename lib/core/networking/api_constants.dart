@@ -53,6 +53,7 @@ class ApiConstants {
   static String shareUser(int userId) => '/user/share/profile/$userId';
   static String updateImageSetting = '/user/update-image-setting';
   static String deleteImage = '/user/delete-image';
+  static String reportReasons = '/user/list/report-reasons';
 
   //search-home
   static String matchesUsers = '/user/home/matches-users';
@@ -71,9 +72,10 @@ class ApiConstants {
       'https://sadiqeen.com/assets/img/female.png';
   static const String maleProfileImage =
       'https://sadiqeen.com/assets/img/male.png';
-  
+
   // broadcasting
-  static const String broadcastingAuthUrl = 'https://elsadkeen.sharetrip-ksa.com/api/broadcasting/auth';
+  static const String broadcastingAuthUrl =
+      'https://elsadkeen.sharetrip-ksa.com/api/broadcasting/auth';
 
   // members
   static String distinguishedMembers = '/user/members/distinguished';

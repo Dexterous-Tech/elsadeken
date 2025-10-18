@@ -38,6 +38,7 @@ class ApiServices {
   /// Reusable GET method
   Future<Response<T>> get<T>({
     required String endpoint,
+    Map<String, dynamic>? requestBody,
     Map<String, dynamic>? queryParameters,
     bool requiresAuth = true,
   }) async {
@@ -47,6 +48,7 @@ class ApiServices {
       final response = await _dio.get<T>(
         '${ApiConstants.baseUrl}$endpoint', // Combine base URL and endpoint
         queryParameters: queryParameters,
+        data: requestBody,
       );
 
       return response;

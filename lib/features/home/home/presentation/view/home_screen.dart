@@ -39,7 +39,8 @@ class HomeScreenWrapper extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => sl<ProfileDetailsCubit>()),
         BlocProvider(create: (context) => sl<ChatListCubit>()),
-        BlocProvider(create: (context) => sl<SignUpListsCubit>()),
+        BlocProvider(
+            create: (context) => sl<SignUpListsCubit>()..getCountries()),
       ],
       child: HomeScreen(initialTabIndex: initialTabIndex),
     );
@@ -68,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool hasMore = true;
   int? selectedCountryId; // null means "All"
   late PageController _pageController;
+  Locale? _previousLocale;
 
   @override
   void dispose() {
@@ -76,12 +78,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Check if locale has changed
+    final currentLocale = Localizations.localeOf(context);
+    if (_previousLocale != null && _previousLocale != currentLocale) {
+      // Language changed, reload countries and matches
+      print(
+          '🌐 [HomeScreen] Language changed from ${_previousLocale?.languageCode} to ${currentLocale.languageCode}');
+      context.read<SignUpListsCubit>().getCountries();
+      _loadMatchesUsers();
+    }
+    _previousLocale = currentLocale;
+  }
+
+  @override
   void initState() {
     super.initState();
 
     // Initialize PageController
     _pageController = PageController(viewportFraction: 0.9);
-    
+
     // Add listener to auto-load more when near the end
     _pageController.addListener(() {
       if (_pageController.hasClients && hasMore && !isLoading) {
@@ -311,7 +329,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(horizontal: 23.w),
-                            itemCount: state.countriesList.length + 1, // +1 for "All"
+                            itemCount:
+                                state.countriesList.length + 1, // +1 for "All"
                             itemBuilder: (context, index) {
                               // First item is "All"
                               if (index == 0) {
@@ -319,7 +338,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return GestureDetector(
                                   onTap: () => _onCountrySelected(null),
                                   child: Container(
-                                    margin: EdgeInsetsDirectional.only(end: 12.w),
+                                    margin:
+                                        EdgeInsetsDirectional.only(end: 12.w),
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 20.w, vertical: 10.h),
                                     decoration: BoxDecoration(
@@ -334,7 +354,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        LocalizationService.instance.currentLocale
+                                        LocalizationService
+                                                    .instance
+                                                    .currentLocale
                                                     .languageCode ==
                                                 'ar'
                                             ? 'الكل'
@@ -345,7 +367,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                               : Color(0xffDBAE48),
                                           fontSize: 14.sp,
                                           fontWeight: FontWeightHelper.medium,
-                                          fontFamily: FontFamilyHelper.lamaSansArabic,
+                                          fontFamily:
+                                              FontFamilyHelper.lamaSansArabic,
                                         ),
                                       ),
                                     ),
@@ -355,7 +378,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                               // Country items
                               final country = state.countriesList[index - 1];
-                              final isSelected = selectedCountryId == country.id;
+                              final isSelected =
+                                  selectedCountryId == country.id;
 
                               return GestureDetector(
                                 onTap: () => _onCountrySelected(country.id),
@@ -364,8 +388,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 20.w, vertical: 10.h),
                                   decoration: BoxDecoration(
-                                    color:
-                                        isSelected ? Color(0xffDBAE48) : Colors.white,
+                                    color: isSelected
+                                        ? Color(0xffDBAE48)
+                                        : Colors.white,
                                     borderRadius: BorderRadius.circular(10).r,
                                     border: Border.all(
                                       color: Color(0xffE1E1E1),
@@ -381,7 +406,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             : Color(0xffDBAE48),
                                         fontSize: 14.sp,
                                         fontWeight: FontWeightHelper.medium,
-                                        fontFamily: FontFamilyHelper.lamaSansArabic,
+                                        fontFamily:
+                                            FontFamilyHelper.lamaSansArabic,
                                       ),
                                     ),
                                   ),
