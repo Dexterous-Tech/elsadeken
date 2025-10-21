@@ -18,6 +18,7 @@ class SwipeableCard extends StatefulWidget {
   final UserModel user;
   final Function(bool)? onSwipe;
   final Function(int)? onLike; // Callback for like in carousel mode
+  final Function(int)? onDislike; // Callback for dislike in carousel mode
   final bool isTop;
   final double scale;
   final double verticalOffset;
@@ -26,6 +27,7 @@ class SwipeableCard extends StatefulWidget {
     required this.user,
     this.onSwipe,
     this.onLike,
+    this.onDislike,
     this.isTop = false,
     this.scale = 1.0,
     this.verticalOffset = 1.0,
@@ -167,13 +169,14 @@ class _SwipeableCardState extends State<SwipeableCard>
   }
 
   void _handleButtonPress(bool isLike) {
-    // In carousel mode (onSwipe is null), use onLike callback
+    // In carousel mode (onSwipe is null), use onLike/onDislike callbacks
     if (widget.onSwipe == null) {
-      // Carousel mode - just trigger the like action without animation
+      // Carousel mode - trigger the appropriate action without animation
       if (isLike && widget.onLike != null) {
         widget.onLike!(widget.user.id);
+      } else if (!isLike && widget.onDislike != null) {
+        widget.onDislike!(widget.user.id);
       }
-      // Dislike button does nothing in carousel mode
       return;
     }
 
@@ -367,17 +370,15 @@ class _SwipeableCardState extends State<SwipeableCard>
                             ],
                           ),
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             textDirection:
                                 LocalizationService.instance.textDirection,
                             children: [
                               Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                textDirection: LocalizationService
-                                    .instance.textDirection,
+                                textDirection:
+                                    LocalizationService.instance.textDirection,
                                 children: [
                                   Text(
                                     ' ${widget.user.age} ${AppLocalizations.of(context)!.year}, ${widget.user.name}',
@@ -389,18 +390,17 @@ class _SwipeableCardState extends State<SwipeableCard>
                                         color: Colors.white,
                                         fontSize: 15.sp,
                                         fontWeight: FontWeightHelper.bold,
-                                        fontFamily: FontFamilyHelper
-                                            .lamaSansArabic),
+                                        fontFamily:
+                                            FontFamilyHelper.lamaSansArabic),
                                   ),
                                   Text(
                                     widget.user.profession,
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 14.sp,
-                                        fontWeight:
-                                            FontWeightHelper.regular,
-                                        fontFamily: FontFamilyHelper
-                                            .lamaSansArabic),
+                                        fontWeight: FontWeightHelper.regular,
+                                        fontFamily:
+                                            FontFamilyHelper.lamaSansArabic),
                                   ),
                                 ],
                               ),
@@ -416,8 +416,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                                   ),
                                   decoration: BoxDecoration(
                                     color: Color(0xffDBAE48),
-                                    borderRadius:
-                                        BorderRadius.circular(15).r,
+                                    borderRadius: BorderRadius.circular(15).r,
                                   ),
                                   child: Center(
                                     child: Text(

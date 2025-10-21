@@ -23,6 +23,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/helper/localization_helper.dart';
 
 import '../../../../members/members_section/view/members_screen.dart';
 import '../../data/models/user_model.dart';
@@ -273,6 +274,111 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
+  }
+
+  // Handler for dislike action in carousel mode - removes card from list
+  void _onCarouselDislike(int userId) {
+    // Get current page index before any changes
+    final currentPage =
+        _pageController.hasClients ? (_pageController.page?.round() ?? 0) : 0;
+
+    // Find the user before removing to show their name in snackbar
+    final userToRemove = currentUsers.firstWhere(
+      (user) => user.id == userId,
+      orElse: () => UserModel(
+        id: userId,
+        name: 'User',
+        age: 0,
+        profession: '',
+        location: '',
+        imageUrl: '',
+        matchPercentage: 0,
+        isFavorite: false,
+      ),
+    );
+
+    // Find the index of the card being removed
+    final removedIndex = currentUsers.indexWhere((user) => user.id == userId);
+
+    if (removedIndex == -1) return;
+
+    // Determine the target page for smooth scrolling
+    int targetPage;
+    bool isLastCard = removedIndex == currentUsers.length - 1;
+    bool isCurrentCard = removedIndex == currentPage;
+
+    if (isCurrentCard) {
+      // If removing the current card
+      if (isLastCard) {
+        // If it's the last card, go to previous one
+        targetPage = currentUsers.length > 1 ? currentUsers.length - 2 : 0;
+      } else {
+        // If not the last card, stay at same index (next card will appear)
+        targetPage = currentPage;
+      }
+    } else {
+      // If removing a different card, adjust accordingly
+      if (removedIndex < currentPage) {
+        targetPage = currentPage - 1;
+      } else {
+        targetPage = currentPage;
+      }
+    }
+
+    // Smooth scroll to target page first
+    if (_pageController.hasClients && currentUsers.length > 1) {
+      _pageController
+          .animateToPage(
+        targetPage,
+        duration: Duration(milliseconds: 600),
+        curve: Curves.easeInCubic,
+      )
+          .then((_) {
+        // After scrolling completes, remove the card
+        if (mounted) {
+          setState(() {
+            currentUsers.removeWhere((user) => user.id == userId);
+          });
+
+          // Show snackbar with removal message
+          _showRemovalSnackbar(userToRemove.name);
+        }
+      });
+    } else {
+      // If only one card or no cards, remove immediately
+      setState(() {
+        currentUsers.removeWhere((user) => user.id == userId);
+      });
+
+      if (currentUsers.isNotEmpty) {
+        _showRemovalSnackbar(userToRemove.name);
+      }
+    }
+  }
+
+  void _showRemovalSnackbar(String userName) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          LocalizationHelper.getLocalizedText(
+            'تم تجاهل $userName',
+            'You ignored $userName',
+          ),
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Color(0xffDBAE48),
+        duration: Duration(milliseconds: 2000),
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+          bottom: 32.h,
+          left: 20.w,
+          right: 20.w,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8).r,
+        ),
+      ),
+    );
   }
 
   Widget buildHomeContent() {
@@ -535,6 +641,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         null, // Disable swipe in carousel mode
                                     onLike:
                                         _onCarouselLike, // Enable like in carousel mode
+                                    onDislike:
+                                        _onCarouselDislike, // Enable dislike/remove in carousel mode
                                     isTop: false, // Not swipeable
                                     scale: 1.0,
                                     verticalOffset: 0,

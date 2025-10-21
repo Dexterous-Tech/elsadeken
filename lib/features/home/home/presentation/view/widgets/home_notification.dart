@@ -79,8 +79,8 @@ class _HomeNotificationState extends State<HomeNotification> {
                 current is NotificationCountSuccess,
             builder: (context, state) {
               return Container(
-                width: 14.w,
-                height: 14.h,
+                width: 18.w,
+                height: 18.h,
                 decoration:
                     BoxDecoration(shape: BoxShape.circle, color: AppColors.red),
                 child: Center(
@@ -96,7 +96,7 @@ class _HomeNotificationState extends State<HomeNotification> {
                               '${state.notificationCountResponseModel.data!.countUnreadNotifications ?? 0}',
                               style: AppTextStyles.font14BlackRegularLamaSans
                                   .copyWith(
-                                      color: AppColors.white, fontSize: 10.sp),
+                                      color: AppColors.white, fontSize: 8.sp),
                             )
                           : Text(
                               '0',
