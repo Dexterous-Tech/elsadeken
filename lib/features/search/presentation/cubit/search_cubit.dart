@@ -13,7 +13,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   SearchCubit(this.searchUseCase) : super(SearchInitial());
 
-  SearchFilter _currentFilter = SearchFilter();
+  SearchFilter _currentFilter = SearchFilter(latest: 1);
 
   SearchFilter get currentFilter => _currentFilter;
 

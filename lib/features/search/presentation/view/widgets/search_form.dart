@@ -9,7 +9,7 @@ import 'package:elsadeken/features/auth/signup/data/models/cities_models.dart';
 import 'package:elsadeken/features/auth/signup/data/models/general_info_models.dart';
 import 'package:elsadeken/features/auth/signup/data/models/national_country_models.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
-import 'package:elsadeken/features/search/presentation/view/widgets/range_text_field.dart';
+import 'package:elsadeken/features/search/presentation/view/widgets/range_dropdown_field.dart';
 import 'package:elsadeken/features/search/presentation/view/widgets/search_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -197,6 +197,8 @@ class _SearchFormState extends State<SearchForm> {
                 context.read<SearchCubit>().updateUsername(value),
           ),
           SizedBox(height: 16),
+
+          // quick search
           SearchTextField(
             onTap: () {
               context.read<SearchCubit>().performSearch();
@@ -420,10 +422,12 @@ class _SearchFormState extends State<SearchForm> {
                 },
               ),
               SizedBox(height: 12),
-              RangeTextField(
+              RangeDropdownField(
                   label: AppLocalizations.of(context)!.age,
                   fromHint: AppLocalizations.of(context)!.from,
                   toHint: AppLocalizations.of(context)!.to,
+                  minValue: 18,
+                  maxValue: 99,
                   onRangeChanged: (from, to) {
                     if (from != null || to != null) {
                       context
@@ -432,11 +436,12 @@ class _SearchFormState extends State<SearchForm> {
                     }
                   }),
               SizedBox(height: 12),
-              RangeTextField(
+              RangeDropdownField(
                 label: AppLocalizations.of(context)!.heightCm,
                 fromHint: AppLocalizations.of(context)!.from,
                 toHint: AppLocalizations.of(context)!.to,
-                maxLength: 3,
+                minValue: 50,
+                maxValue: 220,
                 onRangeChanged: (from, to) {
                   if (from != null || to != null) {
                     context
@@ -446,11 +451,12 @@ class _SearchFormState extends State<SearchForm> {
                 },
               ),
               SizedBox(height: 12),
-              RangeTextField(
+              RangeDropdownField(
                 label: AppLocalizations.of(context)!.weightKg,
                 fromHint: AppLocalizations.of(context)!.from,
                 toHint: AppLocalizations.of(context)!.to,
-                maxLength: 3,
+                minValue: 30,
+                maxValue: 200,
                 onRangeChanged: (from, to) {
                   if (from != null || to != null) {
                     context
@@ -514,13 +520,20 @@ class _SearchFormState extends State<SearchForm> {
             children: [
               DropdownField(
                 label: '',
-                hint: AppLocalizations.of(context)!.mostVisitedFirst,
+                hint: AppLocalizations.of(context)!.newestFirst,
+                initialValue: AppLocalizations.of(context)!.newestFirst,
                 items: [
-                  AppLocalizations.of(context)!.mostVisitedFirst,
                   AppLocalizations.of(context)!.newestFirst,
                   AppLocalizations.of(context)!.oldestFirst
                 ],
-                onChanged: (value) {},
+                onChanged: (value) {
+                  if (value == AppLocalizations.of(context)!.newestFirst) {
+                    context.read<SearchCubit>().updateSortByLatest(true);
+                  } else if (value ==
+                      AppLocalizations.of(context)!.oldestFirst) {
+                    context.read<SearchCubit>().updateSortByLatest(false);
+                  }
+                },
               ),
             ],
           ),

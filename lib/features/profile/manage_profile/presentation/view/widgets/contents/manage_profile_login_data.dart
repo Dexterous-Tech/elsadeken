@@ -157,6 +157,7 @@ class ManageProfileLoginData extends StatelessWidget {
           code: ValueNotifier<String>(profileData?.countryCode ?? '+966'),
           type: ManageProfileFieldType.phoneWithCountryCode,
           keyboardType: TextInputType.phone,
+          isRequired: false,
         ),
         ManageProfileField(
           label: AppLocalizations.of(context)!.email,

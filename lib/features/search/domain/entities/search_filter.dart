@@ -87,6 +87,7 @@ class SearchFilter {
       "page": page,
     };
     if (username?.isNotEmpty ?? false) data["user_name"] = username;
+    if (quickSearch?.isNotEmpty ?? false) data["fast_prompt"] = quickSearch;
     if (nationality?.isNotEmpty ?? false)
       data["nationality_id"] = nationality.toString();
     if (city?.isNotEmpty ?? false) data["city_id"] = city.toString();

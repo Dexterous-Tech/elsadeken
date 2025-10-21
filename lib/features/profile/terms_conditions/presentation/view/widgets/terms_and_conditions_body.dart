@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/helper/app_lottie.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -73,42 +74,27 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
                         controller: _scrollController,
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
-                          if (state.aboutUsResponseModel.data?.description
-                                  ?.isNotEmpty ??
-                              false) {
-                            return Html(
-                              data: state
-                                      .aboutUsResponseModel.data?.description ??
-                                  '',
-                              style: {
-                                "body": Style(
-                                  fontSize: FontSize(14.sp),
-                                  color: AppColors.lightMixGrayAndBlue,
-                                  textAlign: TextAlign.right,
-                                  direction: TextDirection.rtl,
-                                ),
-                                "p": Style(
-                                  margin: Margins.symmetric(vertical: 8.h),
-                                ),
-                              },
-                            );
-                          } else {
-                            return Center(
-                              child: Text(
-                                AppLocalizations.of(context)!
-                                    .noTermsAndConditionsAvailable,
-                                style: AppTextStyles
-                                    .font20LightOrangeMediumLamaSans
-                                    .copyWith(
-                                        color: AppColors.lightMixGrayAndBlue),
+                          return Html(
+                            data: state.aboutUsResponseModel.data?.description,
+                            style: {
+                              "body": Style(
+                                fontSize: FontSize(14.sp),
+                                color: AppColors.lightMixGrayAndBlue,
+                                textAlign:
+                                    LocalizationService.instance.textAlignment,
+                                direction:
+                                    LocalizationService.instance.textDirection,
                               ),
-                            );
-                          }
+                              "p": Style(
+                                margin: Margins.symmetric(vertical: 8.h),
+                              ),
+                            },
+                          );
                         },
                         separatorBuilder: (_, index) {
                           return verticalSpace(30);
                         },
-                        itemCount: 0,
+                        itemCount: 1,
                       ),
                     ),
                   ),

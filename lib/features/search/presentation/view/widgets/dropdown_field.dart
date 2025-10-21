@@ -1,6 +1,7 @@
 // File: lib/presentation/widgets/dropdown_field.dart
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/theme/app_color.dart';
 
@@ -42,23 +43,25 @@ class _DropdownFieldState extends State<DropdownField> {
         Text(
           widget.label,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 14.sp,
             color: AppColors.black,
           ),
         ),
-        SizedBox(width: 8),
+        SizedBox(width: 8.w),
         Expanded(
           child: Container(
-            height: 40,
-            padding: EdgeInsets.symmetric(horizontal: 12),
+            height: 40.h,
+            padding: EdgeInsets.symmetric(horizontal: 12.w),
             decoration: BoxDecoration(
               color: AppColors.white,
               border: Border.all(color: AppColors.primaryOrange),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8).r,
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
+                dropdownColor: Colors.white,
                 isExpanded: true,
+                borderRadius: BorderRadius.circular(8).r,
                 value: selectedValue,
                 hint: Text(
                   widget.hint,
