@@ -27,7 +27,7 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
 
   @override
   void initState() {
-    TermsCubit.get(context).loadTerms();
+    TermsCubit.get(context).termsConditions();
     super.initState();
   }
 
@@ -73,9 +73,13 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
                         controller: _scrollController,
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
-                          if (state.terms.isNotEmpty) {
+                          if (state.aboutUsResponseModel.data?.description
+                                  ?.isNotEmpty ??
+                              false) {
                             return Html(
-                              data: state.terms[index].description ?? '',
+                              data: state
+                                      .aboutUsResponseModel.data?.description ??
+                                  '',
                               style: {
                                 "body": Style(
                                   fontSize: FontSize(14.sp),
@@ -104,8 +108,7 @@ class _TermsAndConditionsBodyState extends State<TermsAndConditionsBody> {
                         separatorBuilder: (_, index) {
                           return verticalSpace(30);
                         },
-                        itemCount:
-                            state.terms.isNotEmpty ? state.terms.length : 1,
+                        itemCount: 0,
                       ),
                     ),
                   ),

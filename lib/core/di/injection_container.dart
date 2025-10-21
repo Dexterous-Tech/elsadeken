@@ -82,11 +82,9 @@ import 'package:elsadeken/features/profile/success_stories/data/repository/succe
 import 'package:elsadeken/features/profile/success_stories/domain/repository/success_storie_repo.dart';
 import 'package:elsadeken/features/profile/success_stories/domain/use_cases/get_success_story.dart';
 import 'package:elsadeken/features/profile/success_stories/presentation/cubit/success_story_cubit.dart';
-import 'package:elsadeken/features/profile/terms_conditions/data/datasources/terms_api.dart';
-import 'package:elsadeken/features/profile/terms_conditions/data/repository/blog_repo_impl.dart';
-import 'package:elsadeken/features/profile/terms_conditions/domain/repository/terms_repo.dart';
-import 'package:elsadeken/features/profile/terms_conditions/domain/use_cases/get_blog_posts.dart'
-    as terms;
+import 'package:elsadeken/features/profile/terms_conditions/data/data_source/terms_conditions_data_source.dart';
+import 'package:elsadeken/features/profile/terms_conditions/data/repo/terms_conditions_repo.dart';
+
 import 'package:elsadeken/features/profile/terms_conditions/presentation/manager/terms_and_conditions_cubit.dart';
 import 'package:elsadeken/features/search/logic/repository/search_repository.dart';
 import 'package:elsadeken/features/search/logic/repository/search_repository_impl.dart';
@@ -178,9 +176,11 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
 
   // terms and conditions (profile)
-  sl.registerLazySingleton<TermsApi>(() => TermsApi(sl()));
-  sl.registerLazySingleton<TermsRepo>(() => TermsRepoImpl(sl()));
-  sl.registerFactory<TermsCubit>(() => TermsCubit(terms.GetBlogPosts(sl())));
+  sl.registerLazySingleton<TermsConditionsDataSource>(
+      () => TermsConditionsDataSource(sl()));
+  sl.registerLazySingleton<TermsConditionsRepoInterface>(
+      () => TermsConditionsRepoImpl(sl()));
+  sl.registerFactory<TermsCubit>(() => TermsCubit(sl()));
 
   // contact us
   sl.registerLazySingleton<ContactUsDataSource>(

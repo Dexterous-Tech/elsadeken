@@ -80,24 +80,14 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  // void updateFcm() async {
-  //   emit(FcmLoading());
-  //
-  //   await saveTokeFromFirebase();
-  //   String token = await SharedPreferencesHelper.getSecuredString(
-  //       SharedPreferencesKey.deviceToken);
-  //   var response = await loginRepo.updateFcm(token);
-  //
-  //   response.fold(
-  //     (error) {
-  //       emit(FcmFailure(error.displayMessage));
-  //     },
-  //     (fcmResponseModel) async {
-  //       log("save fcm token ");
-  //       emit(FcmSuccess(fcmResponseModel));
-  //     },
-  //   );
-  // }
+  Future<void> saveTokeFromFirebase() async {
+    await SharedPreferencesHelper.deleteSecuredString(
+        SharedPreferencesKey.deviceToken);
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    String? token = await messaging.getToken();
+    await SharedPreferencesHelper.setSecuredString(
+        SharedPreferencesKey.deviceToken, token!);
+  }
 
   Future<void> saveUserToken(String token) async {
     // Clear all shared preferences data before storing new token
@@ -109,14 +99,5 @@ class LoginCubit extends Cubit<LoginState> {
       token,
     );
     await DioFactory.setTokenIntoHeaderAfterLogin(token);
-  }
-
-  Future<void> saveTokeFromFirebase() async {
-    await SharedPreferencesHelper.deleteSecuredString(
-        SharedPreferencesKey.deviceToken);
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    String? token = await messaging.getToken();
-    await SharedPreferencesHelper.setSecuredString(
-        SharedPreferencesKey.deviceToken, token!);
   }
 }

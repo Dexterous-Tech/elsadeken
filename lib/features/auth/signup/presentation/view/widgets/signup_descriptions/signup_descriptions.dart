@@ -10,6 +10,7 @@ import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -202,24 +203,6 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                           },
                         ),
                         horizontalSpace(10),
-                        // Flexible(
-                        //   child: GestureDetector(
-                        //     onTap: () {
-                        //       context.pushNamed(
-                        //           AppRoutes.termsAndConditionsScreen);
-                        //     },
-                        //     child: Text(
-                        //       AppLocalizations.of(context)!
-                        //           .agreeToTermsAndConditions,
-                        //       textDirection:
-                        //           LocalizationService.instance.textDirection,
-                        //       textAlign:
-                        //           LocalizationService.instance.textAlignment,
-                        //       style:
-                        //           AppTextStyles.font14PumpkinOrangeBoldLamaSans,
-                        //     ),
-                        //   ),
-                        // ),
                         Flexible(
                             child: RichText(
                           textDirection:
@@ -243,6 +226,11 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                                 decorationStyle: TextDecorationStyle.solid,
                                 decorationColor: AppColors.ochre,
                               ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  context.pushNamed(
+                                      AppRoutes.termsAndConditionsScreen);
+                                },
                             ),
                           ]),
                         ))

@@ -173,7 +173,7 @@ class UpdateProfileWorkDataModel {
   UpdateProfileWorkDataModel.fromJson(dynamic json) {
     qualificationId = json['qualification_id'];
     income = json['income_id'];
-    job = json['job'];
+    job = json['job_id'];
     healthConditionId = json['health_condition_id'];
     financialSituationId = json['financial_situation_id'];
   }
@@ -189,7 +189,7 @@ class UpdateProfileWorkDataModel {
       map['qualification_id'] = qualificationId;
     }
     if (income != null) map['income_id'] = income;
-    if (job != null && job!.isNotEmpty) map['job'] = job;
+    if (job != null && job!.isNotEmpty) map['job_id'] = job;
     if (healthConditionId != null && healthConditionId!.isNotEmpty) {
       map['health_condition_id'] = healthConditionId;
     }

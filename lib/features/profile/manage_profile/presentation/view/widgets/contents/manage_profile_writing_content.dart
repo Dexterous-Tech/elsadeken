@@ -48,6 +48,7 @@ class ManageProfileWritingContent extends StatelessWidget {
             color: AppColors.white,
           ),
           child: ManageProfileContentText(
+            isBorder: true,
             text: content,
             textAlign: LocalizationService.instance.textAlignment,
             isLoading: isLoading,

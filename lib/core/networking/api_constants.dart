@@ -27,6 +27,7 @@ class ApiConstants {
 
   // profile
   static String aboutUs = '/user/aboutUs';
+  static String termsConditions = '/user/terms-conditions';
   static String contactUs = '/user/contact-us';
   static String getProfile = '/user/profile';
   static String likeUser(int id) => '/user/like/user/$id';

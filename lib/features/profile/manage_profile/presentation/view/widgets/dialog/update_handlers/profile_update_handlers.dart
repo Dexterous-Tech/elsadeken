@@ -251,10 +251,25 @@ class SocialStatusUpdateHandler extends ProfileUpdateHandler {
       // Handle age parsing error
     }
     try {
-      childrenNumber = childrenStr.isNotEmpty ? int.parse(childrenStr) : null;
+      // If marital status is 'single', set children to 0
+      // Otherwise, parse the children string
+      if (maritalStatusValue == 'single') {
+        print('DEBUG: Marital status is single - setting children to 0');
+        childrenNumber = 0;
+      } else {
+        childrenNumber = childrenStr.isNotEmpty ? int.parse(childrenStr) : null;
+      }
     } catch (e) {
       // Handle children number parsing error
+      // If single, set to 0, otherwise null
+      childrenNumber = (maritalStatusValue == 'single') ? 0 : null;
     }
+
+    print('DEBUG: Social Status Update - Final values to send:');
+    print('DEBUG: Marital Status: "$maritalStatusValue"');
+    print('DEBUG: Type of Marriage: "$typeOfMarriageValue"');
+    print('DEBUG: Age: "$age"');
+    print('DEBUG: Children Number: "$childrenNumber"');
 
     cubit.updateProfileMarriageData(
       maritalStatus: maritalStatusValue,
@@ -392,30 +407,41 @@ class ReligionUpdateHandler extends ProfileUpdateHandler {
     required List<CityResponseModels> citiesList,
     required Map<String, List<GeneralInfoResponseModels>> generalDataLists,
   }) {
-    final religiousCommitment =
-        controllers[AppLocalizations.of(context)!.religiousCommitment]?.text ??
-            '';
-    final prayer =
-        controllers[AppLocalizations.of(context)!.prayer]?.text ?? '';
-    final smokingStr =
-        controllers[AppLocalizations.of(context)!.smoking]?.text ?? '';
-    final hijab =
-        controllers[AppLocalizations.of(context)!.hijabTitle]?.text ?? '';
-    final beard =
-        controllers[AppLocalizations.of(context)!.beardTitle]?.text ?? '';
+    // Get the localized field labels
+    final religiousCommitmentLabel =
+        AppLocalizations.of(context)!.religiousCommitment;
+    final prayerLabel = AppLocalizations.of(context)!.prayer;
+    final smokingLabel = AppLocalizations.of(context)!.smoking;
+    final hijabLabel = AppLocalizations.of(context)!.hijabTitle;
+    final beardLabel = AppLocalizations.of(context)!.beardTitle;
 
-    print('DEBUG: Religion Update - Raw values:');
+    print('DEBUG: Religion Update - Looking for controllers with labels:');
+    print('DEBUG: Religious Commitment label: "$religiousCommitmentLabel"');
+    print('DEBUG: Prayer label: "$prayerLabel"');
+    print('DEBUG: Smoking label: "$smokingLabel"');
+    print('DEBUG: Hijab label: "$hijabLabel"');
+    print('DEBUG: Beard label: "$beardLabel"');
+
+    // Print all available controller keys first
+    print('DEBUG: All available controller keys:');
+    controllers.forEach((key, controller) {
+      print('DEBUG: Controller key: "$key" = "${controller.text}"');
+    });
+
+    // Get values from controllers
+    final religiousCommitment =
+        controllers[religiousCommitmentLabel]?.text ?? '';
+    final prayer = controllers[prayerLabel]?.text ?? '';
+    final smokingStr = controllers[smokingLabel]?.text ?? '';
+    final hijab = controllers[hijabLabel]?.text ?? '';
+    final beard = controllers[beardLabel]?.text ?? '';
+
+    print('DEBUG: Religion Update - Raw values from controllers:');
     print('DEBUG: Religious Commitment: "$religiousCommitment"');
     print('DEBUG: Prayer: "$prayer"');
     print('DEBUG: Smoking: "$smokingStr"');
     print('DEBUG: Hijab: "$hijab"');
     print('DEBUG: Beard: "$beard"');
-
-    // Also print all controller values for debugging
-    print('DEBUG: All controller values:');
-    controllers.forEach((key, controller) {
-      print('DEBUG: Controller "$key": "${controller.text}"');
-    });
 
     // The values should now be API keys directly from the key-value mapping
     final religiousCommitmentValue =
@@ -425,7 +451,7 @@ class ReligionUpdateHandler extends ProfileUpdateHandler {
     final hijabValue = hijab.isNotEmpty ? hijab : null;
     final beardValue = beard.isNotEmpty ? beard : null;
 
-    print('DEBUG: Religion Update - Mapped values:');
+    print('DEBUG: Religion Update - Final values to send to API:');
     print('DEBUG: Religious Commitment Value: "$religiousCommitmentValue"');
     print('DEBUG: Prayer Value: "$prayerValue"');
     print('DEBUG: Smoking Value: "$smoking"');

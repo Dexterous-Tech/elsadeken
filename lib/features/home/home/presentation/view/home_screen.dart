@@ -419,10 +419,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         );
                       } else if (state is CountriesLoading) {
-                        return SizedBox(
-                          height: 50.h,
-                          child: Center(child: CircularProgressIndicator()),
-                        );
+                        return SizedBox.shrink();
                       }
                       return SizedBox.shrink();
                     },
@@ -435,7 +432,10 @@ class _HomeScreenState extends State<HomeScreen> {
             // Cards Carousel
             Expanded(
               child: isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? Center(
+                      child: CircularProgressIndicator(
+                      color: Color(0xffE1E1E1),
+                    ))
                   : errorMessage != null
                       ? Center(
                           child: Column(
