@@ -214,7 +214,8 @@ class _HomeScreenState extends State<HomeScreen> {
             name: userJson['name'],
             age: userJson['age'],
             profession: userJson['job'],
-            location: '${userJson['city']}, ${userJson['country']}',
+            city: userJson['city'],
+            country: userJson['country'],
             imageUrl: userJson['image'],
             matchPercentage: userJson['match_percentage'] is int
                 ? userJson['match_percentage']
@@ -290,7 +291,8 @@ class _HomeScreenState extends State<HomeScreen> {
         name: 'User',
         age: 0,
         profession: '',
-        location: '',
+        city: '',
+        country: '',
         imageUrl: '',
         matchPercentage: 0,
         isFavorite: false,

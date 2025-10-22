@@ -42,8 +42,11 @@ class ChatListCubit extends Cubit<ChatListState> {
       print('🔄 [ChatListCubit] Force refreshing chat list...');
       emit(const ChatListLoading());
 
+      // Use appropriate method based on current tab
       final Either<ApiErrorModel, ChatListModel> failureOrData =
-          await chatListRepo.getAllChatList();
+          _currentTabIndex == 1
+              ? await chatListRepo.getFavoriteChatList()
+              : await chatListRepo.getAllChatList();
 
       failureOrData.fold(
         (failure) {
@@ -69,8 +72,11 @@ class ChatListCubit extends Cubit<ChatListState> {
   Future<void> silentRefreshChatList() async {
     try {
       // Silent operation - minimal logging
+      // Use appropriate method based on current tab
       final Either<ApiErrorModel, ChatListModel> failureOrData =
-          await chatListRepo.getAllChatList();
+          _currentTabIndex == 1
+              ? await chatListRepo.getFavoriteChatList()
+              : await chatListRepo.getAllChatList();
 
       failureOrData.fold(
         (failure) {
@@ -219,8 +225,8 @@ class ChatListCubit extends Cubit<ChatListState> {
         },
         (success) {
           print('[ChatListCubit] Report user successful: $success');
-          // Show success message and refresh chat list
-          getChatList();
+          // Show success message and refresh chat list based on current tab
+          _refreshBasedOnCurrentTab();
         },
       );
     } catch (e) {
@@ -245,8 +251,8 @@ class ChatListCubit extends Cubit<ChatListState> {
         },
         (success) {
           print('[ChatListCubit] Unreport user successful: $success');
-          // Show success message and refresh chat list
-          getChatList();
+          // Show success message and refresh chat list based on current tab
+          _refreshBasedOnCurrentTab();
         },
       );
     } catch (e) {
@@ -271,8 +277,8 @@ class ChatListCubit extends Cubit<ChatListState> {
         },
         (success) {
           print('[ChatListCubit] Mute user successful: $success');
-          // Show success message and refresh chat list
-          getChatList();
+          // Show success message and refresh chat list based on current tab
+          _refreshBasedOnCurrentTab();
         },
       );
     } catch (e) {
@@ -531,13 +537,7 @@ class ChatListCubit extends Cubit<ChatListState> {
           _updateChatFavoriteStatus(chatId, newFavoriteStatus);
 
           // Refresh the appropriate list based on current tab
-          if (_currentTabIndex == 0) {
-            // We're on "All" tab, refresh all chats list
-            getChatList();
-          } else if (_currentTabIndex == 1) {
-            // We're on "Favorites" tab, refresh favorites list
-            getFavoriteChatList();
-          }
+          _refreshBasedOnCurrentTab();
         },
       );
     } catch (e) {
@@ -567,13 +567,7 @@ class ChatListCubit extends Cubit<ChatListState> {
           _updateChatFavoriteStatus(chatId, false);
 
           // Refresh the appropriate list based on current tab
-          if (_currentTabIndex == 0) {
-            // We're on "All" tab, refresh all chats list
-            getChatList();
-          } else if (_currentTabIndex == 1) {
-            // We're on "Favorites" tab, refresh favorites list
-            getFavoriteChatList();
-          }
+          _refreshBasedOnCurrentTab();
         },
       );
     } catch (e) {
@@ -613,5 +607,14 @@ class ChatListCubit extends Cubit<ChatListState> {
   void setCurrentTabIndex(int index) {
     print('[ChatListCubit] Setting current tab index to: $index');
     _currentTabIndex = index;
+  }
+
+  /// Refresh chat list based on current tab
+  Future<void> _refreshBasedOnCurrentTab() async {
+    if (_currentTabIndex == 1) {
+      await getFavoriteChatList();
+    } else {
+      await getChatList();
+    }
   }
 }

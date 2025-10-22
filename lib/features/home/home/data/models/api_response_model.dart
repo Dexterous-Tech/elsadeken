@@ -50,7 +50,8 @@ class ApiUserModel {
       name: name,
       age: age,
       profession: job,
-      location: '$country, $city',
+      city: city,
+      country: country,
       imageUrl: image,
       matchPercentage: matchPercentage,
       isFavorite: isFavorite,
@@ -71,9 +72,8 @@ class MatchesResponse {
 
   factory MatchesResponse.fromJson(Map<String, dynamic> json) {
     return MatchesResponse(
-      data: (json['data'] as List)
-          .map((i) => ApiUserModel.fromJson(i))
-          .toList(),
+      data:
+          (json['data'] as List).map((i) => ApiUserModel.fromJson(i)).toList(),
       links: PaginationLinks.fromJson(json['links']),
       meta: PaginationMeta.fromJson(json['meta']),
     );

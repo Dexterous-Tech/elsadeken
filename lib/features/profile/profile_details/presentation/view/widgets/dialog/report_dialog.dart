@@ -20,6 +20,9 @@ import '../../../manager/profile_details_cubit.dart';
 void reportDialog({
   required BuildContext context,
   required int userId,
+  bool isReported = false,
+  String? question,
+  String? questionButton,
 }) {
   customDialog(
     context: context,
@@ -58,7 +61,11 @@ void reportDialog({
               return reportError(context: context, error: state.error);
             }
             return reportContent(
-                context: context, loading: loading, userId: userId);
+                context: context,
+                loading: loading,
+                userId: userId,
+                question: question,
+                questionButton: questionButton);
           },
         );
       }),
@@ -98,6 +105,9 @@ Widget reportContent({
   required BuildContext context,
   required bool loading,
   required int userId,
+  String? question,
+  String? questionButton,
+  bool isReported = false,
 }) {
   int? selectedReasonId;
   String? selectedReasonName;
@@ -112,67 +122,72 @@ Widget reportContent({
           Image.asset(AppImages.block, width: 100.w, height: 100.h),
           verticalSpace(24),
           Text(
-            AppLocalizations.of(context)!.sureReportQu,
+            question ?? AppLocalizations.of(context)!.sureReportQu,
             textAlign: TextAlign.center,
             textDirection: LocalizationService.instance.textDirection,
             style: AppTextStyles.font18JetBoldLamaSans
                 .copyWith(color: AppColors.darkBlue),
           ),
           verticalSpace(24),
-          BlocBuilder<ProfileDetailsCubit, ProfileDetailsState>(
-            buildWhen: (context, current) =>
-                current is ReportReasonLoading ||
-                current is ReportReasonFailure ||
-                current is ReportReasonSuccess,
-            builder: (context, state) {
-              if (state is ReportReasonLoading) {
-                return Center(
-                  child: CircularProgressIndicator(color: AppColors.meatBrown),
-                );
-              } else if (state is ReportReasonSuccess) {
-                final items = state.generalInfoResponseModels;
-
-                // Filter out items with null or empty names
-                final validItems = items
-                    .where((e) => e.name != null && e.name!.isNotEmpty)
-                    .toList();
-
-                if (validItems.isEmpty) {
-                  return Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.noDataAvailable,
-                      style: AppTextStyles.font14BlackRegularLamaSans,
-                    ),
-                  );
-                }
-
-                return SizedBox(
-                  width: double.infinity,
-                  child: CustomDropDownMenu(
-                    key: ValueKey('report_reason_dropdown'),
-                    label: AppLocalizations.of(context)!.reportReasonQu,
-                    hint: AppLocalizations.of(context)!.selectReportReason,
-                    initialValue: selectedReasonName,
-                    items: validItems.map((e) => e.name!).toList(),
-                    onChanged: (value) {
-                      final selected = validItems.firstWhere(
-                        (element) => element.name == value,
-                        orElse: () => validItems.first,
+          isReported
+              ? SizedBox.shrink()
+              : BlocBuilder<ProfileDetailsCubit, ProfileDetailsState>(
+                  buildWhen: (context, current) =>
+                      current is ReportReasonLoading ||
+                      current is ReportReasonFailure ||
+                      current is ReportReasonSuccess,
+                  builder: (context, state) {
+                    if (state is ReportReasonLoading) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                            color: AppColors.meatBrown),
                       );
-                      setState(() {
-                        selectedReasonId = selected.id;
-                        selectedReasonName = selected.name;
-                      });
-                    },
-                  ),
-                );
-              }
+                    } else if (state is ReportReasonSuccess) {
+                      final items = state.generalInfoResponseModels;
 
-              return Center(
-                child: CircularProgressIndicator(color: AppColors.meatBrown),
-              );
-            },
-          ),
+                      // Filter out items with null or empty names
+                      final validItems = items
+                          .where((e) => e.name != null && e.name!.isNotEmpty)
+                          .toList();
+
+                      if (validItems.isEmpty) {
+                        return Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.noDataAvailable,
+                            style: AppTextStyles.font14BlackRegularLamaSans,
+                          ),
+                        );
+                      }
+
+                      return SizedBox(
+                        width: double.infinity,
+                        child: CustomDropDownMenu(
+                          key: ValueKey('report_reason_dropdown'),
+                          label: AppLocalizations.of(context)!.reportReasonQu,
+                          hint:
+                              AppLocalizations.of(context)!.selectReportReason,
+                          initialValue: selectedReasonName,
+                          items: validItems.map((e) => e.name!).toList(),
+                          onChanged: (value) {
+                            final selected = validItems.firstWhere(
+                              (element) => element.name == value,
+                              orElse: () => validItems.first,
+                            );
+                            setState(() {
+                              selectedReasonId = selected.id;
+                              selectedReasonName = selected.name;
+                            });
+                          },
+                        ),
+                      );
+                    }
+
+                    return Center(
+                      child:
+                          CircularProgressIndicator(color: AppColors.meatBrown),
+                    );
+                  },
+                ),
           verticalSpace(24),
           loading
               ? Center(
@@ -188,13 +203,20 @@ Widget reportContent({
                           opacity: selectedReasonId == null ? 0.5 : 1.0,
                           child: CustomElevatedButton(
                             onPressed: () {
-                              if (selectedReasonId != null) {
+                              if (isReported) {
                                 context
                                     .read<ProfileDetailsCubit>()
-                                    .reportUser(userId, selectedReasonId!);
+                                    .reportUser(userId, 0);
+                              } else {
+                                if (selectedReasonId != null) {
+                                  context
+                                      .read<ProfileDetailsCubit>()
+                                      .reportUser(userId, selectedReasonId!);
+                                }
                               }
                             },
-                            textButton: AppLocalizations.of(context)!.yesReport,
+                            textButton: questionButton ??
+                                AppLocalizations.of(context)!.yesReport,
                             backgroundColor: AppColors.meatBrown,
                             radius: 8,
                             styleTextButton: AppTextStyles

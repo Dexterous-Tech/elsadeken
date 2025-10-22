@@ -86,6 +86,7 @@ class UsersDataModel {
     this.isIgnore,
     this.isBlocked,
     this.isOnline,
+    this.isReported,
   });
 
   UsersDataModel.fromJson(dynamic json) {
@@ -115,6 +116,9 @@ class UsersDataModel {
     isOnline = json['is_online'] == true ||
         json['is_online'] == 'true' ||
         json['is_online'] == 1;
+    isReported = json['is_reported'] == true ||
+        json['is_reported'] == 'true' ||
+        json['is_reported'] == 1;
     attribute = json['attribute'] != null
         ? UsersAttributeModel.fromJson(json['attribute'])
         : null;
@@ -137,6 +141,7 @@ class UsersDataModel {
   bool? isIgnore;
   bool? isBlocked;
   bool? isOnline;
+  bool? isReported;
   UsersAttributeModel? attribute;
 
   Map<String, dynamic> toJson() {
@@ -159,6 +164,7 @@ class UsersDataModel {
     map['is_ignored'] = isIgnore;
     map['is_blocked'] = isBlocked;
     map['is_online'] = isOnline;
+    map['is_reported'] = isReported;
     map['attribute'] = attribute;
     return map;
   }
@@ -182,6 +188,7 @@ class UsersDataModel {
     bool? isIgnore,
     bool? isBlocked,
     bool? isOnline,
+    bool? isReported,
     UsersAttributeModel? attribute,
   }) {
     return UsersDataModel(
@@ -203,6 +210,7 @@ class UsersDataModel {
       isIgnore: isIgnore ?? this.isIgnore,
       isBlocked: isBlocked ?? this.isBlocked,
       isOnline: isOnline ?? this.isOnline,
+      isReported: isReported ?? this.isReported,
       attribute: attribute ?? this.attribute,
     );
   }

@@ -657,5 +657,10 @@
   "selectReportReason": "Select the reason for reporting",
   "allPersons": "All",
   "malesPerson": "Males",
-  "femalesPerson": "Females"
+  "femalesPerson": "Females",
+  "sureUnreportedQu": "Are you sure you want to cancel the report for this person?",
+  "unreportBeforeLike": "To interact with this person, cancel the report first",
+  "unreportedBeforeIgnore": "To ignore this person, cancel the report first",
+  "unreportedBeforeMessage": "To message this person, cancel the report first",
+  "cancelReport": "Cancel report"
 }

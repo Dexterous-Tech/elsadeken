@@ -455,6 +455,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
 
   Widget _buildDataTable() {
     final p = _currentPerson;
+    final isSingle = p.attribute.maritalStatus ==
+            AppLocalizations.of(context)!.singleMale ||
+        p.attribute.maritalStatus == AppLocalizations.of(context)!.singleFemale;
     final data = [
       {
         'label': AppLocalizations.of(context)!.nationality,
@@ -473,10 +476,13 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         'label': AppLocalizations.of(context)!.maritalStatus,
         'value': p.attribute.maritalStatus
       },
-      {
-        'label': AppLocalizations.of(context)!.numberOfChildren,
-        'value': p.attribute.children.toString()
-      },
+      // 👇 Only add numberOfChildren if not single
+      if (!isSingle)
+        {
+          'label': AppLocalizations.of(context)!.numberOfChildren,
+          'value': p.attribute.children.toString()
+        },
+
       {
         'label': AppLocalizations.of(context)!.skinColor,
         'value': p.attribute.skinColor
@@ -497,6 +503,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         'label': AppLocalizations.of(context)!.financialStatusTitle,
         'value': p.attribute.financialSituation
       },
+      {'label': AppLocalizations.of(context)!.job, 'value': p.attribute.job},
       {
         'label': AppLocalizations.of(context)!.monthlyIncome,
         'value': p.attribute.income

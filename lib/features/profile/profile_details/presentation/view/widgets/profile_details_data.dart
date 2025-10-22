@@ -77,11 +77,15 @@ class ProfileDetailsData extends StatelessWidget {
                     itemSubTitle: _getMaritalStatus(state, context),
                     loading: isLoading,
                   ),
-                  ProfileDetailsCardItem(
-                    itemTitle: AppLocalizations.of(context)!.numberOfChildren,
-                    itemSubTitle: _getChildren(state, context),
-                    loading: isLoading,
-                  ),
+                  if (_getMaritalStatus(state, context) !=
+                          AppLocalizations.of(context)!.singleMale ||
+                      _getMaritalStatus(state, context) !=
+                          AppLocalizations.of(context)!.singleFemale)
+                    ProfileDetailsCardItem(
+                      itemTitle: AppLocalizations.of(context)!.numberOfChildren,
+                      itemSubTitle: _getChildren(state, context),
+                      loading: isLoading,
+                    ),
                   ProfileDetailsCardItem(
                     itemTitle: AppLocalizations.of(context)!.skinColor,
                     itemSubTitle: _getSkinColor(state, context),
@@ -107,6 +111,11 @@ class ProfileDetailsData extends StatelessWidget {
                     itemTitle:
                         AppLocalizations.of(context)!.financialStatusTitle,
                     itemSubTitle: _getFinancialStatus(state, context),
+                    loading: isLoading,
+                  ),
+                  ProfileDetailsCardItem(
+                    itemTitle: AppLocalizations.of(context)!.job,
+                    itemSubTitle: _getJob(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
@@ -421,6 +430,17 @@ class ProfileDetailsData extends StatelessWidget {
       final financialSituation =
           state.profileDetailsResponseModel.data?.attribute?.financialSituation;
       return financialSituation ?? AppLocalizations.of(context)!.notAvailable;
+    }
+    return AppLocalizations.of(context)!.notAvailable;
+  }
+
+  String _getJob(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
+    if (state is GetProfileDetailsSuccess) {
+      final job = state.profileDetailsResponseModel.data?.attribute?.job;
+      return job ?? AppLocalizations.of(context)!.notAvailable;
     }
     return AppLocalizations.of(context)!.notAvailable;
   }

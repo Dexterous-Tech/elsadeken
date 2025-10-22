@@ -657,5 +657,10 @@
   "selectReportReason": "اختر سبب الإبلاغ",
   "allPersons": "الكل",
   "malesPerson": "الذكور",
-  "femalesPerson": "الإناث"
+  "femalesPerson": "الإناث",
+  "sureUnreportedQu": "هل أنت متأكد من إلغاء الإبلاغ عن هذا الشخص؟",
+  "unreportBeforeLike": "لكي تهتم بهذا الشخص ألغِ الإبلاغ أولاً",
+  "unreportedBeforeIgnore": "لكي تتجاهل هذا الشخص ألغِ الإبلاغ أولاً",
+  "unreportedBeforeMessage": "لكي تراسل هذا الشخص ألغِ الإبلاغ أولاً",
+  "cancelReport": "إلغاء الإبلاغ"
 }

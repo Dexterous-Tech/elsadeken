@@ -2037,4 +2037,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get femalesPerson => 'الإناث';
+
+  @override
+  String get sureUnreportedQu => 'هل أنت متأكد من إلغاء الإبلاغ عن هذا الشخص؟';
+
+  @override
+  String get unreportBeforeLike => 'لكي تهتم بهذا الشخص ألغِ الإبلاغ أولاً';
+
+  @override
+  String get unreportedBeforeIgnore => 'لكي تتجاهل هذا الشخص ألغِ الإبلاغ أولاً';
+
+  @override
+  String get unreportedBeforeMessage => 'لكي تراسل هذا الشخص ألغِ الإبلاغ أولاً';
+
+  @override
+  String get cancelReport => 'إلغاء الإبلاغ';
 }

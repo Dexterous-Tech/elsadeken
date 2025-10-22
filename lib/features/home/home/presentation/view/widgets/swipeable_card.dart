@@ -421,7 +421,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                                   child: Center(
                                     child: Text(
                                       maxLines: 2,
-                                      widget.user.location,
+                                      '${widget.user.country}, ${widget.user.city}',
                                       style: TextStyle(
                                         color: Colors.white,
                                         overflow: TextOverflow.ellipsis,
@@ -430,6 +430,10 @@ class _SwipeableCardState extends State<SwipeableCard>
                                         fontFamily:
                                             FontFamilyHelper.lamaSansArabic,
                                       ),
+                                      textDirection: LocalizationService
+                                          .instance.textDirection,
+                                      textAlign: LocalizationService
+                                          .instance.textAlignment,
                                       softWrap: true,
                                       overflow: TextOverflow.ellipsis,
                                     ),

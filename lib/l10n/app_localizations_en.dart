@@ -2036,4 +2036,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get femalesPerson => 'Females';
+
+  @override
+  String get sureUnreportedQu => 'Are you sure you want to cancel the report for this person?';
+
+  @override
+  String get unreportBeforeLike => 'To interact with this person, cancel the report first';
+
+  @override
+  String get unreportedBeforeIgnore => 'To ignore this person, cancel the report first';
+
+  @override
+  String get unreportedBeforeMessage => 'To message this person, cancel the report first';
+
+  @override
+  String get cancelReport => 'Cancel report';
 }

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
@@ -57,10 +59,15 @@ class PersonImageHeader extends StatelessWidget {
                         ),
                         padding: EdgeInsets.all(8),
                         child: Center(
-                          child: Image.asset(
-                            AppImages.authArrowBack,
-                            width: 14.w,
-                            height: 14.h,
+                          child: Transform.rotate(
+                            angle: LocalizationService.instance.isEnglish
+                                ? math.pi
+                                : 0,
+                            child: Image.asset(
+                              AppImages.authArrowBack,
+                              width: 14.w,
+                              height: 14.h,
+                            ),
                           ),
                         ),
                       ),

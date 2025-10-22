@@ -4042,6 +4042,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Females'**
   String get femalesPerson;
+
+  /// No description provided for @sureUnreportedQu.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel the report for this person?'**
+  String get sureUnreportedQu;
+
+  /// No description provided for @unreportBeforeLike.
+  ///
+  /// In en, this message translates to:
+  /// **'To interact with this person, cancel the report first'**
+  String get unreportBeforeLike;
+
+  /// No description provided for @unreportedBeforeIgnore.
+  ///
+  /// In en, this message translates to:
+  /// **'To ignore this person, cancel the report first'**
+  String get unreportedBeforeIgnore;
+
+  /// No description provided for @unreportedBeforeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'To message this person, cancel the report first'**
+  String get unreportedBeforeMessage;
+
+  /// No description provided for @cancelReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel report'**
+  String get cancelReport;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
