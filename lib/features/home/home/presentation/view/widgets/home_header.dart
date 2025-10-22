@@ -4,7 +4,6 @@ import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/widgets/custom_image_network.dart';
 import 'package:elsadeken/features/home/home/presentation/view/widgets/home_notification.dart';
-import 'package:elsadeken/features/home/notification/notification/presentation/manager/notification_count_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../core/di/injection_container.dart';
 import '../../../../../../core/routes/app_routes.dart';
 
 class HomeHeader extends StatefulWidget {
@@ -60,7 +58,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                           height: 64.h,
                           image: image.isNotEmpty
                               ? image
-                              : 'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
+                              : 'assets/images/profile/my_profile.png',
                         ),
                       ),
                       SizedBox(width: 12.w),
@@ -119,8 +117,8 @@ class _HomeHeaderState extends State<HomeHeader> {
                   children: [
                     CircleAvatar(
                       radius: 32.r,
-                      backgroundImage: NetworkImage(
-                        'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
+                      backgroundImage: AssetImage(
+                        'assets/images/profile/my_profile.png',
                       ),
                     ),
                     SizedBox(width: 12.w),
@@ -231,10 +229,7 @@ class _HomeHeaderState extends State<HomeHeader> {
           ),
         ),
         SizedBox(width: 16.w),
-        BlocProvider(
-          create: (context) => sl<NotificationCountCubit>(),
-          child: HomeNotification(),
-        ),
+        HomeNotification(),
       ],
     );
   }

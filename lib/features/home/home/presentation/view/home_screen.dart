@@ -17,6 +17,7 @@ import 'package:elsadeken/features/profile/profile_details/presentation/manager/
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
+import 'package:elsadeken/features/home/notification/notification/presentation/manager/notification_count_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,6 +41,8 @@ class HomeScreenWrapper extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => sl<ProfileDetailsCubit>()),
         BlocProvider(create: (context) => sl<ChatListCubit>()),
+        BlocProvider(create: (context) => sl<NotificationCountCubit>()),
+        BlocProvider(create: (context) => sl<ManageProfileCubit>()),
         BlocProvider(
             create: (context) => sl<SignUpListsCubit>()..getCountries()),
       ],
@@ -71,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int? selectedCountryId; // null means "All"
   late PageController _pageController;
   Locale? _previousLocale;
+  bool isLoadingMore = false; // Track loading more state
 
   @override
   void dispose() {
@@ -101,16 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Initialize PageController
     _pageController = PageController(viewportFraction: 0.9);
 
-    // Add listener to auto-load more when near the end
-    _pageController.addListener(() {
-      if (_pageController.hasClients && hasMore && !isLoading) {
-        final currentPage = _pageController.page ?? 0;
-        // Load more when user is 2 cards away from the end
-        if (currentPage >= currentUsers.length - 2) {
-          _loadMatchesUsers(loadMore: true);
-        }
-      }
-    });
+    // Remove auto-loading listener - now we show reload icon at the end
 
     // Set initial tab index if provided
     if (widget.initialTabIndex != null &&
@@ -177,6 +172,11 @@ class _HomeScreenState extends State<HomeScreen> {
           errorMessage = null;
           currentUsers = [];
           currentPage = 1;
+          isLoadingMore = false;
+        });
+      } else {
+        setState(() {
+          isLoadingMore = true;
         });
       }
 
@@ -231,11 +231,13 @@ class _HomeScreenState extends State<HomeScreen> {
         hasMore = response.data['links']['next'] != null;
         if (hasMore) currentPage++;
         isLoading = false;
+        isLoadingMore = false;
       });
     } catch (e) {
       setState(() {
         errorMessage = AppLocalizations.of(context)!.failedToLoadMatches;
         isLoading = false;
+        isLoadingMore = false;
       });
     }
   }
@@ -383,38 +385,88 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Refresh all home data including matches, profile, and notifications
+  Future<void> _refreshHomeData() async {
+    try {
+      print('🔄 [HomeScreen] Refreshing all home data...');
+
+      // Reset pagination state
+      setState(() {
+        currentUsers = [];
+        currentPage = 1;
+        hasMore = true;
+        isLoading = true;
+      });
+
+      // Refresh profile data - check if provider is available
+      try {
+        if (mounted) {
+          context.read<ManageProfileCubit>().getProfile();
+        }
+      } catch (e) {
+        print('🔄 [HomeScreen] ⚠️ ManageProfileCubit not available: $e');
+      }
+
+      // Refresh notification count - check if provider is available
+      try {
+        if (mounted) {
+          context.read<NotificationCountCubit>().refreshCount();
+        }
+      } catch (e) {
+        print('🔄 [HomeScreen] ⚠️ NotificationCountCubit not available: $e');
+      }
+
+      // Refresh countries - check if provider is available
+      try {
+        if (mounted) {
+          context.read<SignUpListsCubit>().getCountries();
+        }
+      } catch (e) {
+        print('🔄 [HomeScreen] ⚠️ SignUpListsCubit not available: $e');
+      }
+
+      // Load fresh matches
+      await _loadMatchesUsers();
+
+      print('🔄 [HomeScreen] ✅ All home data refreshed successfully');
+    } catch (e) {
+      print('🔄 [HomeScreen] ❌ Error refreshing home data: $e');
+    }
+  }
+
   Widget buildHomeContent() {
-    return RefreshIndicator(
-      onRefresh: () async {},
-      color: AppColors.meatBrown,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppColors.cosmicLatte,
-              AppColors.antiqueWhite,
-            ],
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.cosmicLatte,
+            AppColors.antiqueWhite,
+          ],
         ),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            textDirection: LocalizationService.instance.textDirection,
-            children: [
+      ),
+      child: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            // Refresh all home data
+            await _refreshHomeData();
+          },
+          color: AppColors.meatBrown,
+          child: CustomScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            slivers: [
               // Header
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
-                child: BlocProvider(
-                  create: (context) => sl<ManageProfileCubit>(),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
                   child: HomeHeader(),
                 ),
               ),
 
               // Country Filter
-              Flexible(
-                flex: 0,
+              SliverToBoxAdapter(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -545,7 +597,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               // Cards Carousel
-              Expanded(
+              SliverFillRemaining(
                 child: isLoading
                     ? Center(
                         child: CircularProgressIndicator(
@@ -596,34 +648,74 @@ class _HomeScreenState extends State<HomeScreen> {
                                 itemCount:
                                     currentUsers.length + (hasMore ? 1 : 0),
                                 itemBuilder: (context, index) {
-                                  // Load more button at the end
-                                  if (index == currentUsers.length) {
+                                  // Show reload button only when reaching the end of current cards
+                                  if (index == currentUsers.length && hasMore) {
                                     return Center(
                                       child: GestureDetector(
-                                        onTap: () =>
-                                            _loadMatchesUsers(loadMore: true),
+                                        onTap: isLoadingMore
+                                            ? null
+                                            : () async {
+                                                print(
+                                                    '🔄 [HomeScreen] Load more button tapped');
+                                                await _loadMatchesUsers(
+                                                    loadMore: true);
+                                              },
                                         child: Container(
-                                          width: 100.w,
+                                          width: 120.w,
+                                          height: 120.h,
                                           margin: EdgeInsets.symmetric(
                                               horizontal: 8.w),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(15).r,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withValues(alpha: 0.2),
+                                                spreadRadius: 1,
+                                                blurRadius: 5,
+                                                offset: Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              Icon(
-                                                Icons.refresh,
-                                                size: 40.w,
-                                                color: Color(0xffDBAE48),
-                                              ),
+                                              if (isLoadingMore)
+                                                SizedBox(
+                                                  width: 30.w,
+                                                  height: 30.h,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: Color(0xffDBAE48),
+                                                    strokeWidth: 3,
+                                                  ),
+                                                )
+                                              else
+                                                Icon(
+                                                  Icons.refresh,
+                                                  size: 40.w,
+                                                  color: Color(0xffDBAE48),
+                                                ),
                                               SizedBox(height: 8.h),
                                               Text(
-                                                LocalizationService
-                                                            .instance
-                                                            .currentLocale
-                                                            .languageCode ==
-                                                        'ar'
-                                                    ? 'المزيد'
-                                                    : 'Load More',
+                                                isLoadingMore
+                                                    ? (LocalizationService
+                                                                .instance
+                                                                .currentLocale
+                                                                .languageCode ==
+                                                            'ar'
+                                                        ? 'جاري التحميل...'
+                                                        : 'Loading...')
+                                                    : (LocalizationService
+                                                                .instance
+                                                                .currentLocale
+                                                                .languageCode ==
+                                                            'ar'
+                                                        ? 'تحميل المزيد'
+                                                        : 'Load More'),
                                                 style: TextStyle(
                                                   color: Color(0xffDBAE48),
                                                   fontSize: 14.sp,
@@ -632,6 +724,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   fontFamily: FontFamilyHelper
                                                       .lamaSansArabic,
                                                 ),
+                                                textAlign: TextAlign.center,
                                               ),
                                             ],
                                           ),
