@@ -20,39 +20,25 @@ class ReportButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isReported = currentUser?.isReported ?? false;
-    final isBlocked = currentUser?.isBlocked ?? false;
+    // final isBlocked = currentUser?.isBlocked ?? false;
 
-    if (isReported) {
-      return _buildDisabledButton(
-        context,
-        AppImages.block,
-        AppLocalizations.of(context)!.cancelReport,
-        () => _showReportDialog(context, true),
-      );
-    }
+    // if (isReported) {
+    //   return _buildDisabledButton(
+    //     context,
+    //     AppImages.block,
+    //     AppLocalizations.of(context)!.cancelReport,
+    //     () =>
+    //   );
+    // }
 
     return CustomContainer(
       img: AppImages.block,
-      text: isBlocked
-          ? AppLocalizations.of(context)!.reported
+      text: isReported
+          ? AppLocalizations.of(context)!.cancelReport
           : AppLocalizations.of(context)!.report,
-      onTap: () => _showReportDialog(context, false),
-    );
-  }
-
-  Widget _buildDisabledButton(
-    BuildContext context,
-    String image,
-    String text,
-    VoidCallback? onTap,
-  ) {
-    return Opacity(
-      opacity: 0.3,
-      child: CustomContainer(
-        img: image,
-        text: text,
-        onTap: onTap,
-      ),
+      onTap: () => isReported
+          ? _showReportDialog(context, true)
+          : _showReportDialog(context, false),
     );
   }
 
@@ -68,7 +54,6 @@ class ReportButton extends StatelessWidget {
       );
     } else {
       reportDialog(
-        isReported: false,
         afterSuccess: () => onUserStateChanged?.call(),
         context: context,
         userId: userId,

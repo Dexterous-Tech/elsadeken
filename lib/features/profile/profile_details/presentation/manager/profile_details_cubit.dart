@@ -50,11 +50,11 @@ class ProfileDetailsCubit extends Cubit<ProfileDetailsState> {
     });
   }
 
-  void reportUser(int userId, int reasonId) async {
+  void reportUser(int userId, {int? reasonId}) async {
     emit(ReportUserLoading());
 
-    var response =
-        await profileDetailsRepoInterface.reportUser(userId, reasonId);
+    var response = await profileDetailsRepoInterface.reportUser(userId,
+        reasonId: reasonId);
 
     response.fold((error) {
       emit(ReportUserFailure(error.displayMessage));

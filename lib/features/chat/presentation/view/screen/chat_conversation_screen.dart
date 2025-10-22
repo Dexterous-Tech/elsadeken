@@ -547,6 +547,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           chatRoomName: widget.chatRoom.name,
           chatRoomImage: widget.chatRoom.image,
           receiverId: widget.chatRoom.receiverId,
+          initialIsOnline:
+              widget.chatRoom.isOnline, // Pass the initial online status
           onBack: () {
             // Stop auto-refresh when navigating back using stored cubit reference
             if (!widget.chatRoom.id.startsWith('temp_') &&

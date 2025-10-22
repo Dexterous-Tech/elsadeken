@@ -137,6 +137,7 @@ class MessageButton extends StatelessWidget {
                 userId: userId,
                 userName: userData['name'] ?? 'User',
                 userImage: userData['image'] ?? '',
+                isOnline: userData['isOnline'] == 'true',
               ),
             },
           );
@@ -152,6 +153,7 @@ class MessageButton extends StatelessWidget {
               userId: userId,
               userName: user?.name ?? 'User',
               userImage: user?.image ?? '',
+              isOnline: currentUser?.isOnline ?? user?.isOnline ?? false,
             ),
           },
         );
@@ -165,18 +167,25 @@ class MessageButton extends StatelessWidget {
 
     String userName = 'User';
     String userImage = '';
+    String isOnline = 'false';
 
     if (state is GetProfileDetailsSuccess) {
       final userData = state.profileDetailsResponseModel.data;
       if (userData != null) {
         userName = userData.name ?? 'User';
         userImage = userData.image ?? '';
+        isOnline = (userData.isOnline ?? false).toString();
       }
+    } else if (currentUser != null) {
+      userName = currentUser!.name ?? 'User';
+      userImage = currentUser!.image ?? '';
+      isOnline = (currentUser!.isOnline ?? false).toString();
     } else if (user != null) {
       userName = user!.name ?? 'User';
       userImage = user!.image ?? '';
+      isOnline = (user!.isOnline ?? false).toString();
     }
 
-    return {'name': userName, 'image': userImage};
+    return {'name': userName, 'image': userImage, 'isOnline': isOnline};
   }
 }

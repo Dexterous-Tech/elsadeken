@@ -65,12 +65,23 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
           final userData = state.profileDetailsResponseModel.data;
           if (userData != null) {
             setState(() {
-              _currentUser = _currentUser?.copyWith(
+              // If _currentUser is null, create a new instance with the fetched data
+              // Otherwise, update the existing user with fresh data from API
+              if (_currentUser == null) {
+                _currentUser = userData;
+              } else {
+                _currentUser = _currentUser?.copyWith(
                   isFavorite: userData.isFavorite,
                   isIgnore: userData.isIgnore,
                   name: userData.name,
                   image: userData.image,
-                  isBlocked: userData.isBlocked);
+                  isBlocked: userData.isBlocked,
+                  isOnline: userData.isOnline,
+                  isReported: userData.isReported,
+                  lastSeen: userData.lastSeen,
+                  attribute: userData.attribute,
+                );
+              }
             });
           }
         }

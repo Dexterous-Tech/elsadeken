@@ -384,67 +384,121 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildHomeContent() {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AppColors.cosmicLatte,
-            AppColors.antiqueWhite,
-          ],
+    return RefreshIndicator(
+      onRefresh: () async {},
+      color: AppColors.meatBrown,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.cosmicLatte,
+              AppColors.antiqueWhite,
+            ],
+          ),
         ),
-      ),
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          textDirection: LocalizationService.instance.textDirection,
-          children: [
-            // Header
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
-              child: BlocProvider(
-                create: (context) => sl<ManageProfileCubit>(),
-                child: HomeHeader(),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            textDirection: LocalizationService.instance.textDirection,
+            children: [
+              // Header
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
+                child: BlocProvider(
+                  create: (context) => sl<ManageProfileCubit>(),
+                  child: HomeHeader(),
+                ),
               ),
-            ),
 
-            // Country Filter
-            Flexible(
-              flex: 0,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                textDirection: LocalizationService.instance.textDirection,
-                children: [
-                  verticalSpace(16),
-                  Padding(
-                    padding: EdgeInsetsDirectional.symmetric(horizontal: 23.w),
-                    child: Text(
-                      AppLocalizations.of(context)!.selectCountry,
-                      style: AppTextStyles.font20JetRegularLamaSans
-                          .copyWith(color: AppColors.black),
-                      textAlign: LocalizationService.instance.textAlignment,
-                      textDirection: LocalizationService.instance.textDirection,
+              // Country Filter
+              Flexible(
+                flex: 0,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  textDirection: LocalizationService.instance.textDirection,
+                  children: [
+                    verticalSpace(16),
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.symmetric(horizontal: 23.w),
+                      child: Text(
+                        AppLocalizations.of(context)!.selectCountry,
+                        style: AppTextStyles.font20JetRegularLamaSans
+                            .copyWith(color: AppColors.black),
+                        textAlign: LocalizationService.instance.textAlignment,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
+                      ),
                     ),
-                  ),
-                  verticalSpace(14),
-                  BlocBuilder<SignUpListsCubit, SignUpListsState>(
-                    builder: (context, state) {
-                      if (state is CountriesSuccess) {
-                        return SizedBox(
-                          height: 40.h,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.symmetric(horizontal: 23.w),
-                            itemCount:
-                                state.countriesList.length + 1, // +1 for "All"
-                            itemBuilder: (context, index) {
-                              // First item is "All"
-                              if (index == 0) {
-                                final isSelected = selectedCountryId == null;
+                    verticalSpace(14),
+                    BlocBuilder<SignUpListsCubit, SignUpListsState>(
+                      builder: (context, state) {
+                        if (state is CountriesSuccess) {
+                          return SizedBox(
+                            height: 40.h,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.symmetric(horizontal: 23.w),
+                              itemCount: state.countriesList.length +
+                                  1, // +1 for "All"
+                              itemBuilder: (context, index) {
+                                // First item is "All"
+                                if (index == 0) {
+                                  final isSelected = selectedCountryId == null;
+                                  return GestureDetector(
+                                    onTap: () => _onCountrySelected(null),
+                                    child: Container(
+                                      margin:
+                                          EdgeInsetsDirectional.only(end: 12.w),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 20.w, vertical: 10.h),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? Color(0xffDBAE48)
+                                            : Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10).r,
+                                        border: isSelected
+                                            ? null
+                                            : Border.all(
+                                                color: Color(0xffE1E1E1),
+                                                width: 1,
+                                              ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          LocalizationService
+                                                      .instance
+                                                      .currentLocale
+                                                      .languageCode ==
+                                                  'ar'
+                                              ? 'الكل'
+                                              : 'All',
+                                          style: TextStyle(
+                                            color: isSelected
+                                                ? Colors.white
+                                                : Color(0xffDBAE48),
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeightHelper.medium,
+                                            fontFamily:
+                                                FontFamilyHelper.lamaSansArabic,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                // Country items
+                                final country = state.countriesList[index - 1];
+                                final isSelected =
+                                    selectedCountryId == country.id;
+
                                 return GestureDetector(
-                                  onTap: () => _onCountrySelected(null),
+                                  onTap: () => _onCountrySelected(country.id),
                                   child: Container(
                                     margin:
                                         EdgeInsetsDirectional.only(end: 12.w),
@@ -455,22 +509,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ? Color(0xffDBAE48)
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(10).r,
-                                      border: isSelected
-                                          ? null
-                                          : Border.all(
-                                              color: Color(0xffE1E1E1),
-                                              width: 1,
-                                            ),
+                                      border: Border.all(
+                                        color: Color(0xffE1E1E1),
+                                        width: 1,
+                                      ),
                                     ),
                                     child: Center(
                                       child: Text(
-                                        LocalizationService
-                                                    .instance
-                                                    .currentLocale
-                                                    .languageCode ==
-                                                'ar'
-                                            ? 'الكل'
-                                            : 'All',
+                                        country.name ?? '',
                                         style: TextStyle(
                                           color: isSelected
                                               ? Colors.white
@@ -484,176 +530,139 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                 );
-                              }
-
-                              // Country items
-                              final country = state.countriesList[index - 1];
-                              final isSelected =
-                                  selectedCountryId == country.id;
-
-                              return GestureDetector(
-                                onTap: () => _onCountrySelected(country.id),
-                                child: Container(
-                                  margin: EdgeInsetsDirectional.only(end: 12.w),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20.w, vertical: 10.h),
-                                  decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? Color(0xffDBAE48)
-                                        : Colors.white,
-                                    borderRadius: BorderRadius.circular(10).r,
-                                    border: Border.all(
-                                      color: Color(0xffE1E1E1),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      country.name ?? '',
-                                      style: TextStyle(
-                                        color: isSelected
-                                            ? Colors.white
-                                            : Color(0xffDBAE48),
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeightHelper.medium,
-                                        fontFamily:
-                                            FontFamilyHelper.lamaSansArabic,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      } else if (state is CountriesLoading) {
-                        return SizedBox.shrink();
-                      }
-                      return SizedBox.shrink();
-                    },
-                  ),
-                  SizedBox(height: 20.h),
-                ],
-              ),
-            ),
-
-            // Cards Carousel
-            Expanded(
-              child: isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(
-                      color: Color(0xffE1E1E1),
-                    ))
-                  : errorMessage != null
-                      ? Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!
-                                    .failedToLoadMatches,
-                                style: AppTextStyles.font14JetRegularLamaSans
-                                    .copyWith(color: AppColors.red),
-                              ),
-                              verticalSpace(18),
-                              ElevatedButton(
-                                onPressed: _loadMatchesUsers,
-                                child: Text(
-                                    AppLocalizations.of(context)!.tryAgain),
-                              ),
-                            ],
-                          ),
-                        )
-                      : currentUsers.isEmpty
-                          ? Center(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.favorite_outline,
-                                      size: 80.w, color: Colors.grey[400]),
-                                  SizedBox(height: 16.h),
-                                  Text(
-                                    AppLocalizations.of(context)!.noNewMatches,
-                                    style: TextStyle(
-                                        fontSize: 18.sp,
-                                        color: Colors.grey[600]),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : PageView.builder(
-                              controller: _pageController,
-                              itemCount:
-                                  currentUsers.length + (hasMore ? 1 : 0),
-                              itemBuilder: (context, index) {
-                                // Load more button at the end
-                                if (index == currentUsers.length) {
-                                  return Center(
-                                    child: GestureDetector(
-                                      onTap: () =>
-                                          _loadMatchesUsers(loadMore: true),
-                                      child: Container(
-                                        width: 100.w,
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 8.w),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.refresh,
-                                              size: 40.w,
-                                              color: Color(0xffDBAE48),
-                                            ),
-                                            SizedBox(height: 8.h),
-                                            Text(
-                                              LocalizationService
-                                                          .instance
-                                                          .currentLocale
-                                                          .languageCode ==
-                                                      'ar'
-                                                  ? 'المزيد'
-                                                  : 'Load More',
-                                              style: TextStyle(
-                                                color: Color(0xffDBAE48),
-                                                fontSize: 14.sp,
-                                                fontWeight:
-                                                    FontWeightHelper.medium,
-                                                fontFamily: FontFamilyHelper
-                                                    .lamaSansArabic,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                // User card
-                                final user = currentUsers[index];
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 8.w, vertical: 10.h),
-                                  child: SwipeableCard(
-                                    user: user,
-                                    onSwipe:
-                                        null, // Disable swipe in carousel mode
-                                    onLike:
-                                        _onCarouselLike, // Enable like in carousel mode
-                                    onDislike:
-                                        _onCarouselDislike, // Enable dislike/remove in carousel mode
-                                    isTop: false, // Not swipeable
-                                    scale: 1.0,
-                                    verticalOffset: 0,
-                                  ),
-                                );
                               },
                             ),
-            ),
-          ],
+                          );
+                        } else if (state is CountriesLoading) {
+                          return SizedBox.shrink();
+                        }
+                        return SizedBox.shrink();
+                      },
+                    ),
+                    SizedBox(height: 20.h),
+                  ],
+                ),
+              ),
+
+              // Cards Carousel
+              Expanded(
+                child: isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                        color: AppColors.meatBrown,
+                      ))
+                    : errorMessage != null
+                        ? Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .failedToLoadMatches,
+                                  style: AppTextStyles.font14JetRegularLamaSans
+                                      .copyWith(color: AppColors.red),
+                                ),
+                                verticalSpace(18),
+                                ElevatedButton(
+                                  onPressed: _loadMatchesUsers,
+                                  child: Text(
+                                      AppLocalizations.of(context)!.tryAgain),
+                                ),
+                              ],
+                            ),
+                          )
+                        : currentUsers.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.favorite_outline,
+                                        size: 80.w, color: Colors.grey[400]),
+                                    SizedBox(height: 16.h),
+                                    Text(
+                                      AppLocalizations.of(context)!
+                                          .noNewMatches,
+                                      style: TextStyle(
+                                          fontSize: 18.sp,
+                                          color: Colors.grey[600]),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : PageView.builder(
+                                controller: _pageController,
+                                itemCount:
+                                    currentUsers.length + (hasMore ? 1 : 0),
+                                itemBuilder: (context, index) {
+                                  // Load more button at the end
+                                  if (index == currentUsers.length) {
+                                    return Center(
+                                      child: GestureDetector(
+                                        onTap: () =>
+                                            _loadMatchesUsers(loadMore: true),
+                                        child: Container(
+                                          width: 100.w,
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 8.w),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.refresh,
+                                                size: 40.w,
+                                                color: Color(0xffDBAE48),
+                                              ),
+                                              SizedBox(height: 8.h),
+                                              Text(
+                                                LocalizationService
+                                                            .instance
+                                                            .currentLocale
+                                                            .languageCode ==
+                                                        'ar'
+                                                    ? 'المزيد'
+                                                    : 'Load More',
+                                                style: TextStyle(
+                                                  color: Color(0xffDBAE48),
+                                                  fontSize: 14.sp,
+                                                  fontWeight:
+                                                      FontWeightHelper.medium,
+                                                  fontFamily: FontFamilyHelper
+                                                      .lamaSansArabic,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  // User card
+                                  final user = currentUsers[index];
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8.w, vertical: 10.h),
+                                    child: SwipeableCard(
+                                      user: user,
+                                      onSwipe:
+                                          null, // Disable swipe in carousel mode
+                                      onLike:
+                                          _onCarouselLike, // Enable like in carousel mode
+                                      onDislike:
+                                          _onCarouselDislike, // Enable dislike/remove in carousel mode
+                                      isTop: false, // Not swipeable
+                                      scale: 1.0,
+                                      verticalOffset: 0,
+                                    ),
+                                  );
+                                },
+                              ),
+              ),
+            ],
+          ),
         ),
       ),
     );

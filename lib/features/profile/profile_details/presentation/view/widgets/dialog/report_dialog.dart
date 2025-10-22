@@ -43,15 +43,17 @@ void reportDialog({
               current is ReportUserSuccess,
           listener: (context, state) {
             if (state is ReportUserSuccess) {
-              afterSuccess();
-              context.read<ProfileDetailsCubit>().getProfileDetails(userId);
               successDialog(
                   context: context,
                   message:
                       state.profileDetailsActionResponseModel.message ?? '',
                   onPressed: () {
-                    // Pop success dialog
                     Navigator.of(context).pop();
+                    afterSuccess();
+                    context
+                        .read<ProfileDetailsCubit>()
+                        .getProfileDetails(userId);
+                    // Pop success dialog
                     // Pop report dialog
                     Navigator.of(context).pop();
                   });
@@ -67,6 +69,7 @@ void reportDialog({
                 loading: loading,
                 userId: userId,
                 question: question,
+                isReported: isReported,
                 questionButton: questionButton);
           },
         );
@@ -200,20 +203,23 @@ Widget reportContent({
                   children: [
                     Expanded(
                       child: IgnorePointer(
-                        ignoring: selectedReasonId == null,
+                        ignoring: selectedReasonId == null && !isReported,
                         child: Opacity(
-                          opacity: selectedReasonId == null ? 0.5 : 1.0,
+                          opacity: (!isReported && selectedReasonId == null)
+                              ? 0.5
+                              : 1.0,
                           child: CustomElevatedButton(
                             onPressed: () {
                               if (isReported) {
                                 context
                                     .read<ProfileDetailsCubit>()
-                                    .reportUser(userId, 0);
+                                    .reportUser(userId);
                               } else {
                                 if (selectedReasonId != null) {
                                   context
                                       .read<ProfileDetailsCubit>()
-                                      .reportUser(userId, selectedReasonId!);
+                                      .reportUser(userId,
+                                          reasonId: selectedReasonId!);
                                 }
                               }
                             },

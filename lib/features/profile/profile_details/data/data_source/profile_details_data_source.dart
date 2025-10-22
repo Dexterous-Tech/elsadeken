@@ -37,8 +37,8 @@ class ProfileDetailsDataSource {
     return ProfileDetailsResponseModel.fromJson(response.data);
   }
 
-  Future<ProfileDetailsActionResponseModel> reportUser(
-      int userId, int reasonId) async {
+  Future<ProfileDetailsActionResponseModel> reportUser(int userId,
+      {int? reasonId}) async {
     var response = await _apiServices.get(
         endpoint: ApiConstants.reportUser(userId),
         requiresAuth: true,

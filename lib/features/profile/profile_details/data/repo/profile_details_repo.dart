@@ -17,7 +17,8 @@ abstract class ProfileDetailsRepoInterface {
   Future<Either<ApiErrorModel, ProfileDetailsResponseModel>> getProfileDetails(
       int userId);
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> reportUser(
-      int userId, int reasonId);
+      int userId,
+      {int? reasonId});
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> shareUser(
       int userId);
   Future<Either<ApiErrorModel, List<GeneralInfoResponseModels>>> getGeneralInfo(
@@ -75,10 +76,11 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
 
   @override
   Future<Either<ApiErrorModel, ProfileDetailsActionResponseModel>> reportUser(
-      int userId, int reasonId) async {
+      int userId,
+      {int? reasonId}) async {
     try {
       var response =
-          await profileDetailsDataSource.reportUser(userId, reasonId);
+          await profileDetailsDataSource.reportUser(userId, reasonId: reasonId);
       return Right(response);
     } catch (error) {
       log("error in report user $error");

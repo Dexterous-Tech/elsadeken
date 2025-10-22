@@ -550,6 +550,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                                     userId: widget.user.id,
                                     userName: widget.user.name,
                                     userImage: widget.user.imageUrl,
+                                    isOnline: widget.user.isOnline,
                                   ),
                                 },
                               );
@@ -568,6 +569,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                                   userId: widget.user.id,
                                   userName: widget.user.name,
                                   userImage: widget.user.imageUrl,
+                                  isOnline: widget.user.isOnline,
                                 ),
                               },
                             );
