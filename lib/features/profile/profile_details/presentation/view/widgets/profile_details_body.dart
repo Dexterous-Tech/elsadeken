@@ -31,11 +31,26 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
     context.read<ProfileDetailsCubit>().getProfileDetails(widget.userId);
   }
 
-  void _updateUserState() {
+  void _updateUserLike() {
     setState(() {
       _currentUser = _currentUser?.copyWith(
         isFavorite: !(_currentUser?.isFavorite ?? false),
+      );
+    });
+  }
+
+  void _updateUserIgnore() {
+    setState(() {
+      _currentUser = _currentUser?.copyWith(
         isIgnore: !(_currentUser?.isIgnore ?? false),
+      );
+    });
+  }
+
+  void _updateUserReport() {
+    setState(() {
+      _currentUser = _currentUser?.copyWith(
+        isReported: !(_currentUser?.isReported ?? false),
       );
     });
   }
@@ -73,7 +88,9 @@ class _ProfileDetailsBodyState extends State<ProfileDetailsBody> {
                 userId: widget.userId,
                 currentUser: _currentUser,
                 user: widget.user,
-                onUserStateChanged: _updateUserState,
+                onUserStateChangedLike: _updateUserLike,
+                onUserStateChangedIgnore: _updateUserIgnore,
+                onUserStateChangedReport: _updateUserReport,
               ),
               verticalSpace(40),
               ProfileDetailsData(),

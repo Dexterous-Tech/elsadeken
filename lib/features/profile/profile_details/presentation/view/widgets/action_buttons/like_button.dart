@@ -16,12 +16,14 @@ class LikeButton extends StatelessWidget {
   final int userId;
   final UsersDataModel? currentUser;
   final VoidCallback? onUserStateChanged;
+  final VoidCallback? onUserStateChangedReported;
 
   const LikeButton({
     super.key,
     required this.userId,
     this.currentUser,
     this.onUserStateChanged,
+    this.onUserStateChangedReported,
   });
 
   @override
@@ -115,6 +117,7 @@ class LikeButton extends StatelessWidget {
 
   void _showReportDialog(BuildContext context, bool isReported) {
     reportDialog(
+      afterSuccess: () => onUserStateChangedReported?.call(),
       context: context,
       userId: userId,
       isReported: isReported,

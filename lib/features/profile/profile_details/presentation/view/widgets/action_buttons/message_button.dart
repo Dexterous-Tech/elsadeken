@@ -17,6 +17,7 @@ class MessageButton extends StatelessWidget {
   final UsersDataModel? currentUser;
   final UsersDataModel? user;
   final VoidCallback? onUserStateChanged;
+  final VoidCallback? onUserStateChangedReported;
 
   const MessageButton({
     super.key,
@@ -24,6 +25,7 @@ class MessageButton extends StatelessWidget {
     this.currentUser,
     this.user,
     this.onUserStateChanged,
+    this.onUserStateChangedReported,
   });
 
   @override
@@ -86,6 +88,7 @@ class MessageButton extends StatelessWidget {
 
   void _showReportDialog(BuildContext context, bool isReported) {
     reportDialog(
+      afterSuccess: () => onUserStateChangedReported?.call(),
       context: context,
       userId: userId,
       isReported: isReported,

@@ -10,12 +10,14 @@ class IgnoreButton extends StatelessWidget {
   final int userId;
   final UsersDataModel? currentUser;
   final VoidCallback? onUserStateChanged;
+  final VoidCallback? onUserStateChangedReported;
 
   const IgnoreButton({
     super.key,
     required this.userId,
     this.currentUser,
     this.onUserStateChanged,
+    this.onUserStateChangedReported,
   });
 
   @override
@@ -29,7 +31,7 @@ class IgnoreButton extends StatelessWidget {
       return _buildDisabledButton(
         context,
         AppImages.thumbDown,
-        AppLocalizations.of(context)!.reported,
+        AppLocalizations.of(context)!.ignore,
         () => _showReportDialog(context, true),
       );
     }
@@ -38,7 +40,7 @@ class IgnoreButton extends StatelessWidget {
       return _buildDisabledButton(
         context,
         AppImages.thumbDown,
-        AppLocalizations.of(context)!.reported,
+        AppLocalizations.of(context)!.ignore,
         null,
       );
     }
@@ -84,6 +86,7 @@ class IgnoreButton extends StatelessWidget {
       isReported: isReported,
       question: AppLocalizations.of(context)!.unreportedBeforeIgnore,
       questionButton: AppLocalizations.of(context)!.cancelReport,
+      afterSuccess: () => onUserStateChangedReported?.call(),
     );
   }
 

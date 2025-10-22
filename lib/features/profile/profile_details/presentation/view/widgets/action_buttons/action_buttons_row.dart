@@ -11,14 +11,18 @@ class ActionButtonsRow extends StatelessWidget {
   final int userId;
   final UsersDataModel? currentUser;
   final UsersDataModel? user;
-  final VoidCallback? onUserStateChanged;
+  final VoidCallback? onUserStateChangedLike;
+  final VoidCallback? onUserStateChangedReport;
+  final VoidCallback? onUserStateChangedIgnore;
 
   const ActionButtonsRow({
     super.key,
     required this.userId,
     this.currentUser,
     this.user,
-    this.onUserStateChanged,
+    this.onUserStateChangedLike,
+    this.onUserStateChangedReport,
+    this.onUserStateChangedIgnore,
   });
 
   @override
@@ -31,22 +35,26 @@ class ActionButtonsRow extends StatelessWidget {
         LikeButton(
           userId: userId,
           currentUser: currentUser,
-          onUserStateChanged: onUserStateChanged,
+          onUserStateChanged: onUserStateChangedLike,
+          onUserStateChangedReported: onUserStateChangedReport,
         ),
         IgnoreButton(
           userId: userId,
           currentUser: currentUser,
-          onUserStateChanged: onUserStateChanged,
+          onUserStateChanged: onUserStateChangedIgnore,
+          onUserStateChangedReported: onUserStateChangedReport,
         ),
         MessageButton(
           userId: userId,
           currentUser: currentUser,
           user: user,
-          onUserStateChanged: onUserStateChanged,
+          onUserStateChanged: onUserStateChangedIgnore,
+          onUserStateChangedReported: onUserStateChangedReport,
         ),
         ReportButton(
           userId: userId,
           currentUser: currentUser,
+          onUserStateChanged: onUserStateChangedReport,
         ),
       ],
     );

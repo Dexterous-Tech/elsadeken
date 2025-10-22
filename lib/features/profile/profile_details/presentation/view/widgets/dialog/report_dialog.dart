@@ -23,6 +23,7 @@ void reportDialog({
   bool isReported = false,
   String? question,
   String? questionButton,
+  required void Function() afterSuccess,
 }) {
   customDialog(
     context: context,
@@ -42,6 +43,7 @@ void reportDialog({
               current is ReportUserSuccess,
           listener: (context, state) {
             if (state is ReportUserSuccess) {
+              afterSuccess();
               context.read<ProfileDetailsCubit>().getProfileDetails(userId);
               successDialog(
                   context: context,

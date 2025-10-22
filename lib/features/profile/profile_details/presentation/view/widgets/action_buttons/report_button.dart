@@ -8,11 +8,13 @@ import 'package:flutter/material.dart';
 class ReportButton extends StatelessWidget {
   final int userId;
   final UsersDataModel? currentUser;
+  final VoidCallback? onUserStateChanged;
 
   const ReportButton({
     super.key,
     required this.userId,
     this.currentUser,
+    this.onUserStateChanged,
   });
 
   @override
@@ -57,6 +59,7 @@ class ReportButton extends StatelessWidget {
   void _showReportDialog(BuildContext context, bool isReported) {
     if (isReported) {
       reportDialog(
+        afterSuccess: () => onUserStateChanged?.call(),
         context: context,
         userId: userId,
         isReported: isReported,
@@ -65,6 +68,8 @@ class ReportButton extends StatelessWidget {
       );
     } else {
       reportDialog(
+        isReported: false,
+        afterSuccess: () => onUserStateChanged?.call(),
         context: context,
         userId: userId,
       );
