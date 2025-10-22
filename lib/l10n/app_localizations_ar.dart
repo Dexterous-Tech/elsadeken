@@ -2028,4 +2028,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get selectReportReason => 'اختر سبب الإبلاغ';
+
+  @override
+  String get allPersons => 'الكل';
+
+  @override
+  String get malesPerson => 'الذكور';
+
+  @override
+  String get femalesPerson => 'الإناث';
 }

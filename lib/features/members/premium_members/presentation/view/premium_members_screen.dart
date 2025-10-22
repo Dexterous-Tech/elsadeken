@@ -10,13 +10,15 @@ import 'package:elsadeken/features/members/data/repositories/members_repository.
 import 'package:elsadeken/features/members/logic/cubit/members_cubit.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../profile/widgets/profile_header.dart';
+import '../../../gender_filter.dart';
 import '../../../online_members/presentation/view/widgets/filter_buttom_sheet.dart';
 
 class PremiumMembersView extends StatefulWidget {
-  const PremiumMembersView({super.key, this.countryName});
+  const PremiumMembersView({Key? key, this.countryName}) : super(key: key);
 
   final String? countryName;
 
@@ -25,6 +27,7 @@ class PremiumMembersView extends StatefulWidget {
 }
 
 class _PremiumMembersViewState extends State<PremiumMembersView> {
+  String _activeFilter = 'all';
   String? _selectedCountryName;
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
@@ -34,6 +37,41 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
     super.initState();
     _scrollController.addListener(_onScroll);
     _selectedCountryName = widget.countryName;
+    _initializeGenderFilter();
+  }
+
+  Future<void> _initializeGenderFilter() async {
+    try {
+      final userGender = await SharedPreferencesHelper.getGender();
+      print('🔍 Premium Members - User gender from storage: $userGender');
+
+      // Set initial filter based on user's gender
+      if (mounted) {
+        setState(() {
+          if (userGender.toLowerCase() == 'male' || userGender == 'ذكر') {
+            _activeFilter = 'females';
+            print(
+                '🔍 Premium Members - User is male/ذكر, focusing on females/انثى filter');
+          } else if (userGender.toLowerCase() == 'female' ||
+              userGender == 'انثى') {
+            _activeFilter = 'males';
+            print(
+                '🔍 Premium Members - User is female/انثى, focusing on males/ذكر filter');
+          } else {
+            _activeFilter = 'all';
+            print(
+                '🔍 Premium Members - User gender unknown, defaulting to all filter');
+          }
+        });
+      }
+    } catch (e) {
+      print('🔍 Premium Members - Error getting user gender: $e');
+      if (mounted) {
+        setState(() {
+          _activeFilter = 'all';
+        });
+      }
+    }
   }
 
   @override
@@ -76,6 +114,29 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
 
   Future<void> _onRefresh() async {
     context.read<MembersListCubit<UsersDataModel>>().fetch(page: 1);
+  }
+
+  List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
+    // Debug: Print unique gender values to help identify what the API returns
+    final uniqueGenders = allMembers.map((m) => m.gender).toSet();
+    print('🔍 Premium Members - Unique gender values from API: $uniqueGenders');
+
+    switch (_activeFilter) {
+      case 'males':
+        return allMembers.where((member) {
+          final gender = member.gender?.toLowerCase();
+          // Handle both Arabic and English gender values
+          return gender == 'ذكر' || gender == 'male' || gender == 'm';
+        }).toList();
+      case 'females':
+        return allMembers.where((member) {
+          final gender = member.gender?.toLowerCase();
+          // Handle both Arabic and English gender values
+          return gender == 'انثى' || gender == 'female' || gender == 'f';
+        }).toList();
+      default:
+        return allMembers;
+    }
   }
 
   @override
@@ -177,19 +238,16 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                                     },
                                   );
                                   // Push a new provider scope with updated loader
-                                  if (context.mounted) {
-                                    Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                        builder: (_) => BlocProvider<
-                                            MembersListCubit<UsersDataModel>>(
-                                          create: (_) => newCubit..fetch(),
-                                          child: PremiumMembersView(
-                                              countryName:
-                                                  _selectedCountryName),
-                                        ),
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (_) => BlocProvider<
+                                          MembersListCubit<UsersDataModel>>(
+                                        create: (_) => newCubit..fetch(),
+                                        child: PremiumMembersView(
+                                            countryName: _selectedCountryName),
                                       ),
-                                    );
-                                  }
+                                    ),
+                                  );
                                 }
                               },
                               child: Row(
@@ -211,6 +269,49 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                         ),
                       ),
                       SizedBox(height: 16),
+                      Padding(
+                        padding: const EdgeInsetsDirectional.symmetric(
+                            horizontal: 24.0),
+                        child: Container(
+                          height: 56.h,
+                          padding: EdgeInsets.symmetric(horizontal: 8.w),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(10).r,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: GenderFilter(
+                                  text: AppLocalizations.of(context)!.all,
+                                  isActive: _activeFilter == 'all',
+                                  onTap: () =>
+                                      setState(() => _activeFilter = 'all'),
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: GenderFilter(
+                                  text: AppLocalizations.of(context)!.males,
+                                  isActive: _activeFilter == 'males',
+                                  onTap: () =>
+                                      setState(() => _activeFilter = 'males'),
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: GenderFilter(
+                                  text: AppLocalizations.of(context)!.females,
+                                  isActive: _activeFilter == 'females',
+                                  onTap: () =>
+                                      setState(() => _activeFilter = 'females'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                       BlocBuilder<MembersListCubit<UsersDataModel>,
                           MembersListState<UsersDataModel>>(
                         builder: (context, state) {
@@ -248,7 +349,8 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                             );
                           }
                           if (state is MembersListLoaded<UsersDataModel>) {
-                            final items = state.items;
+                            final allMembers = state.items;
+                            final items = _getFilteredMembers(allMembers);
                             return Expanded(
                               child: Column(
                                 children: [

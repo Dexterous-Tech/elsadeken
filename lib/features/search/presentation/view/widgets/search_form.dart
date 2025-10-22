@@ -549,8 +549,8 @@ class _SearchFormState extends State<SearchForm> {
               } else if (state is SearchSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                      content: Text(AppLocalizations.of(context)!
-                          .foundResults(state.results.length.toString()))),
+                      content: Text(AppLocalizations.of(context)!.foundResults(
+                          state.results.data!.length.toString()))),
                 );
               }
             },

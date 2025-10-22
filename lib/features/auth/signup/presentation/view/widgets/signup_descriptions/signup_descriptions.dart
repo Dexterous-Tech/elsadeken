@@ -12,6 +12,7 @@ import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../../core/theme/app_text_styles.dart';
@@ -109,10 +110,16 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                     verticalSpace(16),
 
                     CustomTextFormField(
-                      controller: cubit.aboutMeController,
+                      controller: cubit.lifePartnerController,
                       keyboardType: TextInputType.text,
                       hintText: AppLocalizations.of(context)!.writeHint,
                       maxLines: 5,
+                      inputFormatters: [
+                        // Allow only characters that are NOT digits (English or Arabic)
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'[^0-9\u0660-\u0669\u06F0-\u06F9]'),
+                        ),
+                      ],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return AppLocalizations.of(context)!.fieldRequired;
@@ -120,14 +127,16 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
 
                         final trimmedValue = value.trim();
 
-                        // Block numbers
-                        if (RegExp(r'\d').hasMatch(trimmedValue)) {
+                        // Redundant safety check (in case of paste)
+                        if (RegExp(r'[\d\u0660-\u0669\u06F0-\u06F9]')
+                            .hasMatch(trimmedValue)) {
                           return AppLocalizations.of(context)!
                               .textCannotContainNumbers;
                         }
 
                         // Block anything that looks like a phone number (8–15 consecutive digits)
-                        if (RegExp(r'\d{8,15}').hasMatch(trimmedValue)) {
+                        if (RegExp(r'[\d\u0660-\u0669\u06F0-\u06F9]{8,15}')
+                            .hasMatch(trimmedValue)) {
                           return AppLocalizations.of(context)!
                               .cannotEnterPhoneNumber;
                         }
@@ -153,10 +162,16 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
                     verticalSpace(16),
                     CustomTextFormField(
-                      controller: cubit.lifePartnerController,
+                      controller: cubit.aboutMeController,
                       keyboardType: TextInputType.emailAddress,
                       hintText: AppLocalizations.of(context)!.writeHint,
                       maxLines: 5,
+                      inputFormatters: [
+                        // Allow only characters that are NOT digits (English or Arabic)
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'[^0-9\u0660-\u0669\u06F0-\u06F9]'),
+                        ),
+                      ],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return AppLocalizations.of(context)!.fieldRequired;
@@ -164,14 +179,16 @@ class _SignupDescriptionsState extends State<SignupDescriptions> {
 
                         final trimmedValue = value.trim();
 
-                        // Block numbers
-                        if (RegExp(r'\d').hasMatch(trimmedValue)) {
+                        // Redundant safety check (in case of paste)
+                        if (RegExp(r'[\d\u0660-\u0669\u06F0-\u06F9]')
+                            .hasMatch(trimmedValue)) {
                           return AppLocalizations.of(context)!
                               .textCannotContainNumbers;
                         }
 
                         // Block anything that looks like a phone number (8–15 consecutive digits)
-                        if (RegExp(r'\d{8,15}').hasMatch(trimmedValue)) {
+                        if (RegExp(r'[\d\u0660-\u0669\u06F0-\u06F9]{8,15}')
+                            .hasMatch(trimmedValue)) {
                           return AppLocalizations.of(context)!
                               .cannotEnterPhoneNumber;
                         }

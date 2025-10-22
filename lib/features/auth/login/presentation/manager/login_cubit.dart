@@ -44,6 +44,12 @@ class LoginCubit extends Cubit<LoginState> {
 
         await saveUserToken(loginResponseModel.data!.token);
         log("save token ");
+        Future.wait([
+          SharedPreferencesHelper.deleteSecuredString(
+              SharedPreferencesKey.gender),
+          SharedPreferencesHelper.setSecuredString(SharedPreferencesKey.gender,
+              loginResponseModel.data!.gender ?? 'male'),
+        ]);
 
         if (loginResponseModel.data?.redirectToAttribute != true) {
           // After successful login, save FCM token silently

@@ -2027,4 +2027,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectReportReason => 'Select the reason for reporting';
+
+  @override
+  String get allPersons => 'All';
+
+  @override
+  String get malesPerson => 'Males';
+
+  @override
+  String get femalesPerson => 'Females';
 }

@@ -97,7 +97,7 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                           horizontal: 20, vertical: 12),
                       child: Text(
                         AppLocalizations.of(context)!
-                            .resultsCount(results.length),
+                            .resultsCount(results.data!.length),
                         textAlign: LocalizationService.instance.textAlignment,
                         textDirection:
                             LocalizationService.instance.textDirection,
@@ -122,10 +122,11 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                               separatorBuilder: (context, index) =>
                                   verticalSpace(16),
                               controller: _scrollController,
-                              itemCount:
-                                  results.length + (_isLoadingMore ? 1 : 0),
+                              itemCount: results.data!.length +
+                                  (_isLoadingMore ? 1 : 0),
                               itemBuilder: (context, index) {
-                                if (index == results.length && _isLoadingMore) {
+                                if (index == results.data!.length &&
+                                    _isLoadingMore) {
                                   return Padding(
                                     padding: const EdgeInsets.all(16.0),
                                     child: Center(
@@ -150,7 +151,7 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                                   );
                                 }
 
-                                final person = results[index];
+                                final person = results.data![index];
                                 return PersonCardWidget(
                                   onTap: () {
                                     // Debug: Print the person ID and its type
@@ -158,17 +159,17 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                                         'Person ID before navigation: ${person.id} (type: ${person.id.runtimeType})');
                                     context.pushNamed(
                                         AppRoutes.profileDetailsScreen,
-                                        arguments: person.id);
+                                        arguments: person);
                                   },
                                   personData: PersonData(
-                                    name: person.name,
-                                    age: person.age,
+                                    name: person.name ?? '',
+                                    age: person.attribute?.age ?? 0,
                                     location:
-                                        '${person.city}, ${person.country}',
-                                    country: person.country,
-                                    city: person.city,
-                                    profileImageUrl: person.profileImage,
-                                    isOnline: person.isOnline,
+                                        '${person.attribute?.city ?? ''}, ${person.attribute?.country ?? ''}',
+                                    country: person.attribute?.country ?? '',
+                                    city: person.attribute?.city ?? '',
+                                    profileImageUrl: person.image ?? '',
+                                    isOnline: person.isOnline ?? false,
                                   ),
                                 );
                               },

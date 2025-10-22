@@ -3,8 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:elsadeken/features/search/domain/entities/search_filter.dart';
-import 'package:elsadeken/features/search/domain/entities/user_profile.dart';
 import 'package:elsadeken/features/search/logic/use_cases/search_use_cases.dart';
+
+import '../../../profile/interests_list/data/models/users_response_model.dart';
 
 part 'search_state.dart';
 
@@ -99,7 +100,7 @@ class SearchCubit extends Cubit<SearchState> {
       if (state is SearchSuccess && page > 1) {
         // Append results for pagination
         final currentState = state as SearchSuccess;
-        final updatedResults = [...currentState.results, ...results];
+        final updatedResults = currentState.results;
         emit(SearchSuccess(
           updatedResults,
           currentPage: page,
@@ -110,7 +111,7 @@ class SearchCubit extends Cubit<SearchState> {
         emit(SearchSuccess(
           results,
           currentPage: page,
-          lastPage: results.length >= 10
+          lastPage: results.data!.length >= 10
               ? page + 1
               : page, // Assuming 10 items per page
         ));

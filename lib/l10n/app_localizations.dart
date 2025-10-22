@@ -4024,6 +4024,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select the reason for reporting'**
   String get selectReportReason;
+
+  /// No description provided for @allPersons.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allPersons;
+
+  /// No description provided for @malesPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Males'**
+  String get malesPerson;
+
+  /// No description provided for @femalesPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Females'**
+  String get femalesPerson;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

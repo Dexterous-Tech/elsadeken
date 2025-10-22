@@ -179,6 +179,16 @@ class SharedPreferencesHelper {
     return await getBool(SharedPreferencesKey.isSingleKey);
   }
 
+  /// Gets the gender value from FlutterSecureStorage.
+  static Future<String> getGender() async {
+    return await getSecuredString(SharedPreferencesKey.gender);
+  }
+
+  /// Sets the gender value in FlutterSecureStorage.
+  static Future<void> setGender(String gender) async {
+    await setSecuredString(SharedPreferencesKey.gender, gender);
+  }
+
   /// Check if signup data exists and is recent (within 24 hours)
   static Future<bool> hasRecentSignupData(
       {Duration maxAge = const Duration(hours: 24)}) async {

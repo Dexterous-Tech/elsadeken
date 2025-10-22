@@ -22,7 +22,7 @@ class SearchFilterUpdated extends SearchState {
 class SearchLoading extends SearchState {}
 
 class SearchSuccess extends SearchState {
-  final List<UserProfile> results;
+  final UsersResponseModel results;
   final int currentPage;
   final int lastPage;
   final bool hasNextPage;
@@ -37,7 +37,7 @@ class SearchSuccess extends SearchState {
   List<Object?> get props => [results, currentPage, lastPage, hasNextPage];
 
   SearchSuccess copyWith({
-    List<UserProfile>? results,
+    UsersResponseModel? results,
     int? currentPage,
     int? lastPage,
   }) {

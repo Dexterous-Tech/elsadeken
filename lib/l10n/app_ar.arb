@@ -654,5 +654,8 @@
   "sureReportQu": "هل أنت متأكد من الإبلاغ عن هذا الشخص؟",
   "yesReport": "نعم إبلاغ",
   "reportReasonQu": "ما هو سبب الإبلاغ؟",
-  "selectReportReason": "اختر سبب الإبلاغ"
+  "selectReportReason": "اختر سبب الإبلاغ",
+  "allPersons": "الكل",
+  "malesPerson": "الذكور",
+  "femalesPerson": "الإناث"
 }

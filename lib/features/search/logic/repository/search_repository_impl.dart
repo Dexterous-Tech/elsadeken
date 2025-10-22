@@ -2,7 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/features/search/logic/repository/search_repository.dart';
 import 'package:elsadeken/features/search/domain/entities/search_filter.dart';
-import 'package:elsadeken/features/search/domain/entities/user_profile.dart';
+
+import '../../../profile/interests_list/data/models/users_response_model.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
   final Dio dio;
@@ -10,15 +11,15 @@ class SearchRepositoryImpl implements SearchRepository {
   SearchRepositoryImpl(this.dio);
 
   @override
-  Future<List<UserProfile>> searchUsers(SearchFilter filter,
+  Future<UsersResponseModel> searchUsers(SearchFilter filter,
       {int page = 1}) async {
     try {
       // بيانات فلتر ثابتة مؤقتًا
       print(filter.toJson().toString());
 
       final response = await dio.post(
-      "${ApiConstants.baseUrl}/user/search",
-      data: filter.toJson(page: page),
+        "${ApiConstants.baseUrl}/user/search",
+        data: filter.toJson(page: page),
         // data: {
         //   "user_name":"ahmed" //to be removed
         // },
@@ -28,9 +29,7 @@ class SearchRepositoryImpl implements SearchRepository {
         print("Search response: ${response.data}");
         final data = response.data;
         if (data['type'] == 'success') {
-          return (data['data'] as List)
-              .map((e) => UserProfile.fromJson(e))
-              .toList();
+          return UsersResponseModel.fromJson(data);
         } else {
           throw Exception(data['message'] ?? "Search failed");
         }

@@ -1,4 +1,8 @@
+import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GenderFilter extends StatelessWidget {
   final String text;
@@ -17,21 +21,23 @@ class GenderFilter extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
+        width: double.infinity,
+        height: 34.h,
         duration: const Duration(milliseconds: 200),
-        padding:
-            const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 12),
+        // padding: EdgeInsetsDirectional.symmetric(horizontal: 16.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color: isActive ? const Color(0xFFE8A5A5) : const Color(0xFFF5F1E8),
-          borderRadius: BorderRadius.circular(16),
+          color: isActive ? AppColors.congoPink : AppColors.white,
+          borderRadius: BorderRadius.circular(4).r,
         ),
-        child: Text(
-          textAlign: TextAlign.center,
-          text,
-          style: TextStyle(
-            color: const Color(0xFF8B7355),
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-          ),
+        child: Center(
+          child: Text(
+              textAlign: TextAlign.center,
+              text,
+              style: isActive
+                  ? AppTextStyles.font14WhiteRegularLamaSans
+                      .copyWith(fontWeight: FontWeightHelper.medium)
+                  : AppTextStyles.font14BeerMediumLamaSans
+                      .copyWith(color: Color(0xff2D2D2D))),
         ),
       ),
     );

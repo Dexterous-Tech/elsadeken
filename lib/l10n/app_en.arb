@@ -654,5 +654,8 @@
   "sureReportQu": "Are you sure you want to report this person?",
   "yesReport": "Yes Report",
   "reportReasonQu": "What is the reason for reporting?",
-  "selectReportReason": "Select the reason for reporting"
+  "selectReportReason": "Select the reason for reporting",
+  "allPersons": "All",
+  "malesPerson": "Males",
+  "femalesPerson": "Females"
 }

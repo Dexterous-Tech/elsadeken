@@ -47,6 +47,9 @@ class TextFieldBuilder extends ProfileFieldBuilder {
     required List<NationalCountryResponseModel> countriesList,
     required List<CityResponseModels> citiesList,
   }) {
+    // Check if this is an "about me" or "life partner" field that needs special validation
+    final isAboutMeOrLifePartner = _isAboutMeOrLifePartnerField(field, context);
+
     return Column(
       textDirection: LocalizationService.instance.textDirection,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,15 +67,66 @@ class TextFieldBuilder extends ProfileFieldBuilder {
           controller: controller,
           keyboardType: field.keyboardType,
           maxLines: field.maxLines,
-          validator: (value) {
-            if (field.isRequired && (value == null || value.isEmpty)) {
-              return AppLocalizations.of(context)!.fieldRequired;
-            }
-            return null;
-          },
+          inputFormatters:
+              isAboutMeOrLifePartner ? _getTextValidationFormatters() : null,
+          validator: isAboutMeOrLifePartner
+              ? (value) => _validateTextContent(value, context)
+              : (value) {
+                  if (field.isRequired && (value == null || value.isEmpty)) {
+                    return AppLocalizations.of(context)!.fieldRequired;
+                  }
+                  return null;
+                },
         ),
       ],
     );
+  }
+
+  /// Check if this field is "about me" or "life partner" field
+  bool _isAboutMeOrLifePartnerField(
+      ManageProfileField field, BuildContext context) {
+    final aboutMeLabel = AppLocalizations.of(context)!.aboutMe;
+    final lifePartnerLabel = AppLocalizations.of(context)!.lifePartner;
+
+    return field.label == aboutMeLabel || field.label == lifePartnerLabel;
+  }
+
+  /// Get input formatters for text content validation
+  List<TextInputFormatter> _getTextValidationFormatters() {
+    return [
+      // Allow only characters that are NOT digits (English or Arabic)
+      FilteringTextInputFormatter.allow(
+        RegExp(r'[^0-9\u0660-\u0669\u06F0-\u06F9]'),
+      ),
+    ];
+  }
+
+  /// Validate text content for about me and life partner fields
+  String? _validateTextContent(String? value, BuildContext context) {
+    if (value == null || value.trim().isEmpty) {
+      return AppLocalizations.of(context)!.fieldRequired;
+    }
+
+    final trimmedValue = value.trim();
+
+    // Redundant safety check (in case of paste)
+    if (RegExp(r'[\d\u0660-\u0669\u06F0-\u06F9]').hasMatch(trimmedValue)) {
+      return AppLocalizations.of(context)!.textCannotContainNumbers;
+    }
+
+    // Block anything that looks like a phone number (8–15 consecutive digits)
+    if (RegExp(r'[\d\u0660-\u0669\u06F0-\u06F9]{8,15}')
+        .hasMatch(trimmedValue)) {
+      return AppLocalizations.of(context)!.cannotEnterPhoneNumber;
+    }
+
+    // Block links
+    if (RegExp(r'(https?://|www\.|\.com|\.net|\.org)', caseSensitive: false)
+        .hasMatch(trimmedValue)) {
+      return AppLocalizations.of(context)!.textCannotContainLinks;
+    }
+
+    return null;
   }
 }
 

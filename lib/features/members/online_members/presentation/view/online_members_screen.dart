@@ -12,26 +12,65 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../profile/widgets/profile_header.dart';
+import '../../../gender_filter.dart';
 
 class OnlineMembersView extends StatefulWidget {
-  const OnlineMembersView({super.key});
+  const OnlineMembersView({Key? key}) : super(key: key);
 
   @override
   State<OnlineMembersView> createState() => _OnlineMembersViewState();
 }
 
 class _OnlineMembersViewState extends State<OnlineMembersView> {
+  String _activeFilter = 'all';
   int? _selectedCountryId;
   String _selectedCountryName = '';
+  List<UsersDataModel> _allMembers = [];
   ScrollController? _scrollController;
   bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
+    _initializeGenderFilter();
+  }
+
+  Future<void> _initializeGenderFilter() async {
+    try {
+      final userGender = await SharedPreferencesHelper.getGender();
+      print('🔍 Online Members - User gender from storage: $userGender');
+
+      // Set initial filter based on user's gender
+      if (mounted) {
+        setState(() {
+          if (userGender.toLowerCase() == 'male' || userGender == 'ذكر') {
+            _activeFilter = 'females';
+            print(
+                '🔍 Online Members - User is male/ذكر, focusing on females/انثى filter');
+          } else if (userGender.toLowerCase() == 'female' ||
+              userGender == 'انثى') {
+            _activeFilter = 'males';
+            print(
+                '🔍 Online Members - User is female/انثى, focusing on males/ذكر filter');
+          } else {
+            _activeFilter = 'all';
+            print(
+                '🔍 Online Members - User gender unknown, defaulting to all filter');
+          }
+        });
+      }
+    } catch (e) {
+      print('🔍 Online Members - Error getting user gender: $e');
+      if (mounted) {
+        setState(() {
+          _activeFilter = 'all';
+        });
+      }
+    }
   }
 
   @override
@@ -69,6 +108,43 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
     }
   }
 
+  List<UsersDataModel> _getFilteredMembers(List<UsersDataModel> allMembers) {
+    // Debug: Print unique gender values to help identify what the API returns
+    final uniqueGenders = allMembers.map((m) => m.gender).toSet();
+    print('🔍 Online Members - Unique gender values from API: $uniqueGenders');
+
+    switch (_activeFilter) {
+      case 'males':
+        return allMembers.where((member) {
+          final gender = member.gender?.toLowerCase();
+          // Handle both Arabic and English gender values
+          return gender == 'ذكر' || gender == 'male' || gender == 'm';
+        }).toList();
+      case 'females':
+        return allMembers.where((member) {
+          final gender = member.gender?.toLowerCase();
+          // Handle both Arabic and English gender values
+          return gender == 'انثى' || gender == 'female' || gender == 'f';
+        }).toList();
+      default:
+        return allMembers;
+    }
+  }
+
+  void _applyFilters() {
+    // This method is now handled by the BlocBuilder in the UI
+    // The filtering is done in _getFilteredMembers method
+    setState(() {
+      // Trigger rebuild to apply filters
+    });
+  }
+
+  void _onGenderFilterChanged(String filter) {
+    setState(() {
+      _activeFilter = filter;
+    });
+  }
+
   void _onCountryFilterChanged(Map<String, dynamic> filterData) {
     print('_onCountryFilterChanged called with: $filterData');
     setState(() {
@@ -85,38 +161,6 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
       print('Cleared filters because "all" was selected');
     }
   }
-
-  // String _getLocationText(UsersDataModel member) {
-  //   final country = member.attribute?.country;
-  //   final city = member.attribute?.city;
-  //
-  //   // Helper function to check if a string is valid
-  //   bool isValidString(String? str) {
-  //     return str != null &&
-  //         str.isNotEmpty &&
-  //         str != 'لا يوجد' &&
-  //         str != 'null' &&
-  //         str != 'undefined' &&
-  //         str.trim().isNotEmpty;
-  //   }
-  //
-  //   final hasValidCountry = isValidString(country);
-  //   final hasValidCity = isValidString(city);
-  //
-  //   if (!hasValidCountry && !hasValidCity) {
-  //     return AppLocalizations.of(context)!.notSpecified;
-  //   }
-  //
-  //   if (hasValidCountry && hasValidCity) {
-  //     return '$country، $city';
-  //   }
-  //
-  //   if (hasValidCountry) {
-  //     return country!;
-  //   }
-  //
-  //   return city!;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -242,6 +286,52 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                               ],
                             ),
                           ),
+                          SizedBox(height: 16),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.symmetric(
+                                horizontal: 24.0),
+                            child: Container(
+                              height: 56.h,
+                              padding: EdgeInsets.symmetric(horizontal: 8.w),
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(10).r,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: GenderFilter(
+                                      text: AppLocalizations.of(context)!.all,
+                                      isActive: _activeFilter == 'all',
+                                      onTap: () =>
+                                          _onGenderFilterChanged('all'),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: GenderFilter(
+                                      text: AppLocalizations.of(context)!.males,
+                                      isActive: _activeFilter == 'males',
+                                      onTap: () =>
+                                          _onGenderFilterChanged('males'),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: GenderFilter(
+                                      text:
+                                          AppLocalizations.of(context)!.females,
+                                      isActive: _activeFilter == 'females',
+                                      onTap: () =>
+                                          _onGenderFilterChanged('females'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                           if (_selectedCountryName.isNotEmpty &&
                               _selectedCountryName != 'all')
                             Padding(
@@ -269,6 +359,7 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                         _selectedCountryId = null;
                                         _selectedCountryName = '';
                                       });
+                                      _applyFilters();
                                     },
                                     child: Text(
                                       AppLocalizations.of(context)!.clearFilter,
@@ -314,7 +405,8 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                 );
                               }
                               if (state is MembersListLoaded<UsersDataModel>) {
-                                final items = state.items;
+                                _allMembers = state.items;
+                                final items = _getFilteredMembers(_allMembers);
                                 return Expanded(
                                   child: Column(
                                     children: [
