@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +9,6 @@ import 'package:elsadeken/features/chat/presentation/widgets/profile_image_widge
 import 'package:elsadeken/features/chat/presentation/widgets/time_formatter.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_options_popup.dart';
-
-import '../manager/chat_list_cubit/cubit/chat_list_state.dart';
 
 class ChatRoomItem extends StatelessWidget {
   final ChatData chat;
