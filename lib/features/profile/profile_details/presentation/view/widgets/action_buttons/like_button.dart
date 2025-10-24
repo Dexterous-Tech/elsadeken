@@ -16,6 +16,7 @@ class LikeButton extends StatelessWidget {
   final int userId;
   final UsersDataModel? currentUser;
   final VoidCallback? onUserStateChanged;
+  final VoidCallback? onUserIgnoreStateChanged;
   final VoidCallback? onUserStateChangedReported;
 
   const LikeButton({
@@ -24,6 +25,7 @@ class LikeButton extends StatelessWidget {
     this.currentUser,
     this.onUserStateChanged,
     this.onUserStateChangedReported,
+    this.onUserIgnoreStateChanged,
   });
 
   @override
@@ -67,7 +69,7 @@ class LikeButton extends StatelessWidget {
         context,
         AppImages.like,
         AppLocalizations.of(context)!.interest,
-        () => _showIgnoreDialog(context, true),
+        () => _showIgnoreDialog(context),
       );
     }
 
@@ -126,9 +128,9 @@ class LikeButton extends StatelessWidget {
     );
   }
 
-  void _showIgnoreDialog(BuildContext context, bool isIgnored) {
+  void _showIgnoreDialog(BuildContext context) {
     ignoreDialog(
-      afterSuccess: () => onUserStateChanged?.call(),
+      afterSuccess: () => onUserIgnoreStateChanged?.call(),
       context: context,
       message: AppLocalizations.of(context)!.unignorePersonQu,
       textButton: AppLocalizations.of(context)!.unignoreButton,

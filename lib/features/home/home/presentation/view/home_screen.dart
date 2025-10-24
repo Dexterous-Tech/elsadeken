@@ -454,7 +454,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           color: AppColors.meatBrown,
           child: CustomScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             slivers: [
               // Header
               SliverToBoxAdapter(

@@ -12,7 +12,7 @@ import '../../premium_members/presentation/view/premium_members_screen.dart';
 import '../../viewers/presentation/view/viewers_screen.dart';
 
 class MembersScreen extends StatelessWidget {
-  const MembersScreen({Key? key}) : super(key: key);
+  const MembersScreen({super.key});
 
   List<Map<String, dynamic>> _getMenuItems(BuildContext context) => [
         {
@@ -52,24 +52,34 @@ class MembersScreen extends StatelessWidget {
 
     switch (screenName) {
       case 'online_members_screen':
-        Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const OnlineMembersView()));
+        if (context.mounted) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const OnlineMembersView()));
+        }
         break;
       case 'profile_visitors_screen':
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const ViewersView()));
+        if (context.mounted) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const ViewersView()));
+        }
         break;
       case 'new_members_screen':
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const NewMembersView()));
+        if (context.mounted) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const NewMembersView()));
+        }
         break;
       case 'premium_members_screen':
-        Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const PremiumMembersView()));
+        if (context.mounted) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const PremiumMembersView()));
+        }
         break;
       case 'health_status_screen':
-        Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const HealthStatusesView()));
+        if (context.mounted) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const HealthStatusesView()));
+        }
       //   break;
       // case 'smart_search_screen':
       //   Navigator.push(context, MaterialPageRoute(builder: (_) => const SmartSearchScreen()));
@@ -82,7 +92,6 @@ class MembersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,

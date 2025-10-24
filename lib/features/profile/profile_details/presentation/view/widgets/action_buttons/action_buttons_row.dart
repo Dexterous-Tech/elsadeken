@@ -36,6 +36,7 @@ class ActionButtonsRow extends StatelessWidget {
           userId: userId,
           currentUser: currentUser,
           onUserStateChanged: onUserStateChangedLike,
+          onUserIgnoreStateChanged: onUserStateChangedIgnore,
           onUserStateChangedReported: onUserStateChangedReport,
         ),
         IgnoreButton(

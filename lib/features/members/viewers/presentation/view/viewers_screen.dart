@@ -25,7 +25,7 @@ class ViewersView extends StatefulWidget {
 
 class _ViewersViewState extends State<ViewersView> {
   ScrollController? _scrollController;
-  bool _isLoadingMore = false;
+  final bool _isLoadingMore = false;
 
   @override
   void initState() {

@@ -1,4 +1,3 @@
-import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +11,7 @@ import '../../../../../../../core/theme/app_color.dart';
 import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../../core/theme/spacing.dart';
 import '../../../../../../../core/widgets/dialog/custom_dialog.dart';
+import '../../../../../../../core/widgets/dialog/success_dialog.dart';
 import '../../../../../../../core/widgets/forms/custom_elevated_button.dart';
 import '../../../../../../../l10n/app_localizations.dart';
 import '../../../manager/profile_details_cubit.dart';
@@ -41,9 +41,20 @@ void ignoreDialog({
               current is IgnoreUserSuccess,
           listener: (context, state) {
             if (state is IgnoreUserSuccess) {
-              context.pop();
-              afterSuccess();
-              context.read<ProfileDetailsCubit>().getProfileDetails(userId);
+              successDialog(
+                  context: context,
+                  message:
+                      state.profileDetailsActionResponseModel.message ?? '',
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    afterSuccess();
+                    context
+                        .read<ProfileDetailsCubit>()
+                        .getProfileDetails(userId);
+                    // Pop success dialog
+                    // Pop report dialog
+                    Navigator.of(context).pop();
+                  });
             }
           },
           builder: (context, state) {
