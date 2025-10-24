@@ -4072,6 +4072,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel report'**
   String get cancelReport;
+
+  /// No description provided for @notAddPersonFav.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot add a reported conversation to your favorites list'**
+  String get notAddPersonFav;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,8 @@ import 'package:elsadeken/features/chat/presentation/widgets/profile_image_widge
 import 'package:elsadeken/features/chat/presentation/widgets/time_formatter.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_options_popup.dart';
+
+import '../manager/chat_list_cubit/cubit/chat_list_state.dart';
 
 class ChatRoomItem extends StatelessWidget {
   final ChatData chat;
@@ -479,16 +483,28 @@ class ChatRoomItem extends StatelessWidget {
   void _toggleFavorite(BuildContext context) {
     final bool isCurrentlyFavorite = chat.isFavorite;
 
-    // Debug: Print the current favorite status
     print(
         '🔍 [ChatRoomItem] Chat ID: ${chat.id}, isFavorite: $isCurrentlyFavorite');
     print('🔍 [ChatRoomItem] Chat otherUser: ${chat.otherUser.name}');
     print('🔍 [ChatRoomItem] isInFavoritesList: $isInFavoritesList');
 
-    // Use the toggle method from cubit
+    // ✅ Check if the chat is reported before doing anything
+    if (_isChatReported()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.notAddPersonFav,
+          ),
+          backgroundColor: Colors.grey,
+        ),
+      );
+      return; // 🚫 Stop execution here
+    }
+
+    // Continue if not reported
     chatListCubit.addChatToFavorite(chat.id);
 
-    // Show appropriate snackbar based on current state and context
+    // Determine the success message
     String message;
     Color backgroundColor;
 
@@ -497,7 +513,6 @@ class ChatRoomItem extends StatelessWidget {
       message = AppLocalizations.of(context)!.removeFromFavoritesSuccess;
       backgroundColor = Colors.grey;
     } else {
-      // In all chats list, show based on current state
       message = isCurrentlyFavorite
           ? AppLocalizations.of(context)!.removeFromFavoritesSuccess
           : AppLocalizations.of(context)!.addToFavoritesSuccess;

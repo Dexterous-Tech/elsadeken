@@ -662,5 +662,6 @@
   "unreportBeforeLike": "To interact with this person, cancel the report first",
   "unreportedBeforeIgnore": "To ignore this person, cancel the report first",
   "unreportedBeforeMessage": "To message this person, cancel the report first",
-  "cancelReport": "Cancel report"
+  "cancelReport": "Cancel report",
+  "notAddPersonFav": "You cannot add a reported conversation to your favorites list"
 }

@@ -107,7 +107,7 @@ class LikeButton extends StatelessWidget {
     } else if (state is LikeUserSuccess) {
       context.pop();
       onUserStateChanged?.call();
-      context.read<ProfileDetailsCubit>().getProfileDetails(userId);
+      // context.read<ProfileDetailsCubit>().getProfileDetails(userId);
       successDialog(
         context: context,
         message: state.profileDetailsActionResponseModel.message ??

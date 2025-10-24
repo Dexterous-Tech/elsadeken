@@ -662,5 +662,6 @@
   "unreportBeforeLike": "لكي تهتم بهذا الشخص ألغِ الإبلاغ أولاً",
   "unreportedBeforeIgnore": "لكي تتجاهل هذا الشخص ألغِ الإبلاغ أولاً",
   "unreportedBeforeMessage": "لكي تراسل هذا الشخص ألغِ الإبلاغ أولاً",
-  "cancelReport": "إلغاء الإبلاغ"
+  "cancelReport": "إلغاء الإبلاغ",
+  "notAddPersonFav": "لا يمكنك وضع المحادثه المبلغ عنها ف قائمه المفضله"
 }

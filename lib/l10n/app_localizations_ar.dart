@@ -2052,4 +2052,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cancelReport => 'إلغاء الإبلاغ';
+
+  @override
+  String get notAddPersonFav => 'لا يمكنك وضع المحادثه المبلغ عنها ف قائمه المفضله';
 }

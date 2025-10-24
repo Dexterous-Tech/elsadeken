@@ -2051,4 +2051,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancelReport => 'Cancel report';
+
+  @override
+  String get notAddPersonFav => 'You cannot add a reported conversation to your favorites list';
 }

@@ -50,9 +50,9 @@ void reportDialog({
                   onPressed: () {
                     Navigator.of(context).pop();
                     afterSuccess();
-                    context
-                        .read<ProfileDetailsCubit>()
-                        .getProfileDetails(userId);
+                    // context
+                    //     .read<ProfileDetailsCubit>()
+                    //     .getProfileDetails(userId);
                     // Pop success dialog
                     // Pop report dialog
                     Navigator.of(context).pop();
