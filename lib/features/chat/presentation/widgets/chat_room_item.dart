@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/features/chat/data/models/chat_list_model.dart';
 import 'package:flutter/material.dart';
@@ -115,7 +117,7 @@ class ChatRoomItem extends StatelessWidget {
                     ),
                   ),
                 // Favorite icon if chat is in favorites
-                if (chat.isFavorite)
+                if (_isChatFAV())
                   Container(
                     margin: EdgeInsets.only(right: 4.w),
                     child: ClipRRect(
@@ -542,5 +544,10 @@ class ChatRoomItem extends StatelessWidget {
     // For now, we'll check if the chat has been reported by looking at a property
     // This can be enhanced when the API provides reported status
     return chat.isReported;
+  }
+
+  bool _isChatFAV() {
+    log("this chat ${chat.otherUser.name} is fav ${chat.isFavorite}");
+    return chat.isFavorite;
   }
 }

@@ -18,15 +18,20 @@ class ChatDataSource {
       requiresAuth: true,
     );
 
+    // Debug: Print raw API response
+    print('🌐 [ChatDataSource] Raw API response: ${response.data}');
+
     final chatList = ChatListModel.fromJson(response.data);
-    print('🌐 [ChatDataSource] getAllChatList response: ${chatList.data.length} chats');
-    
-    // Debug: Print all chat IDs and names
+    print(
+        '🌐 [ChatDataSource] getAllChatList response: ${chatList.data.length} chats');
+
+    // Debug: Print all chat IDs and names with favorite status
     for (int i = 0; i < chatList.data.length; i++) {
       final chat = chatList.data[i];
-      print('🌐 [ChatDataSource] Chat $i: ID=${chat.id}, Name=${chat.otherUser.name}');
+      print(
+          '🌐 [ChatDataSource] Chat $i: ID=${chat.id}, Name=${chat.otherUser.name}, isFavorite=${chat.isFavorite}');
     }
-    
+
     return chatList;
   }
 
@@ -93,7 +98,8 @@ class ChatDataSource {
 
   Future<Map<String, dynamic>> deleteOneChat(int chatId) async {
     final timestamp = DateTime.now().toIso8601String();
-    print('🌐 [ChatDataSource] Calling delete API for chat ID: $chatId at $timestamp');
+    print(
+        '🌐 [ChatDataSource] Calling delete API for chat ID: $chatId at $timestamp');
     print(
         '🌐 [ChatDataSource] Endpoint: ${ApiConstants.deleteOneChatSettings(chatId.toString())}');
 

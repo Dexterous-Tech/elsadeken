@@ -441,6 +441,7 @@ class ChatListCubit extends Cubit<ChatListState> {
               body: messageBody,
               isReported: 0,
               isMuted: 0,
+              isFavorite: chat.lastMessage?.isFavorite ?? 0,
               createdAt: timestamp,
             );
 

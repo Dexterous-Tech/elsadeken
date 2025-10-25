@@ -105,7 +105,6 @@ class ChatOptionsPopup extends StatelessWidget {
                     Navigator.pop(context);
                     onAddToFavorites();
                   },
-                  iconColor: isChatFavorite ? Colors.red : null,
                 ),
               ],
             ),
