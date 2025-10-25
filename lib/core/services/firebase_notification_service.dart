@@ -49,52 +49,24 @@ class FirebaseNotificationService {
         options: DefaultFirebaseOptions.currentPlatform);
     log("Handling background message: ${message.messageId}");
 
-    // Check if notifications are enabled before showing
+    // Check if notifications are enabled
     final prefs = await SharedPreferences.getInstance();
     final notificationsEnabled = prefs.getBool('notifications_enabled') ?? true;
 
     log("Background notification check - enabled: $notificationsEnabled");
 
-    // Immediately return if notifications are disabled
+    // If notifications are disabled, don't process anything
     if (!notificationsEnabled) {
       log("Background notification IGNORED - notifications disabled in settings");
-      return; // Exit immediately, don't process anything
-    }
-
-    // Double-check the setting before proceeding
-    final doubleCheck = prefs.getBool('notifications_enabled') ?? true;
-    if (!doubleCheck) {
-      log("Background notification IGNORED - double check failed");
       return;
     }
 
-    // Show notification only if enabled
-    final localNotifications = FlutterLocalNotificationsPlugin();
-    await localNotifications.initialize(
-      const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/launcher_icon'),
-      ),
-    );
+    // IMPORTANT: Don't manually show notifications here!
+    // Firebase automatically displays notifications when app is in background/terminated
+    // Manually showing would cause duplicate notifications
+    // Only trigger refresh logic, not notification display
 
-    final notification = message.notification;
-    final android = message.notification?.android;
-
-    if (notification != null && android != null) {
-      log("Showing background notification: ${notification.title}");
-      await localNotifications.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            channelDescription: channel.description,
-            icon: android.smallIcon ?? '@mipmap/launcher_icon',
-          ),
-        ),
-      );
-    }
+    log("Background message received - Firebase will auto-display notification");
 
     // Always trigger chat refresh for background messages (if it's a chat notification)
     _triggerBackgroundChatRefresh(message);
@@ -155,6 +127,14 @@ class FirebaseNotificationService {
 
       // Initialize messaging after Firebase is ready
       _messaging = FirebaseMessaging.instance;
+
+      // Configure Firebase to NOT automatically show notifications
+      // This prevents duplicate notifications
+      await _messaging!.setForegroundNotificationPresentationOptions(
+        alert: false, // Don't show notification alert automatically
+        badge: false, // Don't update badge automatically
+        sound: false, // Don't play sound automatically
+      );
 
       // Set background message handler
       FirebaseMessaging.onBackgroundMessage(
