@@ -524,7 +524,7 @@ abstract class AppLocalizations {
   /// No description provided for @showOnlineStatus.
   ///
   /// In en, this message translates to:
-  /// **'Your Connection Status'**
+  /// **'Connection Status'**
   String get showOnlineStatus;
 
   /// No description provided for @newMessages.
@@ -1484,7 +1484,7 @@ abstract class AppLocalizations {
   /// No description provided for @yourConnectionStatus.
   ///
   /// In en, this message translates to:
-  /// **'Your Connection Status'**
+  /// **'Connection Status'**
   String get yourConnectionStatus;
 
   /// No description provided for @loadingNationalitiesPleaseWait.
@@ -4078,6 +4078,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You cannot add a reported conversation to your favorites list'**
   String get notAddPersonFav;
+
+  /// No description provided for @connectionError.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection to server failed'**
+  String get connectionError;
+
+  /// No description provided for @requestCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Request to the server was cancelled'**
+  String get requestCancelled;
+
+  /// No description provided for @connectionTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection timeout with the server'**
+  String get connectionTimeout;
+
+  /// No description provided for @noInternetConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection to the server failed due to internet connection'**
+  String get noInternetConnection;
+
+  /// No description provided for @receiveTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive timeout in connection with the server'**
+  String get receiveTimeout;
+
+  /// No description provided for @sendTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Send timeout in connection with the server'**
+  String get sendTimeout;
+
+  /// No description provided for @somethingWentWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get somethingWentWrong;
+
+  /// No description provided for @unknownError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown error occurred'**
+  String get unknownError;
+
+  /// No description provided for @badRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Bad request'**
+  String get badRequest;
+
+  /// No description provided for @unauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Unauthorized'**
+  String get unauthorized;
+
+  /// No description provided for @forbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Forbidden'**
+  String get forbidden;
+
+  /// No description provided for @resourceNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource not found'**
+  String get resourceNotFound;
+
+  /// No description provided for @validationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Validation error'**
+  String get validationError;
+
+  /// No description provided for @internalServerError.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal server error'**
+  String get internalServerError;
+
+  /// No description provided for @failedToParseError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to parse error response'**
+  String get failedToParseError;
+
+  /// No description provided for @unexpectedErrorFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Unexpected error format'**
+  String get unexpectedErrorFormat;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

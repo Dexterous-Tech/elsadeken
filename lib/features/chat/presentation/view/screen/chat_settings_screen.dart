@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/helper/error_message_helper.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/chat/data/models/chat_settings_model.dart';
@@ -65,6 +66,29 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         context.read<ChatOnlineSettingCubit>().getOnline();
       }
     });
+    
+    // Listen to language changes and reload lists
+    LocalizationService.instance.addListener(_onLanguageChanged);
+  }
+  
+  void _onLanguageChanged() {
+    if (mounted) {
+      print('[ChatSettingsScreen] Language changed, reloading lists...');
+      // Reload lists to get data in new language
+      context.read<ListsCubit>().loadLists();
+      // Update text values
+      setState(() {
+        _updateAgeCategoryText();
+        _updateNationalitiesText();
+        _updateCountriesText();
+      });
+    }
+  }
+  
+  @override
+  void dispose() {
+    LocalizationService.instance.removeListener(_onLanguageChanged);
+    super.dispose();
   }
 
   // Load settings from API response
@@ -207,10 +231,14 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                           _originalCountryId = _countryId;
 
                           // Show success snackbar
+                          final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                            context,
+                            state.message,
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                state.message,
+                                localizedMessage,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -230,10 +258,14 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         } else if (state is ChatSettingsUpdateError &&
                             mounted) {
                           // Show error snackbar
+                          final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                            context,
+                            state.message,
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                state.message,
+                                localizedMessage,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -249,10 +281,14 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                           );
                         } else if (state is ChatSettingsError && mounted) {
                           // Show loading error snackbar
+                          final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                            context,
+                            state.message,
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                state.message,
+                                localizedMessage,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -320,10 +356,14 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         } else if (state is ChatOnlineSettingGetFailure &&
                             mounted) {
                           // Show error message when getting online status fails
+                          final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                            context,
+                            state.error,
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                state.error,
+                                localizedMessage,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -340,10 +380,14 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         } else if (state is ChatOnlineSettingSetFailure &&
                             mounted) {
                           // Show error message when setting online status fails
+                          final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                            context,
+                            state.error,
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                state.error,
+                                localizedMessage,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -419,12 +463,16 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
 
     // Show error message if any
     if (state is ChatSettingsError) {
+      final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+        context,
+        state.message,
+      );
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              state.message,
+              localizedMessage,
               style: AppTextStyles.font16BlackSemiBoldLamaSans,
               textAlign: TextAlign.center,
             ),
@@ -442,9 +490,13 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     // Show success message if any
     if (state is ChatSettingsUpdated) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+          context,
+          state.message,
+        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(state.message),
+            content: Text(localizedMessage),
             backgroundColor: Colors.green,
           ),
         );
@@ -454,9 +506,13 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     // Show update error message if any
     if (state is ChatSettingsUpdateError) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+          context,
+          state.message,
+        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(state.message),
+            content: Text(localizedMessage),
             backgroundColor: Colors.red,
           ),
         );
@@ -534,7 +590,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                 subtitle: AppLocalizations.of(context)!.showOnlineStatus,
                 showGreenDot: true,
                 trailing: Transform.scale(
-                  scale: 0.8,
+                  scale: 0.7,
                   child: Switch(
                     value: _isOnline,
                     onChanged: (value) {
@@ -702,7 +758,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               Text(
                 subtitle,
                 style: AppTextStyles.font14BlackRegularLamaSans.copyWith(
-                  fontSize: 14.sp,
+                  fontSize: 12.sp,
                   color: Colors.grey[600],
                 ),
               ),

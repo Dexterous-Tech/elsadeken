@@ -124,7 +124,7 @@ class ChatMessageBubble extends StatelessWidget {
                         Icon(
                           message.isRead ? Icons.done_all : Icons.done,
                           size: 14.w,
-                          color: Colors.blue[200],
+                          color: message.isRead ? Colors.blue[400] : Colors.grey[400],
                         ),
                       ],
                     ],

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/helper/error_message_helper.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/features/chat/presentation/widgets/chat_app_bar.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
@@ -60,6 +61,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   ChatMessagesCubit? _chatMessagesCubit;
   PusherCubit? _pusherCubit;
 
+  // Timer for periodic read status refresh
+  Timer? _readStatusRefreshTimer;
+
   @override
   void initState() {
     super.initState();
@@ -77,6 +81,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
     // Mark messages as read when entering the chat
     _markMessagesAsReadOnEnter();
+
+    // Start periodic read status refresh (lightweight check every 10 seconds)
+    _startReadStatusRefresh();
   }
 
   @override
@@ -105,6 +112,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null) {
         _checkAndStartMinimalRefresh();
       }
+
+      // Resume read status refresh
+      if (_readStatusRefreshTimer == null) {
+        _startReadStatusRefresh();
+      }
     } else if (state == AppLifecycleState.paused) {
       // Stop any backup refresh when app is paused to save resources using stored cubit reference
       if (_chatMessagesCubit != null) {
@@ -115,6 +127,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           print('⚠️ Error stopping auto-refresh on pause: $e');
         }
       }
+
+      // Pause read status refresh to save resources
+      _stopReadStatusRefresh();
     }
   }
 
@@ -165,7 +180,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   void _setupRealTimeListeners() {
     print('[ChatConversationScreen] Setting up real-time listeners...');
 
-    // Single message stream listener
+    // Single message stream listener - primary path for real-time messages
     _messageSubscription =
         ChatMessageService.instance.messageStream.listen((message) {
       if (mounted) {
@@ -195,6 +210,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       print(
           '[ChatConversationScreen] Processing real-time message: ${message.body}');
 
+      // Check for duplicates first to avoid unnecessary processing
+      final messageKey = message.id.toString();
+      if (_messages.any((msg) => msg.id == messageKey)) {
+        print('[ChatConversationScreen] Duplicate message ignored: ${message.body}');
+        return;
+      }
+
       // Convert Pusher message to ChatMessage with correct images
       final chatMessage = message.toChatMessage(
         _currentUserId.toString(),
@@ -205,31 +227,35 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         _currentUserImage, // Pass current user's image
       );
 
-      // Add message to the list if it doesn't already exist
-      if (!_messages.any((msg) => msg.id == chatMessage.id)) {
-        setState(() {
-          _messages.add(chatMessage);
-        });
+      // Add message to UI immediately for instant display
+      setState(() {
+        _messages.add(chatMessage);
+      });
 
-        print('[ChatConversationScreen] Message added to UI successfully');
-        _scrollToBottom();
+      print('[ChatConversationScreen] Message added to UI successfully');
+      _scrollToBottom();
 
-        // Mark the new message as read immediately if it's from another user
-        if (message.senderId != _currentUserId) {
-          _markNewMessageAsRead(message);
-        }
+      // Handle background tasks asynchronously without blocking UI
+      if (message.senderId != _currentUserId) {
+        // Mark as read in background (non-blocking)
+        _markNewMessageAsRead(message);
+      }
 
-        // Update chat list to reflect new message and maintain sorting
-        if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null) {
-          final chatId = int.tryParse(widget.chatRoom.id);
-          if (chatId != null) {
-            context.read<ChatListCubit>().handleNewMessage(
-                  chatId,
-                  message.body,
-                  message.createdAt.toIso8601String(),
-                  message.senderId,
-                );
-          }
+      // Update chat list in background (non-blocking)
+      if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null) {
+        final chatId = int.tryParse(widget.chatRoom.id);
+        if (chatId != null) {
+          // Use microtask to defer chat list update
+          Future.microtask(() {
+            if (mounted) {
+              context.read<ChatListCubit>().handleNewMessage(
+                    chatId,
+                    message.body,
+                    message.createdAt.toIso8601String(),
+                    message.senderId,
+                  );
+            }
+          });
         }
       }
     }
@@ -277,8 +303,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         await context.read<PusherCubit>().initialize();
       }
 
-      // Small delay to ensure initialization completes
-      await Future.delayed(Duration(milliseconds: 1000));
+      // Small delay to ensure initialization completes (reduced for faster connection)
+      await Future.delayed(Duration(milliseconds: 300));
 
       // Subscribe to chat channel if not temporary
       if (!widget.chatRoom.id.startsWith('temp_')) {
@@ -490,40 +516,64 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     }
   }
 
-  /// Mark a newly received message as read immediately
-  Future<void> _markNewMessageAsRead(PusherMessageModel message) async {
-    print(
-        '[ChatConversationScreen] Marking new message as read: ${message.body}');
+  /// Mark a newly received message as read (non-blocking)
+  void _markNewMessageAsRead(PusherMessageModel message) {
+    // Update UI immediately for instant feedback
+    setState(() {
+      final messageIndex =
+          _messages.indexWhere((msg) => msg.id == message.id.toString());
+      if (messageIndex != -1) {
+        _messages[messageIndex] = ChatMessage(
+          id: _messages[messageIndex].id,
+          roomId: _messages[messageIndex].roomId,
+          senderId: _messages[messageIndex].senderId,
+          senderName: _messages[messageIndex].senderName,
+          senderImage:
+              _getCorrectSenderImage(_messages[messageIndex].senderId),
+          message: _messages[messageIndex].message,
+          timestamp: _messages[messageIndex].timestamp,
+          isRead: true, // Mark as read locally
+        );
+      }
+    });
 
-    try {
-      // Call the mark all messages as read API
-      // (since there's no specific endpoint for individual messages)
-      final chatListCubit = context.read<ChatListCubit>();
-      await chatListCubit.markAllMessagesAsRead();
-
-      // Update the specific message in the local list to show as read
-      setState(() {
-        final messageIndex =
-            _messages.indexWhere((msg) => msg.id == message.id.toString());
-        if (messageIndex != -1) {
-          _messages[messageIndex] = ChatMessage(
-            id: _messages[messageIndex].id,
-            roomId: _messages[messageIndex].roomId,
-            senderId: _messages[messageIndex].senderId,
-            senderName: _messages[messageIndex].senderName,
-            senderImage:
-                _getCorrectSenderImage(_messages[messageIndex].senderId),
-            message: _messages[messageIndex].message,
-            timestamp: _messages[messageIndex].timestamp,
-            isRead: true, // Mark as read
-          );
+    // Call API in background without blocking UI
+    Future.microtask(() async {
+      try {
+        if (mounted) {
+          final chatListCubit = context.read<ChatListCubit>();
+          await chatListCubit.markAllMessagesAsRead();
+          print('✅ New message marked as read successfully');
         }
-      });
+      } catch (e) {
+        print('⚠️ Error marking new message as read: $e');
+      }
+    });
+  }
 
-      print('✅ New message marked as read successfully');
-    } catch (e) {
-      print('⚠️ Error marking new message as read: $e');
+  /// Start periodic read status refresh
+  void _startReadStatusRefresh() {
+    // Don't start for temporary chats
+    if (widget.chatRoom.id.startsWith('temp_')) {
+      return;
     }
+
+    // Refresh read status every 3 seconds for faster receipt updates
+    _readStatusRefreshTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (mounted && _chatMessagesCubit != null) {
+        // Silent refresh to avoid UI disruption
+        _chatMessagesCubit!.refreshChatMessages(widget.chatRoom.id);
+      }
+    });
+
+    print('[ChatConversationScreen] Read status refresh started (every 3 seconds)');
+  }
+
+  /// Stop periodic read status refresh
+  void _stopReadStatusRefresh() {
+    _readStatusRefreshTimer?.cancel();
+    _readStatusRefreshTimer = null;
+    print('[ChatConversationScreen] Read status refresh stopped');
   }
 
   /// Manual refresh method for pull-to-refresh
@@ -606,21 +656,30 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               final currentUserImage =
                   _currentUserImage.isNotEmpty ? _currentUserImage : '';
 
+              // Only update if messages actually changed to reduce UI rebuilds
+              final newMessages = state.chatMessages.toChatMessages(
+                currentUserId,
+                widget.chatRoom.name,
+                _receiverImage.isNotEmpty
+                    ? _receiverImage
+                    : widget.chatRoom.image,
+                currentUserImage,
+              );
+
+              // Check if there are new messages
+              final hasNewMessages = newMessages.length != _messages.length;
+
               setState(() {
-                _messages = state.chatMessages.toChatMessages(
-                  currentUserId,
-                  widget.chatRoom.name,
-                  _receiverImage.isNotEmpty
-                      ? _receiverImage
-                      : widget.chatRoom.image,
-                  currentUserImage,
-                );
+                _messages = newMessages;
               });
 
               // Update messages with correct sender/receiver images
               _updateMessagesWithCorrectImages();
 
-              _scrollToBottom();
+              // Only scroll if there are new messages, not for read status updates
+              if (hasNewMessages) {
+                _scrollToBottom();
+              }
 
               // Mark messages as read after loading if there are unread messages
               if (!widget.chatRoom.id.startsWith('temp_') &&
@@ -717,9 +776,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 }
               }
             } else if (state is SendMessagesError) {
+              final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                context,
+                state.message,
+              );
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.message),
+                  content: Text(localizedMessage),
                   backgroundColor: Colors.red,
                 ),
               );
@@ -728,9 +791,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         ),
         BlocListener<PusherCubit, PusherState>(
           listener: (context, state) {
+            // Note: Messages are handled via ChatMessageService stream to avoid duplicate processing
+            // PusherCubit listener is kept only for connection status tracking
             if (state is PusherMessageReceived) {
-              print('PUSHER: Direct message received: ${state.message.body}');
-              _handleRealTimeMessage(state.message);
+              // Skip - messages are handled via ChatMessageService stream
+              print('PUSHER: Message received (handled via stream)');
             } else if (state is PusherConnectionError) {
               print(
                   'PUSHER: Connection error (handled silently): ${state.error}');
@@ -1022,6 +1087,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         print('⚠️ Error stopping auto-refresh: $e');
       }
     }
+
+    // Stop read status refresh timer
+    _stopReadStatusRefresh();
 
     // Dispose controllers and cancel subscriptions
     _messageController.dispose();

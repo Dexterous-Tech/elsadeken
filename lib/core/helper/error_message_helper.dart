@@ -1,7 +1,14 @@
+import 'package:elsadeken/core/networking/api_error_model.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class ErrorMessageHelper {
+  /// Get localized error message from ApiErrorModel
+  static String getLocalizedErrorFromModel(
+      BuildContext context, ApiErrorModel error) {
+    final localizations = AppLocalizations.of(context)!;
+    return error.getLocalizedMessage(localizations);
+  }
   static String getLocalizedMessage(BuildContext context, String errorKey) {
     final localizations = AppLocalizations.of(context)!;
 
@@ -71,6 +78,40 @@ class ErrorMessageHelper {
         return localizations.connectionTimeoutCheckInternet;
       case 'settingsNotFoundContactSupport':
         return localizations.settingsNotFoundContactSupport;
+
+      // Network Errors
+      case 'connectionError':
+        return localizations.connectionError;
+      case 'requestCancelled':
+        return localizations.requestCancelled;
+      case 'connectionTimeout':
+        return localizations.connectionTimeout;
+      case 'noInternetConnection':
+        return localizations.noInternetConnection;
+      case 'receiveTimeout':
+        return localizations.receiveTimeout;
+      case 'sendTimeout':
+        return localizations.sendTimeout;
+      case 'somethingWentWrong':
+        return localizations.somethingWentWrong;
+      case 'unknownError':
+        return localizations.unknownError;
+      case 'badRequest':
+        return localizations.badRequest;
+      case 'unauthorized':
+        return localizations.unauthorized;
+      case 'forbidden':
+        return localizations.forbidden;
+      case 'resourceNotFound':
+        return localizations.resourceNotFound;
+      case 'validationError':
+        return localizations.validationError;
+      case 'internalServerError':
+        return localizations.internalServerError;
+      case 'failedToParseError':
+        return localizations.failedToParseError;
+      case 'unexpectedErrorFormat':
+        return localizations.unexpectedErrorFormat;
 
       // Default fallback
       default:

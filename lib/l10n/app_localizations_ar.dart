@@ -222,7 +222,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get messageSettings => 'إعدادات إستقبال الرسائل';
 
   @override
-  String get showOnlineStatus => 'حالة الاتصال الخاصة بك';
+  String get showOnlineStatus => 'حالة الاتصال';
 
   @override
   String get newMessages => 'رسائل جديدة';
@@ -710,7 +710,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get showThatYouAreOnline => 'أظهر أنك متصل';
 
   @override
-  String get yourConnectionStatus => 'حالة الاتصال الخاصة بك';
+  String get yourConnectionStatus => 'حالة الاتصال';
 
   @override
   String get loadingNationalitiesPleaseWait => 'جاري تحميل الجنسيات...';
@@ -2055,4 +2055,52 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notAddPersonFav => 'لا يمكنك وضع المحادثه المبلغ عنها ف قائمه المفضله';
+
+  @override
+  String get connectionError => 'فشل الاتصال بالخادم';
+
+  @override
+  String get requestCancelled => 'تم إلغاء الطلب إلى الخادم';
+
+  @override
+  String get connectionTimeout => 'انتهت مهلة الاتصال بالخادم';
+
+  @override
+  String get noInternetConnection => 'فشل الاتصال بالخادم بسبب الاتصال بالإنترنت';
+
+  @override
+  String get receiveTimeout => 'انتهت مهلة الاستقبال في الاتصال بالخادم';
+
+  @override
+  String get sendTimeout => 'انتهت مهلة الإرسال في الاتصال بالخادم';
+
+  @override
+  String get somethingWentWrong => 'حدث خطأ ما';
+
+  @override
+  String get unknownError => 'حدث خطأ غير معروف';
+
+  @override
+  String get badRequest => 'طلب خاطئ';
+
+  @override
+  String get unauthorized => 'غير مصرح';
+
+  @override
+  String get forbidden => 'محظور';
+
+  @override
+  String get resourceNotFound => 'المورد غير موجود';
+
+  @override
+  String get validationError => 'خطأ في التحقق';
+
+  @override
+  String get internalServerError => 'خطأ داخلي في الخادم';
+
+  @override
+  String get failedToParseError => 'فشل تحليل استجابة الخطأ';
+
+  @override
+  String get unexpectedErrorFormat => 'تنسيق خطأ غير متوقع';
 }

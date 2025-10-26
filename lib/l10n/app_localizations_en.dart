@@ -222,7 +222,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messageSettings => 'Message Reception Settings';
 
   @override
-  String get showOnlineStatus => 'Your Connection Status';
+  String get showOnlineStatus => 'Connection Status';
 
   @override
   String get newMessages => 'New messages';
@@ -710,7 +710,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showThatYouAreOnline => 'Show that you\'re online';
 
   @override
-  String get yourConnectionStatus => 'Your Connection Status';
+  String get yourConnectionStatus => 'Connection Status';
 
   @override
   String get loadingNationalitiesPleaseWait => 'Loading nationalities...';
@@ -2054,4 +2054,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notAddPersonFav => 'You cannot add a reported conversation to your favorites list';
+
+  @override
+  String get connectionError => 'Connection to server failed';
+
+  @override
+  String get requestCancelled => 'Request to the server was cancelled';
+
+  @override
+  String get connectionTimeout => 'Connection timeout with the server';
+
+  @override
+  String get noInternetConnection => 'Connection to the server failed due to internet connection';
+
+  @override
+  String get receiveTimeout => 'Receive timeout in connection with the server';
+
+  @override
+  String get sendTimeout => 'Send timeout in connection with the server';
+
+  @override
+  String get somethingWentWrong => 'Something went wrong';
+
+  @override
+  String get unknownError => 'Unknown error occurred';
+
+  @override
+  String get badRequest => 'Bad request';
+
+  @override
+  String get unauthorized => 'Unauthorized';
+
+  @override
+  String get forbidden => 'Forbidden';
+
+  @override
+  String get resourceNotFound => 'Resource not found';
+
+  @override
+  String get validationError => 'Validation error';
+
+  @override
+  String get internalServerError => 'Internal server error';
+
+  @override
+  String get failedToParseError => 'Failed to parse error response';
+
+  @override
+  String get unexpectedErrorFormat => 'Unexpected error format';
 }

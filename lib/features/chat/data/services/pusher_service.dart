@@ -140,14 +140,11 @@ class PusherService {
     // Setup the main stream listener that will handle all messages
     _webSocketChannel!.stream.listen(
       (message) {
-        log('📨 WebSocket message received: ${message.toString().substring(0, message.toString().length > 100 ? 100 : message.toString().length)}...');
-
         // Handle connection establishment during initial setup
         if (!_isConnected && !completer.isCompleted) {
           try {
             final data = jsonDecode(message);
             if (data['event'] == 'pusher:connection_established') {
-              log('🎉 Connection established event received');
               timeoutTimer?.cancel();
               _isConnected = true;
               if (!completer.isCompleted) {
@@ -155,11 +152,11 @@ class PusherService {
               }
             }
           } catch (e) {
-            log('⚠️ Error parsing initial message: $e');
+            // Silent error handling during connection
           }
         }
 
-        // Handle all messages through the main handler
+        // Handle all messages through the main handler (process immediately)
         _handleWebSocketMessage(message);
       },
       onDone: () {
@@ -464,41 +461,30 @@ class PusherService {
   void _handleWebSocketMessage(dynamic message) {
     try {
       if (message is! String) {
-        log('⚠️ Non-string WebSocket message: ${message.runtimeType}');
-        return;
+        return; // Skip non-string messages silently
       }
 
-      log('🔍 Parsing WebSocket message...');
       final data = jsonDecode(message);
       final eventType = data['event'];
 
-      log('📨 Received event: $eventType');
-
       if (eventType == 'pusher:connection_established') {
-        log('🎉 Processing connection established event...');
-
         if (!_isConnected) {
           _isConnected = true;
-          log('✅ Connection status updated to: $_isConnected');
         }
 
         final socketData = jsonDecode(data['data']);
         _lastSocketId = socketData['socket_id'];
-        log('🆔 Socket ID received: $_lastSocketId');
 
         // Complete the socket ID completer if waiting
         if (_socketIdCompleter != null && !_socketIdCompleter!.isCompleted) {
-          log('✅ Completing socket ID completer...');
           _socketIdCompleter!.complete(_lastSocketId!);
         }
 
         // Start heartbeat mechanism
-        log('💓 Starting heartbeat mechanism...');
         _startHeartbeat();
 
         onConnectionEstablished?.call('Connected');
         ChatMessageService.instance.setPusherConnectionStatus(true);
-        log('✅ Pusher fully connected with socket ID: $_lastSocketId');
       } else if (eventType == 'pusher:subscription_succeeded') {
         log('✅ Subscription succeeded for $_currentChannelName');
       } else if (eventType == 'pusher:subscription_error') {
@@ -506,7 +492,7 @@ class PusherService {
         onConnectionError?.call('Subscription failed: ${data['data']}');
         _currentChannelName = null; // Reset on subscription failure
       } else if (_isMessageEvent(eventType)) {
-        log('💬 Message event received: $eventType');
+        // Process message immediately without logging to reduce latency
         _processMessageEvent(data);
       } else if (eventType == 'pusher:pong') {
         _handlePong();
@@ -591,8 +577,6 @@ class PusherService {
   /// Process message data into PusherMessageModel
   void _processMessage(Map<String, dynamic> json) {
     try {
-      log('🔍 Processing message JSON: $json');
-
       // Extract message data from various possible structures
       Map<String, dynamic> messageJson;
 
@@ -604,17 +588,13 @@ class PusherService {
         messageJson = json;
       }
 
-      log('🔍 Extracted message data: $messageJson');
-
       final pusherMessage = PusherMessageModel.fromJson(messageJson);
-      log('✅ Parsed PusherMessage: ${pusherMessage.body}');
-
-      // Notify both callback and message service
+      
+      // Emit message immediately for fastest processing
       onMessageReceived?.call(pusherMessage);
       ChatMessageService.instance.handleNewMessage(pusherMessage);
     } catch (e) {
       log('⚠️ Failed to parse PusherMessage: $e');
-      log('🔍 Raw JSON that failed: $json');
     }
   }
 

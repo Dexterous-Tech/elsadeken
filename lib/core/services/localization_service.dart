@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../networking/dio_factory.dart';
+import '../shared/shared_preferences_helper.dart';
 
 class LocalizationService extends ChangeNotifier {
   static LocalizationService? _instance;
@@ -55,6 +56,9 @@ class LocalizationService extends ChangeNotifier {
 
       // Update Dio headers with new language
       await DioFactory.updateLanguageHeader();
+      
+      // Clear cached lists data to force reload with new language
+      await SharedPreferencesHelper.clearAllCaches();
     } catch (e) {
       // Handle error if needed
     }

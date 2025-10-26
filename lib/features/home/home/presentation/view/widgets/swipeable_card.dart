@@ -225,25 +225,26 @@ class _SwipeableCardState extends State<SwipeableCard>
         offset: cardOffset,
         child: Transform.rotate(
           angle: rotation,
-          child: Container(
-            width: MediaQuery.of(context).size.width - 32.w,
-            // 16w margin on each side
-            constraints: BoxConstraints(
-              maxWidth: 388.w,
-            ),
-            padding: EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12).r,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 10,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Column(
+          child: Center(
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: 388.w,
+                maxHeight: 650.h, // Prevent excessive height on tall screens
+              ),
+              width: MediaQuery.of(context).size.width - 32.w,
+              padding: EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12).r,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
@@ -602,6 +603,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                 ),
                 SizedBox(height: 20.h),
               ],
+            ),
             ),
           ),
         ),

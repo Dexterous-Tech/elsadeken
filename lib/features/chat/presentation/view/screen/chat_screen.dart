@@ -31,9 +31,13 @@ class _ChatScreenState extends State<ChatScreen>
 
   // Stream subscriptions for real-time updates
   StreamSubscription<void>? _refreshChatListSubscription;
+  StreamSubscription<int>? _chatUpdateSubscription;
 
   // Track if this is the first load
   bool _hasLoadedInitially = false;
+
+  // Timer for periodic chat list refresh
+  Timer? _chatListRefreshTimer;
 
   @override
   bool get wantKeepAlive => true;
@@ -51,10 +55,11 @@ class _ChatScreenState extends State<ChatScreen>
       _hasLoadedInitially = true;
     });
     _setupRealTimeListeners();
+    _startPeriodicRefresh();
   }
 
   void _setupRealTimeListeners() {
-    // Listen for chat list refresh requests from Firebase notifications only
+    // Listen for chat list refresh requests from Firebase notifications
     _refreshChatListSubscription =
         ChatMessageService.instance.refreshChatListStream.listen((_) {
       if (mounted) {
@@ -65,14 +70,47 @@ class _ChatScreenState extends State<ChatScreen>
       }
     });
 
+    // Listen for Pusher message updates (immediate refresh when message arrives)
+    _chatUpdateSubscription =
+        ChatMessageService.instance.chatUpdateStream.listen((chatId) {
+      if (mounted) {
+        print(
+            '💬 [ChatScreen] Pusher message received for chat $chatId - refreshing chat list');
+        // Silent background refresh - no UI indicators
+        context.read<ChatListCubit>().silentRefreshChatList();
+      }
+    });
+
     print(
-        '🔔 [ChatScreen] Chat list now depends on Firebase notifications for updates');
+        '🔔 [ChatScreen] Chat list listening to Firebase and Pusher updates');
+  }
+
+  /// Start periodic refresh for chat list (every 15 seconds)
+  void _startPeriodicRefresh() {
+    _chatListRefreshTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+      if (mounted && _hasLoadedInitially) {
+        print('🔄 [ChatScreen] Periodic chat list refresh');
+        context.read<ChatListCubit>().silentRefreshChatList();
+      }
+    });
+    print('✅ [ChatScreen] Periodic refresh started (every 15 seconds)');
+  }
+
+  /// Stop periodic refresh
+  void _stopPeriodicRefresh() {
+    _chatListRefreshTimer?.cancel();
+    _chatListRefreshTimer = null;
+    print('⏹️ [ChatScreen] Periodic refresh stopped');
   }
 
   @override
   void dispose() {
     // Cancel stream subscriptions
     _refreshChatListSubscription?.cancel();
+    _chatUpdateSubscription?.cancel();
+
+    // Stop periodic refresh
+    _stopPeriodicRefresh();
 
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -86,6 +124,15 @@ class _ChatScreenState extends State<ChatScreen>
     if (state == AppLifecycleState.resumed && _hasLoadedInitially) {
       print('🔄 [ChatScreen] App resumed, refreshing chat list');
       context.read<ChatListCubit>().silentRefreshChatList();
+
+      // Resume periodic refresh
+      if (_chatListRefreshTimer == null) {
+        _startPeriodicRefresh();
+      }
+    } else if (state == AppLifecycleState.paused) {
+      // Pause periodic refresh to save resources
+      print('⏸️ [ChatScreen] App paused, stopping periodic refresh');
+      _stopPeriodicRefresh();
     }
   }
 

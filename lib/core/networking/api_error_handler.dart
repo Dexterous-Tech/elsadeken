@@ -9,28 +9,48 @@ class ApiErrorHandler {
     if (error is DioException) {
       switch (error.type) {
         case DioExceptionType.connectionError:
-          return ApiErrorModel(message: "Connection to server failed");
+          return ApiErrorModel(
+            message: "Connection to server failed",
+            errorKey: "connectionError",
+          );
         case DioExceptionType.cancel:
-          return ApiErrorModel(message: "Request to the server was cancelled");
+          return ApiErrorModel(
+            message: "Request to the server was cancelled",
+            errorKey: "requestCancelled",
+          );
         case DioExceptionType.connectionTimeout:
-          return ApiErrorModel(message: "Connection timeout with the server");
+          return ApiErrorModel(
+            message: "Connection timeout with the server",
+            errorKey: "connectionTimeout",
+          );
         case DioExceptionType.unknown:
           return ApiErrorModel(
-              message:
-                  "Connection to the server failed due to internet connection");
+            message: "Connection to the server failed due to internet connection",
+            errorKey: "noInternetConnection",
+          );
         case DioExceptionType.receiveTimeout:
           return ApiErrorModel(
-              message: "Receive timeout in connection with the server");
+            message: "Receive timeout in connection with the server",
+            errorKey: "receiveTimeout",
+          );
         case DioExceptionType.badResponse:
           return _handleBadResponse(error);
         case DioExceptionType.sendTimeout:
           return ApiErrorModel(
-              message: "Send timeout in connection with the server");
+            message: "Send timeout in connection with the server",
+            errorKey: "sendTimeout",
+          );
         default:
-          return ApiErrorModel(message: "Something went wrong");
+          return ApiErrorModel(
+            message: "Something went wrong",
+            errorKey: "somethingWentWrong",
+          );
       }
     } else {
-      return ApiErrorModel(message: "Unknown error occurred");
+      return ApiErrorModel(
+        message: "Unknown error occurred",
+        errorKey: "unknownError",
+      );
     }
   }
 
@@ -47,12 +67,16 @@ class ApiErrorHandler {
           return ApiErrorModel.fromJson(jsonData, statusCode: statusCode);
         } catch (_) {
           return ApiErrorModel(
-              message: data, statusCode: statusCode, rawData: data);
+            message: data,
+            statusCode: statusCode,
+            rawData: data,
+          );
         }
       }
     } catch (_) {
       return ApiErrorModel(
         message: "Failed to parse error response",
+        errorKey: "failedToParseError",
         statusCode: statusCode,
         rawData: data,
       );
@@ -60,6 +84,7 @@ class ApiErrorHandler {
 
     return ApiErrorModel(
       message: "Unexpected error format",
+      errorKey: "unexpectedErrorFormat",
       statusCode: statusCode,
       rawData: data,
     );
