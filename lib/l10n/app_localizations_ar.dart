@@ -1678,7 +1678,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onlyWife => 'الزوجة الوحيدة';
 
   @override
-  String get noObjectionToPolygamy => 'لا مانع من تعدل الزوجات';
+  String get noObjectionToPolygamy => 'لا مانع من تعدد الزوجات';
 
   @override
   String get errorUpdatingStatus => 'حدث خطأ اثناء تحديث الحالة';

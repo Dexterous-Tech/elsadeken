@@ -63,7 +63,7 @@ class _RangeTextFieldState extends State<RangeTextField> {
                       LengthLimitingTextInputFormatter(widget.maxLength),
                     ],
                     decoration: InputDecoration(
-                      hintText: widget.toHint,
+                      hintText: widget.fromHint,
                       hintStyle: TextStyle(
                         color: AppColors.primaryOrange,
                         fontSize: 12,
@@ -74,7 +74,7 @@ class _RangeTextFieldState extends State<RangeTextField> {
                     ),
                     onChanged: (value) {
                       setState(() {
-                        toValue = int.tryParse(value);
+                        fromValue = int.tryParse(value);
                       });
                       widget.onRangeChanged(fromValue, toValue);
                     },
@@ -82,7 +82,8 @@ class _RangeTextFieldState extends State<RangeTextField> {
                 ),
               ),
               SizedBox(width: 8),
-              Text(AppLocalizations.of(context)!.to, style: TextStyle(fontSize: 12)),
+              Text(AppLocalizations.of(context)!.to,
+                  style: TextStyle(fontSize: 12)),
               SizedBox(width: 8),
               Expanded(
                 child: Container(
@@ -99,7 +100,7 @@ class _RangeTextFieldState extends State<RangeTextField> {
                       LengthLimitingTextInputFormatter(widget.maxLength),
                     ],
                     decoration: InputDecoration(
-                      hintText: widget.fromHint,
+                      hintText: widget.toHint,
                       hintStyle: TextStyle(
                         color: AppColors.primaryOrange,
                         fontSize: 12,
@@ -110,7 +111,7 @@ class _RangeTextFieldState extends State<RangeTextField> {
                     ),
                     onChanged: (value) {
                       setState(() {
-                        fromValue = int.tryParse(value);
+                        toValue = int.tryParse(value);
                       });
                       widget.onRangeChanged(fromValue, toValue);
                     },

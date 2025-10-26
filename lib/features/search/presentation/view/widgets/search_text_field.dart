@@ -1,4 +1,5 @@
 // File: lib/presentation/widgets/search_text_field.dart
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/helper/app_constants.dart';
@@ -27,7 +28,8 @@ class SearchTextField extends StatelessWidget {
       ),
       child: TextField(
         onChanged: onChanged,
-        textAlign: TextAlign.right,
+        textAlign: LocalizationService.instance.textAlignment,
+        textDirection: LocalizationService.instance.textDirection,
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: TextStyle(color: AppColors.jet),

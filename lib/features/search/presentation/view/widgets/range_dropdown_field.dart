@@ -75,9 +75,9 @@ class _RangeDropdownFieldState extends State<RangeDropdownField> {
                       dropdownColor: Colors.white,
                       isExpanded: true,
                       borderRadius: BorderRadius.circular(8),
-                      value: toValue?.toString(),
+                      value: fromValue?.toString(),
                       hint: Text(
-                        widget.toHint,
+                        widget.fromHint,
                         style: TextStyle(
                           color: AppColors.primaryOrange,
                           fontSize: 12,
@@ -100,7 +100,7 @@ class _RangeDropdownFieldState extends State<RangeDropdownField> {
                       }).toList(),
                       onChanged: (String? newValue) {
                         setState(() {
-                          toValue = int.tryParse(newValue ?? '');
+                          fromValue = int.tryParse(newValue ?? '');
                         });
                         widget.onRangeChanged(fromValue, toValue);
                       },
@@ -128,9 +128,9 @@ class _RangeDropdownFieldState extends State<RangeDropdownField> {
                       dropdownColor: Colors.white,
                       isExpanded: true,
                       borderRadius: BorderRadius.circular(8),
-                      value: fromValue?.toString(),
+                      value: toValue?.toString(),
                       hint: Text(
-                        widget.fromHint,
+                        widget.toHint,
                         style: TextStyle(
                           color: AppColors.primaryOrange,
                           fontSize: 12,
@@ -153,7 +153,7 @@ class _RangeDropdownFieldState extends State<RangeDropdownField> {
                       }).toList(),
                       onChanged: (String? newValue) {
                         setState(() {
-                          fromValue = int.tryParse(newValue ?? '');
+                          toValue = int.tryParse(newValue ?? '');
                         });
                         widget.onRangeChanged(fromValue, toValue);
                       },
