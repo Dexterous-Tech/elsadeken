@@ -66,11 +66,11 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         context.read<ChatOnlineSettingCubit>().getOnline();
       }
     });
-    
+
     // Listen to language changes and reload lists
     LocalizationService.instance.addListener(_onLanguageChanged);
   }
-  
+
   void _onLanguageChanged() {
     if (mounted) {
       print('[ChatSettingsScreen] Language changed, reloading lists...');
@@ -84,7 +84,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
       });
     }
   }
-  
+
   @override
   void dispose() {
     LocalizationService.instance.removeListener(_onLanguageChanged);
@@ -231,7 +231,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                           _originalCountryId = _countryId;
 
                           // Show success snackbar
-                          final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                          final localizedMessage =
+                              ErrorMessageHelper.getLocalizedMessage(
                             context,
                             state.message,
                           );
@@ -258,7 +259,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         } else if (state is ChatSettingsUpdateError &&
                             mounted) {
                           // Show error snackbar
-                          final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                          final localizedMessage =
+                              ErrorMessageHelper.getLocalizedMessage(
                             context,
                             state.message,
                           );
@@ -281,7 +283,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                           );
                         } else if (state is ChatSettingsError && mounted) {
                           // Show loading error snackbar
-                          final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                          final localizedMessage =
+                              ErrorMessageHelper.getLocalizedMessage(
                             context,
                             state.message,
                           );
@@ -356,7 +359,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         } else if (state is ChatOnlineSettingGetFailure &&
                             mounted) {
                           // Show error message when getting online status fails
-                          final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                          final localizedMessage =
+                              ErrorMessageHelper.getLocalizedMessage(
                             context,
                             state.error,
                           );
@@ -380,7 +384,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         } else if (state is ChatOnlineSettingSetFailure &&
                             mounted) {
                           // Show error message when setting online status fails
-                          final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                          final localizedMessage =
+                              ErrorMessageHelper.getLocalizedMessage(
                             context,
                             state.error,
                           );
@@ -783,10 +788,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     return BlocBuilder<ChatSettingsCubit, ChatSettingsState>(
       builder: (context, state) {
         final isLoading = state is ChatSettingsUpdating;
-        final hasSettings = _fromAge != 0 ||
-            _toAge != 0 ||
-            _nationalityId != 0 ||
-            _countryId != 0;
+        // Consider any selection (including "all" options with 0 values) as valid settings
+        final hasSettings = true; // Always true since we have some selection
         final hasChanges = _hasSettingsChanged();
 
         // Debug logging for save button state
@@ -794,15 +797,12 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         print('  isLoading: $isLoading');
         print('  hasSettings: $hasSettings');
         print('  hasChanges: $hasChanges');
-        print(
-            '  Button enabled: ${!(isLoading || !hasSettings || !hasChanges)}');
+        print('  Button enabled: ${!(isLoading || !hasChanges)}');
 
         return Padding(
           padding: const EdgeInsets.all(20.0),
           child: CustomElevatedButton(
-            onPressed: (isLoading || !hasSettings || !hasChanges)
-                ? () {}
-                : _saveSettings,
+            onPressed: (isLoading || !hasChanges) ? () {} : _saveSettings,
             textButton: isLoading
                 ? AppLocalizations.of(context)!.saving
                 : AppLocalizations.of(context)!.save,
@@ -812,8 +812,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
             ),
-            backgroundColor:
-                (isLoading || !hasSettings || !hasChanges) ? Colors.grey : null,
+            backgroundColor: (isLoading || !hasChanges) ? Colors.grey : null,
           ),
         );
       },

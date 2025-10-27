@@ -1,5 +1,7 @@
 import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/helper/app_constants.dart';
 import '../../../../../core/theme/app_color.dart';
@@ -41,17 +43,15 @@ class _ExpandableSectionState extends State<ExpandableSection> {
                 textDirection: LocalizationService.instance.textDirection,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-
                   Text(
                     widget.title,
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeightHelper.bold,
                       color: AppColors.black,
                     ),
                   ),
                   Spacer(),
-
                   Icon(
                     isExpanded
                         ? Icons.keyboard_arrow_down

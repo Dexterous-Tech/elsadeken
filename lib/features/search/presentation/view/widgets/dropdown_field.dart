@@ -66,16 +66,20 @@ class _DropdownFieldState extends State<DropdownField> {
                 hint: Text(
                   widget.hint,
                   style: TextStyle(color: AppColors.primaryOrange),
-                  textAlign: TextAlign.right,
+                  textAlign: LocalizationService.instance.textAlignment,
+                  textDirection: LocalizationService.instance.textDirection,
                 ),
                 items: widget.items.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Align(
-                      alignment: Alignment.centerRight,
+                      alignment: LocalizationService.instance.topAlignment,
                       child: Text(
                         value,
                         style: TextStyle(color: AppColors.black),
+                        textAlign: LocalizationService.instance.textAlignment,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                       ),
                     ),
                   );

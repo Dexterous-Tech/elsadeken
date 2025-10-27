@@ -1,7 +1,9 @@
 // File: lib/presentation/widgets/range_dropdown_field.dart
 import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/theme/app_color.dart';
 
@@ -56,31 +58,31 @@ class _RangeDropdownFieldState extends State<RangeDropdownField> {
               Text(
                 widget.label,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   color: AppColors.black,
                 ),
               ),
               Spacer(),
               Expanded(
                 child: Container(
-                  height: 40,
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  height: 40.h,
+                  padding: EdgeInsets.symmetric(horizontal: 8.w),
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     border: Border.all(color: AppColors.primaryOrange),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8).r,
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       dropdownColor: Colors.white,
                       isExpanded: true,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8).r,
                       value: fromValue?.toString(),
                       hint: Text(
                         widget.fromHint,
                         style: TextStyle(
                           color: AppColors.primaryOrange,
-                          fontSize: 12,
+                          fontSize: 12.sp,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -92,7 +94,7 @@ class _RangeDropdownFieldState extends State<RangeDropdownField> {
                               value,
                               style: TextStyle(
                                 color: AppColors.black,
-                                fontSize: 12,
+                                fontSize: 12.sp,
                               ),
                             ),
                           ),
@@ -108,32 +110,32 @@ class _RangeDropdownFieldState extends State<RangeDropdownField> {
                   ),
                 ),
               ),
-              SizedBox(width: 8),
+              horizontalSpace(8),
               Text(
                 AppLocalizations.of(context)!.to,
-                style: TextStyle(fontSize: 12),
+                style: TextStyle(fontSize: 12.sp),
               ),
-              SizedBox(width: 8),
+              horizontalSpace(8),
               Expanded(
                 child: Container(
-                  height: 40,
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  height: 40.h,
+                  padding: EdgeInsets.symmetric(horizontal: 8).r,
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     border: Border.all(color: AppColors.primaryOrange),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8).r,
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       dropdownColor: Colors.white,
                       isExpanded: true,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8).r,
                       value: toValue?.toString(),
                       hint: Text(
                         widget.toHint,
                         style: TextStyle(
                           color: AppColors.primaryOrange,
-                          fontSize: 12,
+                          fontSize: 12.sp,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -145,7 +147,7 @@ class _RangeDropdownFieldState extends State<RangeDropdownField> {
                               value,
                               style: TextStyle(
                                 color: AppColors.black,
-                                fontSize: 12,
+                                fontSize: 12.sp,
                               ),
                             ),
                           ),
