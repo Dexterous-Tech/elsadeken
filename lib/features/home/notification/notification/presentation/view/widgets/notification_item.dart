@@ -83,7 +83,7 @@ class NotificationItemWidget extends StatelessWidget {
                       ])),
                   verticalSpace(6),
                   Text(
-                    timeago.format(notification.createdAt, locale: 'ar'),
+                    timeago.format(notification.createdAt, locale: LocalizationService.instance.currentLanguageCode),
                     style: AppTextStyles.font12JetRegularLamaSans
                         .copyWith(color: Color(0xffFF6700)),
                     textAlign: LocalizationService.instance.textAlignment,

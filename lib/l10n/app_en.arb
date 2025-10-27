@@ -679,5 +679,8 @@
   "validationError": "Validation error",
   "internalServerError": "Internal server error",
   "failedToParseError": "Failed to parse error response",
-  "unexpectedErrorFormat": "Unexpected error format"
+  "unexpectedErrorFormat": "Unexpected error format",
+  "connectionInternet": "Internet connection failed",
+  "connectionUnknown": "Connection to the server failed due to internet connection",
+  "receivedTimeout": "Receive timeout in connection with the server"
 }

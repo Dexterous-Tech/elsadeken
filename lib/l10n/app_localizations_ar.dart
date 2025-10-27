@@ -2103,4 +2103,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unexpectedErrorFormat => 'تنسيق خطأ غير متوقع';
+
+  @override
+  String get connectionInternet => 'فشل الاتصال بالإنترنت';
+
+  @override
+  String get connectionUnknown => 'فشل الاتصال بالخادم بسبب انقطاع الإنترنت';
+
+  @override
+  String get receivedTimeout => 'انتهت مهلة الاستلام من الخادم';
 }

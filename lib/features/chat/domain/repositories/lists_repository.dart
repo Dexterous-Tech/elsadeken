@@ -17,16 +17,10 @@ class ListsRepository {
   Future<ApiResponseModel<List<CountryModel>>> getCountries() async {
     return await _service.getCountries();
   }
+
+  /// Get nationalities with gender-appropriate names
+  Future<ApiResponseModel<List<NationalityModel>>>
+      getNationalitiesWithGenderNames() async {
+    return await _service.getNationalitiesWithGenderNames();
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-

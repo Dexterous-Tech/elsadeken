@@ -11,15 +11,18 @@ class ProfileDataMappers {
   ) {
     try {
       print('DEBUG: Looking for country: "$countryName"');
+      print('DEBUG: Trimmed country name: "${countryName.trim()}"');
       print(
           'DEBUG: Available countries: ${countriesList.map((c) => '${c.name} (ID: ${c.id})').toList()}');
+      final trimmedCountryName = countryName.trim();
       final country = countriesList.firstWhere(
-        (country) => country.name == countryName,
+        (country) => country.name?.trim() == trimmedCountryName,
       );
       print('DEBUG: Found country ID: ${country.id}');
       return country.id;
     } catch (e) {
       print('DEBUG: Country not found: $e');
+      print('DEBUG: Searched for: "$countryName"');
       return null;
     }
   }
@@ -31,15 +34,18 @@ class ProfileDataMappers {
   ) {
     try {
       print('DEBUG: Looking for nationality: "$nationalityName"');
+      print('DEBUG: Trimmed nationality name: "${nationalityName.trim()}"');
       print(
           'DEBUG: Available nationalities: ${nationalitiesList.map((n) => '${n.name} (ID: ${n.id})').toList()}');
+      final trimmedNationalityName = nationalityName.trim();
       final nationality = nationalitiesList.firstWhere(
-        (nationality) => nationality.name == nationalityName,
+        (nationality) => nationality.name?.trim() == trimmedNationalityName,
       );
       print('DEBUG: Found nationality ID: ${nationality.id}');
       return nationality.id;
     } catch (e) {
       print('DEBUG: Nationality not found: $e');
+      print('DEBUG: Searched for: "$nationalityName"');
       return null;
     }
   }
@@ -51,15 +57,18 @@ class ProfileDataMappers {
   ) {
     try {
       print('DEBUG: Looking for city: "$cityName"');
+      print('DEBUG: Trimmed city name: "${cityName.trim()}"');
       print(
           'DEBUG: Available cities: ${citiesList.map((c) => '${c.name} (ID: ${c.id})').toList()}');
+      final trimmedCityName = cityName.trim();
       final city = citiesList.firstWhere(
-        (city) => city.name == cityName,
+        (city) => city.name?.trim() == trimmedCityName,
       );
       print('DEBUG: Found city ID: ${city.id}');
       return city.id;
     } catch (e) {
       print('DEBUG: City not found: $e');
+      print('DEBUG: Searched for: "$cityName"');
       return null;
     }
   }

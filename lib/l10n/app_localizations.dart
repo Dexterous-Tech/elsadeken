@@ -4174,6 +4174,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unexpected error format'**
   String get unexpectedErrorFormat;
+
+  /// No description provided for @connectionInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet connection failed'**
+  String get connectionInternet;
+
+  /// No description provided for @connectionUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection to the server failed due to internet connection'**
+  String get connectionUnknown;
+
+  /// No description provided for @receivedTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive timeout in connection with the server'**
+  String get receivedTimeout;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

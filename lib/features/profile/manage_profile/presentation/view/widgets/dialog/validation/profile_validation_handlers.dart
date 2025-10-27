@@ -253,14 +253,9 @@ class NationalCountryValidationHandler extends ProfileValidationHandler {
     final cityName =
         controllers[AppLocalizations.of(context)!.city]?.text ?? '';
 
-    // Check if all required fields are selected
-    if (nationalityName.isEmpty || countryName.isEmpty || cityName.isEmpty) {
-      return ValidationResult(
-        isValid: false,
-        errorMessage:
-            AppLocalizations.of(context)!.pleaseSelectAllRequiredFields,
-      );
-    }
+    // For national country fields, empty values are allowed
+    // The update handler will use old values for empty fields
+    // So we don't need to validate that all fields are filled
 
     return ValidationResult(isValid: true);
   }

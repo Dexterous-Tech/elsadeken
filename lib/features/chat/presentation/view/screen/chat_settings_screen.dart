@@ -1,6 +1,8 @@
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/error_message_helper.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/chat/data/models/chat_settings_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_settings_request_model.dart';
@@ -125,9 +127,15 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     if (_nationalityId == 0) {
       _selectedNationalities = AppLocalizations.of(context)!.allNationalities;
     } else {
-      // Get nationality name from lists chat_settings_cubit
+      // Get nationality name from lists chat_settings_cubit with gender support
       final listsCubit = context.read<ListsCubit>();
-      _selectedNationalities = listsCubit.getNationalityName(_nationalityId);
+      listsCubit.getNationalityNameForCurrentUser(_nationalityId).then((name) {
+        if (mounted) {
+          setState(() {
+            _selectedNationalities = name;
+          });
+        }
+      });
     }
   }
 
@@ -920,12 +928,23 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     );
   }
 
-  void _showNationalitiesDialog() {
+  void _showNationalitiesDialog() async {
     final listsCubit = context.read<ListsCubit>();
     final currentState = listsCubit.state;
 
     print('[ChatSettingsScreen] Opening nationalities dialog');
     print('[ChatSettingsScreen] Current ListsCubit state: $currentState');
+
+    // Get current user's gender (don't cache this as it can change)
+    String userGender = 'male'; // Default
+    try {
+      final gender = await SharedPreferencesHelper.getSecuredString(
+          SharedPreferencesKey.gender);
+      userGender = gender.isNotEmpty ? gender : 'male';
+      print('[ChatSettingsScreen] User gender: $userGender');
+    } catch (e) {
+      print('[ChatSettingsScreen] Error getting user gender: $e');
+    }
 
     // Only load if not already loaded or loading
     if (currentState is ListsInitial) {
@@ -944,7 +963,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
           builder: (context) {
             if (currentState is ListsLoaded) {
               print(
-                  '[ChatSettingsScreen] Showing ${currentState.nationalities.length} nationalities');
+                  '[ChatSettingsScreen] Showing ${currentState.nationalities.length} nationalities for gender: $userGender');
               return SizedBox(
                 width: double.maxFinite,
                 height: 400, // Fixed height to prevent overflow
@@ -963,18 +982,29 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                         });
                         Navigator.pop(context);
                       }),
-                      // Dynamic options from API
+                      // Dynamic options from API with gender-appropriate names
                       ...currentState.nationalities.map(
-                        (nationality) => _buildDialogOption(
-                          nationality.name,
-                          () {
-                            setState(() {
-                              _selectedNationalities = nationality.name;
-                              _nationalityId = nationality.id;
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
+                        (nationality) {
+                          // Get gender-specific name for display
+                          final displayName =
+                              nationality.getNameForGender(userGender);
+                          print(
+                              '[ChatSettingsScreen] Nationality ${nationality.id}: $displayName (gender: $userGender)');
+
+                          return _buildDialogOption(
+                            displayName,
+                            () {
+                              // Use the already calculated gender-specific name
+                              if (mounted) {
+                                setState(() {
+                                  _selectedNationalities = displayName;
+                                  _nationalityId = nationality.id;
+                                });
+                              }
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),

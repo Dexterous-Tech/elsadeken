@@ -136,19 +136,162 @@ class NationalCountryUpdateHandler extends ProfileUpdateHandler {
     required List<CityResponseModels> citiesList,
     required Map<String, List<GeneralInfoResponseModels>> generalDataLists,
   }) {
-    final nationalityName =
-        controllers[AppLocalizations.of(context)!.nationality]?.text ?? '';
-    final countryName =
-        controllers[AppLocalizations.of(context)!.country]?.text ?? '';
-    final cityName =
-        controllers[AppLocalizations.of(context)!.city]?.text ?? '';
+    // This method signature doesn't have access to fields
+    // So we need to use a different approach
+    throw UnimplementedError(
+        'Use updateWithFieldData for NationalCountryUpdateHandler');
+  }
 
-    // Get IDs from names using mapping functions
-    final nationalityId = ProfileDataMappers.getNationalityIdByName(
-        nationalityName, nationalitiesList);
-    final countryId =
-        ProfileDataMappers.getCountryIdByName(countryName, countriesList);
-    final cityId = ProfileDataMappers.getCityIdByName(cityName, citiesList);
+  /// Update method that accepts field data to get current values
+  void updateWithFieldData(
+    Map<String, TextEditingController> controllers,
+    UpdateProfileCubit cubit,
+    BuildContext context,
+    List<ManageProfileField> fields, {
+    required List<NationalCountryResponseModel> nationalitiesList,
+    required List<NationalCountryResponseModel> countriesList,
+    required List<CityResponseModels> citiesList,
+    required Map<String, List<GeneralInfoResponseModels>> generalDataLists,
+  }) {
+    // Get current nationality field
+    final nationalityField = fields.firstWhere(
+      (field) => field.dataType == ManageProfileFieldDataType.nationality,
+      orElse: () => ManageProfileField(
+        label: '',
+        hint: '',
+        currentValue: '',
+        type: ManageProfileFieldType.text,
+      ),
+    );
+
+    // Get current country field
+    final countryField = fields.firstWhere(
+      (field) => field.dataType == ManageProfileFieldDataType.country,
+      orElse: () => ManageProfileField(
+        label: '',
+        hint: '',
+        currentValue: '',
+        type: ManageProfileFieldType.text,
+      ),
+    );
+
+    // Get current city field
+    final cityField = fields.firstWhere(
+      (field) => field.dataType == ManageProfileFieldDataType.city,
+      orElse: () => ManageProfileField(
+        label: '',
+        hint: '',
+        currentValue: '',
+        type: ManageProfileFieldType.text,
+      ),
+    );
+
+    // Get new values from controllers
+    final nationalityController =
+        controllers[AppLocalizations.of(context)!.nationality];
+    final countryController =
+        controllers[AppLocalizations.of(context)!.country_residence];
+    final cityController = controllers[AppLocalizations.of(context)!.city];
+
+    print('DEBUG: National Country Update - Initial values:');
+    print('DEBUG: Nationality controller: "${nationalityController?.text}"');
+    print(
+        'DEBUG: Nationality field currentValue: "${nationalityField.currentValue}"');
+    print('DEBUG: Country controller: "${countryController?.text}"');
+    print('DEBUG: Country field currentValue: "${countryField.currentValue}"');
+    print('DEBUG: City controller: "${cityController?.text}"');
+    print('DEBUG: City field currentValue: "${cityField.currentValue}"');
+
+    // Get IDs from controllers or use old values
+    // If controller has a value and it's different from old value, use new value
+    // Otherwise, use old value
+    int? nationalityId;
+    int? countryId;
+    int? cityId;
+
+    // Handle nationality
+    // If controller is null or text is empty, user didn't change it, so use old value
+    if (nationalityController == null || nationalityController.text.isEmpty) {
+      print('DEBUG: Nationality not changed (empty), using old value');
+      nationalityId = ProfileDataMappers.getNationalityIdByName(
+          nationalityField.currentValue, nationalitiesList);
+      print('DEBUG: Using old nationality ID: $nationalityId');
+    } else {
+      // Controller has a value - check if it's different from old value
+      final nationalityChanged = nationalityController.text.trim() !=
+          nationalityField.currentValue.trim();
+      print('DEBUG: Nationality changed: $nationalityChanged');
+
+      if (nationalityChanged) {
+        // User changed nationality, use new value
+        nationalityId = ProfileDataMappers.getNationalityIdByName(
+            nationalityController.text, nationalitiesList);
+        print('DEBUG: Using new nationality ID: $nationalityId');
+      } else {
+        // Same value, use old (this handles case where user opens dialog and doesn't change)
+        nationalityId = ProfileDataMappers.getNationalityIdByName(
+            nationalityField.currentValue, nationalitiesList);
+        print('DEBUG: Using old nationality ID: $nationalityId');
+      }
+    }
+
+    // Handle country
+    // If controller is null or text is empty, user didn't change it, so use old value
+    if (countryController == null || countryController.text.isEmpty) {
+      print('DEBUG: Country not changed (empty), using old value');
+      countryId = ProfileDataMappers.getCountryIdByName(
+          countryField.currentValue, countriesList);
+      print('DEBUG: Using old country ID: $countryId');
+    } else {
+      // Controller has a value - check if it's different from old value
+      final countryChanged =
+          countryController.text.trim() != countryField.currentValue.trim();
+      print('DEBUG: Country changed: $countryChanged');
+
+      if (countryChanged) {
+        // User changed country, use new value
+        print('DEBUG: Looking up country name: "${countryController.text}"');
+        print(
+            'DEBUG: Available countries: ${countriesList.map((c) => c.name).toList()}');
+        countryId = ProfileDataMappers.getCountryIdByName(
+            countryController.text, countriesList);
+        print('DEBUG: Using new country ID: $countryId');
+      } else {
+        // Same value, use old
+        countryId = ProfileDataMappers.getCountryIdByName(
+            countryField.currentValue, countriesList);
+        print('DEBUG: Using old country ID: $countryId');
+      }
+    }
+
+    // Handle city
+    // If controller is null or text is empty, user didn't change it, so use old value
+    if (cityController == null || cityController.text.isEmpty) {
+      print('DEBUG: City not changed (empty), using old value');
+      cityId = ProfileDataMappers.getCityIdByName(
+          cityField.currentValue, citiesList);
+      print('DEBUG: Using old city ID: $cityId');
+    } else {
+      // Controller has a value - check if it's different from old value
+      final cityChanged =
+          cityController.text.trim() != cityField.currentValue.trim();
+      print('DEBUG: City changed: $cityChanged');
+
+      if (cityChanged) {
+        // User changed city, use new value
+        cityId =
+            ProfileDataMappers.getCityIdByName(cityController.text, citiesList);
+        print('DEBUG: Using new city ID: $cityId');
+      } else {
+        // Same value, use old
+        cityId = ProfileDataMappers.getCityIdByName(
+            cityField.currentValue, citiesList);
+        print('DEBUG: Using old city ID: $cityId');
+      }
+    }
+
+    print(
+        'DEBUG: Final IDs - Nationality: $nationalityId, Country: $countryId, City: $cityId');
 
     // Only proceed if we have valid IDs for all required fields
     if (nationalityId != null && countryId != null && cityId != null) {

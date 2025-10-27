@@ -8,8 +8,22 @@ class NationalCountryResponseModel with ListItemModel {
 
   NationalCountryResponseModel.fromJson(dynamic json) {
     id = json['id'];
-    name = json['name'];
+    name = _parseName(json['name']);
   }
+
+  static String _parseName(dynamic nameData) {
+    if (nameData is Map<String, dynamic>) {
+      // New format with male/female names
+      return nameData['male']?.toString() ??
+          nameData['female']?.toString() ??
+          '';
+    } else if (nameData is String) {
+      // Old format - single string
+      return nameData;
+    }
+    return '';
+  }
+
   @override
   int? id;
   @override

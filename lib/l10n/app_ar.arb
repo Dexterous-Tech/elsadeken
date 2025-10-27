@@ -679,5 +679,9 @@
   "validationError": "خطأ في التحقق",
   "internalServerError": "خطأ داخلي في الخادم",
   "failedToParseError": "فشل تحليل استجابة الخطأ",
-  "unexpectedErrorFormat": "تنسيق خطأ غير متوقع"
+  "unexpectedErrorFormat": "تنسيق خطأ غير متوقع",
+
+  "connectionInternet": "فشل الاتصال بالإنترنت",
+  "connectionUnknown": "فشل الاتصال بالخادم بسبب انقطاع الإنترنت",
+  "receivedTimeout": "انتهت مهلة الاستلام من الخادم"
 }

@@ -516,8 +516,10 @@ class _ManageProfileDialogContentState
                       }
 
                       // Also update the controller for dropdown fields
-                      if (field.type == ManageProfileFieldType.dropdown) {
-                        widget.controllers[field.label]?.text = value ?? '';
+                      // Only update if value is not null (null means user didn't change selection)
+                      if (field.type == ManageProfileFieldType.dropdown &&
+                          value != null) {
+                        widget.controllers[field.label]?.text = value;
                       }
 
                       // Handle field-specific changes (like loading cities for country)
@@ -638,6 +640,22 @@ class _ManageProfileDialogContentState
         if (widget.data.dialogType == ManageProfileDialogType.loginData) {
           final loginHandler = updateHandler as LoginDataUpdateHandler;
           loginHandler.updateWithFieldData(
+            widget.controllers,
+            widget.data.cubit!,
+            context,
+            widget.data.fields,
+            nationalitiesList: nationalitiesList,
+            countriesList: countriesList,
+            citiesList: citiesList,
+            generalDataLists: generalDataLists,
+          );
+        }
+        // Special handling for national country data to pass field data for old values
+        else if (widget.data.dialogType ==
+            ManageProfileDialogType.nationalCountry) {
+          final nationalCountryHandler =
+              updateHandler as NationalCountryUpdateHandler;
+          nationalCountryHandler.updateWithFieldData(
             widget.controllers,
             widget.data.cubit!,
             context,

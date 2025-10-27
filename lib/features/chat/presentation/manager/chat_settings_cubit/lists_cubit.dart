@@ -2,6 +2,8 @@ import 'package:elsadeken/features/chat/data/models/api_response_model.dart';
 import 'package:elsadeken/features/chat/data/models/country_model.dart';
 import 'package:elsadeken/features/chat/data/models/nationality_model.dart';
 import 'package:elsadeken/features/chat/domain/repositories/lists_repository.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -66,7 +68,7 @@ class ListsCubit extends Cubit<ListsState> {
       print('[ListsCubit] Loading nationalities and countries in parallel...');
 
       // Load nationalities and countries in parallel
-      final nationalitiesFuture = _repository.getNationalities();
+      final nationalitiesFuture = _repository.getNationalitiesWithGenderNames();
       final countriesFuture = _repository.getCountries();
 
       final results = await Future.wait([nationalitiesFuture, countriesFuture]);
@@ -137,9 +139,48 @@ class ListsCubit extends Cubit<ListsState> {
       final currentState = state as ListsLoaded;
       final nationality = currentState.nationalities.firstWhere(
         (n) => n.id == id,
-        orElse: () => NationalityModel(id: 0, name: 'Not Specified'),
+        orElse: () => NationalityModel(
+            id: 0, name: {'male': 'Not Specified', 'female': 'Not Specified'}),
       );
-      return nationality.name;
+      return nationality
+          .displayName; // Use displayName getter for backward compatibility
+    }
+    return 'Not Specified';
+  }
+
+  /// Get nationality name by ID with gender support
+  String getNationalityNameForGender(int id, String gender) {
+    if (state is ListsLoaded) {
+      final currentState = state as ListsLoaded;
+      final nationality = currentState.nationalities.firstWhere(
+        (n) => n.id == id,
+        orElse: () => NationalityModel(
+            id: 0, name: {'male': 'Not Specified', 'female': 'Not Specified'}),
+      );
+      return nationality.getNameForGender(gender);
+    }
+    return 'Not Specified';
+  }
+
+  /// Get nationality name by ID using current user's gender
+  Future<String> getNationalityNameForCurrentUser(int id) async {
+    if (state is ListsLoaded) {
+      final currentState = state as ListsLoaded;
+      final nationality = currentState.nationalities.firstWhere(
+        (n) => n.id == id,
+        orElse: () => NationalityModel(
+            id: 0, name: {'male': 'Not Specified', 'female': 'Not Specified'}),
+      );
+
+      // Get user's gender from SharedPreferences
+      try {
+        final gender = await SharedPreferencesHelper.getSecuredString(
+            SharedPreferencesKey.gender);
+        return nationality.getNameForGender(gender);
+      } catch (e) {
+        print('[ListsCubit] Error getting user gender: $e');
+        return nationality.displayName; // Fallback to display name
+      }
     }
     return 'Not Specified';
   }

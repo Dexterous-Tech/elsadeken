@@ -104,7 +104,7 @@ class ApiConstants {
   static String deleteAllChatSettings = '/user/delete-all-chats';
 
 // nationality and country lists
-  static String getNationalities = '/user/list/nationalities';
+  static String getNationalities = '/user/list/nationalities/diverse';
   static String getCountries = '/user/list/countries';
 
   // Features

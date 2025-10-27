@@ -2102,4 +2102,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unexpectedErrorFormat => 'Unexpected error format';
+
+  @override
+  String get connectionInternet => 'Internet connection failed';
+
+  @override
+  String get connectionUnknown => 'Connection to the server failed due to internet connection';
+
+  @override
+  String get receivedTimeout => 'Receive timeout in connection with the server';
 }
