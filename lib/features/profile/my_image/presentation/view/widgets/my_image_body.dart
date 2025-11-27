@@ -332,7 +332,9 @@ class _MyImageBodyState extends State<MyImageBody> {
                     children: [
                       Radio<String>(
                         value: 'no_one',
+                        // ignore: deprecated_member_use
                         groupValue: selectedPrivacyOption,
+                        // ignore: deprecated_member_use
                         onChanged: (value) {
                           setState(() {
                             selectedPrivacyOption = value!;
@@ -377,7 +379,9 @@ class _MyImageBodyState extends State<MyImageBody> {
                     children: [
                       Radio<String>(
                         value: 'all_members',
+                        // ignore: deprecated_member_use
                         groupValue: selectedPrivacyOption,
+                        // ignore: deprecated_member_use
                         onChanged: (value) {
                           setState(() {
                             selectedPrivacyOption = value!;

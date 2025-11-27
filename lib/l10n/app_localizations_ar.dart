@@ -1753,7 +1753,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get currentBenefits => 'إمتيازاتـــي الحاليـــة';
 
   @override
-  String get prices => 'الأسعار';
+  String get prices => 'رسوم الاشتراك';
 
   @override
   String get paymentMethods => 'طرق الدفع';
@@ -2112,4 +2112,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get receivedTimeout => 'انتهت مهلة الاستلام من الخادم';
+
+  @override
+  String get onboardingTitle => 'زواج شرعي للمسلمين والمسلمات';
+
+  @override
+  String get onboardingSubtitle => 'لكل من يبحث عن شريك حياة على أساس من القيم والاحترام';
+
+  @override
+  String get loginNow => 'الدخول الآن';
+
+  @override
+  String get optionalPhoneNumber => 'رقم الهاتف (اختياري)';
 }

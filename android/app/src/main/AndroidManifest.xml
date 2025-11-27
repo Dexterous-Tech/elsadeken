@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
         android:networkSecurityConfig="@xml/network_security_config"
-        android:label="AlSadiqeen &amp; AlSadiqat"
+        android:label="AlSadiqeen | الصادقين"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:enableOnBackInvokedCallback="true">

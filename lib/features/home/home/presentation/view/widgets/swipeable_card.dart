@@ -87,7 +87,9 @@ class _SwipeableCardState extends State<SwipeableCard>
     if (!widget.isTop ||
         !_isDragging ||
         _isProcessingAction ||
-        widget.onSwipe == null) return;
+        widget.onSwipe == null) {
+      return;
+    }
     setState(() {
       _dragOffset += Offset(details.delta.dx, 0);
     });
@@ -98,7 +100,9 @@ class _SwipeableCardState extends State<SwipeableCard>
     if (!widget.isTop ||
         !_isDragging ||
         _isProcessingAction ||
-        widget.onSwipe == null) return;
+        widget.onSwipe == null) {
+      return;
+    }
     _isDragging = false;
 
     final threshold = MediaQuery.of(context).size.width * 0.3;

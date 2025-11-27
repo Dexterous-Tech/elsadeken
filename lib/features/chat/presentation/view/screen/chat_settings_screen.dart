@@ -614,7 +614,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                       // Call the cubit to update online status
                       context.read<ChatOnlineSettingCubit>().setOnline();
                     },
-                    activeColor: Colors.orangeAccent,
+                    activeThumbColor: Colors.orangeAccent,
                     activeTrackColor: Colors.black,
                     inactiveThumbColor: Colors.red,
                     inactiveTrackColor: Colors.white,
@@ -955,144 +955,148 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
           '[ChatSettingsScreen] Using cached data (${currentState.fromCache ? 'from cache' : 'from API'})');
     }
 
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.selectNationalities),
-        content: Builder(
-          builder: (context) {
-            if (currentState is ListsLoaded) {
-              print(
-                  '[ChatSettingsScreen] Showing ${currentState.nationalities.length} nationalities for gender: $userGender');
-              return SizedBox(
-                width: double.maxFinite,
-                height: 400, // Fixed height to prevent overflow
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Option for "All Nationalities"
-                      _buildDialogOption(
-                          AppLocalizations.of(context)!.allNationalities, () {
-                        setState(() {
-                          _selectedNationalities =
-                              AppLocalizations.of(context)!.allNationalities;
-                          _nationalityId = 0;
-                        });
-                        Navigator.pop(context);
-                      }),
-                      // Dynamic options from API with gender-appropriate names
-                      ...currentState.nationalities.map(
-                        (nationality) {
-                          // Get gender-specific name for display
-                          final displayName =
-                              nationality.getNameForGender(userGender);
-                          print(
-                              '[ChatSettingsScreen] Nationality ${nationality.id}: $displayName (gender: $userGender)');
-
-                          return _buildDialogOption(
-                            displayName,
-                            () {
-                              // Use the already calculated gender-specific name
-                              if (mounted) {
-                                setState(() {
-                                  _selectedNationalities = displayName;
-                                  _nationalityId = nationality.id;
-                                });
-                              }
-                              Navigator.pop(context);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            } else if (currentState is ListsLoading ||
-                currentState is ListsInitial) {
-              print('[ChatSettingsScreen] Lists are loading...');
-              return SizedBox(
-                height: 200,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const CircularProgressIndicator(),
-                      const SizedBox(height: 16),
-                      Text(AppLocalizations.of(context)!.loadingNationalities),
-                      const SizedBox(height: 8),
-                      Text(
-                        AppLocalizations.of(context)!.pleaseWait,
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            } else if (currentState is ListsError) {
-              print(
-                  '[ChatSettingsScreen] Lists error: ${currentState.message}');
-              return SizedBox(
-                height: 200,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.error_outline,
-                          color: Colors.red, size: 48),
-                      const SizedBox(height: 16),
-                      Text(AppLocalizations.of(context)!
-                          .errorLoadingNationalities),
-                      const SizedBox(height: 8),
-                      Text(
-                        currentState.message,
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
+    if (mounted) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(AppLocalizations.of(context)!.selectNationalities),
+          content: Builder(
+            builder: (context) {
+              if (currentState is ListsLoaded) {
+                print(
+                    '[ChatSettingsScreen] Showing ${currentState.nationalities.length} nationalities for gender: $userGender');
+                return SizedBox(
+                  width: double.maxFinite,
+                  height: 400, // Fixed height to prevent overflow
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Option for "All Nationalities"
+                        _buildDialogOption(
+                            AppLocalizations.of(context)!.allNationalities, () {
+                          setState(() {
+                            _selectedNationalities =
+                                AppLocalizations.of(context)!.allNationalities;
+                            _nationalityId = 0;
+                          });
                           Navigator.pop(context);
-                          listsCubit.loadLists();
-                        },
-                        child: Text(AppLocalizations.of(context)!.retry),
-                      ),
-                    ],
+                        }),
+                        // Dynamic options from API with gender-appropriate names
+                        ...currentState.nationalities.map(
+                          (nationality) {
+                            // Get gender-specific name for display
+                            final displayName =
+                                nationality.getNameForGender(userGender);
+                            print(
+                                '[ChatSettingsScreen] Nationality ${nationality.id}: $displayName (gender: $userGender)');
+
+                            return _buildDialogOption(
+                              displayName,
+                              () {
+                                // Use the already calculated gender-specific name
+                                if (mounted) {
+                                  setState(() {
+                                    _selectedNationalities = displayName;
+                                    _nationalityId = nationality.id;
+                                  });
+                                }
+                                Navigator.pop(context);
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            } else {
-              print('[ChatSettingsScreen] Unknown state: $currentState');
-              return SizedBox(
-                height: 200,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.help_outline, color: Colors.orange, size: 48),
-                      SizedBox(height: 16),
-                      Text(AppLocalizations.of(context)!.settingUpLists),
-                      SizedBox(height: 8),
-                      Text(
-                        AppLocalizations.of(context)!.pleaseWaitMoment,
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ],
+                );
+              } else if (currentState is ListsLoading ||
+                  currentState is ListsInitial) {
+                print('[ChatSettingsScreen] Lists are loading...');
+                return SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 16),
+                        Text(
+                            AppLocalizations.of(context)!.loadingNationalities),
+                        const SizedBox(height: 8),
+                        Text(
+                          AppLocalizations.of(context)!.pleaseWait,
+                          style:
+                              const TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }
-          },
+                );
+              } else if (currentState is ListsError) {
+                print(
+                    '[ChatSettingsScreen] Lists error: ${currentState.message}');
+                return SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.error_outline,
+                            color: Colors.red, size: 48),
+                        const SizedBox(height: 16),
+                        Text(AppLocalizations.of(context)!
+                            .errorLoadingNationalities),
+                        const SizedBox(height: 8),
+                        Text(
+                          currentState.message,
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            listsCubit.loadLists();
+                          },
+                          child: Text(AppLocalizations.of(context)!.retry),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                print('[ChatSettingsScreen] Unknown state: $currentState');
+                return SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.help_outline,
+                            color: Colors.orange, size: 48),
+                        SizedBox(height: 16),
+                        Text(AppLocalizations.of(context)!.settingUpLists),
+                        SizedBox(height: 8),
+                        Text(
+                          AppLocalizations.of(context)!.pleaseWaitMoment,
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   void _showCountriesDialog() {

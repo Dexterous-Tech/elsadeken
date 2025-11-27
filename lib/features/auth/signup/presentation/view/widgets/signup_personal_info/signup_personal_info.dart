@@ -145,11 +145,16 @@ class _SignupPersonalInfoState extends State<SignupPersonalInfo> {
                     ),
                     verticalSpace(40),
 
-                    // email
+                    // phone
                     Text(AppLocalizations.of(context)!.whatIsYourPhoneNumber,
                         textDirection:
                             LocalizationService.instance.textDirection,
                         style: AppTextStyles.font23ChineseBlackBoldLamaSans),
+                    verticalSpace(4),
+                    Text(AppLocalizations.of(context)!.optionalPhoneNumber,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
+                        style: AppTextStyles.font12JetRegularLamaSans),
                     verticalSpace(16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

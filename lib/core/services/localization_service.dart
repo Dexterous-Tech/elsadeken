@@ -56,7 +56,7 @@ class LocalizationService extends ChangeNotifier {
 
       // Update Dio headers with new language
       await DioFactory.updateLanguageHeader();
-      
+
       // Clear cached lists data to force reload with new language
       await SharedPreferencesHelper.clearAllCaches();
     } catch (e) {
@@ -75,20 +75,22 @@ class LocalizationService extends ChangeNotifier {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Row(
-          children: [
-            Text(flag, style: const TextStyle(fontSize: 20)),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
+        content: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(flag, style: const TextStyle(fontSize: 20)),
+              const SizedBox(width: 12),
+              Text(
                 message,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         backgroundColor: isArabic ? Colors.green[600] : Colors.blue[600],
         behavior: SnackBarBehavior.floating,
@@ -97,13 +99,6 @@ class LocalizationService extends ChangeNotifier {
         ),
         margin: const EdgeInsets.all(16),
         duration: const Duration(seconds: 2),
-        action: SnackBarAction(
-          label: isArabic ? 'حسناً' : 'OK',
-          textColor: Colors.white,
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
       ),
     );
   }
@@ -134,6 +129,8 @@ class LocalizationService extends ChangeNotifier {
       isArabic ? Alignment.centerLeft : Alignment.centerRight;
   Alignment get topAlignment =>
       isArabic ? Alignment.topRight : Alignment.topLeft;
+  Alignment get leftAlignment =>
+      isArabic ? Alignment.topLeft : Alignment.topRight;
 
   TextAlign get textAlignment => isArabic ? TextAlign.right : TextAlign.left;
   // Get cross axis alignment for RTL/LTR

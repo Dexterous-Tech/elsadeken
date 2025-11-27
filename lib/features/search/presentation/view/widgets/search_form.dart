@@ -239,7 +239,6 @@ class _SearchFormState extends State<SearchForm> {
                     ...nationalityObjects
                         .map((e) => e.name ?? "")
                         .where((name) => name.isNotEmpty)
-                        .toList()
                   ];
 
                   return DropdownField(
@@ -286,7 +285,6 @@ class _SearchFormState extends State<SearchForm> {
                     ...countryObjects
                         .map((e) => e.name ?? "")
                         .where((name) => name.isNotEmpty)
-                        .toList()
                   ];
 
                   return DropdownField(
@@ -366,7 +364,6 @@ class _SearchFormState extends State<SearchForm> {
                     ...snapshot.data!
                         .map((e) => e.name ?? "")
                         .where((name) => name.isNotEmpty)
-                        .toList()
                   ];
 
                   return DropdownField(

@@ -246,17 +246,6 @@ class NationalCountryValidationHandler extends ProfileValidationHandler {
     Map<String, TextEditingController> controllers,
     BuildContext context,
   ) {
-    final nationalityName =
-        controllers[AppLocalizations.of(context)!.nationality]?.text ?? '';
-    final countryName =
-        controllers[AppLocalizations.of(context)!.country]?.text ?? '';
-    final cityName =
-        controllers[AppLocalizations.of(context)!.city]?.text ?? '';
-
-    // For national country fields, empty values are allowed
-    // The update handler will use old values for empty fields
-    // So we don't need to validate that all fields are filled
-
     return ValidationResult(isValid: true);
   }
 }

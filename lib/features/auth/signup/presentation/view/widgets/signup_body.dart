@@ -108,12 +108,11 @@ class _SignupBodyState extends State<SignupBody> {
                 ],
               ),
               verticalSpace(33),
-              Align(
-                alignment: LocalizationService.instance.topAlignment,
+              Center(
                 child: Image.asset(
-                  AppImages.authElsadekenMarriageImage,
-                  width: 170.w,
-                  height: 49.h,
+                  AppImages.splashImage,
+                  height: 140.w,
+                  fit: BoxFit.cover,
                 ),
               ),
               verticalSpace(31),

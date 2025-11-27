@@ -564,7 +564,7 @@
   "excellencePackageTitle": "باقـــة التميــــز",
   "benefits": "المزايـــــا",
   "currentBenefits": "إمتيازاتـــي الحاليـــة",
-  "prices": "الأسعار",
+  "prices": "رسوم الاشتراك",
   "paymentMethods": "طرق الدفع",
   "subscribeNow": "اشترك الان",
   "youAreAlreadyPremium": "أنت عضو مميز بالفعل",
@@ -680,8 +680,11 @@
   "internalServerError": "خطأ داخلي في الخادم",
   "failedToParseError": "فشل تحليل استجابة الخطأ",
   "unexpectedErrorFormat": "تنسيق خطأ غير متوقع",
-
   "connectionInternet": "فشل الاتصال بالإنترنت",
   "connectionUnknown": "فشل الاتصال بالخادم بسبب انقطاع الإنترنت",
-  "receivedTimeout": "انتهت مهلة الاستلام من الخادم"
+  "receivedTimeout": "انتهت مهلة الاستلام من الخادم",
+  "onboardingTitle": "زواج شرعي للمسلمين والمسلمات",
+  "onboardingSubtitle": "لكل من يبحث عن شريك حياة على أساس من القيم والاحترام",
+  "loginNow": "الدخول الآن",
+  "optionalPhoneNumber": "رقم الهاتف (اختياري)"
 }

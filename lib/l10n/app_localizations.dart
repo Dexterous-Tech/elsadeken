@@ -3482,7 +3482,7 @@ abstract class AppLocalizations {
   /// No description provided for @prices.
   ///
   /// In en, this message translates to:
-  /// **'Prices'**
+  /// **'Subscription Fee'**
   String get prices;
 
   /// No description provided for @paymentMethods.
@@ -4192,6 +4192,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Receive timeout in connection with the server'**
   String get receivedTimeout;
+
+  /// No description provided for @onboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Islamic marriage for Muslim men and women'**
+  String get onboardingTitle;
+
+  /// No description provided for @onboardingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'For everyone seeking a life partner based on values and respect'**
+  String get onboardingSubtitle;
+
+  /// No description provided for @loginNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Now'**
+  String get loginNow;
+
+  /// No description provided for @optionalPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number (optional)'**
+  String get optionalPhoneNumber;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

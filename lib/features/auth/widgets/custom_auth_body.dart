@@ -60,12 +60,13 @@ class CustomAuthBody extends StatelessWidget {
                           ),
                         ),
                         verticalSpace(33.74.h),
-                        Image.asset(
-                          AppImages.authElsadekenMarriageImage,
-                          width: 170.w,
-                          height: 49.h,
+                        Center(
+                          child: Image.asset(
+                            AppImages.splashImage,
+                            height: 140.h,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        verticalSpace(30),
                         CustomAuthCard(cardContent: cardContent),
                       ],
                     ),

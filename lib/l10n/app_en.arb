@@ -564,7 +564,7 @@
   "excellencePackageTitle": "Excellence Package",
   "benefits": "Benefits",
   "currentBenefits": "My Current Benefits",
-  "prices": "Prices",
+  "prices": "Subscription Fee",
   "paymentMethods": "Payment Methods",
   "subscribeNow": "Subscribe Now",
   "youAreAlreadyPremium": "You are already a premium member",
@@ -682,5 +682,9 @@
   "unexpectedErrorFormat": "Unexpected error format",
   "connectionInternet": "Internet connection failed",
   "connectionUnknown": "Connection to the server failed due to internet connection",
-  "receivedTimeout": "Receive timeout in connection with the server"
+  "receivedTimeout": "Receive timeout in connection with the server",
+  "onboardingTitle": "Islamic marriage for Muslim men and women",
+  "onboardingSubtitle": "For everyone seeking a life partner based on values and respect",
+  "loginNow": "Login Now",
+  "optionalPhoneNumber": "Phone number (optional)"
 }

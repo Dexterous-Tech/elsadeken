@@ -35,11 +35,7 @@ class ProfileDetailsLogo extends StatelessWidget {
             image = userData.image ?? '';
 
             // Get name from email (everything before @)
-            if (userData.email != null && userData.email!.contains('@')) {
-              name = '@${userData.email!.split('@')[0]}';
-            } else {
-              name = userData.name ?? AppLocalizations.of(context)!.noData;
-            }
+            name = userData.name ?? '';
 
             // Get status (you might need to add this field to your model)
             status = userData.attribute?.maritalStatus ??

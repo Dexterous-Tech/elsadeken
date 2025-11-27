@@ -1752,7 +1752,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get currentBenefits => 'My Current Benefits';
 
   @override
-  String get prices => 'Prices';
+  String get prices => 'Subscription Fee';
 
   @override
   String get paymentMethods => 'Payment Methods';
@@ -2111,4 +2111,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get receivedTimeout => 'Receive timeout in connection with the server';
+
+  @override
+  String get onboardingTitle => 'Islamic marriage for Muslim men and women';
+
+  @override
+  String get onboardingSubtitle => 'For everyone seeking a life partner based on values and respect';
+
+  @override
+  String get loginNow => 'Login Now';
+
+  @override
+  String get optionalPhoneNumber => 'Phone number (optional)';
 }

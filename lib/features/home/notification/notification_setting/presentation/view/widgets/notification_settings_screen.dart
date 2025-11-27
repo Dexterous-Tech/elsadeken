@@ -250,7 +250,7 @@ class _NotificationSettingsContentState
                         );
                   }
                 },
-                activeColor: AppColors.primaryOrange,
+                activeThumbColor: AppColors.primaryOrange,
                 activeTrackColor:
                     AppColors.primaryOrange.withValues(alpha: 0.3),
                 inactiveThumbColor: AppColors.white,
