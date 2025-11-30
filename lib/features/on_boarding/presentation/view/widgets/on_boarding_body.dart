@@ -22,7 +22,7 @@ class OnBoardingBody extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: EdgeInsetsGeometry.only(
-        top: 76.h,
+        top: 40.h,
         right: 52.w,
         left: 52.w,
         bottom: 96.h,
@@ -45,7 +45,6 @@ class OnBoardingBody extends StatelessWidget {
               textDirection: LocalizationService.instance.textDirection,
               children: [
                 OnBoardingChangeLanguage(),
-                verticalSpace(16),
                 Center(
                     child: Image.asset(AppImages.splashImage,
                         width: 135.w, height: 263.h)),
