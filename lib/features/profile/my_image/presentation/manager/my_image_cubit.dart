@@ -1,11 +1,13 @@
 import 'dart:io';
 
-import 'package:bloc/bloc.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+
 import 'package:elsadeken/features/profile/my_image/data/model/my_image_model.dart';
-import 'package:elsadeken/features/profile/my_image/data/repo/my_image_repo%20.dart';
-import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
+import 'package:elsadeken/features/profile/my_image/data/repo/my_image_repo.dart';
+import 'package:elsadeken/features/profile/profile/data/models/profile_action_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:meta/meta.dart';
 
 part 'my_image_state.dart';
 
@@ -29,7 +31,13 @@ class MyImageCubit extends Cubit<MyImageState> {
         emit(MyImageImageSelected(image!));
       }
     } catch (e) {
-      emit(MyImageFailure('فشل في اختيار الصورة من المعرض'));
+      print('Gallery pick error: $e');
+      if (e.toString().contains('permission')) {
+        emit(MyImageFailure(
+            'يرجى منح إذن الوصول إلى المعرض في إعدادات التطبيق'));
+      } else {
+        emit(MyImageFailure('فشل في اختيار الصورة من المعرض: ${e.toString()}'));
+      }
     }
   }
 
@@ -45,7 +53,17 @@ class MyImageCubit extends Cubit<MyImageState> {
         emit(MyImageImageSelected(image!));
       }
     } catch (e) {
-      emit(MyImageFailure('فشل في التقاط الصورة من الكاميرا'));
+      print('Camera pick error: $e');
+      if (e.toString().contains('permission')) {
+        emit(MyImageFailure(
+            'يرجى منح إذن الوصول إلى الكاميرا في إعدادات التطبيق'));
+      } else if (e.toString().contains('camera')) {
+        emit(MyImageFailure(
+            'فشل في فتح الكاميرا. تأكد من أن الكاميرا تعمل بشكل صحيح'));
+      } else {
+        emit(MyImageFailure(
+            'فشل في التقاط الصورة من الكاميرا: ${e.toString()}'));
+      }
     }
   }
 
@@ -60,9 +78,14 @@ class MyImageCubit extends Cubit<MyImageState> {
     var response =
         await myImageRepoInterface.updateImage(MyImageModel(image: image));
 
-    response.fold((l) {
+    response.fold((l) async {
       emit(MyImageFailure(l.displayMessage));
-    }, (r) {
+    }, (r) async {
+      final newImageUrl = r.data?.image ?? '';
+      if (newImageUrl.isNotEmpty) {
+        await SharedPreferencesHelper.deleteUserImage();
+        await SharedPreferencesHelper.saveUserImage(newImageUrl);
+      }
       emit(MyImageSuccess(r));
     });
   }

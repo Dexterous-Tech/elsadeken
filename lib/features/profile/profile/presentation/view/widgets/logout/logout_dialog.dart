@@ -3,6 +3,7 @@ import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/app_lottie.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
@@ -11,6 +12,7 @@ import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/dialog/custom_dialog.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/profile/presentation/manager/profile_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,12 +42,15 @@ Future<void> logoutDialog(BuildContext context) async {
                 if (context.mounted) {
                   // Clear all app state data
                   await SharedPreferencesHelper.clearAllAppState();
-                  // Navigate to login screen
-                  context.pushNamedAndRemoveUntil(AppRoutes.loginScreen);
+                  // Navigate to login screen with parameter indicating logout
+                  if (context.mounted) {
+                    context.pushNamedAndRemoveUntil(AppRoutes.loginScreen,
+                        arguments: 'from_logout');
+                  }
                 }
               });
               // Show success message briefly
-              return _successLogout();
+              return _successLogout(context);
             } else {
               // Show logout confirmation dialog
               return _logoutContent(context);
@@ -75,7 +80,7 @@ Widget _errorLogout(BuildContext context, String error) {
       Lottie.asset(AppLottie.errorLottie, width: 100.w, height: 100.h),
       verticalSpace(24),
       Text(
-        'خطأ في تسجيل الخروج',
+        AppLocalizations.of(context)!.logoutError,
         textDirection: TextDirection.rtl,
         style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
           color: AppColors.darkBlue,
@@ -96,7 +101,7 @@ Widget _errorLogout(BuildContext context, String error) {
           onPressed: () {
             context.pop(); // Close dialog
           },
-          textButton: 'إغلاق',
+          textButton: AppLocalizations.of(context)!.close,
           verticalPadding: 12,
           backgroundColor: AppColors.brightRed,
           radius: 8,
@@ -106,7 +111,7 @@ Widget _errorLogout(BuildContext context, String error) {
   );
 }
 
-Widget _successLogout() {
+Widget _successLogout(BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.center,
@@ -114,7 +119,7 @@ Widget _successLogout() {
       Lottie.asset(AppLottie.successLottie, width: 150.w, height: 150.h),
       verticalSpace(24),
       Text(
-        'تم تسجيل الخروج بنجاح',
+        AppLocalizations.of(context)!.logoutSuccessful,
         textDirection: TextDirection.rtl,
         style: AppTextStyles.font16BlackSemiBoldLamaSans,
       ),
@@ -126,6 +131,7 @@ Widget _logoutContent(BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.center,
+    textDirection: LocalizationService.instance.textDirection,
     children: [
       Image.asset(
         AppImages.warningLogo,
@@ -134,8 +140,8 @@ Widget _logoutContent(BuildContext context) {
       ),
       verticalSpace(24),
       Text(
-        'هل انت متاكد؟',
-        textDirection: TextDirection.rtl,
+        AppLocalizations.of(context)!.areYouSure,
+        textDirection: LocalizationService.instance.textDirection,
         style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
           color: AppColors.darkBlue,
           fontWeight: FontWeightHelper.bold,
@@ -143,8 +149,8 @@ Widget _logoutContent(BuildContext context) {
       ),
       verticalSpace(4),
       Text(
-        'هل تريد تسجيل الخروج؟',
-        textDirection: TextDirection.rtl,
+        AppLocalizations.of(context)!.doYouWantToLogout,
+        textDirection: LocalizationService.instance.textDirection,
         style: AppTextStyles.font14LightGrayRegularLamaSans,
       ),
       verticalSpace(24),
@@ -158,7 +164,7 @@ Widget _logoutContent(BuildContext context) {
               onPressed: () {
                 context.pop();
               },
-              textButton: 'الغاء',
+              textButton: AppLocalizations.of(context)!.cancel,
               verticalPadding: 12,
               backgroundColor: AppColors.darkSunray,
               radius: 8,
@@ -171,7 +177,7 @@ Widget _logoutContent(BuildContext context) {
               context.read<ProfileCubit>().logout();
             },
             child: Text(
-              'تسجيل الخروج',
+              AppLocalizations.of(context)!.logout,
               style: AppTextStyles.font14LightGrayRegularLamaSans.copyWith(
                 fontWeight: FontWeightHelper.semiBold,
                 color: AppColors.brightRed,

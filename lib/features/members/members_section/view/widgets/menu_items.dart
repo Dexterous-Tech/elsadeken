@@ -1,5 +1,9 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MenuItemWidget extends StatefulWidget {
   final String title;
@@ -8,15 +12,15 @@ class MenuItemWidget extends StatefulWidget {
   final VoidCallback onTap;
 
   const MenuItemWidget({
-    Key? key,
+    super.key,
     required this.title,
     required this.backgroundColor,
     required this.avatarAsset,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
-  _MenuItemWidgetState createState() => _MenuItemWidgetState();
+  State<MenuItemWidget> createState() => _MenuItemWidgetState();
 }
 
 class _MenuItemWidgetState extends State<MenuItemWidget> {
@@ -24,16 +28,11 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isHighlighted = _isPressed;
-    final textColor = isHighlighted ? Colors.white : Colors.black;
-    final bgColor = _isPressed
-        ? AppColors.shimmeringBlush.withOpacity(0.8)
-        : widget.backgroundColor;
+    // final isHighlighted = _isPressed;
+    // final textColor = isHighlighted ? Colors.white : Colors.black;
+    final bgColor = _isPressed ? Color(0xffF0E7D6) : AppColors.white;
 
     return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) => setState(() => _isPressed = false),
-      onTapCancel: () => setState(() => _isPressed = false),
       onTap: () async {
         setState(() => _isPressed = true);
         await Future.delayed(const Duration(milliseconds: 200));
@@ -44,53 +43,44 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        height: 80,
+        height: 75.h,
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(50),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
+        ),
+        padding:
+            EdgeInsetsDirectional.symmetric(horizontal: 14.w, vertical: 10.h),
+        child: Row(
+          textDirection: LocalizationService.instance.textDirection,
+          children: [
+            _buildAvatar(),
+            horizontalSpace(14),
+            Text(
+              widget.title,
+              style: AppTextStyles.font14BlackSemiBoldLamaSans,
+              textDirection: LocalizationService.instance.textDirection,
+              textAlign: LocalizationService.instance.textAlignment,
+            ),
+            const Spacer(),
+            Icon(
+              Icons.arrow_forward_ios, // point left in LTR
+              size: 15.sp,
+              color: Color(0xff7F909F),
             ),
           ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: Row(
-            children: [
-              Icon(Icons.chevron_left, color: textColor, size: 28),
-              const Spacer(),
-              Text(
-                widget.title,
-                style: TextStyle(
-                  fontSize: 17,
-                  color: textColor,
-                ),
-                textDirection: TextDirection.rtl,
-              ),
-              const SizedBox(width: 20),
-              _buildAvatar(),
-            ],
-          ),
         ),
       ),
     );
   }
 
   Widget _buildAvatar() {
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
-      ),
-      child: ClipOval(
+    return Center(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(100),
         child: Image.asset(
+          width: 46.w,
+          height: 46.h,
           widget.avatarAsset,
-          fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             return Container(
               color: Colors.grey[300],

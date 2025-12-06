@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -59,15 +60,15 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+       widget.label.isEmpty ? SizedBox.shrink() :  Text(
           widget.label,
           style: AppTextStyles.font18JetMediumLamaSans,
-          textAlign: TextAlign.right,
+          textAlign: TextAlign.start,
         ),
-        verticalSpace(8),
+        verticalSpace(  widget.label.isEmpty ? 0  : 8),
         Container(
           padding: EdgeInsets.symmetric(
             horizontal: 12.w,
@@ -80,6 +81,7 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
             child: DropdownButton<String>(
               isExpanded: true,
               value: selectedValue,
+           dropdownColor: Colors.white,
               hint: Text(
                 widget.hint,
                 style: AppTextStyles.font16ChineseBlackMediumLamaSans,
@@ -89,7 +91,7 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Align(
-                    alignment: Alignment.centerRight,
+                    alignment: Alignment.center,
                     child: Text(
                       value,
                       style: AppTextStyles.font14BlackRegularLamaSans,

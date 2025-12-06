@@ -1,4 +1,6 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../../core/theme/app_color.dart';
@@ -9,7 +11,8 @@ class CustomNextAndPreviousButton extends StatelessWidget {
     super.key,
     required this.onNextPressed,
     required this.onPreviousPressed,
-    this.isNextEnabled = true, this.textButton,
+    this.isNextEnabled = true,
+    this.textButton,
   });
 
   final void Function() onNextPressed;
@@ -20,12 +23,12 @@ class CustomNextAndPreviousButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         Expanded(
           child: CustomElevatedButton(
             onPressed: isNextEnabled ? onNextPressed : () {},
-            textButton: textButton ?? 'التالي',
+            textButton: textButton ?? AppLocalizations.of(context)!.next,
             backgroundColor: isNextEnabled
                 ? null // Use default gradient
                 : AppColors.paleBrown.withValues(alpha: 0.5), // Disabled color
@@ -35,8 +38,8 @@ class CustomNextAndPreviousButton extends StatelessWidget {
         Expanded(
           child: CustomElevatedButton(
             onPressed: onPreviousPressed,
-            textButton: 'السابق',
-            backgroundColor: AppColors.desire.withValues(alpha: 0.474),
+            textButton: AppLocalizations.of(context)!.previous,
+            backgroundColor: AppColors.congoPink,
           ),
         ),
       ],

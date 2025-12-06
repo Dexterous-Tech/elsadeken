@@ -79,13 +79,15 @@ class ChatMessageBubble extends StatelessWidget {
                   bottomLeft: Radius.circular(!isCurrentUser ? 16.r : 4.r),
                   bottomRight: Radius.circular(!isCurrentUser ? 4.r : 16.r),
                 ),
-                border: !isCurrentUser ? Border.all(
-                  color: Colors.grey.shade200,
-                  width: 1,
-                ) : null,
+                border: !isCurrentUser
+                    ? Border.all(
+                        color: Colors.grey.shade200,
+                        width: 1,
+                      )
+                    : null,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -122,7 +124,7 @@ class ChatMessageBubble extends StatelessWidget {
                         Icon(
                           message.isRead ? Icons.done_all : Icons.done,
                           size: 14.w,
-                          color: Colors.blue[200],
+                          color: message.isRead ? Colors.blue[400] : Colors.grey[400],
                         ),
                       ],
                     ],

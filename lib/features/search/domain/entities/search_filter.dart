@@ -15,8 +15,8 @@ class SearchFilter {
   final int? weightFrom;
   final int? weightTo;
   final String? skinColor;
-  final String? qualificationId; 
-  final int? latest; 
+  final String? qualificationId;
+  final int? latest;
   final String? typeOfMarriage;
 
   SearchFilter({
@@ -87,11 +87,19 @@ class SearchFilter {
       "page": page,
     };
     if (username?.isNotEmpty ?? false) data["user_name"] = username;
-    if (nationality != null) data["nationality_id"] = nationality.toString();
-    if (city != null) data["city_id"] = city.toString();
-    if (country != null) data["country_id"] = country.toString();
-    if (maritalStatus?.isNotEmpty ?? false) data["type_of_marrige"] = maritalStatus;
-    if (socialStatus?.isNotEmpty ?? false) data["martital_status"] = socialStatus;
+    if (quickSearch?.isNotEmpty ?? false) data["fast_prompt"] = quickSearch;
+    if (nationality?.isNotEmpty ?? false) {
+      data["nationality_id"] = nationality.toString();
+    }
+    if (city?.isNotEmpty ?? false) data["city_id"] = city.toString();
+    if (country?.isNotEmpty ?? false) data["country_id"] = country.toString();
+    // Backend expects: type_of_marriage for marriage type, marital_status for social/marital status
+    if (typeOfMarriage?.isNotEmpty ?? false) {
+      data["type_of_marriage"] = typeOfMarriage;
+    }
+    if (maritalStatus?.isNotEmpty ?? false) {
+      data["marital_status"] = maritalStatus;
+    }
     if (ageFrom != null) data["from_age"] = ageFrom.toString();
     if (ageTo != null) data["to_age"] = ageTo.toString();
     if (weightFrom != null) data["from_weight"] = weightFrom.toString();
@@ -99,10 +107,11 @@ class SearchFilter {
     if (heightFrom != null) data["from_height"] = heightFrom.toString();
     if (heightTo != null) data["to_height"] = heightTo.toString();
     if (skinColor?.isNotEmpty ?? false) data["skin_color_id"] = skinColor;
-    if (qualificationId?.isNotEmpty ?? false) data["qualification_id"] = qualificationId;
+    if (qualificationId?.isNotEmpty ?? false) {
+      data["qualification_id"] = qualificationId;
+    }
     if (latest != null) data["latest"] = latest;
-    if (typeOfMarriage?.isNotEmpty ?? false) data["type_of_marriage"] = typeOfMarriage;
+    // type_of_marriage already added above if present
     return data;
   }
-
 }

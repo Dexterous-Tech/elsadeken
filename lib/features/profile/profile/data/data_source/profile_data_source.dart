@@ -1,6 +1,6 @@
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
-import 'package:elsadeken/features/profile/profile/data/models/logout_model.dart';
+import 'package:elsadeken/features/profile/profile/data/models/profile_action_model.dart';
 
 class ProfileDataSource {
   final ApiServices _apiServices;

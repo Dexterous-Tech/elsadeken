@@ -19,9 +19,9 @@ class ChatMessagesCubit extends Cubit<ChatMessagesState> {
         // If chat is deleted (404 error), show appropriate message
         if (error.statusCode == 404) {
           print('[ChatMessagesCubit] Chat not found (404) during initial load');
-          emit(ChatMessagesError("هذه المحادثة لم تعد موجودة"));
+          emit(ChatMessagesError("thisConversationNoLongerExists"));
         } else {
-          emit(ChatMessagesError(error.message ?? "حدث خطأ ما"));
+          emit(ChatMessagesError(error.message ?? "errorOccurred"));
         }
       },
       (chatMessages) => emit(ChatMessagesLoaded(chatMessages)),
@@ -31,35 +31,40 @@ class ChatMessagesCubit extends Cubit<ChatMessagesState> {
   /// Refresh chat messages without showing loading state
   Future<void> refreshChatMessages(String chatId) async {
     print('[ChatMessagesCubit] Refreshing messages for chat $chatId');
-    
+
     final result = await repo.getChatMessages(chatId);
 
     result.fold(
       (error) {
-        print('[ChatMessagesCubit] Error refreshing messages: ${error.message}');
-        
+        print(
+            '[ChatMessagesCubit] Error refreshing messages: ${error.message}');
+
         // If chat is deleted (404 error), stop auto-refresh to prevent spam
         if (error.statusCode == 404) {
-          print('[ChatMessagesCubit] Chat not found (404) - stopping auto-refresh');
+          print(
+              '[ChatMessagesCubit] Chat not found (404) - stopping auto-refresh');
           stopAutoRefresh();
-          emit(ChatMessagesError("هذه المحادثة لم تعد موجودة"));
+          emit(ChatMessagesError("thisConversationNoLongerExists"));
         } else {
-          emit(ChatMessagesError(error.message ?? "حدث خطأ ما"));
+          emit(ChatMessagesError(error.message ?? "errorOccurred"));
         }
       },
       (chatMessages) {
-        print('[ChatMessagesCubit] Successfully refreshed ${chatMessages.messages.length} messages');
+        print(
+            '[ChatMessagesCubit] Successfully refreshed ${chatMessages.messages.length} messages');
         emit(ChatMessagesLoaded(chatMessages));
       },
     );
   }
 
   /// Start auto-refresh timer
-  void startAutoRefresh(String chatId, {Duration interval = const Duration(seconds: 5)}) {
+  void startAutoRefresh(String chatId,
+      {Duration interval = const Duration(seconds: 5)}) {
     stopAutoRefresh(); // Stop any existing timer
-    
-    print('[ChatMessagesCubit] Starting auto-refresh for chat $chatId every ${interval.inSeconds} seconds');
-    
+
+    print(
+        '[ChatMessagesCubit] Starting auto-refresh for chat $chatId every ${interval.inSeconds} seconds');
+
     _refreshTimer = Timer.periodic(interval, (timer) {
       if (state is! ChatMessagesLoading) {
         print('[ChatMessagesCubit] Auto-refresh triggered for chat $chatId');

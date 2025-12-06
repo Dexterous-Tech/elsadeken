@@ -24,7 +24,7 @@ class SignupCubit extends Cubit<SignupState> {
   // Form keys
   GlobalKey<FormState> personalInfoFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> passwordsFormKey = GlobalKey<FormState>();
-  GlobalKey<FormState> registerInformationFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> generalInfoKey = GlobalKey<FormState>();
 
   // Signup form controllers
   TextEditingController nameController = TextEditingController();
@@ -105,7 +105,7 @@ class SignupCubit extends Cubit<SignupState> {
         educationalQualification: educationalQualificationController.text,
         financialSituation: financialSituationController.text,
         job: jobController.text,
-        income: incomeController.text,
+        incomeId: incomeController.text,
         healthCondition: healthConditionController.text,
         aboutMe: aboutMeController.text,
         lifePartner: lifePartnerController.text,
@@ -154,7 +154,7 @@ class SignupCubit extends Cubit<SignupState> {
             formData.educationalQualification ?? '';
         financialSituationController.text = formData.financialSituation ?? '';
         jobController.text = formData.job ?? '';
-        incomeController.text = formData.income ?? '';
+        incomeController.text = formData.incomeId ?? '';
         healthConditionController.text = formData.healthCondition ?? '';
         aboutMeController.text = formData.aboutMe ?? '';
         lifePartnerController.text = formData.lifePartner ?? '';
@@ -248,6 +248,12 @@ class SignupCubit extends Cubit<SignupState> {
   Future<void> registerInformation() async {
     emit(RegisterInformationLoading());
 
+    // Check if user is single and set children number to 0
+    bool isSingle = maritalStatusController.text.toLowerCase() == 'single';
+    if (isSingle) {
+      childrenNumberController.text = "0";
+    }
+
     // Add safety checks for required fields
     if (nationalIdController.text.isEmpty ||
         countryIdController.text.isEmpty ||
@@ -278,7 +284,7 @@ class SignupCubit extends Cubit<SignupState> {
     bool isMale =
         genderController.text == 'male' || genderController.text == 'ذكر';
     bool isFemale =
-        genderController.text == 'female' || genderController.text == 'أنثى';
+        genderController.text != 'male' && genderController.text != 'ذكر';
 
     if (isMale && beardController.text.isEmpty) {
       emit(RegisterInformationFailure("الرجاء اختيار حالة اللحية"));
@@ -311,7 +317,7 @@ class SignupCubit extends Cubit<SignupState> {
         educationalQualification:
             int.parse(educationalQualificationController.text),
         financialSituation: int.parse(financialSituationController.text),
-        job: jobController.text,
+        job: int.parse(jobController.text),
         income: int.parse(incomeController.text),
         healthCondition: int.parse(healthConditionController.text),
         aboutMe: aboutMeController.text,
@@ -327,7 +333,9 @@ class SignupCubit extends Cubit<SignupState> {
         log("Register information completed successfully");
         // Don't mark user as logged in after signup - they must login first
         // await SharedPreferencesHelper.setIsLoggedIn(true);
-        // Clear signup data after successful registration
+        // Clear all shared preferences data after successful registration
+        await SharedPreferencesHelper.clearAllAppState();
+        // Also clear signup-specific data
         await clearSignupData();
         emit(RegisterInformationSuccess(
             registerInformationResponseModel:

@@ -1,9 +1,6 @@
-import 'package:elsadeken/core/helper/app_images.dart';
-import 'package:elsadeken/core/helper/extensions.dart';
-import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
-import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
@@ -17,12 +14,37 @@ import 'package:elsadeken/core/widgets/dialog/success_dialog.dart'
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:elsadeken/features/profile/contact_us/presentation/manager/contact_us_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class ContactUsBody extends StatelessWidget {
+class ContactUsBody extends StatefulWidget {
   const ContactUsBody({super.key});
+
+  @override
+  State<ContactUsBody> createState() => _ContactUsBodyState();
+}
+
+class _ContactUsBodyState extends State<ContactUsBody> {
+  Future<void> openWhatsApp(String phoneNumber) async {
+    final Uri whatsapp = Uri.parse("https://wa.me/$phoneNumber");
+    if (!await launchUrl(whatsapp, mode: LaunchMode.externalApplication)) {
+      throw Exception("Could not launch WhatsApp");
+    }
+  }
+
+  Future<void> sendEmail(String email) async {
+    final Uri mail = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+    if (!await launchUrl(mail)) {
+      throw Exception("Could not launch email");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +56,7 @@ class ContactUsBody extends StatelessWidget {
           Navigator.pop(context); // Close loading dialog
           success_dialog.successDialog(
             context: context,
-            message: 'تم إرسال رسالتك بنجاح',
+            message: AppLocalizations.of(context)!.messageSentSuccessfully,
             onPressed: () {
               Navigator.pop(context);
               Navigator.pop(context);
@@ -53,126 +75,204 @@ class ContactUsBody extends StatelessWidget {
       },
       builder: (context, state) {
         return CustomProfileBody(
-          contentBody: SingleChildScrollView(
-            child: Form(
-              key: ContactUsCubit.get(context).formKey,
-              child: Column(
-                textDirection: TextDirection.rtl,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  ProfileHeader(title: 'إتصل بنا'),
-                  verticalSpace(50),
-                  Container(
-                    padding: EdgeInsets.only(
-                        left: 13.w, right: 13.w, top: 13.h, bottom: 16.w),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10).r,
-                        color:
-                            AppColors.lightCarminePink.withValues(alpha: 0.05)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'في حالة قمت بشراء بطاقة الصادقون و الصادقات من الوكيل المحلي ، فسيرسل لك رقم لتفعيل باقة التميز ، قم بإدخاله في الخانة اسفله و سيتم ترقية حسابك الى عضوية مميزة مباشرة',
-                          style: AppTextStyles.font13BlackMediumLamaSans
-                              .copyWith(
-                                  fontWeight: FontWeightHelper.regular,
-                                  color: AppColors.jet),
-                          textDirection: TextDirection.rtl,
-                          textAlign: TextAlign.center,
+          contentBody: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Form(
+                  key: ContactUsCubit.get(context).formKey,
+                  child: Column(
+                    textDirection: LocalizationService.instance.textDirection,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ProfileHeader(
+                          title: AppLocalizations.of(context)!.contactUs),
+                      verticalSpace(50),
+                      Container(
+                        padding: EdgeInsets.only(
+                            left: 13.w, right: 13.w, top: 13.h, bottom: 16.w),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10).r,
+                            color: AppColors.white),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!
+                                  .premiumCardDescription,
+                              style: AppTextStyles.font13BlackMediumLamaSans
+                                  .copyWith(
+                                      fontWeight: FontWeightHelper.regular,
+                                      color: AppColors.jet),
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                              textAlign: TextAlign.center,
+                            ),
+                            verticalSpace(32),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 34.w),
+                              child: Column(
+                                children: [
+                                  CustomTextFormField(
+                                    controller: ContactUsCubit.get(context)
+                                        .emailController,
+                                    hintText: AppLocalizations.of(context)!
+                                        .yourEmailAddress,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return AppLocalizations.of(context)!
+                                            .pleaseEnterEmail;
+                                      }
+                                      if (!RegExp(
+                                              r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                          .hasMatch(value)) {
+                                        return AppLocalizations.of(context)!
+                                            .pleaseEnterValidEmail;
+                                      }
+                                      return null;
+                                    },
+                                    borderColor: Color(0xffFFB74D),
+                                  ),
+                                  verticalSpace(8),
+                                  CustomTextFormField(
+                                    controller: ContactUsCubit.get(context)
+                                        .titleController,
+                                    hintText: AppLocalizations.of(context)!
+                                        .messageSubject,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return AppLocalizations.of(context)!
+                                            .pleaseEnterMessageSubject;
+                                      }
+                                      return null;
+                                    },
+                                    borderColor: Color(0xffFFB74D),
+                                  ),
+                                  verticalSpace(8),
+                                  CustomTextFormField(
+                                    controller: ContactUsCubit.get(context)
+                                        .descriptionController,
+                                    hintText: AppLocalizations.of(context)!
+                                        .writeYourMessage,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return AppLocalizations.of(context)!
+                                            .pleaseEnterMessageContent;
+                                      }
+                                      if (value.length < 10) {
+                                        return AppLocalizations.of(context)!
+                                            .messageMustBeMoreThan10Chars;
+                                      }
+                                      return null;
+                                    },
+                                    maxLines: 5,
+                                    borderColor: Color(0xffFFB74D),
+                                  ),
+                                  verticalSpace(16),
+                                  CustomElevatedButton(
+                                    height: 39.h,
+                                    onPressed: () {
+                                      ContactUsCubit.get(context).contactUs();
+                                    },
+                                    textButton:
+                                        AppLocalizations.of(context)!.send,
+                                  ),
+                                  verticalSpace(12),
+                                  //
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        verticalSpace(32),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 34.w),
-                          child: Column(
-                            children: [
-                              CustomTextFormField(
-                                controller:
-                                    ContactUsCubit.get(context).emailController,
-                                hintText: 'البريد الإلكتروني الخاص بك',
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'يرجى إدخال البريد الإلكتروني';
-                                  }
-                                  if (!RegExp(
-                                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                      .hasMatch(value)) {
-                                    return 'يرجى إدخال بريد إلكتروني صحيح';
-                                  }
-                                  return null;
-                                },
-                                borderColor: Color(0xffFFB74D),
-                              ),
-                              verticalSpace(8),
-                              CustomTextFormField(
-                                controller:
-                                    ContactUsCubit.get(context).titleController,
-                                hintText: 'موضوع الرسالة',
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'يرجى إدخال موضوع الرسالة';
-                                  }
-                                  return null;
-                                },
-                                borderColor: Color(0xffFFB74D),
-                              ),
-                              verticalSpace(8),
-                              CustomTextFormField(
-                                controller: ContactUsCubit.get(context)
-                                    .descriptionController,
-                                hintText: 'اكتب رسالتك',
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'يرجى إدخال محتوى الرسالة';
-                                  }
-                                  if (value.length < 10) {
-                                    return 'يجب أن تكون الرسالة أكثر من 10 أحرف';
-                                  }
-                                  return null;
-                                },
-                                maxLines: 5,
-                                borderColor: Color(0xffFFB74D),
-                              ),
-                              verticalSpace(16),
-                              CustomElevatedButton(
-                                height: 39.h,
-                                onPressed: () {
-                                  ContactUsCubit.get(context).contactUs();
-                                },
-                                textButton: 'ارســــــــل',
-                              ),
-                              verticalSpace(13),
-                              GestureDetector(
-                                onTap: () {
-                                  context.pushNamed(
-                                      AppRoutes.profileTechnicalSupportScreen);
-                                },
-                                child: Row(
-                                  textDirection: TextDirection.rtl,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      AppImages.contactHeadphoneProfile,
-                                      width: 17.w,
-                                      height: 17.h,
-                                    ),
-                                  
-                                  ],
-                                ),
-                              ),
-                            ],
+                      ),
+                      verticalSpace(16),
+                      Row(
+                        textDirection:
+                            LocalizationService.instance.textDirection,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: () => openWhatsApp("966573743330"),
+                            child: Icon(
+                              FontAwesomeIcons.whatsapp,
+                              color: Color(0xff25D366),
+                              size: 30.sp,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                          GestureDetector(
+                            onTap: () => sendEmail("sadiqeen1@hotmail.com"),
+                            child: Icon(
+                              FontAwesomeIcons.envelope,
+                              color: Color(0xffEA4335),
+                              size: 30.sp,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => sendEmail("alsaadiqin@hotmail.com"),
+                            child: Icon(
+                              FontAwesomeIcons.headset,
+                              color: Color(0xff007BFF),
+                              size: 30.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
+              )
+            ],
           ),
         );
       },
     );
   }
+
+  Widget contactOption({
+    required IconData icon,
+    required String contact,
+    required Color iconColor,
+    required void Function()? onTap,
+  }) {
+    return Row(
+      textDirection: LocalizationService.instance.textDirection,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          color: iconColor,
+        ),
+        horizontalSpace(8),
+        GestureDetector(
+          onTap: onTap,
+          child: Text(
+            contact,
+            style: AppTextStyles.font16BlackSemiBoldLamaSans
+                .copyWith(color: AppColors.sinopia),
+          ),
+        )
+      ],
+    );
+  }
+
+// contactOption(
+//   icon: FontAwesomeIcons.whatsapp,
+//   contact: '0573743330',
+//   iconColor: Color(0xff25D366),
+//   onTap: () => openWhatsApp("966573743330"),
+// ),
+// verticalSpace(8),
+// contactOption(
+//   icon: FontAwesomeIcons.envelope,
+//   contact: 'sadiqeen1@hotmail.com',
+//   iconColor: Color(0xffEA4335),
+//   onTap: () => sendEmail("sadiqeen1@hotmail.com"),
+// ),
+// verticalSpace(8),
+// contactOption(
+//   icon: FontAwesomeIcons.headset,
+//   contact: 'alsaadiqin@hotmail.com',
+//   iconColor: Color(0xff007BFF),
+//   onTap: () =>sendEmail("alsaadiqin@hotmail.com"),
+// ),
 }

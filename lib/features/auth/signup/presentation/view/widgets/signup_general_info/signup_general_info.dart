@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
-import '../../../../../../../core/theme/app_text_styles.dart';
+import '../../../../../../../core/services/localization_service.dart';
 import '../../../../../../../core/theme/spacing.dart';
-import '../../../../../../../core/widgets/forms/custom_text_form_field.dart';
+import '../../../../../../../core/widgets/forms/custom_carousel_text_field.dart';
+import '../../../../../../../core/shared/shared_preferences_helper.dart';
 import '../../../manager/signup_cubit.dart';
 import '../custom_next_and_previous_button.dart';
 
@@ -23,6 +24,63 @@ class SignupGeneralInfo extends StatefulWidget {
 }
 
 class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
+  bool _isSingle = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadIsSingleStatus();
+  }
+
+  Future<void> _loadIsSingleStatus() async {
+    final isSingle = await SharedPreferencesHelper.getIsSingle();
+    if (mounted) {
+      setState(() {
+        _isSingle = isSingle;
+      });
+
+      // If user is single, set children number to "0" (this will be handled in cubit)
+      if (_isSingle) {
+        final cubit = context.read<SignupCubit>();
+        cubit.childrenNumberController.text = "0";
+      }
+    }
+  }
+
+  // Helper methods to generate lists for dropdowns
+  List<String> get _ageList {
+    List<String> ages = [];
+    for (int i = 18; i <= 99; i++) {
+      ages.add(i.toString());
+    }
+    return ages;
+  }
+
+  List<String> get _childrenList {
+    List<String> children = [];
+    // Start from 0 to 20 (include 0 option)
+    for (int i = 0; i <= 20; i++) {
+      children.add(i.toString());
+    }
+    return children;
+  }
+
+  List<String> get _weightList {
+    List<String> weights = [];
+    for (int i = 30; i <= 200; i++) {
+      weights.add(i.toString());
+    }
+    return weights;
+  }
+
+  List<String> get _heightList {
+    List<String> heights = [];
+    for (int i = 50; i <= 220; i++) {
+      heights.add(i.toString());
+    }
+    return heights;
+  }
+
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<SignupCubit>();
@@ -33,128 +91,72 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: IntrinsicHeight(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                textDirection: LocalizationService.instance.textDirection,
                 children: [
-                  Text('كم عمرك ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    controller: cubit.ageController,
-                    keyboardType: TextInputType.number,
-                    hintText: '25',
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'العمر مطلوب';
-                      }
-                      final age = int.tryParse(value);
-                      if (age == null) {
-                        return 'يرجى إدخال رقم صحيح';
-                      }
-                      if (age > 100) {
-                        return 'العمر لا يمكن أن يتجاوز 100';
-                      }
-                      return null;
-                    },
+                  CustomCarouselTextField(
+                    label: AppLocalizations.of(context)!.howOldAreYou,
+                    items: _ageList,
+                    hintText: AppLocalizations.of(context)!.age,
+                    initialValue: cubit.ageController.text.isNotEmpty
+                        ? cubit.ageController.text
+                        : null,
                     onChanged: (value) {
+                      cubit.ageController.text = value;
                       setState(() {}); // Trigger rebuild for validation
                     },
                   ),
                   verticalSpace(40),
-                  Text('كم عدد الاطفال ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    controller: cubit.childrenNumberController,
-                    keyboardType: TextInputType.number,
-                    hintText: '0',
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'عدد الأطفال مطلوب';
-                      }
-                      final children = int.tryParse(value);
-
-                      if (children == null) {
-                        return 'يرجى إدخال رقم صحيح';
-                      }
-                      if (children > 100) {
-                        return 'عدد الاطفال لا يمكن أن يتجاوز 100';
-                      }
-                      return null;
-                    },
+                  // Only show children field if user is not single
+                  if (!_isSingle) ...[
+                    CustomCarouselTextField(
+                      label: AppLocalizations.of(context)!.howManyChildren,
+                      items: _childrenList,
+                      hintText: AppLocalizations.of(context)!.children,
+                      initialValue:
+                          cubit.childrenNumberController.text.isNotEmpty
+                              ? cubit.childrenNumberController.text
+                              : null,
+                      onChanged: (value) {
+                        cubit.childrenNumberController.text = value;
+                        setState(() {}); // Trigger rebuild for validation
+                      },
+                    ),
+                    verticalSpace(40),
+                  ],
+                  CustomCarouselTextField(
+                    label: AppLocalizations.of(context)!.howMuchDoYouWeigh,
+                    items: _weightList,
+                    hintText: AppLocalizations.of(context)!.weight,
+                    initialValue: cubit.weightController.text.isNotEmpty
+                        ? cubit.weightController.text
+                        : null,
                     onChanged: (value) {
+                      cubit.weightController.text = value;
                       setState(() {}); // Trigger rebuild for validation
                     },
                   ),
                   verticalSpace(40),
-                  Text('كم وزنك (كجم) ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    controller: cubit.weightController,
-                    keyboardType: TextInputType.number,
-                    hintText: '70',
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'الوزن مطلوب';
-                      }
-                      final weight = int.tryParse(value);
-                      if (weight == null) {
-                        return 'يرجى إدخال رقم صحيح';
-                      }
-                      if (weight > 200) {
-                        return 'الوزن لا يمكن أن يتجاوز 200';
-                      }
-                      return null;
-                    },
+                  CustomCarouselTextField(
+                    label: AppLocalizations.of(context)!.howTallAreYou,
+                    items: _heightList,
+                    hintText: AppLocalizations.of(context)!.height,
+                    initialValue: cubit.heightController.text.isNotEmpty
+                        ? cubit.heightController.text
+                        : null,
                     onChanged: (value) {
-                      setState(() {}); // Trigger rebuild for validation
-                    },
-                  ),
-                  verticalSpace(40),
-                  Text('كم طولك (سم) ؟',
-                      textDirection: TextDirection.rtl,
-                      style: AppTextStyles.font23ChineseBlackBoldLamaSans),
-                  verticalSpace(16),
-                  CustomTextFormField(
-                    controller: cubit.heightController,
-                    keyboardType: TextInputType.number,
-                    hintText: '180',
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly, // ✅ Only numbers
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'الطول مطلوب';
-                      }
-                      final height = int.tryParse(value);
-                      if (height == null) {
-                        return 'يرجى إدخال رقم صحيح';
-                      }
-                      if (height > 500) {
-                        return 'لا يمكن ان يصل الطول الي هذا الحد';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
+                      cubit.heightController.text = value;
                       setState(() {}); // Trigger rebuild for validation
                     },
                   ),
                   verticalSpace(50),
                   Spacer(),
                   CustomNextAndPreviousButton(
-                    onNextPressed: widget.onNextPressed,
+                    onNextPressed: () {
+                      if (_canProceedToNext(cubit)) {
+                        widget.onNextPressed();
+                      }
+                    },
                     onPreviousPressed: widget.onPreviousPressed,
                     isNextEnabled: _canProceedToNext(cubit),
                   ),
@@ -168,16 +170,13 @@ class _SignupGeneralInfoState extends State<SignupGeneralInfo> {
   }
 
   bool _canProceedToNext(SignupCubit cubit) {
-    // Check if all controllers have non-empty values
-    bool hasAge = cubit.ageController.text.trim().isNotEmpty &&
-        int.tryParse(cubit.ageController.text) != null;
-    bool hasChildrenNumber =
-        cubit.childrenNumberController.text.trim().isNotEmpty &&
-            int.tryParse(cubit.childrenNumberController.text) != null;
-    bool hasWeight = cubit.weightController.text.trim().isNotEmpty &&
-        int.tryParse(cubit.weightController.text) != null;
-    bool hasHeight = cubit.heightController.text.trim().isNotEmpty &&
-        int.tryParse(cubit.heightController.text) != null;
+    // Since we're using dropdowns with predefined values, we just need to check if values are not empty
+    bool hasAge = cubit.ageController.text.trim().isNotEmpty;
+    bool hasChildrenNumber = _isSingle
+        ? true
+        : cubit.childrenNumberController.text.trim().isNotEmpty;
+    bool hasWeight = cubit.weightController.text.trim().isNotEmpty;
+    bool hasHeight = cubit.heightController.text.trim().isNotEmpty;
 
     return hasAge && hasChildrenNumber && hasWeight && hasHeight;
   }

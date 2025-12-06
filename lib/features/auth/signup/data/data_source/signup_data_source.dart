@@ -46,14 +46,15 @@ class SignupDataSource {
 
   Future<List<GeneralInfoResponseModels>> getGeneralInfo(
       String endpoint) async {
-    var response = await _apiServices.get(endpoint: endpoint);
+    var response =
+        await _apiServices.get(endpoint: endpoint, requiresAuth: true);
 
     List<dynamic> jsonList = response.data;
 
-    List<GeneralInfoResponseModels> skinColors = jsonList
+    List<GeneralInfoResponseModels> generalList = jsonList
         .map((json) => GeneralInfoResponseModels.fromJson(json))
         .toList();
-    return skinColors;
+    return generalList;
   }
 
   Future<SignupResponseModel> signup(

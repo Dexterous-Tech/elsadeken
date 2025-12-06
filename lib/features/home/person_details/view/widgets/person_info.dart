@@ -4,16 +4,19 @@ import 'package:elsadeken/features/home/person_details/data/models/person_model.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 
 import '../../../../../core/routes/app_routes.dart';
 import '../../../../chat/data/models/chat_room_model.dart';
 import '../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
 import '../../../../chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
+import '../../../../profile/profile_details/presentation/manager/profile_details_cubit.dart';
 
 class PersonInfoSheet extends StatefulWidget {
   final PersonModel person;
 
-  const PersonInfoSheet({Key? key, required this.person}) : super(key: key);
+  const PersonInfoSheet({super.key, required this.person});
 
   @override
   State<PersonInfoSheet> createState() => _PersonInfoSheetState();
@@ -23,6 +26,14 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   final DraggableScrollableController _controller =
       DraggableScrollableController();
 
+  late PersonModel _currentPerson;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentPerson = widget.person;
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -31,155 +42,198 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
 
   /// Handle favorite button press
   void _handleFavoritePress() {
-    // Add your favorite functionality here
-    // For example, you could:
-    // - Toggle favorite status
-    // - Show a snackbar
-    // - Navigate to a different screen
-    // - Call an API to update favorite status
-    print('Favorite button pressed for user: ${widget.person.name}');
+    print('Favorite button pressed for user: ${_currentPerson.name}');
 
-    // Example: Show a snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('تم إضافة ${widget.person.name} إلى المفضلة'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: Colors.green,
-      ),
-    );
+    // Call the likeUser method from ProfileDetailsCubit
+    context.read<ProfileDetailsCubit>().likeUser(_currentPerson.id);
   }
 
   /// Format the createdAt date string to a readable format
-  String _formatCreatedAt(String createdAt) {
+  String _getRegisteredSince(String createdAt) {
+    if (createdAt.isEmpty) return AppLocalizations.of(context)!.notAvailable;
+
     try {
-      if (createdAt.isEmpty) return 'غير محدد';
-
-      final date = DateTime.tryParse(createdAt);
-      if (date == null) return 'غير محدد';
-
+      // Parse the createdAt date
+      final createdDate = DateTime.parse(createdAt);
       final now = DateTime.now();
-      final difference = now.difference(date);
+      final difference = now.difference(createdDate);
+      final days = difference.inDays;
 
-      if (difference.inDays == 0) {
-        return 'اليوم';
-      } else if (difference.inDays == 1) {
-        return 'أمس';
-      } else if (difference.inDays < 7) {
-        return 'منذ ${difference.inDays} أيام';
-      } else if (difference.inDays < 30) {
-        final weeks = (difference.inDays / 7).floor();
-        return 'منذ $weeks أسابيع';
-      } else if (difference.inDays < 365) {
-        final months = (difference.inDays / 30).floor();
-        return 'منذ $months أشهر';
+      if (days == 0) {
+        return AppLocalizations.of(context)!.sinceToday;
+      } else if (days == 1) {
+        return AppLocalizations.of(context)!.oneDayAgo;
+      } else if (days < 7) {
+        return AppLocalizations.of(context)!.daysAgo(days.toString());
+      } else if (days < 30) {
+        final weeks = (days / 7).floor();
+        if (weeks == 1) {
+          return AppLocalizations.of(context)!.oneWeekAgo;
+        } else {
+          return AppLocalizations.of(context)!.weeksAgo(weeks.toString());
+        }
+      } else if (days < 365) {
+        final months = (days / 30).floor();
+        if (months == 1) {
+          return AppLocalizations.of(context)!.oneMonthAgo;
+        } else {
+          return AppLocalizations.of(context)!.monthsAgo(months.toString());
+        }
       } else {
-        final years = (difference.inDays / 365).floor();
-        return 'منذ $years سنوات';
+        final years = (days / 365).floor();
+        if (years == 1) {
+          return AppLocalizations.of(context)!.oneYearAgo;
+        } else {
+          return AppLocalizations.of(context)!.yearsAgo(years.toString());
+        }
       }
     } catch (e) {
-      print('Error formatting createdAt: $e');
-      return 'غير محدد';
+      return AppLocalizations.of(context)!.notAvailable;
     }
   }
 
   /// Format the lastSeen date string to a readable format
-  String _formatLastSeen(String? lastSeen) {
-    if (lastSeen == null || lastSeen.isEmpty) return 'متواجد حاليا';
+  String _getLastVisit(String? lastSeen) {
+    if (lastSeen == null || lastSeen.isEmpty) {
+      return AppLocalizations.of(context)!.currentlyOnline;
+    }
 
     try {
-      final lastSeenDate = DateTime.tryParse(lastSeen);
-      if (lastSeenDate == null) return 'متواجد حاليا';
-
+      // Parse the lastSeen date
+      final lastSeenDate = DateTime.parse(lastSeen);
       final now = DateTime.now();
       final difference = now.difference(lastSeenDate);
       final minutes = difference.inMinutes;
       final hours = difference.inHours;
       final days = difference.inDays;
 
-      // If last seen is within 5 minutes, show "متواجد حاليا"
+      // If last seen is within 5 minutes, show "currently online"
       if (minutes < 5) {
-        return 'متواجد حاليا';
+        return AppLocalizations.of(context)!.currentlyOnline;
       } else if (minutes < 60) {
-        return 'منذ $minutes دقيقة';
+        return AppLocalizations.of(context)!.minutesAgo(minutes.toString());
       } else if (hours < 24) {
         if (hours == 1) {
-          return 'منذ ساعة واحدة';
+          return AppLocalizations.of(context)!.oneHourAgo;
         } else {
-          return 'منذ $hours ساعات';
+          return AppLocalizations.of(context)!.hoursAgo(hours.toString());
         }
       } else if (days < 7) {
         if (days == 1) {
-          return 'منذ يوم واحد';
+          return AppLocalizations.of(context)!.oneDayAgo;
         } else {
-          return 'منذ $days أيام';
+          return AppLocalizations.of(context)!.daysAgo(days.toString());
         }
       } else if (days < 30) {
         final weeks = (days / 7).floor();
         if (weeks == 1) {
-          return 'منذ أسبوع واحد';
+          return AppLocalizations.of(context)!.oneWeekAgo;
         } else {
-          return 'منذ $weeks أسابيع';
+          return AppLocalizations.of(context)!.weeksAgo(weeks.toString());
         }
       } else if (days < 365) {
         final months = (days / 30).floor();
         if (months == 1) {
-          return 'منذ شهر واحد';
+          return AppLocalizations.of(context)!.oneMonthAgo;
         } else {
-          return 'منذ $months أشهر';
+          return AppLocalizations.of(context)!.monthsAgo(months.toString());
         }
       } else {
         final years = (days / 365).floor();
         if (years == 1) {
-          return 'منذ سنة واحدة';
+          return AppLocalizations.of(context)!.oneYearAgo;
         } else {
-          return 'منذ $years سنوات';
+          return AppLocalizations.of(context)!.yearsAgo(years.toString());
         }
       }
     } catch (e) {
-      print('Error formatting lastSeen: $e');
-      return 'متواجد حاليا';
+      return AppLocalizations.of(context)!.notAvailable;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      controller: _controller,
-      initialChildSize: 0.5,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      snap: true,
-      snapSizes: const [0.5, 0.6, 0.95],
-      builder: (context, scrollController) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-          ),
-          child: Column(
-            children: [
-              _buildDragHandle(),
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(20),
-                  children: [
-                    _buildPersonHeader(),
-                    const SizedBox(height: 20),
-                    _buildAboutSection(),
-                    const SizedBox(height: 30),
-                    _buildLogTable(),
-                    const SizedBox(height: 30),
-                    _buildDataTable(),
-                    const SizedBox(height: 30),
-                    Center(child: _buildActionButtons()),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
+    return BlocListener<ProfileDetailsCubit, ProfileDetailsState>(
+      listener: (context, state) {
+        if (state is LikeUserSuccess) {
+          // Update the person's favorite status
+          setState(() {
+            _currentPerson = _currentPerson.copyWith(
+              isFavorite: !_currentPerson.isFavorite,
+            );
+          });
+
+          // Show success message from response
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.profileDetailsActionResponseModel.message ??
+                  (_currentPerson.isFavorite
+                      ? AppLocalizations.of(context)!
+                          .addedToFavorites(_currentPerson.name)
+                      : AppLocalizations.of(context)!.removeFromFavorites)),
+              duration: const Duration(seconds: 2),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else if (state is LikeUserFailure) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error),
+              duration: const Duration(seconds: 2),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       },
+      child: DraggableScrollableSheet(
+        controller: _controller,
+        initialChildSize: 0.5,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        snap: true,
+        snapSizes: const [0.5, 0.6, 0.95],
+        builder: (context, scrollController) {
+          return Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.cosmicLatte,
+                  AppColors.antiqueWhite,
+                ],
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: LocalizationService.instance.textDirection,
+              children: [
+                _buildDragHandle(),
+                Expanded(
+                  child: ListView(
+                    controller: scrollController,
+                    padding: const EdgeInsets.all(20),
+                    children: [
+                      _buildPersonHeader(),
+                      const SizedBox(height: 20),
+                      _buildAboutSection(),
+                      const SizedBox(height: 30),
+                      _buildLogTable(),
+                      const SizedBox(height: 30),
+                      _buildDataTable(),
+                      const SizedBox(height: 30),
+                      Center(child: _buildActionButtons()),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -209,31 +263,16 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildPersonHeader() {
-    final p = widget.person;
+    final p = _currentPerson;
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      textDirection: LocalizationService.instance.textDirection,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        GestureDetector(
-          onTap: () => _handleFavoritePress(),
-          child: Container(
-            width: 40.w,
-            height: 40.h,
-            decoration: const BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.favorite,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
-        ),
-        SizedBox(width: 12.w),
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            textDirection: LocalizationService.instance.textDirection,
             children: [
               Text(
                 p.name,
@@ -248,9 +287,25 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                   fontSize: 14.sp,
                   color: Colors.grey,
                 ),
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
               ),
             ],
+          ),
+        ),
+        GestureDetector(
+          onTap: () => _handleFavoritePress(),
+          child: Container(
+            width: 40.w,
+            height: 40.h,
+            decoration: BoxDecoration(
+              color: p.isFavorite ? Colors.red : Colors.grey[300],
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              p.isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: p.isFavorite ? Colors.white : Colors.grey[600],
+              size: 20,
+            ),
           ),
         ),
       ],
@@ -258,21 +313,39 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildAboutSection() {
-    final p = widget.person;
+    final p = _currentPerson;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'عن الشخص',
+        Text(
+          AppLocalizations.of(context)!.aboutPerson,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
         ),
-        const SizedBox(height: 8),
+        verticalSpace(8),
         Text(
           p.attribute.aboutMe,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
+            height: 1.5,
+          ),
+        ),
+        verticalSpace(16),
+        Text(
+          AppLocalizations.of(context)!.lifePartner,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+          textDirection: LocalizationService.instance.textDirection,
+        ),
+        verticalSpace(8),
+        Text(
+          p.attribute.lifePartner,
           style: const TextStyle(
             fontSize: 14,
             color: Colors.grey,
@@ -284,10 +357,16 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildLogTable() {
-    final p = widget.person;
+    final p = _currentPerson;
     final data = [
-      {'label': 'مسجل منذ', 'value': _formatCreatedAt(p.createdAt)},
-      {'label': 'تاريخ آخر زيادة', 'value': _formatLastSeen(p.lastSeen)},
+      {
+        'label': AppLocalizations.of(context)!.registeredSince,
+        'value': _getRegisteredSince(p.createdAt)
+      },
+      {
+        'label': AppLocalizations.of(context)!.lastVisitDate,
+        'value': _getLastVisit(p.lastSeen)
+      },
     ];
 
     return Container(
@@ -296,13 +375,14 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
+        textDirection: LocalizationService.instance.textDirection,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
@@ -312,15 +392,15 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
             ),
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Padding(
-              padding: EdgeInsets.only(right: 15),
-              child: const Text(
-                'تاريخ السجل',
+              padding: EdgeInsetsDirectional.only(start: 15),
+              child: Text(
+                AppLocalizations.of(context)!.historyRecord,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
               ),
             ),
           ),
@@ -332,8 +412,18 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    textDirection: LocalizationService.instance.textDirection,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      Text(
+                        item['label']!,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Spacer(),
                       Container(
                         width: 150.w,
                         padding: const EdgeInsets.symmetric(
@@ -350,14 +440,6 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
-                        ),
-                      ),
-                      Text(
-                        item['label']!,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
@@ -372,17 +454,80 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
   }
 
   Widget _buildDataTable() {
-    final p = widget.person;
+    final p = _currentPerson;
+    final isSingle = p.attribute.maritalStatus ==
+            AppLocalizations.of(context)!.singleMale ||
+        p.attribute.maritalStatus == AppLocalizations.of(context)!.singleFemale;
     final data = [
-      {'label': 'الجنسيه', 'value': p.attribute.nationality},
-      {'label': 'الاقامه', 'value': p.attribute.city},
-      {'label': 'المدينه', 'value': p.attribute.city},
-      {'label': 'نوع الزواج', 'value': p.attribute.typeOfMarriage},
-      {'label': 'الحاله الاجتماعيه', 'value': p.attribute.maritalStatus},
-      {'label': 'عدد الاطفال', 'value': p.attribute.children.toString()},
-      {'label': 'لون البشره', 'value': p.attribute.skinColor},
-      {'label': 'الطول', 'value': "${p.attribute.height} سم"},
-      {'label': 'الوزن', 'value': "${p.attribute.weight} كجم"},
+      {
+        'label': AppLocalizations.of(context)!.nationality,
+        'value': p.attribute.nationality
+      },
+      {
+        'label': AppLocalizations.of(context)!.residence,
+        'value': p.attribute.city
+      },
+      {'label': AppLocalizations.of(context)!.city, 'value': p.attribute.city},
+      {
+        'label': AppLocalizations.of(context)!.typeOfMarriage,
+        'value': p.attribute.typeOfMarriage
+      },
+      {
+        'label': AppLocalizations.of(context)!.maritalStatus,
+        'value': p.attribute.maritalStatus
+      },
+      // 👇 Only add numberOfChildren if not single
+      if (!isSingle)
+        {
+          'label': AppLocalizations.of(context)!.numberOfChildren,
+          'value': p.attribute.children.toString()
+        },
+
+      {
+        'label': AppLocalizations.of(context)!.skinColor,
+        'value': p.attribute.skinColor
+      },
+      {
+        'label': AppLocalizations.of(context)!.height,
+        'value': "${p.attribute.height} ${AppLocalizations.of(context)!.cm}"
+      },
+      {
+        'label': AppLocalizations.of(context)!.weight,
+        'value': "${p.attribute.weight} ${AppLocalizations.of(context)!.kg}"
+      },
+      {
+        'label': AppLocalizations.of(context)!.educationalQualification,
+        'value': p.attribute.qualification
+      },
+      {
+        'label': AppLocalizations.of(context)!.financialStatusTitle,
+        'value': p.attribute.financialSituation
+      },
+      {'label': AppLocalizations.of(context)!.job, 'value': p.attribute.job},
+      {
+        'label': AppLocalizations.of(context)!.monthlyIncome,
+        'value': p.attribute.income
+      },
+      {
+        'label': AppLocalizations.of(context)!.healthStatus,
+        'value': p.attribute.healthCondition
+      },
+      {
+        'label': AppLocalizations.of(context)!.smoking,
+        'value': p.attribute.smoking
+      },
+      {
+        'label': AppLocalizations.of(context)!.religiousCommitment,
+        'value': p.attribute.religiousCommitment
+      },
+      {
+        'label': p.gender == 'male' || p.gender == 'ذكر'
+            ? AppLocalizations.of(context)!.beard
+            : AppLocalizations.of(context)!.hijab,
+        'value': p.gender == 'male' || p.gender == 'ذكر'
+            ? p.attribute.beard
+            : p.attribute.hijab,
+      },
     ];
 
     return Container(
@@ -391,14 +536,14 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -407,26 +552,37 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               borderRadius: BorderRadius.circular(2),
             ),
             alignment: Alignment.centerRight,
-            child: const Text(
-              'المعلومات',
+            child: Text(
+              AppLocalizations.of(context)!.information,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              textDirection: LocalizationService.instance.textDirection,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: data.map((item) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    textDirection: LocalizationService.instance.textDirection,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      Text(
+                        item['label']!,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Spacer(),
                       Container(
                         width: 150.w,
                         padding: const EdgeInsets.symmetric(
@@ -436,21 +592,15 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          item['value']!,
+                          item['value']!.isEmpty
+                              ? AppLocalizations.of(context)!.noData
+                              : item['value']!,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Color.fromARGB(255, 46, 34, 30),
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
-                        ),
-                      ),
-                      Text(
-                        item['label']!,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
@@ -480,7 +630,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -496,62 +646,74 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
         GestureDetector(
           onTap: () async {
             try {
+              print(
+                  '🔍 [PersonInfo] Message icon tapped for user ID: ${_currentPerson.id}');
+
               // Check if there's an existing chat room first
               final chatListCubit = context.read<ChatListCubit>();
-              print(
-                  '🔍 Looking for existing chat room for user ID: ${widget.person.id}');
 
-              // Check if chat list is already loaded, if not, load it silently
+              // Check if chat list is already loaded, if not, load it
               if (chatListCubit.state is! ChatListLoaded) {
-                print('🔄 Chat list not loaded, loading silently...');
-                await chatListCubit.silentRefreshChatList();
+                print('🔄 [PersonInfo] Chat list not loaded, loading now...');
+                await chatListCubit.forceRefreshChatList();
+
+                // Wait a bit for the state to update
+                await Future.delayed(const Duration(milliseconds: 500));
               } else {
-                print('✅ Chat list already loaded');
+                print('✅ [PersonInfo] Chat list already loaded');
               }
 
+              // Find existing chat room between current user and this profile user
               final existingChatRoom =
-                  chatListCubit.findExistingChatRoom(widget.person.id);
+                  chatListCubit.findExistingChatRoom(_currentPerson.id);
 
               if (existingChatRoom != null) {
-                print('✅ Found existing chat room: ${existingChatRoom.id}');
+                print(
+                    '✅ [PersonInfo] Found existing chat room: ${existingChatRoom.id}, navigating to it');
                 // Navigate to existing chat room
-                Navigator.pushNamed(
-                  context,
-                  AppRoutes.chatConversationScreen,
-                  arguments: {
-                    "chatRoom": existingChatRoom,
-                  },
-                );
+                if (mounted) {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.chatConversationScreen,
+                    arguments: {
+                      "chatRoom": existingChatRoom,
+                    },
+                  );
+                }
               } else {
                 print(
-                    '🆕 No existing chat room found, creating new temporary chat');
-                // Create new temporary chat room
+                    '🆕 [PersonInfo] No existing chat room found, creating new temporary chat');
+                // Create new temporary chat room for new conversation
+                if (mounted) {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.chatConversationScreen,
+                    arguments: {
+                      "chatRoom": ChatRoomModel.fromUser(
+                        userId: _currentPerson.id,
+                        userName: _currentPerson.name,
+                        userImage: _currentPerson.image,
+                      ),
+                    },
+                  );
+                }
+              }
+            } catch (e) {
+              print('❌ [PersonInfo] Error in message icon onTap: $e');
+              // Fallback to creating new chat
+              if (mounted) {
                 Navigator.pushNamed(
                   context,
                   AppRoutes.chatConversationScreen,
                   arguments: {
                     "chatRoom": ChatRoomModel.fromUser(
-                      userId: widget.person.id,
-                      userName: widget.person.name,
-                      userImage: widget.person.image,
+                      userId: _currentPerson.id,
+                      userName: _currentPerson.name,
+                      userImage: _currentPerson.image,
                     ),
                   },
                 );
               }
-            } catch (e) {
-              print('⚠️ Error in message button onTap: $e');
-              // Fallback to creating new temporary chat room
-              Navigator.pushNamed(
-                context,
-                AppRoutes.chatConversationScreen,
-                arguments: {
-                  "chatRoom": ChatRoomModel.fromUser(
-                    userId: widget.person.id,
-                    userName: widget.person.name,
-                    userImage: widget.person.image,
-                  ),
-                },
-              );
             }
           },
           child: Container(
@@ -562,7 +724,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),

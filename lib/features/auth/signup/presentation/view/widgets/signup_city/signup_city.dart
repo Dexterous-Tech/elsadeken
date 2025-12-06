@@ -1,3 +1,5 @@
+import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -47,12 +49,12 @@ class _SignupCityState extends State<SignupCity> {
           Expanded(
             child: Center(
               child: Text(
-                'يرجى اختيار الدولة أولاً',
+                AppLocalizations.of(context)!.youShouldChooseCountryFirst,
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.grey[600],
                 ),
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
               ),
             ),
           )

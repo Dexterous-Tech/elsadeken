@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/helper/error_message_helper.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
-import 'package:elsadeken/features/chat/presentation/widgets/chat_appBar.dart';
+import 'package:elsadeken/features/chat/presentation/widgets/chat_app_bar.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +20,6 @@ import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_state.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_state.dart';
-import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:elsadeken/features/chat/data/services/chat_message_service.dart';
@@ -35,14 +38,15 @@ class ChatConversationScreen extends StatefulWidget {
 
 class _ChatConversationScreenState extends State<ChatConversationScreen>
     with WidgetsBindingObserver {
-
-
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<ChatMessage> _messages = [];
   int? _currentUserId;
   String _currentUserName = '';
   String _currentUserImage = '';
+
+  // New variables for sender and receiver images
+  String _receiverImage = '';
 
   // Stream subscriptions for real-time updates
   StreamSubscription<PusherMessageModel>? _messageSubscription;
@@ -53,44 +57,122 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   // Simplified connection state
   bool _isPusherSetup = false;
 
+  // Cubit references for safe disposal
+  ChatMessagesCubit? _chatMessagesCubit;
+  PusherCubit? _pusherCubit;
+
+  // Timer for periodic read status refresh
+  Timer? _readStatusRefreshTimer;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
+    _receiverImage = widget.chatRoom.image;
+
     // Load chat messages immediately for faster UI
     _loadChatMessagesEarly();
 
-    // Load user profile and setup real-time connections in parallel
-    _loadCurrentUserProfile();
+    // Load cached user info and setup real-time connections in parallel
+    _loadCurrentUserFromCache();
     _setupRealTimeListeners();
     _setupScrollListener();
+
+    // Mark messages as read when entering the chat
+    _markMessagesAsReadOnEnter();
+
+    // Start periodic read status refresh (lightweight check every 10 seconds)
+    _startReadStatusRefresh();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Store cubit references safely for disposal
+    try {
+      _chatMessagesCubit ??= context.read<ChatMessagesCubit>();
+      _pusherCubit ??= context.read<PusherCubit>();
+      print('🔗 Cubit references stored safely');
+    } catch (e) {
+      print('⚠️ Error storing cubit references: $e');
+    }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      // Check connection health on resume
+      // Check connection health on resume and re-establish if needed
       _checkPusherConnectionHealth();
+      _loadCurrentUserFromCache();
 
-      // Resume auto-refresh when app is resumed
+      // Minimal refresh - only if Pusher is not working
       if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null) {
-        context.read<ChatMessagesCubit>().startAutoRefresh(widget.chatRoom.id);
+        _checkAndStartMinimalRefresh();
+      }
+
+      // Resume read status refresh
+      if (_readStatusRefreshTimer == null) {
+        _startReadStatusRefresh();
       }
     } else if (state == AppLifecycleState.paused) {
-      // Stop auto-refresh when app is paused to save resources
-      context.read<ChatMessagesCubit>().stopAutoRefresh();
+      // Stop any backup refresh when app is paused to save resources using stored cubit reference
+      if (_chatMessagesCubit != null) {
+        try {
+          _chatMessagesCubit!.stopAutoRefresh();
+          print('✅ Auto-refresh stopped on app pause');
+        } catch (e) {
+          print('⚠️ Error stopping auto-refresh on pause: $e');
+        }
+      }
+
+      // Pause read status refresh to save resources
+      _stopReadStatusRefresh();
     }
   }
 
   Future<void> _checkPusherConnectionHealth() async {
-    if (_isPusherSetup && _currentUserId != null) {
-      final isHealthy =
-          await context.read<PusherCubit>().checkConnectionHealth();
-      if (!isHealthy) {
-        print('Connection unhealthy, re-initializing...');
-        await _initializeAndSubscribePusher();
+    if (_isPusherSetup && _currentUserId != null && _pusherCubit != null) {
+      try {
+        final isHealthy = await _pusherCubit!.checkConnectionHealth();
+        if (!isHealthy) {
+          print('Connection unhealthy, re-initializing...');
+          await _initializeAndSubscribePusher();
+        }
+      } catch (e) {
+        print('⚠️ Error checking Pusher connection health: $e');
+      }
+    }
+  }
+
+  /// Check Pusher status and start minimal refresh only if needed
+  Future<void> _checkAndStartMinimalRefresh() async {
+    if (_pusherCubit == null || _chatMessagesCubit == null) {
+      print('⚠️ Cubit references not available for minimal refresh check');
+      return;
+    }
+
+    try {
+      final isConnected = await _pusherCubit!.checkConnectionHealth();
+      if (!isConnected) {
+        // Only start auto-refresh as backup if Pusher is not working
+        print(
+            '🔄 Pusher not available, starting minimal backup refresh (60s interval)');
+        _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id,
+            interval: Duration(seconds: 60));
+      } else {
+        print('✅ Pusher is working, no backup refresh needed');
+        _chatMessagesCubit!.stopAutoRefresh();
+      }
+    } catch (e) {
+      print('⚠️ Error checking Pusher status, starting backup refresh: $e');
+      try {
+        _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id,
+            interval: Duration(seconds: 60));
+      } catch (refreshError) {
+        print('⚠️ Error starting backup refresh: $refreshError');
       }
     }
   }
@@ -98,7 +180,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   void _setupRealTimeListeners() {
     print('[ChatConversationScreen] Setting up real-time listeners...');
 
-    // Single message stream listener
+    // Single message stream listener - primary path for real-time messages
     _messageSubscription =
         ChatMessageService.instance.messageStream.listen((message) {
       if (mounted) {
@@ -128,34 +210,52 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       print(
           '[ChatConversationScreen] Processing real-time message: ${message.body}');
 
-      // Convert Pusher message to ChatMessage
+      // Check for duplicates first to avoid unnecessary processing
+      final messageKey = message.id.toString();
+      if (_messages.any((msg) => msg.id == messageKey)) {
+        print('[ChatConversationScreen] Duplicate message ignored: ${message.body}');
+        return;
+      }
+
+      // Convert Pusher message to ChatMessage with correct images
       final chatMessage = message.toChatMessage(
         _currentUserId.toString(),
         widget.chatRoom.name,
-        widget.chatRoom.image,
-        _currentUserImage,
+        _receiverImage.isNotEmpty
+            ? _receiverImage
+            : widget.chatRoom.image, // Pass receiver's image as otherUserImage
+        _currentUserImage, // Pass current user's image
       );
 
-      // Add message to the list if it doesn't already exist
-      if (!_messages.any((msg) => msg.id == chatMessage.id)) {
-        setState(() {
-          _messages.add(chatMessage);
-        });
+      // Add message to UI immediately for instant display
+      setState(() {
+        _messages.add(chatMessage);
+      });
 
-        print('[ChatConversationScreen] Message added to UI successfully');
-        _scrollToBottom();
+      print('[ChatConversationScreen] Message added to UI successfully');
+      _scrollToBottom();
 
-        // Update chat list to reflect new message and maintain sorting
-        if (!widget.chatRoom.id.startsWith('temp_')) {
-          final chatId = int.tryParse(widget.chatRoom.id);
-          if (chatId != null) {
-            context.read<ChatListCubit>().handleNewMessage(
-                  chatId,
-                  message.body,
-                  message.createdAt.toIso8601String(),
-                  message.senderId,
-                );
-          }
+      // Handle background tasks asynchronously without blocking UI
+      if (message.senderId != _currentUserId) {
+        // Mark as read in background (non-blocking)
+        _markNewMessageAsRead(message);
+      }
+
+      // Update chat list in background (non-blocking)
+      if (!widget.chatRoom.id.startsWith('temp_') && _currentUserId != null) {
+        final chatId = int.tryParse(widget.chatRoom.id);
+        if (chatId != null) {
+          // Use microtask to defer chat list update
+          Future.microtask(() {
+            if (mounted) {
+              context.read<ChatListCubit>().handleNewMessage(
+                    chatId,
+                    message.body,
+                    message.createdAt.toIso8601String(),
+                    message.senderId,
+                  );
+            }
+          });
         }
       }
     }
@@ -195,19 +295,21 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         return;
       }
 
-      // Set auth token
-      context.read<PusherCubit>().setAuthToken(token);
+      if (mounted) {
+        // Set auth token
+        context.read<PusherCubit>().setAuthToken(token);
 
-      // Initialize Pusher
-      await context.read<PusherCubit>().initialize();
+        // Initialize Pusher
+        await context.read<PusherCubit>().initialize();
+      }
 
-      // Small delay to ensure initialization completes
-      await Future.delayed(Duration(milliseconds: 1000));
+      // Small delay to ensure initialization completes (reduced for faster connection)
+      await Future.delayed(Duration(milliseconds: 300));
 
       // Subscribe to chat channel if not temporary
       if (!widget.chatRoom.id.startsWith('temp_')) {
         final chatRoomId = int.tryParse(widget.chatRoom.id);
-        if (chatRoomId != null) {
+        if (chatRoomId != null && mounted) {
           await context
               .read<PusherCubit>()
               .subscribeToChatChannel(chatRoomId, token);
@@ -221,8 +323,54 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     }
   }
 
-  void _loadCurrentUserProfile() {
-    context.read<ManageProfileCubit>().getProfile();
+  Future<void> _loadCurrentUserFromCache() async {
+    try {
+      final cachedUserJson = await SharedPreferencesHelper.getSecuredString(
+          SharedPreferencesKey.userDataKey);
+      final cachedImage = await SharedPreferencesHelper.getUserImage();
+
+      int? cachedId = _currentUserId;
+      String cachedName = _currentUserName;
+      String resolvedImage = cachedImage;
+
+      if (cachedUserJson.isNotEmpty) {
+        final decoded = jsonDecode(cachedUserJson);
+        if (decoded is Map<String, dynamic>) {
+          final idValue = decoded['id'];
+          if (idValue is int) {
+            cachedId = idValue;
+          } else if (idValue != null) {
+            cachedId = int.tryParse(idValue.toString());
+          }
+
+          cachedName = decoded['name']?.toString() ?? cachedName;
+
+          if (resolvedImage.isEmpty) {
+            resolvedImage = decoded['image']?.toString() ?? resolvedImage;
+          }
+        }
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _currentUserId = cachedId;
+        _currentUserName = cachedName;
+        _currentUserImage = resolvedImage;
+      });
+
+      if (_currentUserId != null) {
+        if (!_isPusherSetup) {
+          await _initializeAndSubscribePusher();
+        }
+        _updateMessagesWithUserInfo();
+        _updateMessagesWithCorrectImages();
+      }
+    } catch (e) {
+      print('[ChatConversationScreen] Error loading cached user profile: $e');
+    }
   }
 
   /// Load chat messages early for faster UI response
@@ -252,27 +400,180 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           '[ChatConversationScreen] Updating messages with correct user info...');
       setState(() {
         _messages = _messages.map((message) {
-          // Update message with correct user info if it was using temporary values
-          if (message.senderId == 'temp_user' || message.senderImage.isEmpty) {
+          // Always update the sender image to ensure correctness
+          return ChatMessage(
+            id: message.id,
+            roomId: message.roomId,
+            senderId: message.senderId == 'temp_user'
+                ? _currentUserId.toString()
+                : message.senderId,
+            senderName: message.senderName,
+            senderImage: _getCorrectSenderImage(message.senderId == 'temp_user'
+                ? _currentUserId.toString()
+                : message.senderId),
+            message: message.message,
+            timestamp: message.timestamp,
+            isRead: message.isRead,
+          );
+        }).toList();
+      });
+    }
+  }
+
+  /// Get the correct sender image based on sender ID
+  String _getCorrectSenderImage(String senderId) {
+    if (senderId == _currentUserId.toString()) {
+      return _currentUserImage;
+    } else {
+      return _receiverImage.isNotEmpty ? _receiverImage : widget.chatRoom.image;
+    }
+  }
+
+  /// Update existing messages with correct sender/receiver images
+  void _updateMessagesWithCorrectImages() {
+    if (_messages.isNotEmpty &&
+        _currentUserId != null &&
+        _receiverImage.isNotEmpty) {
+      print(
+          '[ChatConversationScreen] Updating messages with correct sender/receiver images...');
+      setState(() {
+        _messages = _messages.map((message) {
+          // Always update the sender image to ensure correctness
+          return ChatMessage(
+            id: message.id,
+            roomId: message.roomId,
+            senderId: message.senderId,
+            senderName: message.senderName,
+            senderImage: _getCorrectSenderImage(message.senderId),
+            message: message.message,
+            timestamp: message.timestamp,
+            isRead: message.isRead,
+          );
+        }).toList();
+      });
+      print('✅ Messages updated with correct sender/receiver images');
+    }
+  }
+
+  /// Mark messages as read when entering the chat conversation
+  Future<void> _markMessagesAsReadOnEnter() async {
+    // Don't mark as read for temporary chats
+    if (widget.chatRoom.id.startsWith('temp_')) {
+      print(
+          '[ChatConversationScreen] Skipping mark as read for temporary chat');
+      return;
+    }
+
+    // Skip if there are no unread messages
+    if (widget.chatRoom.unreadCount <= 0) {
+      print('[ChatConversationScreen] No unread messages to mark as read');
+      return;
+    }
+
+    print(
+        '[ChatConversationScreen] Marking messages as read for chat ${widget.chatRoom.id}...');
+
+    try {
+      // Mark all messages as read via API (since there's no specific chat endpoint)
+      final chatListCubit = context.read<ChatListCubit>();
+      await chatListCubit.markAllMessagesAsRead();
+
+      print('✅ Messages marked as read successfully');
+
+      // Update local message read status immediately
+      _updateLocalMessagesReadStatus();
+
+      // Refresh chat list to update unread counts
+      chatListCubit.silentRefreshChatList();
+    } catch (e) {
+      print('⚠️ Error marking messages as read: $e');
+    }
+  }
+
+  /// Update local messages to show as read for better UX
+  void _updateLocalMessagesReadStatus() {
+    if (_messages.isNotEmpty && _currentUserId != null) {
+      setState(() {
+        _messages = _messages.map((message) {
+          // Only mark messages from other users as read
+          if (message.senderId != _currentUserId.toString()) {
             return ChatMessage(
               id: message.id,
               roomId: message.roomId,
-              senderId: message.senderId == 'temp_user'
-                  ? _currentUserId.toString()
-                  : message.senderId,
+              senderId: message.senderId,
               senderName: message.senderName,
-              senderImage: message.senderId == _currentUserId.toString()
-                  ? _currentUserImage
-                  : message.senderImage,
+              senderImage: _getCorrectSenderImage(
+                  message.senderId), // Ensure correct image
               message: message.message,
               timestamp: message.timestamp,
-              isRead: message.isRead,
+              isRead: true, // Mark as read
             );
           }
           return message;
         }).toList();
       });
+      print('✅ Local messages updated to show as read');
     }
+  }
+
+  /// Mark a newly received message as read (non-blocking)
+  void _markNewMessageAsRead(PusherMessageModel message) {
+    // Update UI immediately for instant feedback
+    setState(() {
+      final messageIndex =
+          _messages.indexWhere((msg) => msg.id == message.id.toString());
+      if (messageIndex != -1) {
+        _messages[messageIndex] = ChatMessage(
+          id: _messages[messageIndex].id,
+          roomId: _messages[messageIndex].roomId,
+          senderId: _messages[messageIndex].senderId,
+          senderName: _messages[messageIndex].senderName,
+          senderImage:
+              _getCorrectSenderImage(_messages[messageIndex].senderId),
+          message: _messages[messageIndex].message,
+          timestamp: _messages[messageIndex].timestamp,
+          isRead: true, // Mark as read locally
+        );
+      }
+    });
+
+    // Call API in background without blocking UI
+    Future.microtask(() async {
+      try {
+        if (mounted) {
+          final chatListCubit = context.read<ChatListCubit>();
+          await chatListCubit.markAllMessagesAsRead();
+          print('✅ New message marked as read successfully');
+        }
+      } catch (e) {
+        print('⚠️ Error marking new message as read: $e');
+      }
+    });
+  }
+
+  /// Start periodic read status refresh
+  void _startReadStatusRefresh() {
+    // Don't start for temporary chats
+    if (widget.chatRoom.id.startsWith('temp_')) {
+      return;
+    }
+
+    // Refresh read status every 3 seconds for faster receipt updates
+    _readStatusRefreshTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (mounted && _chatMessagesCubit != null) {
+        // Silent refresh to avoid UI disruption
+        _chatMessagesCubit!.refreshChatMessages(widget.chatRoom.id);
+      }
+    });
+
+    print('[ChatConversationScreen] Read status refresh started (every 3 seconds)');
+  }
+
+  /// Stop periodic read status refresh
+  void _stopReadStatusRefresh() {
+    _readStatusRefreshTimer?.cancel();
+    _readStatusRefreshTimer = null;
+    print('[ChatConversationScreen] Read status refresh stopped');
   }
 
   /// Manual refresh method for pull-to-refresh
@@ -295,10 +596,19 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           chatRoomId: widget.chatRoom.id,
           chatRoomName: widget.chatRoom.name,
           chatRoomImage: widget.chatRoom.image,
+          receiverId: widget.chatRoom.receiverId,
+          initialIsOnline:
+              widget.chatRoom.isOnline, // Pass the initial online status
           onBack: () {
-            // Stop auto-refresh when navigating back
-            if (!widget.chatRoom.id.startsWith('temp_')) {
-              context.read<ChatMessagesCubit>().stopAutoRefresh();
+            // Stop auto-refresh when navigating back using stored cubit reference
+            if (!widget.chatRoom.id.startsWith('temp_') &&
+                _chatMessagesCubit != null) {
+              try {
+                _chatMessagesCubit!.stopAutoRefresh();
+                print('✅ Auto-refresh stopped on navigation back');
+              } catch (e) {
+                print('⚠️ Error stopping auto-refresh on back: $e');
+              }
             }
             Navigator.of(context).pop();
           },
@@ -324,43 +634,84 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               print(
                   '[ChatConversationScreen] API messages loaded: ${state.chatMessages.messages.length} messages');
 
+              if (_currentUserId == null &&
+                  state.chatMessages.messages.isNotEmpty) {
+                final sampleMessage = state.chatMessages.messages.first;
+                final inferredId =
+                    sampleMessage.senderId == widget.chatRoom.receiverId
+                        ? sampleMessage.receiverId
+                        : sampleMessage.senderId;
+
+                setState(() {
+                  _currentUserId = inferredId;
+                });
+
+                if (!_isPusherSetup) {
+                  _initializeAndSubscribePusher();
+                }
+              }
+
               // Use current user info if available, otherwise use temporary values
               final currentUserId = _currentUserId?.toString() ?? 'temp_user';
               final currentUserImage =
                   _currentUserImage.isNotEmpty ? _currentUserImage : '';
 
+              // Only update if messages actually changed to reduce UI rebuilds
+              final newMessages = state.chatMessages.toChatMessages(
+                currentUserId,
+                widget.chatRoom.name,
+                _receiverImage.isNotEmpty
+                    ? _receiverImage
+                    : widget.chatRoom.image,
+                currentUserImage,
+              );
+
+              // Check if there are new messages
+              final hasNewMessages = newMessages.length != _messages.length;
+
               setState(() {
-                _messages = state.chatMessages.toChatMessages(
-                  currentUserId,
-                  widget.chatRoom.name,
-                  widget.chatRoom.image,
-                  currentUserImage,
-                );
+                _messages = newMessages;
               });
 
-              _scrollToBottom();
+              // Update messages with correct sender/receiver images
+              _updateMessagesWithCorrectImages();
 
-              // Start auto-refresh after initial messages are loaded (only if messages exist)
+              // Only scroll if there are new messages, not for read status updates
+              if (hasNewMessages) {
+                _scrollToBottom();
+              }
+
+              // Mark messages as read after loading if there are unread messages
+              if (!widget.chatRoom.id.startsWith('temp_') &&
+                  _currentUserId != null &&
+                  _messages.isNotEmpty &&
+                  widget.chatRoom.unreadCount > 0) {
+                // Update local read status immediately
+                _updateLocalMessagesReadStatus();
+              }
+
+              // Check if Pusher is working and only use minimal backup refresh if needed
               if (!widget.chatRoom.id.startsWith('temp_') &&
                   _currentUserId != null &&
                   _messages.isNotEmpty) {
-                context
-                    .read<ChatMessagesCubit>()
-                    .startAutoRefresh(widget.chatRoom.id);
+                _checkAndStartMinimalRefresh();
               }
             } else if (state is ChatMessagesError) {
               // If the chat was deleted, clear messages to show empty state immediately
-              if (state.message == "هذه المحادثة لم تعد موجودة") {
+              if (state.message == 'thisConversationNoLongerExists' ||
+                  state.message ==
+                      AppLocalizations.of(context)!
+                          .thisConversationNoLongerExists) {
                 setState(() {
                   _messages = []; // Clear messages to show empty chat state
                 });
 
                 // Show brief notification that chat was deleted
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('المحادثة محذوفة - يمكنك بدء محادثة جديدة'),
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.chatDeleted),
                     backgroundColor: Colors.orange,
-                    duration: Duration(seconds: 2),
+                    duration: const Duration(seconds: 2),
                   ),
                 );
 
@@ -371,28 +722,19 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
             }
           },
         ),
-        BlocListener<ManageProfileCubit, ManageProfileState>(
-          listener: (context, state) async {
-            if (state is ManageProfileSuccess && _currentUserId == null) {
-              setState(() {
-                _currentUserId = state.myProfileResponseModel.data?.id;
-                _currentUserName =
-                    state.myProfileResponseModel.data?.name ?? '';
-                _currentUserImage =
-                    state.myProfileResponseModel.data?.image ?? '';
-              });
-
-              // Update existing messages with correct user info if already loaded
-              _updateMessagesWithUserInfo();
-
-              // Setup Pusher in background - messages are already loading
-              _initializeAndSubscribePusher();
-            }
-          },
-        ),
         BlocListener<SendMessageCubit, SendMessagesState>(
           listener: (context, state) {
             if (state is SendMessagesLoaded) {
+              if (_currentUserId == null) {
+                setState(() {
+                  _currentUserId = state.sendMessageModel.data.senderId;
+                });
+
+                if (!_isPusherSetup) {
+                  _initializeAndSubscribePusher();
+                }
+              }
+
               // Add the sent message immediately to UI
               if (_currentUserId != null) {
                 final newMessage = ChatMessage(
@@ -434,9 +776,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 }
               }
             } else if (state is SendMessagesError) {
+              final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+                context,
+                state.message,
+              );
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.message),
+                  content: Text(localizedMessage),
                   backgroundColor: Colors.red,
                 ),
               );
@@ -445,9 +791,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         ),
         BlocListener<PusherCubit, PusherState>(
           listener: (context, state) {
+            // Note: Messages are handled via ChatMessageService stream to avoid duplicate processing
+            // PusherCubit listener is kept only for connection status tracking
             if (state is PusherMessageReceived) {
-              print('PUSHER: Direct message received: ${state.message.body}');
-              _handleRealTimeMessage(state.message);
+              // Skip - messages are handled via ChatMessageService stream
+              print('PUSHER: Message received (handled via stream)');
             } else if (state is PusherConnectionError) {
               print(
                   'PUSHER: Connection error (handled silently): ${state.error}');
@@ -462,7 +810,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       child: BlocBuilder<ChatMessagesCubit, ChatMessagesState>(
         builder: (context, state) {
           if (state is ChatMessagesLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           } else if (state is ChatMessagesError) {
             return Center(
               child: Column(
@@ -471,7 +819,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
                   SizedBox(height: 16),
                   Text(
-                    'حدث خطأ في تحميل الرسائل',
+                    AppLocalizations.of(context)!.errorLoadingChatMessages,
                     style: TextStyle(
                       color: Colors.red[600],
                       fontSize: 18,
@@ -490,7 +838,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _loadChatMessages,
-                    child: Text('إعادة المحاولة'),
+                    child: Text(AppLocalizations.of(context)!.retryButton),
                   ),
                 ],
               ),
@@ -506,7 +854,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                       size: 64, color: Colors.grey[400]),
                   SizedBox(height: 16),
                   Text(
-                    'لا توجد رسائل حتى الآن',
+                    AppLocalizations.of(context)!.noMessagesYet,
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontSize: 18,
@@ -515,7 +863,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'ابدأ المحادثة بإرسال رسالة',
+                    AppLocalizations.of(context)!
+                        .startConversationBySendingMessage,
                     style: TextStyle(
                       color: Colors.grey[500],
                       fontSize: 14,
@@ -531,20 +880,33 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
             child: ListView.builder(
               controller: _scrollController,
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              itemCount: _messages.length + 1,
+              itemCount: _messages.length,
               itemBuilder: (context, index) {
-                if (index == 0) {
-                  return _buildDaySeparator();
-                }
-
-                final messageIndex = index - 1;
-                final message = _messages[messageIndex];
+                final message = _messages[index];
                 final isCurrentUser =
                     message.senderId == _currentUserId.toString();
 
-                return ChatMessageBubble(
-                  message: message,
-                  isCurrentUser: isCurrentUser,
+                // Insert a day separator when the day changes or for the first message
+                final bool showDaySeparator;
+                if (index == 0) {
+                  showDaySeparator = true;
+                } else {
+                  final prev = _messages[index - 1].timestamp;
+                  final curr = message.timestamp;
+                  showDaySeparator = prev.year != curr.year ||
+                      prev.month != curr.month ||
+                      prev.day != curr.day;
+                }
+
+                return Column(
+                  children: [
+                    if (showDaySeparator)
+                      _buildDaySeparatorFor(message.timestamp),
+                    ChatMessageBubble(
+                      message: message,
+                      isCurrentUser: isCurrentUser,
+                    ),
+                  ],
                 );
               },
             ),
@@ -554,7 +916,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     );
   }
 
-  Widget _buildDaySeparator() {
+  Widget _buildDaySeparatorFor(DateTime date) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 16.h),
       child: Row(
@@ -573,12 +935,12 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Text(
-                _getCurrentDayText(),
+                _formatDayLabel(date),
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontSize: 17.sp,
                   fontWeight: FontWeight.w400,
-                  fontFamily: FontFamilyHelper.plexSansArabic,
+                  fontFamily: FontFamilyHelper.lamaSansArabic,
                 ),
               ),
             ),
@@ -594,36 +956,26 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     );
   }
 
-  String _getCurrentDayText() {
-    final now = DateTime.now();
+  String _formatDayLabel(DateTime date) {
     final today = DateTime.now();
+    final isSameDay = date.year == today.year &&
+        date.month == today.month &&
+        date.day == today.day;
     final yesterday = today.subtract(const Duration(days: 1));
+    final isYesterday = date.year == yesterday.year &&
+        date.month == yesterday.month &&
+        date.day == yesterday.day;
 
-    if (now.year == today.year &&
-        now.month == today.month &&
-        now.day == today.day) {
-      return 'اليوم';
-    } else if (now.year == yesterday.year &&
-        now.month == yesterday.month &&
-        now.day == yesterday.day) {
-      return 'أمس';
-    } else {
-      final months = [
-        'يناير',
-        'فبراير',
-        'مارس',
-        'أبريل',
-        'مايو',
-        'يونيو',
-        'يوليو',
-        'أغسطس',
-        'سبتمبر',
-        'أكتوبر',
-        'نوفمبر',
-        'ديسمبر'
-      ];
-      return '${now.day} ${months[now.month - 1]}';
+    if (isSameDay) {
+      return AppLocalizations.of(context)!.today;
     }
+    if (isYesterday) {
+      // Fallback to explicit Arabic if yesterday key is missing; otherwise add when available
+      return AppLocalizations.of(context)!.oneDayAgo;
+    }
+
+    // Format as localized date string (e.g., 12 Oct)
+    return MaterialLocalizations.of(context).formatMediumDate(date);
   }
 
   Widget _buildMessageInput() {
@@ -650,11 +1002,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 controller: _messageController,
                 textDirection: TextDirection.rtl,
                 decoration: InputDecoration(
-                  hintText: 'اكتب رسالتك...',
+                  hintText: AppLocalizations.of(context)!.writeYourMessage,
                   hintStyle: TextStyle(
                     color: Colors.grey[500],
                     fontSize: 18.sp,
-                    fontFamily: FontFamilyHelper.plexSansArabic,
+                    fontFamily: FontFamilyHelper.lamaSansArabic,
                     fontWeight: FontWeight.w400,
                   ),
                   border: InputBorder.none,
@@ -668,7 +1020,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                     margin: EdgeInsets.only(right: 8.w),
                     child: IconButton(
                       icon: Image.asset(
-                        'assets/images/icons/send.png',
+                        AppImages.sendIcon,
                         width: 24.w,
                         height: 24.w,
                         color: AppColors.primaryOrange,
@@ -676,7 +1028,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                       onPressed: _sendMessage,
                       style: IconButton.styleFrom(
                         backgroundColor:
-                            AppColors.primaryOrange.withOpacity(0.1),
+                            AppColors.primaryOrange.withValues(alpha: 0.1),
                         shape: CircleBorder(),
                         padding: EdgeInsets.all(8.w),
                       ),
@@ -703,8 +1055,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (_messageController.text.trim().isEmpty) return;
     if (_currentUserId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('يرجى الانتظار حتى يتم تحميل الملف الشخصي'),
+        SnackBar(
+          content:
+              Text(AppLocalizations.of(context)!.pleaseWaitWhileLoadingProfile),
           backgroundColor: Colors.orange,
         ),
       );
@@ -723,25 +1076,43 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
   @override
   void dispose() {
-    // Stop auto-refresh when disposing
-    if (!widget.chatRoom.id.startsWith('temp_')) {
-      context.read<ChatMessagesCubit>().stopAutoRefresh();
-    }
+    print('🗑️ Disposing ChatConversationScreen...');
 
-    _messageController.dispose();
-    _scrollController.dispose();
-    _messageSubscription?.cancel();
-
-    // Unsubscribe from Pusher channel when leaving
-    if (_isPusherSetup) {
+    // Stop auto-refresh when disposing using stored cubit reference
+    if (!widget.chatRoom.id.startsWith('temp_') && _chatMessagesCubit != null) {
       try {
-        context.read<PusherCubit>().unsubscribeFromChatChannel();
+        _chatMessagesCubit!.stopAutoRefresh();
+        print('✅ Auto-refresh stopped successfully');
       } catch (e) {
-        print('Error unsubscribing during dispose: $e');
+        print('⚠️ Error stopping auto-refresh: $e');
       }
     }
 
+    // Stop read status refresh timer
+    _stopReadStatusRefresh();
+
+    // Dispose controllers and cancel subscriptions
+    _messageController.dispose();
+    _scrollController.dispose();
+    _messageSubscription?.cancel();
+    print('✅ Controllers and subscriptions disposed');
+
+    // Unsubscribe from Pusher channel when leaving using stored cubit reference
+    if (_isPusherSetup && _pusherCubit != null) {
+      try {
+        _pusherCubit!.unsubscribeFromChatChannel();
+        print('✅ Pusher channel unsubscribed successfully');
+      } catch (e) {
+        print('⚠️ Error unsubscribing during dispose: $e');
+      }
+    }
+
+    // Clean up cubit references
+    _chatMessagesCubit = null;
+    _pusherCubit = null;
+
     WidgetsBinding.instance.removeObserver(this);
+    print('✅ ChatConversationScreen disposed successfully');
     super.dispose();
   }
 }

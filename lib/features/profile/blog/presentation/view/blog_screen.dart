@@ -1,15 +1,31 @@
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/services/localization_service.dart';
 import '../cubit/blog_cubit.dart';
 import '../cubit/blog_states.dart';
 
-class BlogScreen extends StatelessWidget {
+class BlogScreen extends StatefulWidget {
   const BlogScreen({super.key});
+
+  @override
+  State<BlogScreen> createState() => _BlogScreenState();
+}
+
+class _BlogScreenState extends State<BlogScreen> {
+  final Map<int, bool> _expandedBlogs = {};
+
+  void _toggleBlogExpansion(int index) {
+    setState(() {
+      _expandedBlogs[index] = !(_expandedBlogs[index] ?? false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,26 +35,29 @@ class BlogScreen extends StatelessWidget {
           if (state is BlogLoading) {
             return CustomProfileBody(
                 withStar: false,
-
                 contentBody: Column(
-              children: [
-                ProfileHeader(title: 'مدونة الصادقون و الصادقات'),
-                SizedBox(height: 20.h),
-                Expanded(
-                    child: const Center(
-                        child: CircularProgressIndicator(
-                  color: AppColors.primaryOrange,
-                ))),
-              ],
-            ));
+                  children: [
+                    ProfileHeader(
+                        title: AppLocalizations.of(context)!.blogTitle,
+                    titleStyle: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+            fontSize: 20.sp,
+              fontWeight: FontWeight.w500,
+            ),),
+                    SizedBox(height: 20.h),
+                    Expanded(
+                        child: const Center(
+                            child: CircularProgressIndicator(
+                      color: AppColors.primaryOrange,
+                    ))),
+                  ],
+                ));
           } else if (state is BlogLoaded) {
             return CustomProfileBody(
               withStar: false,
-
               contentBody: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ProfileHeader(title: 'مدونة الصادقون و الصادقات'),
+                  ProfileHeader(title: AppLocalizations.of(context)!.blogTitle),
                   SizedBox(height: 20.h),
                   Expanded(
                     child: ListView.separated(
@@ -46,8 +65,12 @@ class BlogScreen extends StatelessWidget {
                       separatorBuilder: (_, __) => SizedBox(height: 24.h),
                       itemBuilder: (context, index) {
                         final blog = state.blogs[index];
+                        final isExpanded = _expandedBlogs[index] ?? false;
+
                         return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12.r),
@@ -77,7 +100,8 @@ class BlogScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 12.h),
                             Align(
-                              alignment: Alignment.centerRight,
+                              alignment:
+                                  LocalizationService.instance.startAlignment,
                               child: Text(
                                 blog.title,
                                 style: TextStyle(
@@ -90,16 +114,45 @@ class BlogScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 8.h),
                             Align(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                blog.content,
-                                style: TextStyle(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFF363636)),
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
+                              alignment:
+                                  LocalizationService.instance.startAlignment,
+                              child: RichText(
                                 textDirection: TextDirection.rtl,
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: isExpanded
+                                          ? blog.content
+                                          : blog.content.length > 150
+                                              ? '${blog.content.substring(0, 150)}... '
+                                              : blog.content.length > 150
+                                                  ? '${blog.content.substring(0, 100)}... '
+                                                  : blog.content,
+                                      style: TextStyle(
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xFF363636),
+                                      ),
+                                    ),
+                                    if (blog.content.length > 100)
+                                      WidgetSpan(
+                                        child: GestureDetector(
+                                          onTap: () =>
+                                              _toggleBlogExpansion(index),
+                                          child: Text(
+                                            isExpanded
+                                                ? 'عرض أقل'
+                                                : 'عرض المزيد',
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.primaryOrange,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -113,14 +166,14 @@ class BlogScreen extends StatelessWidget {
           } else if (state is BlogError) {
             return CustomProfileBody(
                 withStar: false,
-
                 contentBody: Column(
-              children: [
-                ProfileHeader(title: 'مدونة الصادقون و الصادقات'),
-                SizedBox(height: 20.h),
-                Expanded(child: Center(child: Text(state.message))),
-              ],
-            ));
+                  children: [
+                    ProfileHeader(
+                        title: AppLocalizations.of(context)!.blogTitle),
+                    SizedBox(height: 20.h),
+                    Expanded(child: Center(child: Text(state.message))),
+                  ],
+                ));
           }
           return Container();
         },

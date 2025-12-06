@@ -1,3 +1,4 @@
+import 'package:elsadeken/features/chat/presentation/manager/chat_online_setting_cubit/chat_online_setting_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/chat_settings_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/lists_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/view/screen/chat_settings_screen.dart';
@@ -17,6 +18,9 @@ class ChatSettingsScreenWrapper extends StatelessWidget {
         ),
         BlocProvider<ListsCubit>(
           create: (context) => sl<ListsCubit>(),
+        ),
+        BlocProvider<ChatOnlineSettingCubit>(
+          create: (context) => sl<ChatOnlineSettingCubit>(),
         ),
       ],
       child: const ChatSettingsScreen(),

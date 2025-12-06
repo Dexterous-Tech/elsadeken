@@ -9,9 +9,21 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the arguments to check if coming from logout or splash
+    final arguments = ModalRoute.of(context)?.settings.arguments as String?;
+    final isFromLogout = arguments == 'from_logout';
+
     return BlocProvider(
       create: (context) => sl<LoginCubit>(),
-      child: Scaffold(body: LoginBody()),
+      child: Scaffold(
+          body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus(); // Close keyboard
+        },
+        child: LoginBody(
+          isFromLogout: isFromLogout,
+        ),
+      )),
     );
   }
 }

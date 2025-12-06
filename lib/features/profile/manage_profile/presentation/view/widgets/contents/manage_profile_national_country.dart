@@ -1,10 +1,12 @@
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../manage_profile_content_item.dart';
@@ -23,10 +25,10 @@ class ManageProfileNationalCountry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         ManageProfileContentItem(
-          title: 'الجنسية',
+          title: AppLocalizations.of(context)!.nationality,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.nationality ?? '',
             isLoading: isLoading,
@@ -34,7 +36,7 @@ class ManageProfileNationalCountry extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'الدولة',
+          title: AppLocalizations.of(context)!.country_residence,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.country ?? '',
             isLoading: isLoading,
@@ -42,7 +44,7 @@ class ManageProfileNationalCountry extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'المدينة',
+          title: AppLocalizations.of(context)!.city,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.city ?? '',
             isLoading: isLoading,
@@ -62,32 +64,37 @@ class ManageProfileNationalCountry extends StatelessWidget {
     final signUpListsCubit = context.read<SignUpListsCubit>();
 
     final dialogData = ManageProfileDialogData(
-      title: 'تعديل الجنسية والدولة والمدينة',
+      title: AppLocalizations.of(context)!.editNationalityCountryCity,
       cubit: updateProfileCubit,
       signUpListsCubit: signUpListsCubit,
       dialogType: ManageProfileDialogType.nationalCountry,
       fields: [
         ManageProfileField(
-          label: 'الجنسية',
-          hint: 'اختر الجنسية',
+          label: AppLocalizations.of(context)!.nationality,
+          hint: AppLocalizations.of(context)!.chooseNationality,
           currentValue: profileData?.attribute?.nationality ?? '',
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.nationality,
+          isRequired: false, // Make optional
         ),
         ManageProfileField(
-          label: 'الدولة',
-          hint: 'اختر الدولة',
+          label: AppLocalizations.of(context)!.country_residence,
+          hint: AppLocalizations.of(context)!.chooseCountry,
           currentValue: profileData?.attribute?.country ?? '',
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.country,
+          isRequired: false, // Make optional
         ),
         ManageProfileField(
-          label: 'المدينة',
-          hint: 'اختر المدينة',
-          currentValue: profileData?.attribute?.city ?? '',
+          label: AppLocalizations.of(context)!.city,
+          hint: AppLocalizations.of(context)!.chooseCity,
+          currentValue:
+              profileData?.attribute?.city ?? '', // Show current user city
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.city,
-          dependentFieldLabel: 'الدولة', // Cities depend on country selection
+          dependentFieldLabel: AppLocalizations.of(context)!
+              .country, // Cities depend on country selection
+          isRequired: false, // Make optional
         ),
       ],
     );

@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/home/notification/notification_setting/presentation/view/notification_settings_page.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,86 +25,107 @@ class NotificationScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => NotificationCubit(sl<NotificationRepoInterface>()),
       child: Scaffold(
-        backgroundColor: Color(0xffFFFAFC),
-        body: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Positioned(
-              top: 0,
-              left: -20,
-              child: Image.asset(
-                AppImages.starProfile,
-                width: 488.w,
-                height: 325.h,
-              ),
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.cosmicLatte,
+                AppColors.antiqueWhite,
+              ],
             ),
-            SafeArea(
-              child: Column(
-                textDirection: TextDirection.rtl,
-                children: [
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                    child: Row(
-                      textDirection: TextDirection.rtl,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            // Return true to indicate that notification count should be refreshed
-                            Navigator.pop(context, true);
-                          },
-                          child: Container(
-                            width: 40.w,
-                            height: 40.h,
-                            decoration: ShapeDecoration(
-                                color: AppColors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8).r)),
-                            child: Center(
-                              child: Image.asset(
-                                AppImages.authArrowBack,
-                                width: 14.w,
-                                height: 14.h,
+          ),
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Positioned(
+                top: 0,
+                left: -20,
+                child: Image.asset(
+                  AppImages.starProfile,
+                  width: 488.w,
+                  height: 325.h,
+                ),
+              ),
+              SafeArea(
+                child: Column(
+                  textDirection: LocalizationService.instance.textDirection,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.w, vertical: 16.h),
+                      child: Row(
+                        textDirection:
+                            LocalizationService.instance.textDirection,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              // Return true to indicate that notification count should be refreshed
+                              Navigator.pop(context, true);
+                            },
+                            child: Container(
+                              width: 40.w,
+                              height: 40.h,
+                              decoration: ShapeDecoration(
+                                  color: AppColors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(8).r)),
+                              child: Center(
+                                child: Transform.rotate(
+                                  angle: LocalizationService.instance.isArabic
+                                      ? 0
+                                      : 3.14,
+                                  child: Image.asset(
+                                    AppImages.authArrowBack,
+                                    width: 14.w,
+                                    height: 14.h,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Text(
-                          'الإشعارات',
-                          style: AppTextStyles.font20WhiteBoldLamaSans
-                              .copyWith(color: AppColors.black),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                          Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NotificationSettingsPage(),
+                          Text(
+                            AppLocalizations.of(context)!.notifications,
+                            style: AppTextStyles.font20WhiteBoldLamaSans
+                                .copyWith(color: AppColors.black),
                           ),
-                        );
-                          },
-                          child: Container(
-                        width: 40.w,
-                        height: 40.h,
-                        child: Center(
-                          child: Icon(
-                            Icons.settings,
-                            size: 20.w,
-                            color: AppColors.black,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      NotificationSettingsPage(),
+                                ),
+                              );
+                            },
+                            child: SizedBox(
+                              width: 40.w,
+                              height: 40.h,
+                              child: Center(
+                                child: Icon(
+                                  Icons.settings,
+                                  size: 20.w,
+                                  color: AppColors.black,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  verticalSpace(32),
-                  Expanded(child: const NotificationScreenContent()),
-                ],
+                    verticalSpace(32),
+                    Expanded(child: const NotificationScreenContent()),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

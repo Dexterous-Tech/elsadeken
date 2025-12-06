@@ -8,6 +8,7 @@ import 'package:elsadeken/features/profile/success_stories/presentation/cubit/su
 import 'package:elsadeken/features/profile/success_stories/presentation/view/widget/story_card.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,7 +44,7 @@ class SuccessStoriesScreen extends StatelessWidget {
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                    child: ProfileHeader(title: 'القصص الناجحة'),
+                    child: ProfileHeader(title: AppLocalizations.of(context)!.successStoriesTitle),
                   ),
                   verticalSpace(32),
                   Expanded(
@@ -65,7 +66,7 @@ class SuccessStoriesScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: 16.w, vertical: 16.h),
-                      child: ProfileHeader(title: 'القصص الناجحة'),
+                      child: ProfileHeader(title: AppLocalizations.of(context)!.successStoriesTitle),
                     ),
                     verticalSpace(32),
                     // Top Image
@@ -83,33 +84,13 @@ class SuccessStoriesScreen extends StatelessWidget {
                       padding: EdgeInsets.all(15.h),
                       child: Text.rich(
                         TextSpan(
-                          text: 'بحمد الله ',
+                          text: AppLocalizations.of(context)!.successStoriesCount(_formatNumber(state.totalCount)),
                           style: TextStyle(
                             color: AppColors.primaryOrangeMod,
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w500,
-                            fontFamily: FontFamilyHelper.plexSansArabic,
+                            fontFamily: FontFamilyHelper.lamaSansArabic,
                           ),
-                          children: [
-                            TextSpan(
-                              text: _formatNumber(state.totalCount),
-                              style: TextStyle(
-                                color: AppColors.red,
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: FontFamilyHelper.plexSansArabic,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' قصة ناجحة',
-                              style: TextStyle(
-                                color: AppColors.primaryOrangeMod,
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: FontFamilyHelper.plexSansArabic,
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     ),
@@ -152,12 +133,12 @@ class SuccessStoriesScreen extends StatelessWidget {
                           color: AppColors.white,
                           fontSize: 22.sp,
                           fontWeight: FontWeight.w500,
-                          fontFamily: FontFamilyHelper.plexSansArabic,
+                          fontFamily: FontFamilyHelper.lamaSansArabic,
                         ),
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        textButton: "اغلاق",
+                        textButton: AppLocalizations.of(context)!.close,
                         horizontalPadding: 10,
                       ),
                     ),
@@ -174,7 +155,7 @@ class SuccessStoriesScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: 16.w, vertical: 16.h),
-                      child: ProfileHeader(title: 'القصص الناجحة'),
+                      child: ProfileHeader(title: AppLocalizations.of(context)!.successStoriesTitle),
                     ),
                     verticalSpace(32),
                     Expanded(child: Center(child: Text(state.message))),

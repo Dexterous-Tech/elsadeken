@@ -1,15 +1,17 @@
+import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/widgets/custom_image_network.dart';
 import 'package:elsadeken/features/home/home/presentation/view/widgets/home_notification.dart';
-import 'package:elsadeken/features/home/notification/notification/presentation/manager/notification_count_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../core/di/injection_container.dart';
+import '../../../../../../core/routes/app_routes.dart';
 
 class HomeHeader extends StatefulWidget {
   const HomeHeader({super.key});
@@ -28,7 +30,7 @@ class _HomeHeaderState extends State<HomeHeader> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         Expanded(
           child: BlocBuilder<ManageProfileCubit, ManageProfileState>(
@@ -36,94 +38,113 @@ class _HomeHeaderState extends State<HomeHeader> {
               if (state is ManageProfileSuccess) {
                 final profileData = state.myProfileResponseModel.data;
                 final name = profileData?.name ?? '';
-                final country = profileData?.attribute?.country ?? 'لا يوجد';
-                final city = profileData?.attribute?.city ?? 'لا يوجد';
+                final country = profileData?.attribute?.country ??
+                    AppLocalizations.of(context)!.unknown;
+                final city = profileData?.attribute?.city ??
+                    AppLocalizations.of(context)!.unknown;
                 final image = profileData?.image ?? '';
 
-                return Row(
-                  textDirection: TextDirection.rtl,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: CustomImageNetwork(
-                        width: 64.w,
-                        height: 64.h,
-                        image: image.isNotEmpty
-                            ? image
-                            : 'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
+                return GestureDetector(
+                  onTap: () {
+                    context.pushNamed(AppRoutes.manageProfileScreen);
+                  },
+                  child: Row(
+                    textDirection: LocalizationService.instance.textDirection,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: CustomImageNetwork(
+                          width: 64.w,
+                          height: 64.h,
+                          image: image.isNotEmpty
+                              ? image
+                              : 'assets/images/profile/my_profile.png',
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            name,
-                            style: AppTextStyles.font16BlackSemiBoldLamaSans,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textDirection: TextDirection.rtl,
-                          ),
-                          Row(
-                            textDirection: TextDirection.rtl,
-                            children: [
-                              Image.asset(
-                                'assets/images/home/home_location.png',
-                                width: 15.w,
-                                height: 18.h,
-                              ),
-                              SizedBox(width: 10.w),
-                              Expanded(
-                                child: Text(
-                                  '$country, $city',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  textDirection: TextDirection.rtl,
-                                  textAlign: TextAlign.right,
-                                  style: AppTextStyles
-                                      .font15BistreSemiBoldLamaSans
-                                      .copyWith(
-                                    color:
-                                        AppColors.black.withValues(alpha: 0.87),
-                                    fontWeight: FontWeightHelper.medium,
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                          children: [
+                            Text(
+                              name,
+                              style: AppTextStyles.font16BlackSemiBoldLamaSans,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                            ),
+                            Row(
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                              children: [
+                                Image.asset(
+                                  'assets/images/home/home_location.png',
+                                  width: 15.w,
+                                  height: 18.h,
+                                ),
+                                SizedBox(width: 10.w),
+                                Expanded(
+                                  child: Text(
+                                    '$country, $city',
+                                    maxLines: 2, // ✅ allow up to 2 lines
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: true,
+                                    textDirection: LocalizationService
+                                        .instance.textDirection,
+                                    style: AppTextStyles
+                                        .font15BistreSemiBoldLamaSans
+                                        .copyWith(
+                                      color: AppColors.black
+                                          .withValues(alpha: 0.87),
+                                      fontWeight: FontWeightHelper.medium,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               } else if (state is ManageProfileFailure) {
                 return Row(
-                  textDirection: TextDirection.rtl,
+                  textDirection: LocalizationService.instance.textDirection,
                   children: [
                     CircleAvatar(
                       radius: 32.r,
-                      backgroundImage: NetworkImage(
-                        'https://img.freepik.com/premium-vector/hijab-girl-cartoon-illustration-vector-design_1058532-14452.jpg?w=1380',
+                      backgroundImage: AssetImage(
+                        'assets/images/profile/my_profile.png',
                       ),
                     ),
                     SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         children: [
                           Text(
-                            'Error loading profile',
+                            AppLocalizations.of(context)!.errorLoadingProfile,
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 16.sp,
                               fontWeight: FontWeightHelper.semiBold,
                             ),
                             maxLines: 1,
+                            textAlign:
+                                LocalizationService.instance.textAlignment,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Row(
-                            textDirection: TextDirection.rtl,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                             children: [
                               Image.asset(
                                 'assets/images/home/home_location.png',
@@ -133,7 +154,8 @@ class _HomeHeaderState extends State<HomeHeader> {
                               SizedBox(width: 10.w),
                               Expanded(
                                 child: Text(
-                                  'Location not available',
+                                  AppLocalizations.of(context)!
+                                      .locationNotAvailable,
                                   style: TextStyle(
                                     color: Color(0xff000000)
                                         .withValues(alpha: 0.87),
@@ -154,7 +176,7 @@ class _HomeHeaderState extends State<HomeHeader> {
               } else {
                 // Loading state
                 return Row(
-                  textDirection: TextDirection.rtl,
+                  textDirection: LocalizationService.instance.textDirection,
                   children: [
                     CircleAvatar(
                       radius: 32.r,
@@ -163,7 +185,9 @@ class _HomeHeaderState extends State<HomeHeader> {
                     SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                         children: [
                           Container(
                             width: 100.w,
@@ -175,7 +199,8 @@ class _HomeHeaderState extends State<HomeHeader> {
                           ),
                           SizedBox(height: 8.h),
                           Row(
-                            textDirection: TextDirection.rtl,
+                            textDirection:
+                                LocalizationService.instance.textDirection,
                             children: [
                               Image.asset(
                                 'assets/images/home/home_location.png',
@@ -204,10 +229,7 @@ class _HomeHeaderState extends State<HomeHeader> {
           ),
         ),
         SizedBox(width: 16.w),
-        BlocProvider(
-          create: (context) => sl<NotificationCountCubit>(),
-          child: HomeNotification(),
-        ),
+        HomeNotification(),
       ],
     );
   }

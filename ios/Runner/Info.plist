@@ -2,10 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSCameraUsageDescription</key>
+    <string>This app requires camera access to take photos for profile pictures and document scanning.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app requires access to your photo library to select existing photos for profile pictures and document uploads.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app requires permission to save photos to your photo library.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app requires microphone access for video recording functionality.</string>
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>This app requires access to documents folder for file uploads and downloads.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Elsadeken</string>
+	<string>AlSadiqeen | الصادقين</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +23,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>elsadeken</string>
+	<string>AlSadiqeen | الصادقين</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -41,9 +51,20 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UISupportedInterfaceOrientations</key>
+    <array>
+      <string>UIInterfaceOrientationPortrait</string>
+    </array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- Add these keys for push notifications -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>background-processing</string>
+	</array>
 </dict>
 </plist>

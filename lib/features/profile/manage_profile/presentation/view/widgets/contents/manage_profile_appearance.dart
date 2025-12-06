@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_item.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_custom_separator.dart';
@@ -9,6 +10,7 @@ import 'package:elsadeken/features/profile/manage_profile/presentation/view/widg
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class ManageProfileAppearance extends StatelessWidget {
   const ManageProfileAppearance({
@@ -23,10 +25,12 @@ class ManageProfileAppearance extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         ManageProfileContentItem(
-          title: 'الوزن(كغ)',
+          title: AppLocalizations.of(context)!.weightKg,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.weight?.toString() ?? '',
             isLoading: isLoading,
@@ -34,7 +38,7 @@ class ManageProfileAppearance extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'الطول(سم)',
+          title: AppLocalizations.of(context)!.heightCm,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.height?.toString() ?? '',
             isLoading: isLoading,
@@ -42,7 +46,7 @@ class ManageProfileAppearance extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'لون البشرة',
+          title: AppLocalizations.of(context)!.skinColor,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.skinColor ?? '',
             isLoading: isLoading,
@@ -50,7 +54,7 @@ class ManageProfileAppearance extends StatelessWidget {
         ),
         ManageProfileCustomSeparator(),
         ManageProfileContentItem(
-          title: 'بنية الجسم',
+          title: AppLocalizations.of(context)!.bodyStructure,
           itemContent: ManageProfileContentText(
             text: profileData?.attribute?.physique ?? '',
             isLoading: isLoading,
@@ -70,35 +74,35 @@ class ManageProfileAppearance extends StatelessWidget {
     final signUpListsCubit = context.read<SignUpListsCubit>();
 
     final dialogData = ManageProfileDialogData(
-      title: 'تعديل المظهر الخارجي',
+      title: AppLocalizations.of(context)!.editPhysicalAppearance,
       cubit: updateProfileCubit,
       signUpListsCubit: signUpListsCubit,
       dialogType: ManageProfileDialogType.bodyInfo,
       fields: [
         ManageProfileField(
-          label: 'الوزن',
-          hint: 'أدخل الوزن بالكيلوغرام',
+          label: AppLocalizations.of(context)!.weight,
+          hint: AppLocalizations.of(context)!.enterWeightInKg,
           currentValue: profileData?.attribute?.weight?.toString() ?? '',
-          type: ManageProfileFieldType.text,
-          keyboardType: TextInputType.number,
+          type: ManageProfileFieldType.dropdown,
+          keyValueOptions: _getWeightOptions(),
         ),
         ManageProfileField(
-          label: 'الطول',
-          hint: 'أدخل الطول بالسنتيمتر',
+          label: AppLocalizations.of(context)!.height,
+          hint: AppLocalizations.of(context)!.enterHeightInCm,
           currentValue: profileData?.attribute?.height?.toString() ?? '',
-          type: ManageProfileFieldType.text,
-          keyboardType: TextInputType.number,
+          type: ManageProfileFieldType.dropdown,
+          keyValueOptions: _getHeightOptions(),
         ),
         ManageProfileField(
-          label: 'لون البشرة',
-          hint: 'اختر لون البشرة',
+          label: AppLocalizations.of(context)!.skinColor,
+          hint: AppLocalizations.of(context)!.chooseSkinColor,
           currentValue: profileData?.attribute?.skinColor ?? '',
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.skinColor,
         ),
         ManageProfileField(
-          label: 'البنية الجسدية',
-          hint: 'اختر البنية الجسدية',
+          label: AppLocalizations.of(context)!.physique,
+          hint: AppLocalizations.of(context)!.chooseBodyStructure,
           currentValue: profileData?.attribute?.physique ?? '',
           type: ManageProfileFieldType.dropdown,
           dataType: ManageProfileFieldDataType.physique,
@@ -107,5 +111,23 @@ class ManageProfileAppearance extends StatelessWidget {
     );
 
     manageProfileDialog(context, dialogData);
+  }
+
+  /// Get weight options (30-200)
+  Map<String, String> _getWeightOptions() {
+    Map<String, String> weightOptions = {};
+    for (int i = 30; i <= 200; i++) {
+      weightOptions[i.toString()] = i.toString();
+    }
+    return weightOptions;
+  }
+
+  /// Get height options (50-220)
+  Map<String, String> _getHeightOptions() {
+    Map<String, String> heightOptions = {};
+    for (int i = 50; i <= 220; i++) {
+      heightOptions[i.toString()] = i.toString();
+    }
+    return heightOptions;
   }
 }

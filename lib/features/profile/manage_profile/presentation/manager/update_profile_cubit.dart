@@ -16,6 +16,7 @@ class UpdateProfileCubit extends Cubit<UpdateProfileState> {
     String? name,
     String? email,
     String? phone,
+    String? countryCode,
     String? password,
     String? passwordConfirmation,
   }) async {
@@ -26,6 +27,7 @@ class UpdateProfileCubit extends Cubit<UpdateProfileState> {
             name: name,
             email: email,
             phone: phone,
+            countryCode: countryCode,
             password: password,
             passwordConfirmation: passwordConfirmation));
 

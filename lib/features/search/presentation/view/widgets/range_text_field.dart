@@ -1,5 +1,7 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../core/theme/app_color.dart';
 
@@ -30,47 +32,22 @@ class _RangeTextFieldState extends State<RangeTextField> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      textDirection: LocalizationService.instance.textDirection,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(width: 32), // Space for alignment with other fields
         Expanded(
           child: Row(
+            textDirection: LocalizationService.instance.textDirection,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Expanded(
-                child: Container(
-                  height: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.primaryOrange),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(widget.maxLength),
-                    ],
-                    decoration: InputDecoration(
-                      hintText: widget.toHint,
-                      hintStyle: TextStyle(
-                        color: AppColors.primaryOrange,
-                        fontSize: 12,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        toValue = int.tryParse(value);
-                      });
-                      widget.onRangeChanged(fromValue, toValue);
-                    },
-                  ),
+              Text(
+                widget.label,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.black,
                 ),
               ),
-              SizedBox(width: 8),
-              Text('إلى', style: TextStyle(fontSize: 12)),
-              SizedBox(width: 8),
+              Spacer(),
               Expanded(
                 child: Container(
                   height: 40,
@@ -104,15 +81,44 @@ class _RangeTextFieldState extends State<RangeTextField> {
                   ),
                 ),
               ),
+              SizedBox(width: 8),
+              Text(AppLocalizations.of(context)!.to,
+                  style: TextStyle(fontSize: 12)),
+              SizedBox(width: 8),
+              Expanded(
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.primaryOrange),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: TextField(
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(widget.maxLength),
+                    ],
+                    decoration: InputDecoration(
+                      hintText: widget.toHint,
+                      hintStyle: TextStyle(
+                        color: AppColors.primaryOrange,
+                        fontSize: 12,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        toValue = int.tryParse(value);
+                      });
+                      widget.onRangeChanged(fromValue, toValue);
+                    },
+                  ),
+                ),
+              ),
             ],
-          ),
-        ),
-        SizedBox(width: 8),
-        Text(
-          widget.label,
-          style: TextStyle(
-            fontSize: 14,
-            color: AppColors.black,
           ),
         ),
       ],

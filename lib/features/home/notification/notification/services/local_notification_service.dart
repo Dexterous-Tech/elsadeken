@@ -43,7 +43,7 @@ class LocalNotificationService {
         duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,
         action: SnackBarAction(
-          label: 'عرض',
+          label: 'View', // This will be localized in the UI layer
           textColor: Colors.white,
           onPressed: () {
             // Navigate to notifications screen

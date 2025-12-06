@@ -1,6 +1,5 @@
 part of 'profile_details_cubit.dart';
 
-@immutable
 class ProfileDetailsState {}
 
 class ProfileDetailsInitial extends ProfileDetailsState {}
@@ -59,4 +58,32 @@ final class ReportUserSuccess extends ProfileDetailsState {
   final ProfileDetailsActionResponseModel profileDetailsActionResponseModel;
 
   ReportUserSuccess(this.profileDetailsActionResponseModel);
+}
+
+class ShareUserLoading extends ProfileDetailsState {}
+
+class ShareUserFailure extends ProfileDetailsState {
+  final String error;
+
+  ShareUserFailure(this.error);
+}
+
+class ShareUserSuccess extends ProfileDetailsState {
+  final ProfileDetailsActionResponseModel profileDetailsActionResponseModel;
+
+  ShareUserSuccess(this.profileDetailsActionResponseModel);
+}
+
+class ReportReasonLoading extends ProfileDetailsState {}
+
+class ReportReasonFailure extends ProfileDetailsState {
+  final String error;
+
+  ReportReasonFailure(this.error);
+}
+
+class ReportReasonSuccess extends ProfileDetailsState {
+  final List<GeneralInfoResponseModels> generalInfoResponseModels;
+
+  ReportReasonSuccess(this.generalInfoResponseModels);
 }

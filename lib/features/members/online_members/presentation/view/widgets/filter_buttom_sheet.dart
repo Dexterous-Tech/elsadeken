@@ -1,21 +1,34 @@
+import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/helper/localization_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:elsadeken/core/networking/api_services.dart';
-import 'package:elsadeken/core/networking/api_constants.dart';
-import 'package:elsadeken/core/di/injection_container.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
+import 'package:elsadeken/features/auth/signup/data/models/national_country_models.dart';
+
+import '../../../../../../core/di/injection_container.dart';
+import '../../../../../../core/theme/app_color.dart';
 
 class FilterBottomSheet extends StatefulWidget {
+  final int? selectedCountryId;
+  final String? selectedCountryName;
+
   const FilterBottomSheet({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+    this.selectedCountryId,
+    this.selectedCountryName,
+  });
 
   @override
   State<FilterBottomSheet> createState() => _FilterBottomSheetState();
 }
 
 class _FilterBottomSheetState extends State<FilterBottomSheet> {
-  List<_Country> _countries = const [];
+  late final String all;
+  late List<_Country> _countries;
   int _selectedCountryIndex = 0;
-  bool _isLoadingCountries = true;
+  bool _hasInitializedSelection = false;
+  bool _isLoading = false;
 
   static const Color kMuted = Color(0xFF9E9E9E);
   static const Color kClearRed = Color(0xFFF04438);
@@ -29,162 +42,254 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     ],
   );
 
+  List<_Country> _parseCountries(
+      List<NationalCountryResponseModel> countriesList) {
+    final parsed = countriesList
+        .map((e) {
+          final id = e.id;
+          final name = e.name ?? '';
+          if (id == null || name.isEmpty) return null;
+          return _Country(id: id, name: name);
+        })
+        .whereType<_Country>()
+        .toList();
+
+    return [_Country(id: 0, name: all), ...parsed];
+  }
+
+  void _updateSelectedIndex() {
+    print(
+        '_updateSelectedIndex called with selectedCountryId: ${widget.selectedCountryId}, countries length: ${_countries.length}');
+    if (widget.selectedCountryId != null &&
+        widget.selectedCountryId != 0 &&
+        _countries.length > 1) {
+      final index = _countries
+          .indexWhere((country) => country.id == widget.selectedCountryId);
+      print('Found country at index: $index');
+      if (index != -1) {
+        setState(() {
+          _selectedCountryIndex = index;
+          _hasInitializedSelection = true;
+        });
+        print('Updated _selectedCountryIndex to: $_selectedCountryIndex');
+      } else {
+        print(
+            'Country with ID ${widget.selectedCountryId} not found in countries list');
+      }
+    } else {
+      print(
+          '_updateSelectedIndex conditions not met: selectedCountryId: ${widget.selectedCountryId}, countries length: ${_countries.length}');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _loadCountries();
+    all = LocalizationHelper.getLocalizedText('الكل', 'all');
+    // Initialize the countries list
+    _countries = [_Country(id: 0, name: all)];
+
+    // Initialize the selected index based on the passed country ID
+    if (widget.selectedCountryId != null && widget.selectedCountryId != 0) {
+      // We'll set this when countries are loaded
+      _hasInitializedSelection = false;
+    } else {
+      _hasInitializedSelection = true;
+    }
   }
 
-  Future<void> _loadCountries() async {
-    try {
-      final api = sl<ApiServices>();
-      final res = await api.get(
-          endpoint: ApiConstants.listCountries, requiresAuth: false);
-      final raw = res.data;
-      List list;
-      if (raw is List) {
-        list = raw;
-      } else if (raw is Map && raw['data'] is List) {
-        list = raw['data'] as List;
-      } else if (raw is Map &&
-          raw['data'] is Map &&
-          raw['data']['countries'] is List) {
-        list = raw['data']['countries'] as List;
+  @override
+  void didUpdateWidget(covariant FilterBottomSheet oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedCountryId != widget.selectedCountryId) {
+      if (widget.selectedCountryId != null && widget.selectedCountryId != 0) {
+        _hasInitializedSelection = false;
       } else {
-        list = const [];
+        _hasInitializedSelection = true;
+        _selectedCountryIndex = 0;
       }
-      final parsed = list
-          .map((e) {
-            final map = e as Map<String, dynamic>;
-            final id = (map['id'] ?? map['country_id']) as int?;
-            final name = (map['name_ar'] ??
-                    map['name'] ??
-                    map['title'] ??
-                    map['country_name_ar'] ??
-                    '')
-                .toString();
-            if (id == null || name.isEmpty) return null;
-            return _Country(id: id, name: name);
-          })
-          .whereType<_Country>()
-          .toList();
-      setState(() {
-        _countries = [const _Country(id: 0, name: 'الكل'), ...parsed];
-        _isLoadingCountries = false;
-      });
-    } catch (_) {
-      // fallback to just All
-      setState(() {
-        _countries = const [
-          _Country(id: 0, name: 'الكل'),
-        ];
-        _isLoadingCountries = false;
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: SafeArea(
-        top: false,
+    return BlocProvider(
+      create: (context) => sl<SignUpListsCubit>(),
+      child: Directionality(
+        textDirection: LocalizationService.instance.textDirection,
         child: Container(
           constraints: BoxConstraints(
             maxHeight: media.size.height * 0.5,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.cosmicLatte,
+                AppColors.antiqueWhite,
+              ],
+            ),
           ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 8, 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'فلترة المتواجدين',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      icon: const Icon(Icons.close, color: kMuted),
-                      tooltip: 'إغلاق',
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: SafeArea(
+            top: false,
+            child: Column(
+              textDirection: LocalizationService.instance.textDirection,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 8, 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (_isLoadingCountries)
-                        const Center(
-                            child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 24),
-                          child: CircularProgressIndicator(),
-                        ))
-                      else
-                        _Section(
-                          title: 'فلترة بواسطة الدولة',
-                          options: _countries.map((e) => e.name).toList(),
-                          selectedIndex: _selectedCountryIndex,
-                          onSelect: (i) =>
-                              setState(() => _selectedCountryIndex = i),
+                      Text(
+                        AppLocalizations.of(context)!.filter,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
                         ),
-                      const SizedBox(height: 20),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).maybePop(),
+                        icon: const Icon(Icons.close, color: kMuted),
+                        tooltip: AppLocalizations.of(context)!.close,
+                      ),
                     ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _GradientButton(
-                        label: 'تطبيق الفلترة',
-                        gradient: _applyGradient,
-                        onTap: () {
-                          final selected = (_selectedCountryIndex >= 0 &&
-                                  _selectedCountryIndex < _countries.length)
-                              ? _countries[_selectedCountryIndex]
-                              : const _Country(id: 0, name: 'الكل');
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                        horizontal: 16, vertical: 12),
+                    child: Column(
+                      textDirection: LocalizationService.instance.textDirection,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BlocBuilder<SignUpListsCubit, SignUpListsState>(
+                          builder: (context, state) {
+                            print('BlocBuilder state: $state');
+                            // If this is the initial state, trigger countries loading
+                            if (state is SignUpListsStateInitial) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                context.read<SignUpListsCubit>().getCountries();
+                              });
+                            }
 
-                          // Return the filter data to the parent screen
-                          Navigator.of(context).maybePop({
-                            'id': selected.id == 0 ? null : selected.id,
-                            'name': selected.name,
-                          });
-                        },
-                      ),
+                            if (state is CountriesLoading) {
+                              return Center(
+                                  child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 24),
+                                child: Column(
+                                  children: [
+                                    const CircularProgressIndicator(),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      AppLocalizations.of(context)!.loading,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFF666666),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ));
+                            } else if (state is CountriesSuccess) {
+                              _countries = _parseCountries(state.countriesList);
+                              print(
+                                  'Countries loaded: ${_countries.map((e) => '${e.id}:${e.name}').toList()}');
+                              // Update selected index after countries are loaded if we haven't initialized selection yet
+                              if (!_hasInitializedSelection) {
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  _updateSelectedIndex();
+                                });
+                              }
+                            } else if (state is CountriesFailure) {
+                              // Keep the default list on failure
+                              _countries = [_Country(id: 0, name: all)];
+                            }
+
+                            print(
+                                'Building _Section with selectedIndex: $_selectedCountryIndex, countries: ${_countries.map((e) => '${e.id}:${e.name}').toList()}');
+                            return _Section(
+                              title:
+                                  AppLocalizations.of(context)!.filterByCountry,
+                              options: _countries.map((e) => e.name).toList(),
+                              selectedIndex: _selectedCountryIndex,
+                              onSelect: (i) =>
+                                  setState(() => _selectedCountryIndex = i),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _OutlinedActionButton(
-                        label: 'مسح',
-                        color: kClearRed,
-                        onTap: () {
-                          setState(() {
-                            _selectedCountryIndex = 0;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsetsDirectional.all(16),
+                  child: Row(
+                    textDirection: LocalizationService.instance.textDirection,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: _GradientButton(
+                          label: AppLocalizations.of(context)!.filter,
+                          gradient: _applyGradient,
+                          isLoading: _isLoading,
+                          onTap: _isLoading
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
+
+                                  // Simulate loading delay for better UX
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 500));
+
+                                  if (mounted) {
+                                    final selected = (_selectedCountryIndex >=
+                                                0 &&
+                                            _selectedCountryIndex <
+                                                _countries.length)
+                                        ? _countries[_selectedCountryIndex]
+                                        : const _Country(id: 0, name: 'all');
+
+                                    // Return the filter data to the parent screen
+                                    if (context.mounted) {
+                                      Navigator.of(context).maybePop({
+                                        'id': selected.id == 0
+                                            ? null
+                                            : selected.id,
+                                        'name': selected.name,
+                                      });
+                                    }
+                                  }
+                                },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _OutlinedActionButton(
+                          label: AppLocalizations.of(context)!.clear,
+                          color: kClearRed,
+                          onTap: () {
+                            setState(() {
+                              _selectedCountryIndex = 0;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -211,6 +316,7 @@ class _Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      textDirection: LocalizationService.instance.textDirection,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -225,7 +331,11 @@ class _Section extends StatelessWidget {
         const SizedBox(height: 12),
         ...List.generate(options.length, (i) {
           final selected = i == selectedIndex;
+          print(
+              '_Section: option $i (${options[i]}) selected: $selected, selectedIndex: $selectedIndex');
           return Column(
+            textDirection: LocalizationService.instance.textDirection,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               InkWell(
                 onTap: () => onSelect(i),
@@ -233,18 +343,19 @@ class _Section extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    textDirection: LocalizationService.instance.textDirection,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          options[i],
-                          textAlign: TextAlign.right,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: kText,
-                          ),
+                      Text(
+                        options[i],
+                        textAlign: TextAlign.end,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: kText,
                         ),
                       ),
+                      Spacer(),
                       _SquareCheck(value: selected),
                     ],
                   ),
@@ -270,10 +381,10 @@ class _SquareCheck extends StatelessWidget {
       width: 22,
       height: 22,
       decoration: BoxDecoration(
-        color: value ? const Color(0xFF22C55E) : Colors.white,
+        color: value ? AppColors.congoPink : Colors.white,
         borderRadius: BorderRadius.circular(6),
         border: Border.all(
-          color: value ? const Color(0xFF22C55E) : const Color(0xFFCDCDCD),
+          color: value ? AppColors.congoPink : const Color(0xFFCDCDCD),
           width: 1.4,
         ),
       ),
@@ -288,11 +399,13 @@ class _GradientButton extends StatelessWidget {
     required this.label,
     required this.gradient,
     required this.onTap,
+    this.isLoading = false,
   });
 
   final String label;
   final Gradient gradient;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -306,18 +419,27 @@ class _GradientButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
         child: InkWell(
           borderRadius: BorderRadius.circular(32),
-          onTap: onTap,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 14),
+          onTap: onTap != null ? () => onTap!() : null,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.symmetric(vertical: 14),
             child: Center(
-              child: Text(
-                'فلتره',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+              child: isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
             ),
           ),
         ),
@@ -352,7 +474,7 @@ class _OutlinedActionButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(32),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14),
+            padding: const EdgeInsetsDirectional.symmetric(vertical: 14),
             child: Center(
               child: Text(
                 label,
@@ -373,5 +495,6 @@ class _OutlinedActionButton extends StatelessWidget {
 class _Country {
   final int id;
   final String name;
+
   const _Country({required this.id, required this.name});
 }

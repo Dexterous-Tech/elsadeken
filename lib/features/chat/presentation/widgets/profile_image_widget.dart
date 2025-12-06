@@ -7,6 +7,7 @@ class ProfileImageWidget extends StatelessWidget {
   final double? borderWidth;
   final Color? borderColor;
   final bool showOnlineIndicator;
+  final bool isOnline;
   final int? unreadCount;
 
   const ProfileImageWidget({
@@ -17,6 +18,7 @@ class ProfileImageWidget extends StatelessWidget {
     this.borderColor,
     this.showOnlineIndicator = false,
     this.unreadCount,
+    required this.isOnline,
   });
 
   @override
@@ -65,11 +67,11 @@ class ProfileImageWidget extends StatelessWidget {
               width: (size * 0.24).w,
               height: (size * 0.24).w,
               decoration: BoxDecoration(
-                color: Colors.green,
+                color: isOnline ? Colors.green : Colors.grey,
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: Colors.white,
-                  width: 2.w,
+                  width: 1.w,
                 ),
               ),
             ),

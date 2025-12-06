@@ -1,11 +1,13 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmptyNotificationsWidget extends StatelessWidget {
-  const EmptyNotificationsWidget({Key? key}) : super(key: key);
+  const EmptyNotificationsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,20 +17,27 @@ class EmptyNotificationsWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            Image.asset(AppImages.emptyNotification ,width: 256.w,height: 256.h,),
-                       verticalSpace(54),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(96).r,
+              child: Image.asset(
+                AppImages.emptyNotification,
+                width: 162.w,
+                height: 162.h,
+              ),
+            ),
+            verticalSpace(54),
             Text(
-              'لا يوجد إشعارات حتى الآن',
+              AppLocalizations.of(context)!.noNotificationsYet,
               style: AppTextStyles.font26BlackBoldLamaSans,
               textAlign: TextAlign.center,
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
             ),
             Text(
-              'ستظهر إشعاراتك هنا عند وصول\nرسائل جديدة',
-              style: AppTextStyles.font14JetRegularLamaSans.copyWith(color: Color(0xff404040)),
+              AppLocalizations.of(context)!.notificationsWillAppearHere,
+              style: AppTextStyles.font14JetRegularLamaSans
+                  .copyWith(color: Color(0xff404040)),
               textAlign: TextAlign.center,
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
             ),
           ],
         ),

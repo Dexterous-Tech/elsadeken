@@ -1,13 +1,20 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/helper/error_message_helper.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/chat/data/models/chat_settings_model.dart';
 import 'package:elsadeken/features/chat/data/models/chat_settings_request_model.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/chat_settings_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/lists_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_online_setting_cubit/chat_online_setting_cubit.dart';
 
 import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,38 +28,69 @@ class ChatSettingsScreen extends StatefulWidget {
 
 class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   bool _isOnline = true;
-  bool _newMessagesNotification = false;
-  bool _profilePictureNotification = false;
-  String _selectedAgeCategory = 'أي شخص';
-  String _selectedNationalities = 'كل الجنسيات';
-  String _selectedCountries = 'كل الدول';
-  
+  // bool _newMessagesNotification = false;
+  // bool _profilePictureNotification = false;
+  String _selectedAgeCategory = '';
+  String _selectedNationalities = '';
+  String _selectedCountries = '';
+
   // Age range for API
   int _fromAge = 18;
   int _toAge = 50;
   int _nationalityId = 0;
   int _countryId = 0;
-  
+
   // Store original loaded settings for comparison
   int _originalFromAge = 18;
   int _originalToAge = 50;
   int _originalNationalityId = 0;
   int _originalCountryId = 0;
-  
+
   // Track if initial settings have been loaded
-  bool _hasLoadedInitialSettings = false;
+  // bool _hasLoadedInitialSettings = false;
 
   @override
   void initState() {
     super.initState();
-    // Load settings and lists when the screen initializes
+    // Initialize localized strings
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        print('[ChatSettingsScreen] initState: Loading chat settings and lists...');
+        setState(() {
+          _selectedAgeCategory = AppLocalizations.of(context)!.anyPerson;
+          _selectedNationalities =
+              AppLocalizations.of(context)!.allNationalities;
+          _selectedCountries = AppLocalizations.of(context)!.allCountries;
+        });
+        print(
+            '[ChatSettingsScreen] initState: Loading chat settings and lists...');
         context.read<ChatSettingsCubit>().loadChatSettings();
         context.read<ListsCubit>().loadLists();
+        context.read<ChatOnlineSettingCubit>().getOnline();
       }
     });
+
+    // Listen to language changes and reload lists
+    LocalizationService.instance.addListener(_onLanguageChanged);
+  }
+
+  void _onLanguageChanged() {
+    if (mounted) {
+      print('[ChatSettingsScreen] Language changed, reloading lists...');
+      // Reload lists to get data in new language
+      context.read<ListsCubit>().loadLists();
+      // Update text values
+      setState(() {
+        _updateAgeCategoryText();
+        _updateNationalitiesText();
+        _updateCountriesText();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    LocalizationService.instance.removeListener(_onLanguageChanged);
+    super.dispose();
   }
 
   // Load settings from API response
@@ -61,25 +99,25 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     _toAge = settings.toAge;
     _nationalityId = settings.nationalityId;
     _countryId = settings.countryId;
-    
+
     // Store original values for comparison
     _originalFromAge = settings.fromAge;
     _originalToAge = settings.toAge;
     _originalNationalityId = settings.nationalityId;
     _originalCountryId = settings.countryId;
-    
+
     // Update UI text based on IDs (you may need to map these to actual text values)
     _updateAgeCategoryText();
     _updateNationalitiesText();
     _updateCountriesText();
-    
+
     // Log the user's chat settings ID
     print('[ChatSettingsScreen] Loaded settings with ID: ${settings.id}');
   }
 
   void _updateAgeCategoryText() {
     if (_fromAge == 0 && _toAge == 0) {
-      _selectedAgeCategory = 'أي شخص';
+      _selectedAgeCategory = AppLocalizations.of(context)!.anyPerson;
     } else {
       _selectedAgeCategory = '$_fromAge - $_toAge';
     }
@@ -87,17 +125,23 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
 
   void _updateNationalitiesText() {
     if (_nationalityId == 0) {
-      _selectedNationalities = 'كل الجنسيات';
+      _selectedNationalities = AppLocalizations.of(context)!.allNationalities;
     } else {
-      // Get nationality name from lists chat_settings_cubit
+      // Get nationality name from lists chat_settings_cubit with gender support
       final listsCubit = context.read<ListsCubit>();
-      _selectedNationalities = listsCubit.getNationalityName(_nationalityId);
+      listsCubit.getNationalityNameForCurrentUser(_nationalityId).then((name) {
+        if (mounted) {
+          setState(() {
+            _selectedNationalities = name;
+          });
+        }
+      });
     }
   }
 
   void _updateCountriesText() {
     if (_countryId == 0) {
-      _selectedCountries = 'كل الدول';
+      _selectedCountries = AppLocalizations.of(context)!.allCountries;
     } else {
       // Get country name from lists chat_settings_cubit
       final listsCubit = context.read<ListsCubit>();
@@ -106,251 +150,321 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
   }
 
   // Check if settings have changed from original values
-  
 
   bool _hasSettingsChanged() {
     final hasChanged = _fromAge != _originalFromAge ||
-           _toAge != _originalToAge ||
-           _nationalityId != _originalNationalityId ||
-           _countryId != _originalCountryId;
-    
+        _toAge != _originalToAge ||
+        _nationalityId != _originalNationalityId ||
+        _countryId != _originalCountryId;
+
     // Debug logging
     print('[ChatSettingsScreen] _hasSettingsChanged check:');
-    print('  Current: fromAge=$_fromAge, toAge=$_toAge, nationalityId=$_nationalityId, countryId=$_countryId');
-    print('  Original: fromAge=$_originalFromAge, toAge=$_originalToAge, nationalityId=$_originalNationalityId, countryId=$_originalCountryId');
+    print(
+        '  Current: fromAge=$_fromAge, toAge=$_toAge, nationalityId=$_nationalityId, countryId=$_countryId');
+    print(
+        '  Original: fromAge=$_originalFromAge, toAge=$_originalToAge, nationalityId=$_originalNationalityId, countryId=$_originalCountryId');
     print('  Has changes: $hasChanged');
-    
+
     return hasChanged;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
-        appBar: _buildAppBar(),
-        backgroundColor: Colors.transparent,
-                body: SafeArea(
-          child: MultiBlocListener(
-            listeners: [
-              BlocListener<ChatSettingsCubit, ChatSettingsState>(
-                listener: (context, state) {
-                  print('[ChatSettingsScreen] ChatSettingsCubit state changed to: ${state.runtimeType}');
-                  
-                  if (state is ChatSettingsLoaded && mounted) {
-                    print('[ChatSettingsScreen] Settings loaded: ID=${state.chatSettings.id}, fromAge=${state.chatSettings.fromAge}, toAge=${state.chatSettings.toAge}');
-                    _loadSettingsFromApi(state.chatSettings);
-                    setState(() {});
-                    
-                    // Show loading success message (optional - can be removed if not needed)
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text(
-                          'تم تحميل الإعدادات بنجاح',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.blue,
-                        duration: const Duration(seconds: 2),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-                  } else if (state is ChatSettingsUpdated && mounted) {
-                    // Update original values to reflect the successful update
-                    _originalFromAge = _fromAge;
-                    _originalToAge = _toAge;
-                    _originalNationalityId = _nationalityId;
-                    _originalCountryId = _countryId;
-                    
-                    // Show success snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          state.message,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.green,
-                        duration: const Duration(seconds: 3),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-                    
-                    // Trigger UI update to reflect the new "no changes" state
-                    setState(() {});
-                  } else if (state is ChatSettingsUpdateError && mounted) {
-                    // Show error snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          state.message,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.red,
-                        duration: const Duration(seconds: 4),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-                  } else if (state is ChatSettingsError && mounted) {
-                    // Show loading error snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          state.message,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        backgroundColor: Colors.red,
-                        duration: const Duration(seconds: 4),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-                  }
-                },
-                listenWhen: (previous, current) {
-                  // Always listen to state changes
-                  return true;
-                },
+        // appBar: _buildAppBar(),
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.cosmicLatte,
+                AppColors.antiqueWhite,
+              ],
+            ),
+          ),
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Positioned(
+                top: -10,
+                left: -20,
+                child: Image.asset(
+                  AppImages.starProfile,
+                  width: 488.w,
+                  height: 325.h,
+                ),
               ),
-              BlocListener<ListsCubit, ListsState>(
-                listener: (context, state) {
-                  if (state is ListsLoaded && mounted) {
-                    // Lists loaded, update the UI text
-                    setState(() {
-                      _updateNationalitiesText();
-                      _updateCountriesText();
-                    });
-                  }
-                },
-              ),
-            ],
-            child: BlocBuilder<ChatSettingsCubit, ChatSettingsState>(
-              builder: (context, state) {
-                return Stack(
-                children: [
-                  // Background image should be behind content
-                 /* Positioned(
-                    top: 100.h,
-                    right: -100.w,
-                    child: _buildBackgroundImage(),
-                  ),*/
-                  // Fallback background decoration
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      width: 300.w,
-                      height: 300.h,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFF0F0).withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(150),
-                      ),
-                    ),
-                  ),
-                  // Content should be on top and interactive
-                  Column(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            image: DecorationImage(
-                              image: AssetImage(
-                                'assets/images/chat/mail 1.png',
+              SafeArea(
+                child: MultiBlocListener(
+                  listeners: [
+                    BlocListener<ChatSettingsCubit, ChatSettingsState>(
+                      listener: (context, state) {
+                        print(
+                            '[ChatSettingsScreen] ChatSettingsCubit state changed to: ${state.runtimeType}');
+
+                        if (state is ChatSettingsLoaded && mounted) {
+                          print(
+                              '[ChatSettingsScreen] Settings loaded: ID=${state.chatSettings.id}, fromAge=${state.chatSettings.fromAge}, toAge=${state.chatSettings.toAge}');
+                          _loadSettingsFromApi(state.chatSettings);
+                          setState(() {});
+
+                          // Show loading success message (optional - can be removed if not needed)
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                AppLocalizations.of(context)!
+                                    .settingsLoadedSuccessfully,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              backgroundColor: Colors.blue,
+                              duration: const Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                          ),
-                          child: _buildBody(state),
-                        ),
-                      ),
-                    ],
+                          );
+                        } else if (state is ChatSettingsUpdated && mounted) {
+                          // Update original values to reflect the successful update
+                          _originalFromAge = _fromAge;
+                          _originalToAge = _toAge;
+                          _originalNationalityId = _nationalityId;
+                          _originalCountryId = _countryId;
+
+                          // Show success snackbar
+                          final localizedMessage =
+                              ErrorMessageHelper.getLocalizedMessage(
+                            context,
+                            state.message,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                localizedMessage,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              backgroundColor: Colors.green,
+                              duration: const Duration(seconds: 3),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          );
+
+                          // Trigger UI update to reflect the new "no changes" state
+                          setState(() {});
+                        } else if (state is ChatSettingsUpdateError &&
+                            mounted) {
+                          // Show error snackbar
+                          final localizedMessage =
+                              ErrorMessageHelper.getLocalizedMessage(
+                            context,
+                            state.message,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                localizedMessage,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              backgroundColor: Colors.red,
+                              duration: const Duration(seconds: 4),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          );
+                        } else if (state is ChatSettingsError && mounted) {
+                          // Show loading error snackbar
+                          final localizedMessage =
+                              ErrorMessageHelper.getLocalizedMessage(
+                            context,
+                            state.message,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                localizedMessage,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              backgroundColor: Colors.red,
+                              duration: const Duration(seconds: 4),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      listenWhen: (previous, current) {
+                        // Always listen to state changes
+                        return true;
+                      },
+                    ),
+                    BlocListener<ListsCubit, ListsState>(
+                      listener: (context, state) {
+                        if (state is ListsLoaded && mounted) {
+                          // Lists loaded, update the UI text
+                          setState(() {
+                            _updateNationalitiesText();
+                            _updateCountriesText();
+                          });
+                        }
+                      },
+                    ),
+                    BlocListener<ChatOnlineSettingCubit,
+                        ChatOnlineSettingState>(
+                      listener: (context, state) {
+                        if (state is ChatOnlineSettingGetSuccess && mounted) {
+                          // Update online status based on API response
+                          setState(() {
+                            _isOnline = state.chatOnlineSettingModel.data
+                                    ?.enableOnline ==
+                                1;
+                          });
+                        } else if (state is ChatOnlineSettingSetSuccess &&
+                            mounted) {
+                          // Show success message when online status is updated
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                AppLocalizations.of(context)!
+                                    .connectionStatusUpdatedSuccessfully,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              backgroundColor: Colors.green,
+                              duration: const Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          );
+                          // Refresh the online status after setting
+                          context.read<ChatOnlineSettingCubit>().getOnline();
+                        } else if (state is ChatOnlineSettingGetFailure &&
+                            mounted) {
+                          // Show error message when getting online status fails
+                          final localizedMessage =
+                              ErrorMessageHelper.getLocalizedMessage(
+                            context,
+                            state.error,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                localizedMessage,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              backgroundColor: Colors.red,
+                              duration: const Duration(seconds: 4),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          );
+                        } else if (state is ChatOnlineSettingSetFailure &&
+                            mounted) {
+                          // Show error message when setting online status fails
+                          final localizedMessage =
+                              ErrorMessageHelper.getLocalizedMessage(
+                            context,
+                            state.error,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                localizedMessage,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              backgroundColor: Colors.red,
+                              duration: const Duration(seconds: 4),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                  child: BlocBuilder<ChatSettingsCubit, ChatSettingsState>(
+                    builder: (context, state) {
+                      return _buildBody(state);
+                    },
                   ),
-                ],
-              );
-              },
-            ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildBackgroundImage() {
-    return Image.asset(
-      'assets/images/chat/mail 1.png',
-      width: 400,
-      height: 400,
-      fit: BoxFit.contain,
-      errorBuilder: (context, error, stackTrace) {
-        print('Background image error: $error'); // Debug print
-        return Container(
-          width: 400,
-          height: 400,
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF0F0).withOpacity(0.5),
-            borderRadius: BorderRadius.circular(200),
-          ),
-          child: Icon(
-            Icons.mail,
-            size: 100,
-            color: Colors.grey[400],
-          ),
-        );
-      },
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar() {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(80.h),
-      child: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            width: double.infinity,
-            alignment: Alignment.bottomRight,
-            decoration: BoxDecoration(
-              color: AppColors.white,
-            ),
-            child: const ProfileHeader(title: 'إعدادات الرسائل'),
-          ),
-          Positioned(
-            top: 0,
-            left: -20,
-            child: Image.asset(
-              AppImages.starProfile,
-              width: 400.w,
-              height: 250.h,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // PreferredSizeWidget _buildAppBar() {
+  //   return PreferredSize(
+  //     preferredSize: Size.fromHeight(80.h),
+  //     child: Stack(
+  //       children: [
+  //         Container(
+  //           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+  //           width: double.infinity,
+  //           alignment: Alignment.bottomRight,
+  //           decoration: BoxDecoration(
+  //             color: AppColors.white,
+  //           ),
+  //           child: ProfileHeader(
+  //               title: AppLocalizations.of(context)!.messageSettings),
+  //         ),
+  //         // Decorative background image above header but non-interactive
+  //         IgnorePointer(
+  //           ignoring: true,
+  //           child: Positioned(
+  //             top: 0,
+  //             left: -20,
+  //             child: Image.asset(
+  //               AppImages.starProfile,
+  //               width: 400.w,
+  //               height: 250.h,
+  //               fit: BoxFit.cover,
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildBody(ChatSettingsState state) {
     // Show loading indicator
@@ -362,19 +476,24 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
 
     // Show error message if any
     if (state is ChatSettingsError) {
+      final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+        context,
+        state.message,
+      );
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              state.message,
+              localizedMessage,
               style: AppTextStyles.font16BlackSemiBoldLamaSans,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 16.h),
             ElevatedButton(
-              onPressed: () => context.read<ChatSettingsCubit>().loadChatSettings(),
-              child: const Text('إعادة المحاولة'),
+              onPressed: () =>
+                  context.read<ChatSettingsCubit>().loadChatSettings(),
+              child: Text(AppLocalizations.of(context)!.retry),
             ),
           ],
         ),
@@ -384,9 +503,13 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     // Show success message if any
     if (state is ChatSettingsUpdated) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+          context,
+          state.message,
+        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(state.message),
+            content: Text(localizedMessage),
             backgroundColor: Colors.green,
           ),
         );
@@ -396,9 +519,13 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     // Show update error message if any
     if (state is ChatSettingsUpdateError) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        final localizedMessage = ErrorMessageHelper.getLocalizedMessage(
+          context,
+          state.message,
+        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(state.message),
+            content: Text(localizedMessage),
             backgroundColor: Colors.red,
           ),
         );
@@ -408,11 +535,25 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+          padding: EdgeInsets.all(20.w),
+          child:
+              ProfileHeader(title: AppLocalizations.of(context)!.chatSetting),
+        ),
+        verticalSpace(32),
         Container(
           width: double.infinity,
+          margin: EdgeInsets.symmetric(horizontal: 26.w),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF0F0).withOpacity(0.5),
-            borderRadius: BorderRadius.circular(16.r),
+            image: DecorationImage(
+              alignment: Alignment.bottomCenter,
+              fit: BoxFit.scaleDown,
+              image: AssetImage(
+                'assets/images/chat/background_mail.png',
+              ),
+            ),
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(8).r,
           ),
           child: Padding(
             padding: EdgeInsets.all(20.w),
@@ -421,13 +562,9 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               children: [
                 _buildConnectionStatusSection(),
                 SizedBox(height: 50.h),
-                _buildDivider(),
-                SizedBox(height: 50.h),
                 _buildWhoCanSendSection(),
-                SizedBox(height: 50.h),
-                _buildDivider(),
-                SizedBox(height: 50.h),
-               // _buildNotificationSettingsSection(),
+                SizedBox(height: 150.h),
+                // _buildNotificationSettingsSection(),
               ],
             ),
           ),
@@ -444,109 +581,141 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'حالة الاتصال الخاصة بك',
+          AppLocalizations.of(context)!.showOnlineStatus,
           style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
         SizedBox(height: 16.h),
-        _buildSettingRow(
-          title: 'متصل الآن',
-          subtitle: 'أظهر أنك متصل',
-          showGreenDot: true,
-          trailing: Transform.scale(
-            scale: 0.8,
-            child: Switch(
-              value: _isOnline,
-              onChanged: (value) {
-                setState(() {
-                  _isOnline = value;
-                });
-              },
-              activeColor: Colors.orangeAccent,
-              activeTrackColor: Colors.black,
-              inactiveThumbColor: Colors.red,
-              inactiveTrackColor: Colors.white,
-            ),
-          ),
+        BlocBuilder<ChatOnlineSettingCubit, ChatOnlineSettingState>(
+          builder: (context, state) {
+            return Container(
+              // padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+              decoration: BoxDecoration(
+                  // color: const Color(0xFFfbecef).withValues(alpha: 0.3),
+                  // borderRadius: BorderRadius.circular(12.r),
+                  ),
+              child: _buildSettingRow(
+                title: _isOnline
+                    ? AppLocalizations.of(context)!.onlineStatus
+                    : AppLocalizations.of(context)!.offlineStatus,
+                subtitle: AppLocalizations.of(context)!.showOnlineStatus,
+                showGreenDot: true,
+                trailing: Transform.scale(
+                  scale: 0.7,
+                  child: Switch(
+                    value: _isOnline,
+                    onChanged: (value) {
+                      // Immediately update the UI
+                      setState(() {
+                        _isOnline = value;
+                      });
+                      // Call the cubit to update online status
+                      context.read<ChatOnlineSettingCubit>().setOnline();
+                    },
+                    activeThumbColor: Colors.orangeAccent,
+                    activeTrackColor: Colors.black,
+                    inactiveThumbColor: Colors.red,
+                    inactiveTrackColor: Colors.white,
+                  ),
+                ),
+              ),
+            );
+          },
         )
       ],
     );
   }
 
   Widget _buildWhoCanSendSection() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'من يستطيع إرسال الرسائل إليك؟',
-            style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(height: 16.h),
-          _buildSettingRow(
-            title: 'الفئة العمرية',
-            subtitle: _selectedAgeCategory,
-            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-            onTap: _showAgeCategoryDialog,
-          ),
-          SizedBox(height: 4.h),
-          _buildSettingRow(
-            title: 'الجنسيات',
-            subtitle: _selectedNationalities,
-            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-            onTap: _showNationalitiesDialog,
-          ),
-          SizedBox(height: 4.h),
-          _buildSettingRow(
-            title: 'الدول',
-            subtitle: _selectedCountries,
-            trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
-            onTap: _showCountriesDialog,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNotificationSettingsSection() {
     return Column(
+      textDirection: LocalizationService.instance.textDirection,
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          'إعدادات الإشعارات',
+          textDirection: LocalizationService.instance.textDirection,
+          AppLocalizations.of(context)!.whoCanSendMessages,
           style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
-        SizedBox(height: 8.h),
-        _buildSettingRow(
-          title: 'رسائل جديدة',
-          subtitle: '',
-          trailing: Transform.scale(
-            scale: 0.8,
-            child: Switch(
-              value: _newMessagesNotification,
-              onChanged: (value) {
-                setState(() {
-                  _newMessagesNotification = value;
-                });
-              },
-              activeColor: Colors.orangeAccent,
-              activeTrackColor: Colors.black,
-              inactiveThumbColor: Colors.red,
-              inactiveTrackColor: Colors.white,
-            ),
+        SizedBox(height: 16.h),
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+          decoration: BoxDecoration(
+              // color: const Color(0xFFfbecef).withValues(alpha: 0.3),
+              // borderRadius: BorderRadius.circular(12.r),
+              ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            textDirection: LocalizationService.instance.textDirection,
+            children: [
+              _buildSettingRow(
+                title: AppLocalizations.of(context)!.ageGroup,
+                subtitle: _selectedAgeCategory,
+                trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+                onTap: _showAgeCategoryDialog,
+              ),
+              SizedBox(height: 8.h),
+              _buildDivider(),
+              _buildSettingRow(
+                title: AppLocalizations.of(context)!.nationalities,
+                subtitle: _selectedNationalities,
+                trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+                onTap: _showNationalitiesDialog,
+              ),
+              SizedBox(height: 8.h),
+              _buildDivider(),
+              _buildSettingRow(
+                title: AppLocalizations.of(context)!.countries,
+                subtitle: _selectedCountries,
+                trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
+                onTap: _showCountriesDialog,
+              ),
+            ],
           ),
         ),
       ],
     );
   }
+
+  // Widget _buildNotificationSettingsSection() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.center,
+  //     children: [
+  //       Text(
+  //         AppLocalizations.of(context)!.notifications,
+  //         style: AppTextStyles.font18ChineseBlackBoldLamaSans.copyWith(
+  //           fontSize: 18.sp,
+  //           fontWeight: FontWeight.w600,
+  //         ),
+  //       ),
+  //       SizedBox(height: 8.h),
+  //       _buildSettingRow(
+  //         title: AppLocalizations.of(context)!.newMessages,
+  //         subtitle: '',
+  //         trailing: Transform.scale(
+  //           scale: 0.8,
+  //           child: Switch(
+  //             value: _newMessagesNotification,
+  //             onChanged: (value) {
+  //               setState(() {
+  //                 _newMessagesNotification = value;
+  //               });
+  //             },
+  //             activeColor: Colors.orangeAccent,
+  //             activeTrackColor: Colors.black,
+  //             inactiveThumbColor: Colors.red,
+  //             inactiveTrackColor: Colors.white,
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildSettingRow({
     required String title,
@@ -555,19 +724,17 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     VoidCallback? onTap,
     bool showGreenDot = false, // Add this flag
   }) {
-    return InkWell(
-      splashColor: Colors.blue.withOpacity(0.3),
-      highlightColor: Colors.blue.withOpacity(0.1),
-      onTap: onTap != null ? () {
-        print('Tapped on: $title'); // Debug print
-        onTap();
-      } : null,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-        decoration: BoxDecoration(
-          color: const Color(0xFFfbecef).withOpacity(0.3),
-          borderRadius: BorderRadius.circular(12.r),
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+      child: InkWell(
+        splashColor: Colors.blue.withValues(alpha: 0.3),
+        highlightColor: Colors.blue.withValues(alpha: 0.1),
+        onTap: onTap != null
+            ? () {
+                print('Tapped on: $title'); // Debug print
+                onTap();
+              }
+            : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -579,8 +746,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     Container(
                       width: 20.w,
                       height: 20.w,
-                      decoration: const BoxDecoration(
-                        color: Colors.green,
+                      decoration: BoxDecoration(
+                        color: _isOnline ? Colors.green : AppColors.red,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -604,7 +771,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               Text(
                 subtitle,
                 style: AppTextStyles.font14BlackRegularLamaSans.copyWith(
-                  fontSize: 14.sp,
+                  fontSize: 12.sp,
                   color: Colors.grey[600],
                 ),
               ),
@@ -619,6 +786,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
 
   Widget _buildDivider() {
     return Container(
+      margin: EdgeInsetsDirectional.symmetric(horizontal: 20.w),
       height: 1.h,
       color: Colors.grey[300],
     );
@@ -628,28 +796,31 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     return BlocBuilder<ChatSettingsCubit, ChatSettingsState>(
       builder: (context, state) {
         final isLoading = state is ChatSettingsUpdating;
-        final hasSettings = _fromAge != 0 || _toAge != 0 || _nationalityId != 0 || _countryId != 0;
+        // Consider any selection (including "all" options with 0 values) as valid settings
+        final hasSettings = true; // Always true since we have some selection
         final hasChanges = _hasSettingsChanged();
-        
+
         // Debug logging for save button state
         print('[ChatSettingsScreen] Save button state:');
         print('  isLoading: $isLoading');
         print('  hasSettings: $hasSettings');
         print('  hasChanges: $hasChanges');
-        print('  Button enabled: ${!(isLoading || !hasSettings || !hasChanges)}');
-        
+        print('  Button enabled: ${!(isLoading || !hasChanges)}');
+
         return Padding(
           padding: const EdgeInsets.all(20.0),
           child: CustomElevatedButton(
-            onPressed: (isLoading || !hasSettings || !hasChanges) ? () {} : _saveSettings,
-            textButton: isLoading ? 'جاري الحفظ...' : 'حفظ',
+            onPressed: (isLoading || !hasChanges) ? () {} : _saveSettings,
+            textButton: isLoading
+                ? AppLocalizations.of(context)!.saving
+                : AppLocalizations.of(context)!.save,
             height: 56.h,
             radius: 28.r,
             styleTextButton: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
             ),
-            backgroundColor: (isLoading || !hasSettings || !hasChanges) ? Colors.grey : null,
+            backgroundColor: (isLoading || !hasChanges) ? Colors.grey : null,
           ),
         );
       },
@@ -658,13 +829,13 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
 
   void _saveSettings() {
     print('[ChatSettingsScreen] _saveSettings called');
-    
+
     // Check if we have valid settings to save
     if (!_hasSettingsChanged()) {
       print('[ChatSettingsScreen] No changes detected, showing snackbar');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('لم يتم إجراء أي تغييرات'),
+          content: Text(AppLocalizations.of(context)!.noChangesMade),
           backgroundColor: Colors.orange,
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
@@ -677,7 +848,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     }
 
     print('[ChatSettingsScreen] Changes detected, creating request model');
-    
+
     // Create request model
     final request = ChatSettingsRequestModel(
       fromAge: _fromAge,
@@ -687,29 +858,33 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     );
 
     print('[ChatSettingsScreen] Request model: ${request.toJson()}');
-    print('[ChatSettingsScreen] Calling updateChatSettings via chat_settings_cubit');
+    print(
+        '[ChatSettingsScreen] Calling updateChatSettings via chat_settings_cubit');
 
     // Get current chat_settings_cubit state for debugging
     final currentState = context.read<ChatSettingsCubit>().state;
-    print('[ChatSettingsScreen] Current ChatSettingsCubit state: ${currentState.runtimeType}');
+    print(
+        '[ChatSettingsScreen] Current ChatSettingsCubit state: ${currentState.runtimeType}');
 
     // Update settings via API
     context.read<ChatSettingsCubit>().updateChatSettings(request);
-    
-    print('[ChatSettingsScreen] updateChatSettings called, waiting for response...');
+
+    print(
+        '[ChatSettingsScreen] updateChatSettings called, waiting for response...');
   }
 
   void _showAgeCategoryDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('اختر الفئة العمرية'),
+        title: Text(AppLocalizations.of(context)!.selectAgeCategory),
         content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildDialogOption('أي شخص', () {
+            _buildDialogOption(AppLocalizations.of(context)!.anyPerson, () {
               setState(() {
-                _selectedAgeCategory = 'أي شخص';
+                _selectedAgeCategory = AppLocalizations.of(context)!.anyPerson;
                 _fromAge = 0;
                 _toAge = 0;
               });
@@ -753,181 +928,223 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
     );
   }
 
-  void _showNationalitiesDialog() {
+  void _showNationalitiesDialog() async {
     final listsCubit = context.read<ListsCubit>();
     final currentState = listsCubit.state;
-    
+
     print('[ChatSettingsScreen] Opening nationalities dialog');
     print('[ChatSettingsScreen] Current ListsCubit state: $currentState');
-    
+
+    // Get current user's gender (don't cache this as it can change)
+    String userGender = 'male'; // Default
+    try {
+      final gender = await SharedPreferencesHelper.getSecuredString(
+          SharedPreferencesKey.gender);
+      userGender = gender.isNotEmpty ? gender : 'male';
+      print('[ChatSettingsScreen] User gender: $userGender');
+    } catch (e) {
+      print('[ChatSettingsScreen] Error getting user gender: $e');
+    }
+
     // Only load if not already loaded or loading
     if (currentState is ListsInitial) {
       print('[ChatSettingsScreen] Lists not loaded yet, loading now...');
       listsCubit.loadLists();
     } else if (currentState is ListsLoaded) {
-      print('[ChatSettingsScreen] Using cached data (${currentState.fromCache ? 'from cache' : 'from API'})');
+      print(
+          '[ChatSettingsScreen] Using cached data (${currentState.fromCache ? 'from cache' : 'from API'})');
     }
-    
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('اختر الجنسيات'),
-        content: Builder(
-          builder: (context) {
-            if (currentState is ListsLoaded) {
-              print('[ChatSettingsScreen] Showing ${currentState.nationalities.length} nationalities');
-              return SizedBox(
-                width: double.maxFinite,
-                height: 400, // Fixed height to prevent overflow
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Option for "All Nationalities"
-                      _buildDialogOption('كل الجنسيات', () {
-                        setState(() {
-                          _selectedNationalities = 'كل الجنسيات';
-                          _nationalityId = 0;
-                        });
-                        Navigator.pop(context);
-                      }),
-                      // Dynamic options from API
-                      ...currentState.nationalities.map((nationality) =>
+
+    if (mounted) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(AppLocalizations.of(context)!.selectNationalities),
+          content: Builder(
+            builder: (context) {
+              if (currentState is ListsLoaded) {
+                print(
+                    '[ChatSettingsScreen] Showing ${currentState.nationalities.length} nationalities for gender: $userGender');
+                return SizedBox(
+                  width: double.maxFinite,
+                  height: 400, // Fixed height to prevent overflow
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Option for "All Nationalities"
                         _buildDialogOption(
-                          nationality.name,
-                          () {
-                            setState(() {
-                              _selectedNationalities = nationality.name;
-                              _nationalityId = nationality.id;
-                            });
-                            Navigator.pop(context);
+                            AppLocalizations.of(context)!.allNationalities, () {
+                          setState(() {
+                            _selectedNationalities =
+                                AppLocalizations.of(context)!.allNationalities;
+                            _nationalityId = 0;
+                          });
+                          Navigator.pop(context);
+                        }),
+                        // Dynamic options from API with gender-appropriate names
+                        ...currentState.nationalities.map(
+                          (nationality) {
+                            // Get gender-specific name for display
+                            final displayName =
+                                nationality.getNameForGender(userGender);
+                            print(
+                                '[ChatSettingsScreen] Nationality ${nationality.id}: $displayName (gender: $userGender)');
+
+                            return _buildDialogOption(
+                              displayName,
+                              () {
+                                // Use the already calculated gender-specific name
+                                if (mounted) {
+                                  setState(() {
+                                    _selectedNationalities = displayName;
+                                    _nationalityId = nationality.id;
+                                  });
+                                }
+                                Navigator.pop(context);
+                              },
+                            );
                           },
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              );
-            } else if (currentState is ListsLoading || currentState is ListsInitial) {
-              print('[ChatSettingsScreen] Lists are loading...');
-              return const SizedBox(
-                height: 200,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 16),
-                      Text('جاري تحميل الجنسيات...'),
-                      SizedBox(height: 8),
-                      Text(
-                        'يرجى الانتظار',
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
-                      ),
-                    ],
+                );
+              } else if (currentState is ListsLoading ||
+                  currentState is ListsInitial) {
+                print('[ChatSettingsScreen] Lists are loading...');
+                return SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 16),
+                        Text(
+                            AppLocalizations.of(context)!.loadingNationalities),
+                        const SizedBox(height: 8),
+                        Text(
+                          AppLocalizations.of(context)!.pleaseWait,
+                          style:
+                              const TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            } else if (currentState is ListsError) {
-              print('[ChatSettingsScreen] Lists error: ${currentState.message}');
-              return SizedBox(
-                height: 200,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.error_outline, color: Colors.red, size: 48),
-                      const SizedBox(height: 16),
-                      Text('حدث خطأ في تحميل الجنسيات'),
-                      const SizedBox(height: 8),
-                      Text(
-                        currentState.message,
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          listsCubit.loadLists();
-                        },
-                        child: const Text('إعادة المحاولة'),
-                      ),
-                    ],
+                );
+              } else if (currentState is ListsError) {
+                print(
+                    '[ChatSettingsScreen] Lists error: ${currentState.message}');
+                return SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.error_outline,
+                            color: Colors.red, size: 48),
+                        const SizedBox(height: 16),
+                        Text(AppLocalizations.of(context)!
+                            .errorLoadingNationalities),
+                        const SizedBox(height: 8),
+                        Text(
+                          currentState.message,
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            listsCubit.loadLists();
+                          },
+                          child: Text(AppLocalizations.of(context)!.retry),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            } else {
-              print('[ChatSettingsScreen] Unknown state: $currentState');
-              return const SizedBox(
-                height: 200,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.help_outline, color: Colors.orange, size: 48),
-                      SizedBox(height: 16),
-                      Text('جاري إعداد القوائم...'),
-                      SizedBox(height: 8),
-                      Text(
-                        'يرجى الانتظار قليلاً',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ],
+                );
+              } else {
+                print('[ChatSettingsScreen] Unknown state: $currentState');
+                return SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.help_outline,
+                            color: Colors.orange, size: 48),
+                        SizedBox(height: 16),
+                        Text(AppLocalizations.of(context)!.settingUpLists),
+                        SizedBox(height: 8),
+                        Text(
+                          AppLocalizations.of(context)!.pleaseWaitMoment,
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }
-          },
+                );
+              }
+            },
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   void _showCountriesDialog() {
     final listsCubit = context.read<ListsCubit>();
     final currentState = listsCubit.state;
-    
+
     print('[ChatSettingsScreen] Opening countries dialog');
     print('[ChatSettingsScreen] Current ListsCubit state: $currentState');
-    
+
     // Only load if not already loaded or loading
     if (currentState is ListsInitial) {
       print('[ChatSettingsScreen] Lists not loaded yet, loading now...');
       listsCubit.loadLists();
     } else if (currentState is ListsLoaded) {
-      print('[ChatSettingsScreen] Using cached data (${currentState.fromCache ? 'from cache' : 'from API'})');
+      print(
+          '[ChatSettingsScreen] Using cached data (${currentState.fromCache ? 'from cache' : 'from API'})');
     }
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('اختر الدول'),
+        title: Text(AppLocalizations.of(context)!.selectCountries),
         content: Builder(
           builder: (context) {
             if (currentState is ListsLoaded) {
-              print('[ChatSettingsScreen] Showing ${currentState.countries.length} countries');
+              print(
+                  '[ChatSettingsScreen] Showing ${currentState.countries.length} countries');
               return SizedBox(
                 width: double.maxFinite,
                 height: 400, // Fixed height to prevent overflow
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Option for "All Countries"
-                      _buildDialogOption('كل الدول', () {
+                      _buildDialogOption(
+                          AppLocalizations.of(context)!.allCountries, () {
                         setState(() {
-                          _selectedCountries = 'كل الدول';
+                          _selectedCountries =
+                              AppLocalizations.of(context)!.allCountries;
                           _countryId = 0;
                         });
                         Navigator.pop(context);
                       }),
                       // Dynamic options from API
-                      ...currentState.countries.map((country) =>
-                        _buildDialogOption(
+                      ...currentState.countries.map(
+                        (country) => _buildDialogOption(
                           country.name,
                           () {
                             setState(() {
@@ -942,9 +1159,10 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                   ),
                 ),
               );
-            } else if (currentState is ListsLoading || currentState is ListsInitial) {
+            } else if (currentState is ListsLoading ||
+                currentState is ListsInitial) {
               print('[ChatSettingsScreen] Lists are loading...');
-              return const SizedBox(
+              return SizedBox(
                 height: 200,
                 child: Center(
                   child: Column(
@@ -953,10 +1171,10 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     children: [
                       CircularProgressIndicator(),
                       SizedBox(height: 16),
-                      Text('جاري تحميل الدول...'),
+                      Text(AppLocalizations.of(context)!.loadingCountries),
                       SizedBox(height: 8),
                       Text(
-                        'يرجى الانتظار',
+                        AppLocalizations.of(context)!.pleaseWait,
                         style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                     ],
@@ -964,7 +1182,8 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                 ),
               );
             } else if (currentState is ListsError) {
-              print('[ChatSettingsScreen] Lists error: ${currentState.message}');
+              print(
+                  '[ChatSettingsScreen] Lists error: ${currentState.message}');
               return SizedBox(
                 height: 200,
                 child: Center(
@@ -972,13 +1191,15 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                      const Icon(Icons.error_outline,
+                          color: Colors.red, size: 48),
                       const SizedBox(height: 16),
-                      Text('حدث خطأ في تحميل الدول'),
+                      Text(AppLocalizations.of(context)!.errorLoadingCountries),
                       const SizedBox(height: 8),
                       Text(
                         currentState.message,
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.grey),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
@@ -987,7 +1208,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                           Navigator.pop(context);
                           listsCubit.loadLists();
                         },
-                        child: const Text('إعادة المحاولة'),
+                        child: Text(AppLocalizations.of(context)!.retry),
                       ),
                     ],
                   ),
@@ -995,7 +1216,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
               );
             } else {
               print('[ChatSettingsScreen] Unknown state: $currentState');
-              return const SizedBox(
+              return SizedBox(
                 height: 200,
                 child: Center(
                   child: Column(
@@ -1004,10 +1225,10 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                     children: [
                       Icon(Icons.help_outline, color: Colors.orange, size: 48),
                       SizedBox(height: 16),
-                      Text('جاري إعداد القوائم...'),
+                      Text(AppLocalizations.of(context)!.settingUpLists),
                       SizedBox(height: 16),
                       Text(
-                        'يرجى الانتظار قليلاً',
+                        AppLocalizations.of(context)!.pleaseWaitMoment,
                         style: TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                     ],
@@ -1030,7 +1251,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withValues(alpha: 0.2),
               width: 0.5,
             ),
           ),

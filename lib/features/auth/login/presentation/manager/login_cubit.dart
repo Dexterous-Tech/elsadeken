@@ -44,12 +44,19 @@ class LoginCubit extends Cubit<LoginState> {
 
         await saveUserToken(loginResponseModel.data!.token);
         log("save token ");
+        Future.wait([
+          SharedPreferencesHelper.deleteSecuredString(
+              SharedPreferencesKey.gender),
+          SharedPreferencesHelper.setSecuredString(SharedPreferencesKey.gender,
+              loginResponseModel.data!.gender ?? 'male'),
+        ]);
 
-        // After successful login, save FCM token silently
-        await saveFcmTokenSilently();
-
-        // Mark user as logged in
-        await SharedPreferencesHelper.setIsLoggedIn(true);
+        if (loginResponseModel.data?.redirectToAttribute != true) {
+          // After successful login, save FCM token silently
+          await saveFcmTokenSilently();
+          // Mark user as logged in when redirectToAttribute is null, false, or any other value except true
+          await SharedPreferencesHelper.setIsLoggedIn(true);
+        }
 
         emit(LoginSuccess(loginResponseModel: loginResponseModel));
       },
@@ -79,39 +86,6 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  // void updateFcm() async {
-  //   emit(FcmLoading());
-  //
-  //   await saveTokeFromFirebase();
-  //   String token = await SharedPreferencesHelper.getSecuredString(
-  //       SharedPreferencesKey.deviceToken);
-  //   var response = await loginRepo.updateFcm(token);
-  //
-  //   response.fold(
-  //     (error) {
-  //       emit(FcmFailure(error.displayMessage));
-  //     },
-  //     (fcmResponseModel) async {
-  //       log("save fcm token ");
-  //       emit(FcmSuccess(fcmResponseModel));
-  //     },
-  //   );
-  // }
-
-  Future<void> saveUserToken(String token) async {
-    // Clear previous data
-    await Future.wait([
-      SharedPreferencesHelper.deleteSecuredString(
-        SharedPreferencesKey.apiTokenKey,
-      ),
-    ]);
-    await SharedPreferencesHelper.setSecuredString(
-      SharedPreferencesKey.apiTokenKey,
-      token,
-    );
-    await DioFactory.setTokenIntoHeaderAfterLogin(token);
-  }
-
   Future<void> saveTokeFromFirebase() async {
     await SharedPreferencesHelper.deleteSecuredString(
         SharedPreferencesKey.deviceToken);
@@ -119,5 +93,17 @@ class LoginCubit extends Cubit<LoginState> {
     String? token = await messaging.getToken();
     await SharedPreferencesHelper.setSecuredString(
         SharedPreferencesKey.deviceToken, token!);
+  }
+
+  Future<void> saveUserToken(String token) async {
+    // Clear all shared preferences data before storing new token
+    await SharedPreferencesHelper.clearAllAppState();
+
+    // Store the new token
+    await SharedPreferencesHelper.setSecuredString(
+      SharedPreferencesKey.apiTokenKey,
+      token,
+    );
+    await DioFactory.setTokenIntoHeaderAfterLogin(token);
   }
 }

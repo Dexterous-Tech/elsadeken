@@ -8,6 +8,7 @@ class PersonModel {
   final String createdAt;
   final String? lastSeen;
   final Attribute attribute;
+  final bool isFavorite;
 
   PersonModel({
     required this.id,
@@ -19,6 +20,7 @@ class PersonModel {
     required this.createdAt,
     this.lastSeen,
     required this.attribute,
+    this.isFavorite = false,
   });
 
   factory PersonModel.fromJson(Map<String, dynamic> json) {
@@ -46,12 +48,41 @@ class PersonModel {
         createdAt: json['created_at']?.toString() ?? '',
         lastSeen: json['last_seen']?.toString(),
         attribute: Attribute.fromJson(json['attribute']),
+        isFavorite: json['is_favorite'] == true ||
+            json['is_favorite'] == 'true' ||
+            json['is_favorite'] == 1,
       );
     } catch (e) {
       print("Error parsing PersonModel: $e");
       print("JSON that caused error: $json");
       rethrow;
     }
+  }
+
+  PersonModel copyWith({
+    int? id,
+    String? name,
+    String? email,
+    String? phone,
+    String? gender,
+    String? image,
+    String? createdAt,
+    String? lastSeen,
+    Attribute? attribute,
+    bool? isFavorite,
+  }) {
+    return PersonModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      gender: gender ?? this.gender,
+      image: image ?? this.image,
+      createdAt: createdAt ?? this.createdAt,
+      lastSeen: lastSeen ?? this.lastSeen,
+      attribute: attribute ?? this.attribute,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
   }
 }
 
@@ -74,8 +105,9 @@ class Attribute {
   final String prayer;
   final String smoking;
   final String hijab;
+  final String beard;
   final String job;
-  final int income;
+  final String income;
   final String lifePartner;
   final String aboutMe;
 
@@ -98,6 +130,7 @@ class Attribute {
     required this.prayer,
     required this.smoking,
     required this.hijab,
+    required this.beard,
     required this.job,
     required this.income,
     required this.lifePartner,
@@ -136,11 +169,10 @@ class Attribute {
         smoking: json['smoking']?.toString() ?? '',
         hijab: json['hijab']?.toString() ?? '',
         job: json['job']?.toString() ?? '',
-        income: json['income'] is int
-            ? json['income']
-            : int.tryParse(json['income']?.toString() ?? '0') ?? 0,
+        income: json['income']?.toString() ?? '',
         lifePartner: json['life_partner']?.toString() ?? '',
         aboutMe: json['about_me']?.toString() ?? '',
+        beard: json['beard']?.toString() ?? '',
       );
     } catch (e) {
       print("Error parsing Attribute: $e");

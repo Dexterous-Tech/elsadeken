@@ -1,9 +1,9 @@
 import 'package:elsadeken/features/search/domain/entities/search_filter.dart';
-import 'package:elsadeken/features/search/domain/entities/user_profile.dart';
 
+import '../../../profile/interests_list/data/models/users_response_model.dart';
 
 abstract class SearchRepository {
-  Future<List<UserProfile>> searchUsers(SearchFilter filter, {int page = 1});
+  Future<UsersResponseModel> searchUsers(SearchFilter filter, {int page = 1});
 
   Future<List<String>> getNationalities();
   Future<List<String>> getCountries();

@@ -1,19 +1,20 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class ChatOptionsCard extends StatelessWidget {
   final ChatListCubit chatListCubit;
-  
+
   const ChatOptionsCard({
-    Key? key,
+    super.key,
     required this.chatListCubit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,60 +22,64 @@ class ChatOptionsCard extends StatelessWidget {
       margin: EdgeInsets.all(16.w),
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color:  const Color(0xFFF7D4D8),
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Message Settings
-          _buildOptionItem(
-            image_icon: AppImages.settingsIcon,
-            text: 'إعدادات الرسائل',
-            iconColor: Colors.grey.shade100,
-            onTap: () {
-              Navigator.pushNamed(context, AppRoutes.chatSettingsScreen);
-            },
-          ),
-          
-          Divider(height: 1.h, color: Colors.grey[300]),
-          
-          // Delete Chats
-          _buildOptionItem(
-            image_icon: AppImages.deleteChatIcon,
-            text: 'حذف جميع المحادثات',
-            iconColor: Colors.blue,
-            onTap: () {
-              _showDeleteAllChatsConfirmationDialog(context);
-            },
-          ),
-          
-          Divider(height: 1.h, color: Colors.grey[300]),
-          
-          // Mark All as Read
-          _buildOptionItem(
-            image_icon: AppImages.readChatIcon,
-            text: 'وضع علامة مقروء على جميع المحادثات',
-            iconColor: Colors.green,
-            onTap: () {
-              // Show confirmation dialog
-              _showMarkAllAsReadConfirmationDialog(context);
-            },
-          ),
-        ],
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Message Settings
+            _buildOptionItem(
+              imageIcon: AppImages.settingsIcon,
+              text: AppLocalizations.of(context)!.messageSettings,
+              iconColor: Colors.grey.shade100,
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.chatSettingsScreen);
+              },
+            ),
+            verticalSpace(10),
+            Divider(height: 1.h, color: Colors.grey[300]),
+            verticalSpace(8),
+            // Delete Chats
+            _buildOptionItem(
+              imageIcon: AppImages.deleteChatIcon,
+              text: AppLocalizations.of(context)!.deleteAllChats,
+              iconColor: Colors.blue,
+              onTap: () {
+                _showDeleteAllChatsConfirmationDialog(context);
+              },
+            ),
+            verticalSpace(10),
+            Divider(height: 1.h, color: Colors.grey[300]),
+            verticalSpace(8),
+            // Mark All as Read
+            _buildOptionItem(
+              imageIcon: AppImages.readChatIcon,
+              text: AppLocalizations.of(context)!.markAllAsRead,
+              iconColor: Colors.green,
+              onTap: () {
+                // Show confirmation dialog
+                _showMarkAllAsReadConfirmationDialog(context);
+              },
+            ),
+            verticalSpace(10),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildOptionItem({
-    required String image_icon,
+    required String imageIcon,
     required String text,
     required Color iconColor,
     required VoidCallback onTap,
@@ -82,31 +87,31 @@ class ChatOptionsCard extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8.r),
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
-        child: Row(
-          children: [
-            Image.asset(
-              image_icon,
-              width: 28.w,
-              height: 28.h,
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(80),
+            child: Image.asset(
+              imageIcon,
+              width: 25.w,
+              height: 25.h,
             ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Text(
-                text,
-                style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
-                  color: AppColors.darkerBlue,
-                ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Text(
+              text,
+              style: AppTextStyles.font14BlackSemiBoldLamaSans.copyWith(
+                color: AppColors.darkerBlue,
               ),
             ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.black,
-              size: 16.sp,
-            ),
-          ],
-        ),
+          ),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.black,
+            size: 16.sp,
+          ),
+        ],
       ),
     );
   }
@@ -154,7 +159,7 @@ class ChatOptionsCard extends StatelessWidget {
   //   );
   // }
 
-    void _showMarkAllAsReadConfirmationDialog(BuildContext context) {
+  void _showMarkAllAsReadConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -163,57 +168,63 @@ class ChatOptionsCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16.r),
           ),
           title: Text(
-            'تأكيد',
-            style: AppTextStyles.font40BlackSemiBoldPlexSans,
+            AppLocalizations.of(context)!.confirm,
+            style: AppTextStyles.font23ChineseBlackBoldLamaSans,
             textAlign: TextAlign.center,
           ),
           content: Text(
-            'هل تريد وضع علامة مقروء على جميع الرسائل؟',
+            AppLocalizations.of(context)!.confirmReadCont,
             style: AppTextStyles.font16BlackSemiBoldLamaSans,
             textAlign: TextAlign.center,
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'إلغاء',
-                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                  color: Colors.grey[600],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    AppLocalizations.of(context)!.cancel,
+                    style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                      color: Colors.grey[600],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            TextButton(
-                              onPressed: () {
-                  Navigator.of(context).pop();
-                  // Call the cubit method to mark all as read
-                  chatListCubit.markAllMessagesAsRead();
-                  
-                  // Show success snackbar
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text(
-                        'تم وضع علامة مقروء على جميع الرسائل',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // Call the cubit method to mark all as read
+                    chatListCubit.markAllMessagesAsRead();
+
+                    // Show success snackbar
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(context)!.doneReadCont,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        backgroundColor: Colors.green,
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      backgroundColor: Colors.green,
-                      duration: const Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                    );
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.confirm,
+                    style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
+                      color: Colors.green,
                     ),
-                  );
-                },
-              child: Text(
-                'تأكيد',
-                style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                  color: Colors.green,
+                  ),
                 ),
-              ),
-            ),
+              ],
+            )
           ],
         );
       },
@@ -226,27 +237,30 @@ class ChatOptionsCard extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           alignment: Alignment.center,
+          backgroundColor: AppColors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
           ),
           title: Text(
-            'تأكيد الحذف',
+            AppLocalizations.of(context)!.confirm,
             style: AppTextStyles.font23ChineseBlackBoldLamaSans,
             textAlign: TextAlign.center,
           ),
           content: Text(
-            'هل أنت متأكد من حذف جميع المحادثات؟ لا يمكن التراجع عن هذا الإجراء.',
+            AppLocalizations.of(context)!.confirmDelCont,
             style: AppTextStyles.font16BlackSemiBoldLamaSans,
             textAlign: TextAlign.center,
           ),
+          actionsAlignment: MainAxisAlignment.center,
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                'إلغاء',
+                AppLocalizations.of(context)!.cancel,
                 style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                   color: Colors.grey[600],
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
             TextButton(
@@ -258,8 +272,8 @@ class ChatOptionsCard extends StatelessWidget {
                 // Show success snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: const Text(
-                      'تم حذف جميع المحادثات بنجاح',
+                    content: Text(
+                      AppLocalizations.of(context)!.delteDone,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -275,12 +289,13 @@ class ChatOptionsCard extends StatelessWidget {
                 );
               },
               child: Text(
-                'حذف',
+                AppLocalizations.of(context)!.delete,
                 style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                   color: Colors.red,
                 ),
+                textAlign: TextAlign.center,
               ),
-            ),
+            )
           ],
         );
       },

@@ -44,10 +44,6 @@ class AppImages {
       '${AppConstants.profileAssetsPath}search_advanced.png';
   static const String successStoryIcon =
       '${AppConstants.profileAssetsPath}success_story.png';
-  static const String profileLogo =
-      '${AppConstants.profileAssetsPath}profile_logo.png';
-  static const String profileImageLogo =
-      '${AppConstants.profileAssetsPath}profile_image_logo.png';
   static const String warningLogo =
       '${AppConstants.profileAssetsPath}warning_logo.png';
   static const String boldStar =
@@ -60,8 +56,7 @@ class AppImages {
       '${AppConstants.profileAssetsPath}wrong.png';
   static const String bottomArrowProfile =
       '${AppConstants.profileAssetsPath}bottom_arrow.png';
-  static const String contactHeadphoneProfile =
-      '${AppConstants.profileAssetsPath}contact_headphone.png';
+
   static const String sendProfile = '${AppConstants.profileAssetsPath}send.png';
   static const String starProfile =
       '${AppConstants.profileAssetsPath}stars.png';
@@ -76,37 +71,22 @@ class AppImages {
       '${AppConstants.authAssetsPath}check-correct.png';
   static const String checkPoint =
       '${AppConstants.authAssetsPath}check-point.png';
-  static const String arrowBack =
-      '${AppConstants.authAssetsPath}arrow-back.png';
 
   static const String homeLocation =
       '${AppConstants.authHomePath}home_location.png';
 
-  //special members images and icons
-  static const String specialMembersAvatar =
-      '${AppConstants.specialMembersPath}Avatar.png';
-
-  static const String specialMembersReportIcon =
-      '${AppConstants.specialMembersPath}report.png';
-  static const String specialMembersMessageIcon =
-      '${AppConstants.specialMembersPath}message.png';
-  static const String specialMembersDislikeIcon =
-      '${AppConstants.specialMembersPath}dislike.png';
-  static const String specialMembersLikeIcon =
-      '${AppConstants.specialMembersPath}like.png';
-  static const String specialMembersShareIcon =
-      '${AppConstants.specialMembersPath}share.png';
-
   // blog
   static String weddingBlog = '${AppConstants.blogPath}wedding.png';
-  static String success1Blog = '${AppConstants.blogPath}success1.png';
   static String success2Blog = '${AppConstants.blogPath}success2.png';
   static String userBlog = '${AppConstants.blogPath}user.png';
+  static const String successCard = '${AppConstants.blogPath}success_card.png';
 
   // chat
   static const String emptyChatImage = 'assets/images/chat/empty_chat.png';
-  static const String settingsIcon = '${AppConstants.chatPath}chat_settings.png';
-  static const String deleteChatIcon = '${AppConstants.chatPath}chat_delete.png';
+  static const String settingsIcon =
+      '${AppConstants.chatPath}chat_settings.png';
+  static const String deleteChatIcon =
+      '${AppConstants.chatPath}chat_delete.png';
   static const String readChatIcon = '${AppConstants.chatPath}read.png';
 
   //Profile Details
@@ -119,4 +99,25 @@ class AppImages {
   //notification
   static String emptyNotification =
       '${AppConstants.notificationAssetsPath}empty_notification.png';
+
+  // members
+  static String memberItem1 = '${AppConstants.membersPath}member_item1.png';
+  static String memberItem2 = '${AppConstants.membersPath}member_item2.png';
+  static String memberItem3 = '${AppConstants.membersPath}member_item3.png';
+  static String memberItem4 = '${AppConstants.membersPath}member_item4.png';
+  static String memberItem5 = '${AppConstants.membersPath}member_item5.png';
+  static String specialMember = '${AppConstants.membersPath}special.png';
+
+  // home
+  static String homeNotification =
+      '${AppConstants.authHomePath}home_notification.png';
+
+  // icons
+  static const String blockUserIcon = '${AppConstants.iconsPath}block-user.png';
+  static const String blockedIcon = '${AppConstants.iconsPath}blocked.png';
+  static const String heartIcon = '${AppConstants.iconsPath}heart.png';
+  static const String muteIcon = '${AppConstants.iconsPath}mute.png';
+  static const String mutedIcon = '${AppConstants.iconsPath}muted.png';
+  static const String trashIcon = '${AppConstants.iconsPath}trash.png';
+  static const String sendIcon = '${AppConstants.iconsPath}send.png';
 }

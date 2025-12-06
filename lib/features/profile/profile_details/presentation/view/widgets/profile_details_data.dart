@@ -1,9 +1,11 @@
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_family_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_card.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/view/widgets/profile_details_card_item.dart';
 import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,21 +25,21 @@ class ProfileDetailsData extends StatelessWidget {
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
-          textDirection: TextDirection.rtl,
+          textDirection: LocalizationService.instance.textDirection,
           children: [
             ProfileDetailsCard(
-              cardTitle: 'تاريخ السجل',
+              cardTitle: AppLocalizations.of(context)!.recordHistory,
               cardContent: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   ProfileDetailsCardItem(
-                    itemTitle: 'مسجل منذ',
-                    itemSubTitle: _getRegisteredSince(state),
+                    itemTitle: AppLocalizations.of(context)!.registeredSince,
+                    itemSubTitle: _getRegisteredSince(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'تاريخ اخر زياره',
-                    itemSubTitle: _getLastVisit(state),
+                    itemTitle: AppLocalizations.of(context)!.lastVisitDate,
+                    itemSubTitle: _getLastVisit(state, context),
                     loading: isLoading,
                   ),
                   verticalSpace(11),
@@ -46,88 +48,100 @@ class ProfileDetailsData extends StatelessWidget {
             ),
             verticalSpace(27),
             ProfileDetailsCard(
-              cardTitle: 'المعلومات',
+              cardTitle: AppLocalizations.of(context)!.information,
               cardContent: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   ProfileDetailsCardItem(
-                    itemTitle: 'الجنسيه',
-                    itemSubTitle: _getCountry(state),
+                    itemTitle: AppLocalizations.of(context)!.nationality,
+                    itemSubTitle: _getResidence(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'الاقامه',
-                    itemSubTitle: _getResidence(state),
+                    itemTitle: AppLocalizations.of(context)!.residence,
+                    itemSubTitle: _getCountry(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'المدينه',
-                    itemSubTitle: _getCity(state),
+                    itemTitle: AppLocalizations.of(context)!.city,
+                    itemSubTitle: _getCity(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'نوع الزواج',
-                    itemSubTitle: _getMarriageType(state),
+                    itemTitle: AppLocalizations.of(context)!.marriageType,
+                    itemSubTitle: _getMarriageType(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'الحاله الاجتماعيه',
-                    itemSubTitle: _getMaritalStatus(state),
+                    itemTitle: AppLocalizations.of(context)!.maritalStatus,
+                    itemSubTitle: _getMaritalStatus(state, context),
+                    loading: isLoading,
+                  ),
+                  if (_getMaritalStatus(state, context) !=
+                          AppLocalizations.of(context)!.singleMale ||
+                      _getMaritalStatus(state, context) !=
+                          AppLocalizations.of(context)!.singleFemale)
+                    ProfileDetailsCardItem(
+                      itemTitle: AppLocalizations.of(context)!.numberOfChildren,
+                      itemSubTitle: _getChildren(state, context),
+                      loading: isLoading,
+                    ),
+                  ProfileDetailsCardItem(
+                    itemTitle: AppLocalizations.of(context)!.skinColor,
+                    itemSubTitle: _getSkinColor(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'عدد الاطفال',
-                    itemSubTitle: _getChildren(state),
+                    itemTitle: AppLocalizations.of(context)!.height,
+                    itemSubTitle: _getHeight(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'لون البشره',
-                    itemSubTitle: _getSkinColor(state),
+                    itemTitle: AppLocalizations.of(context)!.weight,
+                    itemSubTitle: _getWeight(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'الطول',
-                    itemSubTitle: _getHeight(state),
+                    itemTitle:
+                        AppLocalizations.of(context)!.educationalQualification,
+                    itemSubTitle: _getEducation(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'الوزن',
-                    itemSubTitle: _getWeight(state),
+                    itemTitle:
+                        AppLocalizations.of(context)!.financialStatusTitle,
+                    itemSubTitle: _getFinancialStatus(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'المؤهل التعليمي',
-                    itemSubTitle: _getEducation(state),
+                    itemTitle: AppLocalizations.of(context)!.job,
+                    itemSubTitle: _getJob(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'الوضع المادي',
-                    itemSubTitle: _getFinancialStatus(state),
+                    itemTitle: AppLocalizations.of(context)!.monthlyIncome,
+                    itemSubTitle: _getIncome(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'الدخل الشهري',
-                    itemSubTitle: _getIncome(state),
+                    itemTitle: AppLocalizations.of(context)!.healthStatus,
+                    itemSubTitle: _getHealthStatus(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'الحالة الصحية',
-                    itemSubTitle: _getHealthStatus(state),
+                    itemTitle: AppLocalizations.of(context)!.smoking,
+                    itemSubTitle: _getSmoking(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'التدخين',
-                    itemSubTitle: _getSmoking(state),
+                    itemTitle:
+                        AppLocalizations.of(context)!.religiousCommitment,
+                    itemSubTitle: _getReligiousCommitment(state, context),
                     loading: isLoading,
                   ),
                   ProfileDetailsCardItem(
-                    itemTitle: 'الإتزام الديني',
-                    itemSubTitle: _getReligiousCommitment(state),
-                    loading: isLoading,
-                  ),
-                  ProfileDetailsCardItem(
-                    itemTitle: 'الحجاب',
-                    itemSubTitle: _getHijab(state),
+                    itemTitle: _getHijabTitle(state, context),
+                    itemSubTitle: _getHijab(state, context),
                     loading: isLoading,
                   ),
                   verticalSpace(11),
@@ -136,29 +150,35 @@ class ProfileDetailsData extends StatelessWidget {
             ),
             verticalSpace(16),
             ProfileDetailsCard(
-              cardTitle: 'موصفات زوجي المستقبلي',
+              cardTitle: AppLocalizations.of(context)!.lifePartner,
               cardContent: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                 child: Text(
-                  _getLifePartner(state),
-                  textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.right,
+                  _getLifePartner(state, context),
+                  textDirection: LocalizationService.instance.textDirection,
+                  textAlign: LocalizationService.instance.textDirection ==
+                          TextDirection.rtl
+                      ? TextAlign.right
+                      : TextAlign.left,
                   style: AppTextStyles.font18GreyRegularLamaSans
-                      .copyWith(fontFamily: FontFamilyHelper.plexSansArabic),
+                      .copyWith(fontFamily: FontFamilyHelper.lamaSansArabic),
                 ),
               ),
             ),
             verticalSpace(16),
             ProfileDetailsCard(
-              cardTitle: 'موصفاتي انا',
+              cardTitle: AppLocalizations.of(context)!.myDescription,
               cardContent: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                 child: Text(
-                  _getAboutMe(state),
-                  textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.right,
+                  _getAboutMe(state, context),
+                  textDirection: LocalizationService.instance.textDirection,
+                  textAlign: LocalizationService.instance.textDirection ==
+                          TextDirection.rtl
+                      ? TextAlign.right
+                      : TextAlign.left,
                   style: AppTextStyles.font18GreyRegularLamaSans
-                      .copyWith(fontFamily: FontFamilyHelper.plexSansArabic),
+                      .copyWith(fontFamily: FontFamilyHelper.lamaSansArabic),
                 ),
               ),
             ),
@@ -169,11 +189,13 @@ class ProfileDetailsData extends StatelessWidget {
   }
 
   // Helper methods to extract data from state
-  String _getRegisteredSince(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getRegisteredSince(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final createdAt = state.profileDetailsResponseModel.data?.createdAt;
-      if (createdAt == null) return 'لا يوجد';
+      if (createdAt == null) return AppLocalizations.of(context)!.notAvailable;
 
       try {
         // Parse the createdAt date
@@ -183,45 +205,47 @@ class ProfileDetailsData extends StatelessWidget {
         final days = difference.inDays;
 
         if (days == 0) {
-          return 'منذ اليوم';
+          return AppLocalizations.of(context)!.sinceToday;
         } else if (days == 1) {
-          return 'منذ يوم واحد';
+          return AppLocalizations.of(context)!.oneDayAgo;
         } else if (days < 7) {
-          return 'منذ $days أيام';
+          return AppLocalizations.of(context)!.daysAgo(days.toString());
         } else if (days < 30) {
           final weeks = (days / 7).floor();
           if (weeks == 1) {
-            return 'منذ أسبوع واحد';
+            return AppLocalizations.of(context)!.oneWeekAgo;
           } else {
-            return 'منذ $weeks أسابيع';
+            return AppLocalizations.of(context)!.weeksAgo(weeks.toString());
           }
         } else if (days < 365) {
           final months = (days / 30).floor();
           if (months == 1) {
-            return 'منذ شهر واحد';
+            return AppLocalizations.of(context)!.oneMonthAgo;
           } else {
-            return 'منذ $months أشهر';
+            return AppLocalizations.of(context)!.monthsAgo(months.toString());
           }
         } else {
           final years = (days / 365).floor();
           if (years == 1) {
-            return 'منذ سنة واحدة';
+            return AppLocalizations.of(context)!.oneYearAgo;
           } else {
-            return 'منذ $years سنوات';
+            return AppLocalizations.of(context)!.yearsAgo(years.toString());
           }
         }
       } catch (e) {
-        return 'لا يوجد';
+        return AppLocalizations.of(context)!.notAvailable;
       }
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getLastVisit(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getLastVisit(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final lastSeen = state.profileDetailsResponseModel.data?.lastSeen;
-      if (lastSeen == null) return 'لا يوجد';
+      if (lastSeen == null) return AppLocalizations.of(context)!.notAvailable;
 
       try {
         // Parse the lastSeen date
@@ -232,228 +256,313 @@ class ProfileDetailsData extends StatelessWidget {
         final hours = difference.inHours;
         final days = difference.inDays;
 
-        // If last seen is within 5 minutes, show "متواجد حاليا"
+        // If last seen is within 5 minutes, show "currently online"
         if (minutes < 5) {
-          return 'متواجد حاليا';
+          return AppLocalizations.of(context)!.currentlyOnline;
         } else if (minutes < 60) {
-          return 'منذ $minutes دقيقة';
+          return AppLocalizations.of(context)!.minutesAgo(minutes.toString());
         } else if (hours < 24) {
           if (hours == 1) {
-            return 'منذ ساعة واحدة';
+            return AppLocalizations.of(context)!.oneHourAgo;
           } else {
-            return 'منذ $hours ساعات';
+            return AppLocalizations.of(context)!.hoursAgo(hours.toString());
           }
         } else if (days < 7) {
           if (days == 1) {
-            return 'منذ يوم واحد';
+            return AppLocalizations.of(context)!.oneDayAgo;
           } else {
-            return 'منذ $days أيام';
+            return AppLocalizations.of(context)!.daysAgo(days.toString());
           }
         } else if (days < 30) {
           final weeks = (days / 7).floor();
           if (weeks == 1) {
-            return 'منذ أسبوع واحد';
+            return AppLocalizations.of(context)!.oneWeekAgo;
           } else {
-            return 'منذ $weeks أسابيع';
+            return AppLocalizations.of(context)!.weeksAgo(weeks.toString());
           }
         } else if (days < 365) {
           final months = (days / 30).floor();
           if (months == 1) {
-            return 'منذ شهر واحد';
+            return AppLocalizations.of(context)!.oneMonthAgo;
           } else {
-            return 'منذ $months أشهر';
+            return AppLocalizations.of(context)!.monthsAgo(months.toString());
           }
         } else {
           final years = (days / 365).floor();
           if (years == 1) {
-            return 'منذ سنة واحدة';
+            return AppLocalizations.of(context)!.oneYearAgo;
           } else {
-            return 'منذ $years سنوات';
+            return AppLocalizations.of(context)!.yearsAgo(years.toString());
           }
         }
       } catch (e) {
-        return 'لا يوجد';
+        return AppLocalizations.of(context)!.notAvailable;
       }
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getCountry(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getCountry(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final country =
           state.profileDetailsResponseModel.data?.attribute?.country;
-      return country ?? 'لا يوجد';
+      return country ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getResidence(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getResidence(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final country =
-          state.profileDetailsResponseModel.data?.attribute?.country;
-      return country ?? 'لا يوجد';
+          state.profileDetailsResponseModel.data?.attribute?.nationality;
+      return country ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getCity(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getCity(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final city = state.profileDetailsResponseModel.data?.attribute?.city;
-      return city ?? 'لا يوجد';
+      return city ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getMarriageType(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getMarriageType(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final marriageType =
           state.profileDetailsResponseModel.data?.attribute?.typeOfMarriage;
-      return marriageType ?? 'لا يوجد';
+      return marriageType ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getMaritalStatus(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getMaritalStatus(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final maritalStatus =
           state.profileDetailsResponseModel.data?.attribute?.maritalStatus;
-      return maritalStatus ?? 'لا يوجد';
+      return maritalStatus ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getChildren(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getChildren(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final children =
           state.profileDetailsResponseModel.data?.attribute?.children;
       if (children == null || children == 0) return '0';
       return children.toString();
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getSkinColor(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getSkinColor(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final skinColor =
           state.profileDetailsResponseModel.data?.attribute?.skinColor;
-      return skinColor ?? 'لا يوجد';
+      return skinColor ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getHeight(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getHeight(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final height = state.profileDetailsResponseModel.data?.attribute?.height;
-      if (height == null) return 'لا يوجد';
-      return '$height سنتي';
+      if (height == null) return AppLocalizations.of(context)!.notAvailable;
+      return '$height ${AppLocalizations.of(context)!.centimeters}';
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getWeight(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getWeight(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final weight = state.profileDetailsResponseModel.data?.attribute?.weight;
-      if (weight == null) return 'لا يوجد';
-      return '$weight كيلو';
+      if (weight == null) return AppLocalizations.of(context)!.notAvailable;
+      return '$weight ${AppLocalizations.of(context)!.kilograms}';
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getEducation(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getEducation(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final qualification =
           state.profileDetailsResponseModel.data?.attribute?.qualification;
-      return qualification ?? 'لا يوجد';
+      return qualification ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getFinancialStatus(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getFinancialStatus(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final financialSituation =
           state.profileDetailsResponseModel.data?.attribute?.financialSituation;
-      return financialSituation ?? 'لا يوجد';
+      return financialSituation ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getIncome(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getJob(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
+    if (state is GetProfileDetailsSuccess) {
+      final job = state.profileDetailsResponseModel.data?.attribute?.job;
+      return job ?? AppLocalizations.of(context)!.notAvailable;
+    }
+    return AppLocalizations.of(context)!.notAvailable;
+  }
+
+  String _getIncome(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final income = state.profileDetailsResponseModel.data?.attribute?.income;
-      if (income == null) return 'لا يوجد';
-      return '$income جنية';
+      if (income == null) return AppLocalizations.of(context)!.notAvailable;
+      return income;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getHealthStatus(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getHealthStatus(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final healthCondition =
           state.profileDetailsResponseModel.data?.attribute?.healthCondition;
-      return healthCondition ?? 'لا يوجد';
+      return healthCondition ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getSmoking(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getSmoking(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final smoking =
           state.profileDetailsResponseModel.data?.attribute?.smoking;
-      return smoking ?? 'لا يوجد';
+      return smoking ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getReligiousCommitment(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getReligiousCommitment(
+      ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final religiousCommitment = state
           .profileDetailsResponseModel.data?.attribute?.religiousCommitment;
-      return religiousCommitment ?? 'لا يوجد';
+      return religiousCommitment ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getHijab(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getHijabTitle(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
-      final hijab = state.profileDetailsResponseModel.data?.attribute?.hijab;
-      return hijab ?? 'لا يوجد';
+      final gender = state.profileDetailsResponseModel.data?.gender;
+
+      // Check if gender is male or ذكر
+      if (gender == 'male' || gender == 'ذكر') {
+        return AppLocalizations.of(context)!.beard; // 'اللحية' in Arabic
+      } else {
+        return AppLocalizations.of(context)!.hijab; // 'الحجاب' in Arabic
+      }
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.hijab; // Default to hijab
   }
 
-  String _getLifePartner(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getHijab(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
+    if (state is GetProfileDetailsSuccess) {
+      final gender = state.profileDetailsResponseModel.data?.gender;
+
+      // Check if gender is male or ذكر
+      if (gender == 'male' || gender == 'ذكر') {
+        // For males, show beard information
+        final beard = state.profileDetailsResponseModel.data?.attribute?.beard;
+        if (beard != null && beard.isNotEmpty) {
+          // Map API values to display values
+          if (beard == 'beard') {
+            return AppLocalizations.of(context)!.beard; // 'ملتحي' in Arabic
+          } else if (beard == 'without_beard') {
+            return 'بدون لحية'; // Without beard in Arabic
+          } else {
+            return beard; // Return as is if it's a custom value
+          }
+        }
+        return AppLocalizations.of(context)!.notAvailable;
+      } else {
+        // For females, show hijab information
+        final hijab = state.profileDetailsResponseModel.data?.attribute?.hijab;
+        return hijab ?? AppLocalizations.of(context)!.notAvailable;
+      }
+    }
+    return AppLocalizations.of(context)!.notAvailable;
+  }
+
+  String _getLifePartner(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final lifePartner =
           state.profileDetailsResponseModel.data?.attribute?.lifePartner;
-      return lifePartner ?? 'لا يوجد';
+      return lifePartner ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 
-  String _getAboutMe(ProfileDetailsState state) {
-    if (state is GetProfileDetailsLoading) return 'جاري التحميل...';
+  String _getAboutMe(ProfileDetailsState state, BuildContext context) {
+    if (state is GetProfileDetailsLoading) {
+      return AppLocalizations.of(context)!.loading;
+    }
     if (state is GetProfileDetailsSuccess) {
       final aboutMe =
           state.profileDetailsResponseModel.data?.attribute?.aboutMe;
-      return aboutMe ?? 'لا يوجد';
+      return aboutMe ?? AppLocalizations.of(context)!.notAvailable;
     }
-    return 'لا يوجد';
+    return AppLocalizations.of(context)!.notAvailable;
   }
 }

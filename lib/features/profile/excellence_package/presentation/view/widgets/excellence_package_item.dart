@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../core/services/localization_service.dart';
 import '../../../../../../core/theme/app_color.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/spacing.dart';
@@ -14,7 +15,7 @@ class ExcellencePackageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -29,6 +30,8 @@ class ExcellencePackageItem extends StatelessWidget {
         horizontalSpace(16),
         Expanded(
           child: Text.rich(
+            textDirection: LocalizationService.instance.textDirection,
+            textAlign: LocalizationService.instance.textAlignment,
             TextSpan(
               children: [
                 TextSpan(
@@ -40,8 +43,6 @@ class ExcellencePackageItem extends StatelessWidget {
                 ),
               ],
             ),
-            textDirection: TextDirection.rtl,
-            textAlign: TextAlign.start,
             maxLines: 8,
             overflow: TextOverflow.ellipsis,
           ),

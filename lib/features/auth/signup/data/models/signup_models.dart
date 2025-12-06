@@ -50,7 +50,7 @@ class RegisterInformationRequestModel {
   final String? beard; // Optional - only for males
   final int educationalQualification; //
   final int financialSituation; //bad , good, very_good
-  final String job;
+  final int job;
   final int income;
   final int healthCondition; //bad , good, very_good
   final String aboutMe;
@@ -100,8 +100,8 @@ class RegisterInformationRequestModel {
       'smoking': smoking,
       'qualification_id': educationalQualification,
       'financial_situation_id': financialSituation,
-      'job': job,
-      'income': income,
+      'job_id': job,
+      'income_id': income,
       'health_condition_id': healthCondition,
       'about_me': aboutMe,
       'life_partner': lifePartner,

@@ -1,5 +1,7 @@
 import 'package:elsadeken/core/helper/app_regex.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/helper/localization_helper.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/features/auth/forget_password/presentation/manager/forget_cubit.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 import '../../../../../../core/theme/spacing.dart';
 import '../../../../../../core/widgets/forms/custom_elevated_button.dart';
 import '../../../../../../core/widgets/forms/custom_text_form_field.dart';
+import '../../../../../../l10n/app_localizations.dart';
 
 class ForgetPasswordForm extends StatelessWidget {
   const ForgetPasswordForm({super.key});
@@ -18,22 +21,25 @@ class ForgetPasswordForm extends StatelessWidget {
     return Form(
       key: cubit.formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        textDirection: LocalizationService.instance.textDirection,
         children: [
           Text(
-            'نسيت كلمه المرور',
-            textDirection: TextDirection.rtl,
+            LocalizationHelper.getLocalizedText(
+                'نسيت كلمه المرور', 'ForgetPassword'),
+            textDirection: LocalizationService.instance.textDirection,
             style: AppTextStyles.font27ChineseBlackBoldLamaSans,
           ),
           Text(
-            'ادخل بريدك الالكتروني',
-            textDirection: TextDirection.rtl,
+            LocalizationHelper.getLocalizedText(
+                'ادخل بريدك الالكتروني', 'Enter Your Email'),
+            textDirection: LocalizationService.instance.textDirection,
             style: AppTextStyles.font14BeerMediumLamaSans
                 .copyWith(color: AppColors.outerSpace),
           ),
           verticalSpace(24),
           Text(
-            'بريد إلكتروني',
+            LocalizationHelper.getLocalizedText('بريد إلكتروني', 'Email'),
             textDirection: TextDirection.rtl,
             style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
           ),
@@ -45,7 +51,7 @@ class ForgetPasswordForm extends StatelessWidget {
             validator: (value) {
               if (cubit.emailController.text.isNullOrEmpty() ||
                   !AppRegex.isEmailValid(value!)) {
-                return 'يجب ادخال البريد الالكتروني';
+                return AppLocalizations.of(context)!.emailError;
               }
             },
           ),
@@ -56,7 +62,7 @@ class ForgetPasswordForm extends StatelessWidget {
                 cubit.forgetPassword();
               }
             },
-            textButton: 'التالي',
+            textButton: LocalizationHelper.getLocalizedText('التالي', 'Next'),
           ),
         ],
       ),

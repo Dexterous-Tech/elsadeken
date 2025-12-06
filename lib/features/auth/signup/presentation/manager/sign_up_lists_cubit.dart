@@ -115,4 +115,29 @@ class SignUpListsCubit extends Cubit<SignUpListsState> {
       emit(HealthConditionsSuccess(healthConditionsList));
     });
   }
+
+  void getIncomes() async {
+    emit(IncomesLoading());
+
+    var response =
+        await signupRepoInterface.getGeneralInfo(ApiConstants.incomes);
+
+    response.fold((error) {
+      emit(IncomesFailure(error.displayMessage));
+    }, (healthConditionsList) {
+      emit(IncomesSuccess(healthConditionsList));
+    });
+  }
+
+  void getJobs() async {
+    emit(JobsLoading());
+
+    var response = await signupRepoInterface.getGeneralInfo(ApiConstants.jobs);
+
+    response.fold((error) {
+      emit(JobsFailure(error.displayMessage));
+    }, (healthConditionsList) {
+      emit(JobsSuccess(healthConditionsList));
+    });
+  }
 }

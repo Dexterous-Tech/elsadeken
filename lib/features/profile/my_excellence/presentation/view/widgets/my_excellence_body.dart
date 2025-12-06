@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/profile/excellence_package/data/models/packages_model.dart'
@@ -8,6 +9,7 @@ import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/spacing.dart';
@@ -104,8 +106,9 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    state.response.message ?? 'تم الاشتراك بنجاح!',
-                    textDirection: TextDirection.rtl,
+                    state.response.message ??
+                        AppLocalizations.of(context)!.registrationSuccessful,
+                    textDirection: LocalizationService.instance.textDirection,
                     style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                       color: Colors.white,
                     ),
@@ -120,7 +123,8 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                 SnackBar(
                   content: Text(
                     state.error,
-                    textDirection: TextDirection.rtl,
+                    textDirection: LocalizationService.instance.textDirection,
+                    textAlign: LocalizationService.instance.textAlignment,
                     style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                       color: Colors.white,
                     ),
@@ -133,10 +137,12 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
           },
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              textDirection: TextDirection.rtl,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: LocalizationService.instance.textDirection,
               children: [
-                ProfileHeader(title: 'باقـــة التميــــز'),
+                ProfileHeader(
+                    title:
+                        AppLocalizations.of(context)!.excellencePackageTitle),
                 verticalSpace(42),
                 if (isLoadingFeatures) ...[
                   Column(
@@ -153,6 +159,8 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                 ] else if (errorMessage != null) ...[
                   Center(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      textDirection: LocalizationService.instance.textDirection,
                       children: [
                         Text(
                           errorMessage!,
@@ -160,19 +168,22 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                               .copyWith(
                             color: Colors.red,
                           ),
+                          textDirection:
+                              LocalizationService.instance.textDirection,
                           textAlign: TextAlign.center,
                         ),
                         verticalSpace(16),
                         ElevatedButton(
                           onPressed: _loadFeatures,
-                          child: Text('إعادة المحاولة'),
+                          child: Text(AppLocalizations.of(context)!.retry),
                         ),
                       ],
                     ),
                   ),
                 ] else ...[
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: List.generate(
                       features.length,
                       (index) {
@@ -192,16 +203,18 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                 verticalSpace(15),
                 Center(
                   child: Text(
-                    'باقـــة التميــــز',
+                    AppLocalizations.of(context)!.excellencePackageTitle,
                     style: AppTextStyles.font20LightOrangeMediumLamaSans,
+                    textDirection: LocalizationService.instance.textDirection,
+                    textAlign: LocalizationService.instance.textAlignment,
                   ),
                 ),
                 verticalSpace(16),
                 Text(
-                  'عند الأشتراك في باقة التميز ، ستقوم بتفعيل جميع الميزات المتاحة و بالتالي زيادة تفاعلك في التطبيق و تحقيق هدفك بشكل أسرع',
+                  AppLocalizations.of(context)!.excellencePackageDescription,
                   style: AppTextStyles.font19JetRegularLamaSans,
-                  textAlign: TextAlign.right,
-                  textDirection: TextDirection.rtl,
+                  textAlign: LocalizationService.instance.textAlignment,
+                  textDirection: LocalizationService.instance.textDirection,
                 ),
                 verticalSpace(32),
                 // Check isFeatured status from SharedPreferences
@@ -210,13 +223,14 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                     padding: EdgeInsets.symmetric(vertical: 20.h),
                     child: Center(
                       child: Text(
-                        'أنت عضو مميز بالفعل',
+                        AppLocalizations.of(context)!.youAreAlreadyPremium,
                         style:
                             AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                           color: AppColors.philippineBronze,
                         ),
                         textAlign: TextAlign.center,
-                        textDirection: TextDirection.rtl,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
                       ),
                     ),
                   ),
@@ -243,7 +257,8 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                               }
                             }
                           },
-                          textButton: 'اشترك الان',
+                          textButton:
+                              AppLocalizations.of(context)!.subscribeNow,
                           radius: 100,
                         );
                       }

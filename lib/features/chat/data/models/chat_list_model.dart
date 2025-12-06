@@ -129,16 +129,18 @@ class ChatData {
   });
 
   factory ChatData.fromJson(Map<String, dynamic> json) {
+    final lastMsg = json['last_message'] != null
+        ? LastMessage.fromJson(json['last_message'])
+        : null;
+
     return ChatData(
       id: json['id'] ?? 0,
-      lastMessage: json['last_message'] != null
-          ? LastMessage.fromJson(json['last_message'])
-          : null,
+      lastMessage: lastMsg,
       unreadCount: json['unread_count'] ?? 0,
       otherUser: OtherUser.fromJson(json['other_user']),
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
-      isFavorite: json['is_favorite'] == 1 || json['is_favorite'] == true,
+      isFavorite: lastMsg?.isFavorite == 1, // Get from lastMessage
     );
   }
 
@@ -194,20 +196,23 @@ class LastMessage {
   final String body;
   final int isReported;
   final int isMuted;
+  final int isFavorite;
+  final bool? isOnline;
   final int? reportedByUserId;
   final String createdAt;
 
-  LastMessage({
-    required this.id,
-    required this.chatId,
-    required this.senderId,
-    required this.receiverId,
-    required this.body,
-    required this.isReported,
-    required this.isMuted,
-    this.reportedByUserId,
-    required this.createdAt,
-  });
+  LastMessage(
+      {required this.id,
+      required this.chatId,
+      required this.senderId,
+      required this.receiverId,
+      required this.body,
+      required this.isReported,
+      required this.isMuted,
+      required this.isFavorite,
+      this.reportedByUserId,
+      required this.createdAt,
+      this.isOnline});
 
   factory LastMessage.fromJson(Map<String, dynamic> json) {
     return LastMessage(
@@ -218,6 +223,8 @@ class LastMessage {
       body: json['body'] ?? '',
       isReported: json['is_reported'] ?? 0,
       isMuted: json['is_muted'] ?? 0,
+      isFavorite: json['is_favorite'] ?? 0,
+      isOnline: json['is_online'] ?? false,
       reportedByUserId: json['reported_by_user_id'],
       createdAt: json['created_at'] ?? '',
     );

@@ -6,14 +6,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/di/injection_container.dart';
 
 class MyImageScreen extends StatelessWidget {
-  const MyImageScreen({super.key});
+  final String? photoVisibility;
+
+  const MyImageScreen({super.key, this.photoVisibility});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<MyImageCubit>(),
       child: Scaffold(
-        body: MyImageBody(),
+        body: MyImageBody(photoVisibility: photoVisibility),
       ),
     );
   }

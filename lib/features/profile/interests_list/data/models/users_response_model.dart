@@ -80,6 +80,13 @@ class UsersDataModel {
     this.createdAt,
     this.lastSeen,
     this.attribute,
+    this.visitedAtDate,
+    this.visitedAtTime,
+    this.isFavorite,
+    this.isIgnore,
+    this.isBlocked,
+    this.isOnline,
+    this.isReported,
   });
 
   UsersDataModel.fromJson(dynamic json) {
@@ -95,6 +102,23 @@ class UsersDataModel {
     isFeatured = json['is_featured'];
     createdAt = json['created_at'];
     lastSeen = json['last_seen'];
+    visitedAtDate = json['visited_at_date'];
+    visitedAtTime = json['visited_at_time'];
+    isFavorite = json['is_favorite'] == true ||
+        json['is_favorite'] == 'true' ||
+        json['is_favorite'] == 1;
+    isIgnore = json['is_ignored'] == true ||
+        json['is_ignored'] == 'true' ||
+        json['is_ignored'] == 1;
+    isBlocked = json['is_blocked'] == true ||
+        json['is_blocked'] == 'true' ||
+        json['is_blocked'] == 1;
+    isOnline = json['is_online'] == true ||
+        json['is_online'] == 'true' ||
+        json['is_online'] == 1;
+    isReported = json['is_reported'] == true ||
+        json['is_reported'] == 'true' ||
+        json['is_reported'] == 1;
     attribute = json['attribute'] != null
         ? UsersAttributeModel.fromJson(json['attribute'])
         : null;
@@ -111,6 +135,13 @@ class UsersDataModel {
   int? isFeatured;
   String? createdAt;
   String? lastSeen;
+  String? visitedAtDate;
+  String? visitedAtTime;
+  bool? isFavorite;
+  bool? isIgnore;
+  bool? isBlocked;
+  bool? isOnline;
+  bool? isReported;
   UsersAttributeModel? attribute;
 
   Map<String, dynamic> toJson() {
@@ -127,8 +158,61 @@ class UsersDataModel {
     map['is_featured'] = isFeatured;
     map['created_at'] = createdAt;
     map['last_seen'] = lastSeen;
+    map['visited_at_date'] = visitedAtDate;
+    map['visited_at_time'] = visitedAtTime;
+    map['is_favorite'] = isFavorite;
+    map['is_ignored'] = isIgnore;
+    map['is_blocked'] = isBlocked;
+    map['is_online'] = isOnline;
+    map['is_reported'] = isReported;
     map['attribute'] = attribute;
     return map;
+  }
+
+  UsersDataModel copyWith({
+    int? id,
+    String? name,
+    String? email,
+    String? countryCode,
+    String? phone,
+    String? gender,
+    String? image,
+    dynamic fcmToken,
+    dynamic token,
+    int? isFeatured,
+    String? createdAt,
+    String? lastSeen,
+    String? visitedAtDate,
+    String? visitedAtTime,
+    bool? isFavorite,
+    bool? isIgnore,
+    bool? isBlocked,
+    bool? isOnline,
+    bool? isReported,
+    UsersAttributeModel? attribute,
+  }) {
+    return UsersDataModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      countryCode: countryCode ?? this.countryCode,
+      phone: phone ?? this.phone,
+      gender: gender ?? this.gender,
+      image: image ?? this.image,
+      fcmToken: fcmToken ?? this.fcmToken,
+      token: token ?? this.token,
+      isFeatured: isFeatured ?? this.isFeatured,
+      createdAt: createdAt ?? this.createdAt,
+      lastSeen: lastSeen ?? this.lastSeen,
+      visitedAtDate: visitedAtDate ?? this.visitedAtDate,
+      visitedAtTime: visitedAtTime ?? this.visitedAtTime,
+      isFavorite: isFavorite ?? this.isFavorite,
+      isIgnore: isIgnore ?? this.isIgnore,
+      isBlocked: isBlocked ?? this.isBlocked,
+      isOnline: isOnline ?? this.isOnline,
+      isReported: isReported ?? this.isReported,
+      attribute: attribute ?? this.attribute,
+    );
   }
 }
 
@@ -207,6 +291,7 @@ class UsersAttributeModel {
     this.prayer,
     this.smoking,
     this.hijab,
+    this.beard,
     this.job,
     this.income,
     this.lifePartner,
@@ -233,6 +318,7 @@ class UsersAttributeModel {
     prayer = json['prayer'];
     smoking = json['smoking'];
     hijab = json['hijab'];
+    beard = json['beard'];
     job = json['job'];
     income = json['income'];
     lifePartner = json['life_partner'];
@@ -258,8 +344,9 @@ class UsersAttributeModel {
   String? prayer;
   String? smoking;
   String? hijab;
+  String? beard;
   String? job;
-  int? income;
+  String? income;
   String? lifePartner;
   String? aboutMe;
 
@@ -284,6 +371,7 @@ class UsersAttributeModel {
     map['prayer'] = prayer;
     map['smoking'] = smoking;
     map['hijab'] = hijab;
+    map['beard'] = beard;
     map['job'] = job;
     map['income'] = income;
     map['life_partner'] = lifePartner;

@@ -3,6 +3,8 @@ import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cub
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
@@ -29,9 +31,13 @@ class _ChatScreenState extends State<ChatScreen>
 
   // Stream subscriptions for real-time updates
   StreamSubscription<void>? _refreshChatListSubscription;
+  StreamSubscription<int>? _chatUpdateSubscription;
 
   // Track if this is the first load
   bool _hasLoadedInitially = false;
+
+  // Timer for periodic chat list refresh
+  Timer? _chatListRefreshTimer;
 
   @override
   bool get wantKeepAlive => true;
@@ -45,12 +51,15 @@ class _ChatScreenState extends State<ChatScreen>
     final chatListCubit = context.read<ChatListCubit>();
     chatListCubit.setCurrentTabIndex(_selectedTabIndex);
 
-    chatListCubit.getChatList();
+    chatListCubit.getChatList().then((_) {
+      _hasLoadedInitially = true;
+    });
     _setupRealTimeListeners();
+    _startPeriodicRefresh();
   }
 
   void _setupRealTimeListeners() {
-    // Listen for chat list refresh requests from Firebase notifications only
+    // Listen for chat list refresh requests from Firebase notifications
     _refreshChatListSubscription =
         ChatMessageService.instance.refreshChatListStream.listen((_) {
       if (mounted) {
@@ -61,14 +70,47 @@ class _ChatScreenState extends State<ChatScreen>
       }
     });
 
+    // Listen for Pusher message updates (immediate refresh when message arrives)
+    _chatUpdateSubscription =
+        ChatMessageService.instance.chatUpdateStream.listen((chatId) {
+      if (mounted) {
+        print(
+            '💬 [ChatScreen] Pusher message received for chat $chatId - refreshing chat list');
+        // Silent background refresh - no UI indicators
+        context.read<ChatListCubit>().silentRefreshChatList();
+      }
+    });
+
     print(
-        '🔔 [ChatScreen] Chat list now depends on Firebase notifications for updates');
+        '🔔 [ChatScreen] Chat list listening to Firebase and Pusher updates');
+  }
+
+  /// Start periodic refresh for chat list (every 15 seconds)
+  void _startPeriodicRefresh() {
+    _chatListRefreshTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+      if (mounted && _hasLoadedInitially) {
+        print('🔄 [ChatScreen] Periodic chat list refresh');
+        context.read<ChatListCubit>().silentRefreshChatList();
+      }
+    });
+    print('✅ [ChatScreen] Periodic refresh started (every 15 seconds)');
+  }
+
+  /// Stop periodic refresh
+  void _stopPeriodicRefresh() {
+    _chatListRefreshTimer?.cancel();
+    _chatListRefreshTimer = null;
+    print('⏹️ [ChatScreen] Periodic refresh stopped');
   }
 
   @override
   void dispose() {
     // Cancel stream subscriptions
     _refreshChatListSubscription?.cancel();
+    _chatUpdateSubscription?.cancel();
+
+    // Stop periodic refresh
+    _stopPeriodicRefresh();
 
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -77,20 +119,38 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    // Real-time updates handle everything automatically - no manual refresh needed
+
+    // Refresh chat list when app comes back to foreground to ensure consistency
+    if (state == AppLifecycleState.resumed && _hasLoadedInitially) {
+      print('🔄 [ChatScreen] App resumed, refreshing chat list');
+      context.read<ChatListCubit>().silentRefreshChatList();
+
+      // Resume periodic refresh
+      if (_chatListRefreshTimer == null) {
+        _startPeriodicRefresh();
+      }
+    } else if (state == AppLifecycleState.paused) {
+      // Pause periodic refresh to save resources
+      print('⏸️ [ChatScreen] App paused, stopping periodic refresh');
+      _stopPeriodicRefresh();
+    }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // No manual refresh needed - real-time updates handle everything automatically
+    // Refresh chat list when returning to this screen to ensure consistency
+    if (_hasLoadedInitially) {
+      print('🔄 [ChatScreen] Refreshing chat list on didChangeDependencies');
+      context.read<ChatListCubit>().silentRefreshChatList();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: SafeArea(
         child: Column(
           children: [
@@ -120,8 +180,14 @@ class _ChatScreenState extends State<ChatScreen>
       child: Column(
         children: [
           ProfileHeader(
-            title: 'الرسائل',
+            title: AppLocalizations.of(context)!.messagesLabel,
             showBackButton: false,
+            titleStyle: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Lama Sans',
+              color: AppColors.darkBlue,
+            ),
           ),
           SizedBox(height: 16.h),
           ChatTabBar(
@@ -203,6 +269,8 @@ class _ChatScreenState extends State<ChatScreen>
               return ChatRoomItem(
                 chat: chat,
                 chatListCubit: context.read<ChatListCubit>(),
+                isInFavoritesList: _selectedTabIndex ==
+                    1, // Pass true if we're in favorites tab
                 onTap: () {
                   // Mark this chat as read when opened
                   _markChatAsRead(chat);
@@ -213,9 +281,9 @@ class _ChatScreenState extends State<ChatScreen>
                     arguments: {"chatRoom": chat.toChatRoomModel()},
                   );
                 },
-                onLongPress: () {
-                  _showChatOptions(context, chat);
-                },
+                onLongPress: null,
+                isOnline: chat.lastMessage?.isOnline ??
+                    false, // Let ChatRoomItem handle its own long press
               );
             },
           );
@@ -238,8 +306,8 @@ class _ChatScreenState extends State<ChatScreen>
           SizedBox(height: 24.h),
           Text(
             _selectedTabIndex == 1
-                ? 'لا توجد محادثات مفضلة'
-                : 'لا يوجد رسائل حتى الآن',
+                ? AppLocalizations.of(context)!.noFavoriteChats
+                : AppLocalizations.of(context)!.noMessagesYetShort,
             style: AppTextStyles.font23ChineseBlackBoldLamaSans.copyWith(
               color: AppColors.darkerBlue,
             ),
@@ -256,34 +324,5 @@ class _ChatScreenState extends State<ChatScreen>
       // Mark chat as read using the chat_settings_cubit's method
       context.read<ChatListCubit>().markChatAsRead(chat.id);
     }
-  }
-
-  /// 🔹 Show Chat Options
-
-  void _showChatOptions(BuildContext context, dynamic chatRoom) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.delete, color: Colors.red),
-              title: const Text(
-                'مسح الدردشة',
-                style: TextStyle(color: Colors.red),
-              ),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.block),
-              title: const Text('حظر المستخدم'),
-              onTap: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

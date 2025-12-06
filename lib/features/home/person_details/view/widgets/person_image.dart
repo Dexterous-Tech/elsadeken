@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -6,9 +9,9 @@ class PersonImageHeader extends StatelessWidget {
   final String imageUrl;
 
   const PersonImageHeader({
-    Key? key,
+    super.key,
     required this.imageUrl,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class PersonImageHeader extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [
               Colors.transparent,
-              Colors.black.withOpacity(0.3),
+              Colors.black.withValues(alpha: 0.3),
             ],
           ),
         ),
@@ -36,9 +39,14 @@ class PersonImageHeader extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment:
+                  LocalizationService.instance.startCrossAxisAlignment,
+              textDirection: LocalizationService.instance.textDirection,
               children: [
                 Row(
-                  textDirection: TextDirection.rtl,
+                  crossAxisAlignment:
+                      LocalizationService.instance.startCrossAxisAlignment,
+                  textDirection: LocalizationService.instance.textDirection,
                   children: [
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
@@ -51,10 +59,15 @@ class PersonImageHeader extends StatelessWidget {
                         ),
                         padding: EdgeInsets.all(8),
                         child: Center(
-                          child: Image.asset(
-                            AppImages.authArrowBack,
-                            width: 14.w,
-                            height: 14.h,
+                          child: Transform.rotate(
+                            angle: LocalizationService.instance.isEnglish
+                                ? math.pi
+                                : 0,
+                            child: Image.asset(
+                              AppImages.authArrowBack,
+                              width: 14.w,
+                              height: 14.h,
+                            ),
                           ),
                         ),
                       ),
@@ -65,7 +78,7 @@ class PersonImageHeader extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(

@@ -1,9 +1,11 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/contents/manage_profile_login_data.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/contents/manage_profile_religion.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import '../../../../widgets/profile_header.dart';
 import 'contents/manage_profile_appearance.dart';
 import 'contents/manage_profile_marital_status.dart';
@@ -66,12 +68,13 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
             contentBody: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
                 children: [
-                  ProfileHeader(title: 'تعديل بياناتي'),
+                  ProfileHeader(
+                      title: AppLocalizations.of(context)!.editMyData),
                   verticalSpace(28),
                   ManageProfileCard(
-                    title: 'بيانات تسجيل الدخول',
+                    title: AppLocalizations.of(context)!.loginData,
                     cardContent: ManageProfileLoginData(
                       profileData: profileData,
                       isLoading: isLoading,
@@ -79,7 +82,8 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
                   ),
                   verticalSpace(10),
                   ManageProfileCard(
-                    title: 'الجنسية و الإقامة',
+                    title:
+                        AppLocalizations.of(context)!.nationalityAndResidence,
                     cardContent: ManageProfileNationalCountry(
                       profileData: profileData,
                       isLoading: isLoading,
@@ -87,7 +91,7 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
                   ),
                   verticalSpace(10),
                   ManageProfileCard(
-                    title: 'الحالة الإجتماعية',
+                    title: AppLocalizations.of(context)!.maritalStatus,
                     cardContent: ManageProfileMaritalStatus(
                       profileData: profileData,
                       isLoading: isLoading,
@@ -95,7 +99,7 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
                   ),
                   verticalSpace(10),
                   ManageProfileCard(
-                    title: 'مظهرك',
+                    title: AppLocalizations.of(context)!.myAppearance,
                     cardContent: ManageProfileAppearance(
                       profileData: profileData,
                       isLoading: isLoading,
@@ -103,7 +107,7 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
                   ),
                   verticalSpace(10),
                   ManageProfileCard(
-                    title: 'الدين',
+                    title: AppLocalizations.of(context)!.religion,
                     cardContent: ManageProfileReligion(
                       profileData: profileData,
                       isLoading: isLoading,
@@ -111,7 +115,7 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
                   ),
                   verticalSpace(10),
                   ManageProfileCard(
-                    title: 'الدراسة و العمل',
+                    title: AppLocalizations.of(context)!.studyAndWork,
                     cardContent: ManageProfileJob(
                       profileData: profileData,
                       isLoading: isLoading,
@@ -119,18 +123,18 @@ class _ManageProfileBodyState extends State<ManageProfileBody> {
                   ),
                   verticalSpace(10),
                   ManageProfileCard(
-                    title: 'موصفات شريكة حياتك التي ترغب الإرتباط بها',
+                    title: AppLocalizations.of(context)!.lifePartner,
                     cardContent: ManageProfileWritingContent(
-                      label: 'موصفات شريكة حياتك التي ترغب الإرتباط بها',
+                      label: AppLocalizations.of(context)!.partnerDescription,
                       profileData: profileData,
                       isLoading: isLoading,
                     ),
                   ),
                   verticalSpace(10),
                   ManageProfileCard(
-                    title: 'تحدث عن نفسك',
+                    title: AppLocalizations.of(context)!.talkAboutYourself,
                     cardContent: ManageProfileWritingContent(
-                      label: 'تحدث عن نفسك',
+                      label: AppLocalizations.of(context)!.talkAboutYourself,
                       profileData: profileData,
                       isLoading: isLoading,
                     ),

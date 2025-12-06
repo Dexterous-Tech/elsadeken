@@ -2,6 +2,8 @@ import 'package:elsadeken/features/chat/data/models/api_response_model.dart';
 import 'package:elsadeken/features/chat/data/models/country_model.dart';
 import 'package:elsadeken/features/chat/data/models/nationality_model.dart';
 import 'package:elsadeken/features/chat/domain/repositories/lists_repository.dart';
+import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
+import 'package:elsadeken/core/shared/shared_preferences_key.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -56,54 +58,67 @@ class ListsCubit extends Cubit<ListsState> {
       return;
     }
 
-    print('[ListsCubit] Starting to load lists... (forceRefresh: $forceRefresh)');
+    print(
+        '[ListsCubit] Starting to load lists... (forceRefresh: $forceRefresh)');
     final stopwatch = Stopwatch()..start();
     emit(ListsLoading());
     _isLoading = true;
-    
+
     try {
       print('[ListsCubit] Loading nationalities and countries in parallel...');
-      
+
       // Load nationalities and countries in parallel
-      final nationalitiesFuture = _repository.getNationalities();
+      final nationalitiesFuture = _repository.getNationalitiesWithGenderNames();
       final countriesFuture = _repository.getCountries();
-      
+
       final results = await Future.wait([nationalitiesFuture, countriesFuture]);
-      
+
       stopwatch.stop();
-      print('[ListsCubit] Both requests completed in ${stopwatch.elapsedMilliseconds}ms');
-      
-      final nationalitiesResponse = results[0] as ApiResponseModel<List<NationalityModel>>;
-      final countriesResponse = results[1] as ApiResponseModel<List<CountryModel>>;
-      
-      print('[ListsCubit] Nationalities response: ${nationalitiesResponse.isSuccess} - ${nationalitiesResponse.message}');
-      print('[ListsCubit] Countries response: ${countriesResponse.isSuccess} - ${countriesResponse.message}');
-      print('[ListsCubit] Nationalities count: ${nationalitiesResponse.data?.length ?? 0}');
-      print('[ListsCubit] Countries count: ${countriesResponse.data?.length ?? 0}');
-      
+      print(
+          '[ListsCubit] Both requests completed in ${stopwatch.elapsedMilliseconds}ms');
+
+      final nationalitiesResponse =
+          results[0] as ApiResponseModel<List<NationalityModel>>;
+      final countriesResponse =
+          results[1] as ApiResponseModel<List<CountryModel>>;
+
+      print(
+          '[ListsCubit] Nationalities response: ${nationalitiesResponse.isSuccess} - ${nationalitiesResponse.message}');
+      print(
+          '[ListsCubit] Countries response: ${countriesResponse.isSuccess} - ${countriesResponse.message}');
+      print(
+          '[ListsCubit] Nationalities count: ${nationalitiesResponse.data?.length ?? 0}');
+      print(
+          '[ListsCubit] Countries count: ${countriesResponse.data?.length ?? 0}');
+
       if (nationalitiesResponse.isSuccess && countriesResponse.isSuccess) {
-        final fromCache = nationalitiesResponse.message?.contains('Cached') == true || 
-                         countriesResponse.message?.contains('Cached') == true;
-        
-        print('[ListsCubit] Both successful, emitting ListsLoaded (fromCache: $fromCache)');
-        print('[ListsCubit] Performance: ${fromCache ? 'CACHE HIT' : 'API CALL'} - ${stopwatch.elapsedMilliseconds}ms');
-        
+        final fromCache =
+            nationalitiesResponse.message.contains('Cached') == true ||
+                countriesResponse.message.contains('Cached') == true;
+
+        print(
+            '[ListsCubit] Both successful, emitting ListsLoaded (fromCache: $fromCache)');
+        print(
+            '[ListsCubit] Performance: ${fromCache ? 'CACHE HIT' : 'API CALL'} - ${stopwatch.elapsedMilliseconds}ms');
+
         emit(ListsLoaded(
           nationalities: nationalitiesResponse.data ?? [],
           countries: countriesResponse.data ?? [],
           fromCache: fromCache,
         ));
       } else {
-        final errorMessage = !nationalitiesResponse.isSuccess 
-            ? nationalitiesResponse.message 
+        final errorMessage = !nationalitiesResponse.isSuccess
+            ? nationalitiesResponse.message
             : countriesResponse.message;
         print('[ListsCubit] Error occurred: $errorMessage');
         emit(ListsError(errorMessage));
       }
     } catch (e) {
       stopwatch.stop();
-      print('[ListsCubit] Exception occurred after ${stopwatch.elapsedMilliseconds}ms: $e');
-      emit(const ListsError('حدث خطأ أثناء تحميل القوائم'));
+      print(
+          '[ListsCubit] Exception occurred after ${stopwatch.elapsedMilliseconds}ms: $e');
+      emit(const ListsError(
+          'Error loading lists')); // Using English as fallback since no context available
     } finally {
       _isLoading = false;
     }
@@ -124,11 +139,50 @@ class ListsCubit extends Cubit<ListsState> {
       final currentState = state as ListsLoaded;
       final nationality = currentState.nationalities.firstWhere(
         (n) => n.id == id,
-        orElse: () => NationalityModel(id: 0, name: 'غير محدد'),
+        orElse: () => NationalityModel(
+            id: 0, name: {'male': 'Not Specified', 'female': 'Not Specified'}),
       );
-      return nationality.name;
+      return nationality
+          .displayName; // Use displayName getter for backward compatibility
     }
-    return 'غير محدد';
+    return 'Not Specified';
+  }
+
+  /// Get nationality name by ID with gender support
+  String getNationalityNameForGender(int id, String gender) {
+    if (state is ListsLoaded) {
+      final currentState = state as ListsLoaded;
+      final nationality = currentState.nationalities.firstWhere(
+        (n) => n.id == id,
+        orElse: () => NationalityModel(
+            id: 0, name: {'male': 'Not Specified', 'female': 'Not Specified'}),
+      );
+      return nationality.getNameForGender(gender);
+    }
+    return 'Not Specified';
+  }
+
+  /// Get nationality name by ID using current user's gender
+  Future<String> getNationalityNameForCurrentUser(int id) async {
+    if (state is ListsLoaded) {
+      final currentState = state as ListsLoaded;
+      final nationality = currentState.nationalities.firstWhere(
+        (n) => n.id == id,
+        orElse: () => NationalityModel(
+            id: 0, name: {'male': 'Not Specified', 'female': 'Not Specified'}),
+      );
+
+      // Get user's gender from SharedPreferences
+      try {
+        final gender = await SharedPreferencesHelper.getSecuredString(
+            SharedPreferencesKey.gender);
+        return nationality.getNameForGender(gender);
+      } catch (e) {
+        print('[ListsCubit] Error getting user gender: $e');
+        return nationality.displayName; // Fallback to display name
+      }
+    }
+    return 'Not Specified';
   }
 
   /// Get country name by ID
@@ -137,11 +191,11 @@ class ListsCubit extends Cubit<ListsState> {
       final currentState = state as ListsLoaded;
       final country = currentState.countries.firstWhere(
         (c) => c.id == id,
-        orElse: () => CountryModel(id: 0, name: 'غير محدد'),
+        orElse: () => CountryModel(id: 0, name: 'Not Specified'),
       );
       return country.name;
     }
-    return 'غير محدد';
+    return 'Not Specified';
   }
 
   /// Get current nationalities list
@@ -160,4 +214,3 @@ class ListsCubit extends Cubit<ListsState> {
     return [];
   }
 }
-

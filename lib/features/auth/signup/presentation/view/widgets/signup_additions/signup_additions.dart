@@ -1,5 +1,6 @@
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/custom_next_and_previous_button.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,25 +25,25 @@ class SignupAdditions extends StatefulWidget {
 class _SignupAdditionsState extends State<SignupAdditions> {
   Map<String, String> get smokingOptions {
     return {
-      '1': 'نعم',
-      '0': 'لا',
+      '1': AppLocalizations.of(context)!.yesIam,
+      '0': AppLocalizations.of(context)!.noIam,
     };
   }
 
   Map<String, String> get beardOptions {
     return {
-      'beard': 'ملتحي',
-      'without_beard': 'بدون لحية',
+      'beard': AppLocalizations.of(context)!.beard,
+      'without_beard': AppLocalizations.of(context)!.withoutBeard,
     };
   }
 
   Map<String, String> get hijabOptions {
     return {
-      'not_hijab': 'غير محجبه',
-      'hijab': 'محجبه(كشف الوجه)',
-      'hijab_and_veil': 'محجبه (النقاب)',
-      'hijab_face': 'محجبه (غطاء الوجه)',
-      'dont_say': 'افضل الا اقول',
+      'not_hijab': AppLocalizations.of(context)!.notHijab,
+      'hijab': AppLocalizations.of(context)!.hijabFaceVisible,
+      'hijab_and_veil': AppLocalizations.of(context)!.hijabAndVeil,
+      'hijab_face': AppLocalizations.of(context)!.hijab_face,
+      'dont_say': AppLocalizations.of(context)!.dontSay,
     };
   }
 
@@ -62,7 +63,7 @@ class _SignupAdditionsState extends State<SignupAdditions> {
                   // status
                   SignupMultiChoice(
                     height: 110.h,
-                    title: 'التدخين ؟',
+                    title: AppLocalizations.of(context)!.smokingAsk,
                     options: smokingOptions.values.toList(),
                     selected: smokingOptions[cubit.smokingController.text],
                     onChanged: (newStatus) {
@@ -85,7 +86,7 @@ class _SignupAdditionsState extends State<SignupAdditions> {
                   if (widget.gender == 'male' || widget.gender == 'ذكر')
                     SignupMultiChoice(
                         height: 110.h,
-                        title: 'اللحية',
+                        title: AppLocalizations.of(context)!.beardAsk,
                         options: beardOptions.values.toList(),
                         selected: beardOptions[cubit.beardController.text],
                         onChanged: (newStatus) {
@@ -104,10 +105,10 @@ class _SignupAdditionsState extends State<SignupAdditions> {
                   verticalSpace(40),
 
                   // Hijab selection for females only
-                  if (widget.gender == 'female' || widget.gender == 'أنثى')
+                  if (widget.gender != 'male' && widget.gender != 'ذكر')
                     SignupMultiChoice(
                         height: 170.h,
-                        title: 'الحجاب ؟',
+                        title: AppLocalizations.of(context)!.hijabAsk,
                         options: hijabOptions.values.toList(),
                         selected: hijabOptions[cubit.hijabController.text],
                         onChanged: (newStatus) {
@@ -147,7 +148,7 @@ class _SignupAdditionsState extends State<SignupAdditions> {
 
     // Conditional validation for beard and hijab based on gender
     bool isMale = widget.gender == 'male' || widget.gender == 'ذكر';
-    bool isFemale = widget.gender == 'female' || widget.gender == 'أنثى';
+    bool isFemale = widget.gender != 'male' && widget.gender != 'ذكر';
 
     bool hasRequiredGenderField = true;
     if (isMale) {

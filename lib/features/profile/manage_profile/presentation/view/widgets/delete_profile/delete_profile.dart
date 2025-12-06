@@ -1,12 +1,8 @@
-import 'package:elsadeken/core/helper/extensions.dart';
-import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
-import 'package:elsadeken/core/widgets/dialog/error_dialog.dart';
-import 'package:elsadeken/core/widgets/dialog/loading_dialog.dart';
-import 'package:elsadeken/core/widgets/dialog/success_dialog.dart';
-import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/delete/delete_dialog.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../../core/helper/app_images.dart';
@@ -19,58 +15,28 @@ class DeleteProfile extends StatelessWidget {
   final bool isLoading;
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ManageProfileCubit, ManageProfileState>(
-      listenWhen: (previous, current) =>
-          current is DeleteProfileLoading ||
-          current is DeleteProfileFailure ||
-          current is DeleteProfileSuccess,
-      listener: (context, state) {
-        if (state is DeleteProfileLoading) {
-          loadingDialog(context);
-        } else if (state is DeleteProfileFailure) {
-          context.pop();
-          errorDialog(context: context, error: state.error);
-        } else if (state is DeleteProfileSuccess) {
-          context.pop();
-          successDialog(
-              context: context,
-              message: state.profileActionResponseModel.message.toString(),
-              onPressed: () {
-                context.pop();
-                context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);
-              });
-        }
+    return GestureDetector(
+      onTap: () {
+        deleteProfileDialog(context);
       },
-      child: GestureDetector(
-        onTap: () {
-          context.read<ManageProfileCubit>().deleteProfile();
-        },
-        child: Row(
-          textDirection: TextDirection.rtl,
-          children: [
-            Container(
+      child: Row(
+        textDirection: LocalizationService.instance.textDirection,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(50).r,
+            child: Image.asset(
+              AppImages.blockUserIcon,
               width: 50.w,
               height: 50.h,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color(0xffFFEBEB),
-              ),
-              child: Center(
-                child: Image.asset(
-                  AppImages.deleteProfile,
-                  width: 35.w,
-                  height: 35.h,
-                ),
-              ),
             ),
-            horizontalSpace(16),
-            Text(
-              ' حذف حسابي',
-              style: AppTextStyles.font26BlackBoldLamaSans
-                  .copyWith(color: AppColors.coralRed, fontSize: 18.sp),
-            ),
-          ],
-        ),
+          ),
+          horizontalSpace(16),
+          Text(
+            AppLocalizations.of(context)!.deleteMyAccount,
+            style: AppTextStyles.font26BlackBoldLamaSans
+                .copyWith(color: AppColors.coralRed, fontSize: 18.sp),
+          ),
+        ],
       ),
     );
   }

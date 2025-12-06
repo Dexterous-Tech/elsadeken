@@ -5,4 +5,6 @@ class AppSvg {
       '${AppConstants.svgAssetsPath}check-circle.svg';
   static const String profileLogo = '${AppConstants.svgAssetsPath}profile.svg';
   static const String arrowBack = '${AppConstants.svgAssetsPath}arrow_back.svg';
+  static const String searchIcon =
+      '${AppConstants.svgAssetsPath}search_icon.svg';
 }

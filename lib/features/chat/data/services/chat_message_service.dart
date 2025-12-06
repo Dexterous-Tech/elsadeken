@@ -26,12 +26,11 @@ class ChatMessageService {
 
   /// Handle new message received from Pusher (for real-time conversation updates)
   void handleNewMessage(PusherMessageModel message) {
-    // Prevent duplicate message processing
+    // Prevent duplicate message processing (fast lookup)
     final messageKey = '${message.id}_${message.chatId}';
 
     if (_processedMessageIds.contains(messageKey)) {
-      log('Duplicate message ignored: ${message.body}');
-      return;
+      return; // Skip logging for duplicates to improve performance
     }
 
     _processedMessageIds.add(messageKey);
@@ -42,17 +41,19 @@ class ChatMessageService {
       _processedMessageIds.removeAll(oldIds);
     }
 
-    log('Real-time message processed via Pusher: ${message.body}');
     _lastMessageTime = DateTime.now();
 
-    // Emit to message stream for conversation screen
+    // Emit to message stream immediately for instant UI update
     _messageController.add(message);
 
-    // Emit to chat update stream for chat list updates
-    _chatUpdateController.add(message.chatId);
-
-    // Trigger Firebase-based chat list refresh for comprehensive updates
-    triggerFirebaseChatRefresh();
+    // Defer chat list updates to avoid blocking message display
+    Future.microtask(() {
+      // Emit to chat update stream for chat list updates
+      _chatUpdateController.add(message.chatId);
+      
+      // Trigger Firebase-based chat list refresh for comprehensive updates
+      triggerFirebaseChatRefresh();
+    });
   }
 
   /// Trigger chat refresh from Firebase notification

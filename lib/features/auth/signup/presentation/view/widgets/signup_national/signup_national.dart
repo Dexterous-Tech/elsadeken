@@ -1,5 +1,6 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -53,7 +54,7 @@ class _SignupNationalState extends State<SignupNational> {
           width: double.infinity,
           child: CustomElevatedButton(
             onPressed: widget.onNextPressed,
-            textButton: 'التالي',
+            textButton: AppLocalizations.of(context)!.next,
             backgroundColor: _selectedNationality != null
                 ? null // Use default gradient
                 : AppColors.paleBrown.withValues(alpha: 0.5), // Disabled color

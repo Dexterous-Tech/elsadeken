@@ -59,8 +59,16 @@ class AppColors {
   static const Color darkerBlue = Color(0xff0D082C);
   static const Color beige = Color(0xFFFCF4EA);
   static const Color orangeHighLight = Color(0xFFFBF5EE);
-  static const Color lightRed = Color(0xffF82E2E12);
-  static const Color orangeLight = Color(0xffD3987012);
-  static const Color lightPink = Color(0xffD3707012);
-  static const Color lightBlue = Color(0xff70A9D312);
+  static const Color lightRed = Color(0xffF82E2E);
+  static const Color orangeLight = Color(0xffD39870);
+  static const Color lightPink = Color(0xffD37070);
+  static const Color lightBlue = Color(0xff70A9D3);
+
+  // new colors
+  static const Color cosmicLatte = Color(0xffFFF8EB);
+  static const Color antiqueWhite = Color(0xffF8ECD6);
+  static const Color congoPink = Color(0xffFF7B80);
+  static const Color ochre = Color(0xffC86D22);
+  static const Color seashellColor = Color(0xffFCF6EF);
+  static const Color meatBrown = Color(0xffE7B145);
 }

@@ -1,16 +1,22 @@
 import 'package:elsadeken/core/di/injection_container.dart';
-import 'package:elsadeken/features/members/data/models/members.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
+import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
+import 'package:elsadeken/features/profile/widgets/container_item/container_item.dart';
 import 'package:elsadeken/features/members/data/repositories/members_repository.dart';
-import 'package:elsadeken/features/members/new_members/presentation/view/widgets/new_members_card.dart';
 import 'package:elsadeken/features/members/logic/cubit/members_cubit.dart';
+import 'package:elsadeken/features/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elsadeken/features/members/online_members/presentation/view/widgets/filter_buttom_sheet.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../Health_statuses/presentation/view/widgets/gender_filter.dart';
+import '../../../../../core/helper/app_images.dart';
+import '../../../../../core/theme/app_color.dart';
 
 class NewMembersView extends StatefulWidget {
-  const NewMembersView({Key? key, this.countryId}) : super(key: key);
+  const NewMembersView({super.key, this.countryId});
 
   final int? countryId;
 
@@ -19,254 +25,309 @@ class NewMembersView extends StatefulWidget {
 }
 
 class _NewMembersViewState extends State<NewMembersView> {
-  String _activeFilter = 'الكل';
   int? _selectedCountryId;
-  List<Member> _allMembers = [];
+  ScrollController? _scrollController;
+  bool _isLoadingMore = false;
 
-  List<Member> _getFilteredMembers(List<Member> allMembers) {
-    switch (_activeFilter) {
-      case 'الذكور':
-        return allMembers.where((member) => member.gender == 'ذكر').toList();
-      case 'الإناث':
-        return allMembers.where((member) => member.gender == 'انثى').toList();
-      default:
-        return allMembers;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController?.dispose();
+    super.dispose();
+  }
+
+  void _loadMoreUsers(BuildContext context) {
+    final cubit = context.read<MembersListCubit<UsersDataModel>>();
+    final state = cubit.state;
+
+    if (state is MembersListLoaded<UsersDataModel> &&
+        state.hasNextPage &&
+        !_isLoadingMore) {
+      final nextPage = state.currentPage + 1;
+      print(
+          'Loading more new members: current page ${state.currentPage}, next page $nextPage');
+      setState(() {
+        _isLoadingMore = true;
+      });
+      cubit.fetch(page: nextPage).then((_) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = false;
+          });
+          print('Pagination loading completed');
+        }
+      });
+    }
+  }
+
+  void _onScroll(BuildContext context) {
+    if (_scrollController?.position.pixels != null &&
+        _scrollController!.position.pixels >=
+            _scrollController!.position.maxScrollExtent - 200) {
+      print('Scroll threshold reached, triggering pagination');
+      _loadMoreUsers(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final cubit = MembersListCubit<Member>(
-      () => sl<MembersRepository>().getNewMembers(countryId: widget.countryId),
+    final cubit = MembersListCubit<UsersDataModel>(
+      ({int? page}) async {
+        final response = await sl<MembersRepository>()
+            .getNewMembers(countryId: widget.countryId, page: page);
+        return response;
+      },
     )..fetch();
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          title: const Text(
-            'أعضاء جدد',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-              size: 20,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        body: SafeArea(
-          child: BlocProvider<MembersListCubit<Member>>(
-            create: (_) => cubit,
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF5F1E8),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GenderFilter(
-                        text: 'الكل',
-                        isActive: _activeFilter == 'الكل',
-                        onTap: () {
-                          setState(() => _activeFilter = 'الكل');
-                        },
-                      ),
-                      const SizedBox(width: 2),
-                      GenderFilter(
-                        text: 'الذكور',
-                        isActive: _activeFilter == 'الذكور',
-                        onTap: () {
-                          setState(() => _activeFilter = 'الذكور');
-                        },
-                      ),
-                      const SizedBox(width: 2),
-                      GenderFilter(
-                        text: 'الإناث',
-                        isActive: _activeFilter == 'الإناث',
-                        onTap: () {
-                          setState(() => _activeFilter = 'الإناث');
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: GestureDetector(
-                      onTap: () async {
-                        final result =
-                            await showModalBottomSheet<Map<String, dynamic>>(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (context) => const FilterBottomSheet(),
-                        );
-                        if (result != null) {
-                          setState(() {
-                            _selectedCountryId = result['id'] as int?;
-                          });
-                          // Recreate cubit with country filter
-                          final newCubit = MembersListCubit<Member>(
-                            () => sl<MembersRepository>()
-                                .getNewMembers(countryId: _selectedCountryId),
-                          );
-                          // Push a new provider scope with updated loader
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  BlocProvider<MembersListCubit<Member>>(
-                                create: (_) => newCubit..fetch(),
-                                child: NewMembersView(
-                                  countryId: _selectedCountryId,
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'فلترة',
-                            style: TextStyle(
-                                color: Color(0xFFD4AF37), fontSize: 16),
-                          ),
-                          SizedBox(width: 6),
-                          Icon(Icons.arrow_forward_ios,
-                              size: 16, color: Color(0xFFD4AF37)),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                BlocBuilder<MembersListCubit<Member>, MembersListState<Member>>(
-                  builder: (context, state) {
-                    if (state is MembersListLoading<Member>) {
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 24),
-                        child: Center(child: CircularProgressIndicator()),
-                      );
-                    }
-                    if (state is MembersListError<Member>) {
-                      return Expanded(
-                        child: Center(
-                          child: Text(
-                            state.message,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      );
-                    }
-                    if (state is MembersListEmpty<Member>) {
-                      return const Expanded(
-                        child: Center(
-                          child: Text(
-                            'لا توجد نتائج حالياً',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      );
-                    }
-                    if (state is MembersListLoaded<Member>) {
-                      _allMembers = state.items;
-                      final items = _getFilteredMembers(_allMembers);
-                      return Expanded(
-                        child: Column(
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 12),
-                              color: Colors.white,
-                              child: Text(
-                                'عدد النتائج: ${items.length}',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Color(0xFFD4AF37),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Expanded(
-                              child: ListView.builder(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                itemCount: items.length,
-                                itemBuilder: (context, index) {
-                                  final m = items[index];
-                                  final data = NewMemberData(
-                                    id: m.id,
-                                    name: m.name,
-                                    age: m.attribute?.age ?? 0,
-                                    location:
-                                        '${m.attribute?.country ?? 'لا يوجد'}، ${m.attribute?.city ?? 'لا يوجد'}',
-                                    profileImageUrl: m.image,
-                                    isOnline: false,
-                                  );
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 12),
-                                    child: NewMemberCard(
-                                      memberData: data,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                    return const SizedBox.shrink();
-                  },
-                ),
+        extendBodyBehindAppBar: true,
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.cosmicLatte,
+                AppColors.antiqueWhite,
               ],
             ),
+          ),
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Positioned(
+                top: 0,
+                left: -20,
+                child: Image.asset(
+                  AppImages.starProfile,
+                  width: 488.w,
+                  height: 325.h,
+                ),
+              ),
+              SafeArea(
+                child: BlocProvider<MembersListCubit<UsersDataModel>>(
+                  create: (_) => cubit,
+                  child: Builder(
+                    builder: (context) {
+                      // Initialize scroll controller here where context is available
+                      _scrollController ??= ScrollController()
+                        ..addListener(() => _onScroll(context));
+
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                            child: ProfileHeader(
+                                title: AppLocalizations.of(context)!.newMembers,
+                                titleStyle: AppTextStyles
+                                    .font20WhiteBoldLamaSans
+                                    .copyWith(color: AppColors.black)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                            child: Align(
+                              alignment:
+                                  LocalizationService.instance.endAlignment,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  final result = await showModalBottomSheet<
+                                      Map<String, dynamic>>(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) =>
+                                        const FilterBottomSheet(),
+                                  );
+                                  if (result != null) {
+                                    setState(() {
+                                      _selectedCountryId = result['id'] as int?;
+                                    });
+                                    // Recreate cubit with country filter
+                                    final newCubit =
+                                        MembersListCubit<UsersDataModel>(
+                                      ({int? page}) async {
+                                        final response =
+                                            await sl<MembersRepository>()
+                                                .getNewMembers(
+                                                    countryId:
+                                                        _selectedCountryId);
+                                        return response.data ?? [];
+                                      },
+                                    );
+                                    // Push a new provider scope with updated loader
+                                    if (context.mounted) {
+                                      Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                          builder: (_) => BlocProvider<
+                                              MembersListCubit<UsersDataModel>>(
+                                            create: (_) => newCubit..fetch(),
+                                            child: NewMembersView(
+                                              countryId: _selectedCountryId,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  textDirection: LocalizationService
+                                      .instance.textDirection,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.filter,
+                                      style: TextStyle(
+                                          color: Color(0xFFD4AF37),
+                                          fontSize: 16),
+                                    ),
+                                    SizedBox(width: 6),
+                                    Icon(Icons.arrow_forward_ios,
+                                        size: 16, color: Color(0xFFD4AF37)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          BlocBuilder<MembersListCubit<UsersDataModel>,
+                              MembersListState<UsersDataModel>>(
+                            builder: (context, state) {
+                              if (state is MembersListLoading<UsersDataModel>) {
+                                return Padding(
+                                  padding: EdgeInsets.only(top: 24),
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: AppColors.beer,
+                                  )),
+                                );
+                              }
+                              if (state is MembersListError<UsersDataModel>) {
+                                return Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      state.message,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                );
+                              }
+                              if (state is MembersListEmpty<UsersDataModel>) {
+                                return Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalizations.of(context)!
+                                          .noResultsCurrently,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                );
+                              }
+                              if (state is MembersListLoaded<UsersDataModel>) {
+                                final items = state.items;
+                                return Expanded(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 12),
+                                        child: Text(
+                                          AppLocalizations.of(context)!
+                                              .resultsCount(items.length),
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Color(0xFFD4AF37),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Expanded(
+                                        child: RefreshIndicator(
+                                          onRefresh: () async {
+                                            context
+                                                .read<
+                                                    MembersListCubit<
+                                                        UsersDataModel>>()
+                                                .fetch(page: 1);
+                                          },
+                                          child: ListView.builder(
+                                            controller: _scrollController,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 16),
+                                            itemCount: items.length +
+                                                (_isLoadingMore ? 1 : 0),
+                                            itemBuilder: (context, index) {
+                                              if (index == items.length &&
+                                                  _isLoadingMore) {
+                                                return Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
+                                                  child: Center(
+                                                    child: Column(
+                                                      children: [
+                                                        CircularProgressIndicator(
+                                                          strokeWidth: 2,
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        Text(
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .loadingMore,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            color: Colors.grey,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 12),
+                                                child: ContainerItem(
+                                                  favUser: items[index],
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-}
-
-class NewMemberData {
-  final int? id;
-  final String name;
-  final int age;
-  final String location;
-  final String profileImageUrl;
-  final bool isOnline;
-
-  NewMemberData({
-    this.id,
-    required this.name,
-    required this.age,
-    required this.location,
-    required this.profileImageUrl,
-    required this.isOnline,
-  });
 }

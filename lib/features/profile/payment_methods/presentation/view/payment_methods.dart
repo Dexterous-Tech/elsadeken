@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/helper/extensions.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/shared/shared_preferences_key.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class PaymentMethodsBottomSheet extends StatefulWidget {
   final List<Data>? packages;
@@ -31,6 +33,8 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 31.w, vertical: 31.h),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        textDirection: LocalizationService.instance.textDirection,
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
@@ -42,6 +46,7 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: widget.packages!.asMap().entries.map((entry) {
                       final index = entry.key;
                       final package = entry.value;
@@ -56,6 +61,11 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                                 });
 
                                 try {
+                                  // Store context and localizations before async operations
+                                  final currentContext = context;
+                                  final localizations =
+                                      AppLocalizations.of(currentContext)!;
+
                                   // TODO: Call API to assign package
                                   // For now, we'll simulate API call
                                   await Future.delayed(Duration(seconds: 2));
@@ -65,12 +75,15 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                                       SharedPreferencesKey.isFeatured, true);
 
                                   // Show success message
-                                  if (mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                  if (currentContext.mounted) {
+                                    ScaffoldMessenger.of(currentContext)
+                                        .showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          'تم إضافة الباقة بنجاح!',
-                                          textDirection: TextDirection.rtl,
+                                          localizations
+                                              .packageAddedSuccessfully,
+                                          textDirection: LocalizationService
+                                              .instance.textDirection,
                                           style: AppTextStyles
                                               .font16BlackSemiBoldLamaSans
                                               .copyWith(
@@ -84,19 +97,26 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                                   }
 
                                   // Close bottom sheet and return selected package
-                                  if (mounted) {
-                                    Navigator.of(context).pop({
+                                  if (currentContext.mounted) {
+                                    Navigator.of(currentContext).pop({
                                       "selectedPackage": package,
                                     });
                                   }
                                 } catch (e) {
+                                  // Store context and localizations before async operations
+                                  final currentContext = context;
+
                                   // Show error message
-                                  if (mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                  if (currentContext.mounted) {
+                                    final localizations =
+                                        AppLocalizations.of(currentContext)!;
+                                    ScaffoldMessenger.of(currentContext)
+                                        .showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          'حدث خطأ أثناء إضافة الباقة',
-                                          textDirection: TextDirection.rtl,
+                                          localizations.errorAddingPackage,
+                                          textDirection: LocalizationService
+                                              .instance.textDirection,
                                           style: AppTextStyles
                                               .font16BlackSemiBoldLamaSans
                                               .copyWith(
@@ -124,6 +144,8 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
                               children: [
                                 verticalSpace(24),
                                 if (isProcessing &&
@@ -132,10 +154,13 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                                   verticalSpace(16),
                                 ],
                                 Text(
-                                  '${package.name ?? ''} في ${package.countMonths ?? 0} أشهر - ${package.price ?? 0} بريال',
+                                  '${package.name ?? ''} ${AppLocalizations.of(context)!.inMonths} ${package.countMonths ?? 0} ${AppLocalizations.of(context)!.months} - ${package.price ?? 0} ${AppLocalizations.of(context)!.priceInCurrency}',
                                   style: AppTextStyles
                                       .font18BabyBlueRegularLamaSans,
-                                  textDirection: TextDirection.rtl,
+                                  textDirection: LocalizationService
+                                      .instance.textDirection,
+                                  textAlign: LocalizationService
+                                      .instance.textAlignment,
                                 ),
                                 verticalSpace(24),
                                 index == widget.packages!.length - 1
@@ -155,12 +180,15 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: [
                       verticalSpace(24),
                       Text(
-                        'لا توجد باقات متاحة حالياً',
+                        AppLocalizations.of(context)!.noPackagesAvailable,
                         style: AppTextStyles.font18BabyBlueRegularLamaSans,
-                        textDirection: TextDirection.rtl,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
+                        textAlign: LocalizationService.instance.textAlignment,
                       ),
                       verticalSpace(24),
                     ],
@@ -181,11 +209,13 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
                         context.pop();
                       },
                 child: Text(
-                  'الغاء',
+                  AppLocalizations.of(context)!.cancel,
                   style: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
                     fontWeight: FontWeightHelper.bold,
                     color: AppColors.vividRed,
                   ),
+                  textDirection: LocalizationService.instance.textDirection,
+                  textAlign: LocalizationService.instance.textAlignment,
                 ),
               ),
             ),

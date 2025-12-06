@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -20,16 +21,24 @@ class ProfileDetailsCardItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 16.h),
       child: Row(
-        // crossAxisAlignment: CrossAxisAlignment.end,
-        textDirection: TextDirection.rtl,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        textDirection: LocalizationService.instance.textDirection,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            itemTitle,
-            textDirection: TextDirection.rtl,
-            textAlign: TextAlign.right,
-            style: AppTextStyles.font18GreyRegularLamaSans,
+          Expanded(
+            flex: 2,
+            child: Text(
+              itemTitle,
+              textDirection: LocalizationService.instance.textDirection,
+              textAlign: LocalizationService.instance.isArabic
+                  ? TextAlign.right
+                  : TextAlign.left,
+              style: AppTextStyles.font18GreyRegularLamaSans,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
           ),
+          SizedBox(width: 8.w),
           Container(
             width: 194.w,
             padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -53,9 +62,13 @@ class ProfileDetailsCardItem extends StatelessWidget {
                 : Center(
                     child: Text(
                       itemSubTitle,
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.right,
+                      textDirection: LocalizationService.instance.textDirection,
+                      textAlign: LocalizationService.instance.isArabic
+                          ? TextAlign.right
+                          : TextAlign.left,
                       style: AppTextStyles.font12PhilippineBronzeMediumLamaSans,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                     ),
                   ),
           ),

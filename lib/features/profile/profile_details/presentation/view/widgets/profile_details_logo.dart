@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -7,6 +8,7 @@ import 'package:elsadeken/features/profile/profile_details/presentation/manager/
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class ProfileDetailsLogo extends StatelessWidget {
   const ProfileDetailsLogo({super.key});
@@ -20,8 +22,9 @@ class ProfileDetailsLogo extends StatelessWidget {
           state is GetProfileDetailsFailure,
       builder: (context, state) {
         String image = ''; // Default image
-        String name = 'لا يوجد';
-        String status = 'لا يوجد';
+        String name = AppLocalizations.of(context)!.noData;
+        String status = AppLocalizations.of(context)!.noData;
+        String age = AppLocalizations.of(context)!.noData;
         bool isLoading = state is GetProfileDetailsLoading;
         bool isFeatured = false;
 
@@ -32,14 +35,13 @@ class ProfileDetailsLogo extends StatelessWidget {
             image = userData.image ?? '';
 
             // Get name from email (everything before @)
-            if (userData.email != null && userData.email!.contains('@')) {
-              name = '@${userData.email!.split('@')[0]}';
-            } else {
-              name = userData.name ?? 'لا يوجد';
-            }
+            name = userData.name ?? '';
 
             // Get status (you might need to add this field to your model)
-            status = userData.attribute?.maritalStatus ?? 'غير معروف';
+            status = userData.attribute?.maritalStatus ??
+                AppLocalizations.of(context)!.unknown;
+            age = userData.attribute?.age.toString() ??
+                AppLocalizations.of(context)!.unknown;
 
             // Check if user is featured
             isFeatured = userData.isFeatured == 1;
@@ -50,6 +52,7 @@ class ProfileDetailsLogo extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
+            textDirection: LocalizationService.instance.textDirection,
             children: [
               state is GetProfileDetailsLoading
                   ? Center(
@@ -57,15 +60,49 @@ class ProfileDetailsLogo extends StatelessWidget {
                         color: AppColors.philippineBronze,
                       ),
                     )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: CustomImageNetwork(
-                        image: image,
-                        width: 145.w,
-                        height: 145.h,
-                      ),
+                  : Stack(
+                      alignment: Alignment.bottomCenter,
+                      clipBehavior: Clip.none,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: CustomImageNetwork(
+                            image: image,
+                            width: 145.w,
+                            height: 145.h,
+                          ),
+                        ),
+                        if (isFeatured)
+                          Positioned(
+                            top: 0,
+                            bottom: -130,
+                            child: Container(
+                              width: 180.w,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  // fit: BoxFit.cover,
+                                  image: AssetImage(AppImages.ribbonProfile),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  AppLocalizations.of(context)!.specialMember,
+                                  style: AppTextStyles.font14JetRegularLamaSans
+                                      .copyWith(
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: LocalizationService
+                                      .instance.textAlignment,
+                                  textDirection: LocalizationService
+                                      .instance.textDirection,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-              verticalSpace(30),
+              verticalSpace(isFeatured ? 32 : 16),
               isLoading
                   ? SizedBox(
                       width: 20.w,
@@ -94,19 +131,10 @@ class ProfileDetailsLogo extends StatelessWidget {
                       ),
                     )
                   : Text(
-                      status,
-                      style: AppTextStyles.font13BlackMediumLamaSans,
+                      '$status - $age ${AppLocalizations.of(context)?.year ?? 'سنة'}',
+                      style: AppTextStyles.font13BlackMediumLamaSans
+                          .copyWith(color: AppColors.philippineBronze),
                     ),
-              if (isFeatured) ...[
-                verticalSpace(8),
-                Text(
-                  'عضو مميز',
-                  style: AppTextStyles.font14JetRegularLamaSans.copyWith(
-                    color: AppColors.philippineBronze,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
             ],
           ),
         );

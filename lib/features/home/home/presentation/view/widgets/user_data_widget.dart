@@ -1,10 +1,11 @@
-import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/font_weight_helper.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/custom_image_network.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +23,7 @@ class UserDataWidget extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            textDirection: TextDirection.rtl,
+            textDirection: LocalizationService.instance.textDirection,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
@@ -50,7 +51,7 @@ class UserDataWidget extends StatelessWidget {
               if (isFeatured) ...[
                 verticalSpace(8),
                 Text(
-                  'عضو مميز',
+                  AppLocalizations.of(context)!.specialMember,
                   style: AppTextStyles.font14JetRegularLamaSans.copyWith(
                     color: AppColors.white,
                     fontWeight: FontWeight.bold,

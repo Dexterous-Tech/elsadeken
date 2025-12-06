@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class TypingIndicator extends StatefulWidget {
   final bool isCurrentUser;
@@ -133,7 +134,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -144,7 +145,8 @@ class _TypingIndicatorState extends State<TypingIndicator>
                 children: [
                   // "is typing" text
                   Text(
-                    '${widget.otherUserName} يكتب...',
+                    AppLocalizations.of(context)!
+                        .typingIndicator(widget.otherUserName),
                     style: TextStyle(
                       fontFamily: 'LamaSans',
                       fontWeight: FontWeight.w400,
@@ -153,7 +155,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
                     ),
                   ),
                   SizedBox(width: 8.w),
-                  
+
                   // Animated dots
                   Row(
                     mainAxisSize: MainAxisSize.min,

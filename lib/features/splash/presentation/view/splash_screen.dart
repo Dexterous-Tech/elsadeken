@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
     final hasRecentSignupData =
         await SharedPreferencesHelper.hasRecentSignupData();
 
-    if (isLoggedIn && hasValidToken && !hasRecentSignupData) {
+    if (isLoggedIn && hasValidToken && !hasRecentSignupData && mounted) {
       // User is logged in, has valid token, and no recent signup data (completed signup)
       // Navigate to home
       context.pushNamedAndRemoveUntil(AppRoutes.homeScreen);
@@ -55,13 +55,15 @@ class _SplashScreenState extends State<SplashScreen>
       final isOnboardingCompleted =
           await SharedPreferencesHelper.getIsOnboardingCompleted();
 
-      if (isOnboardingCompleted) {
+      if (isOnboardingCompleted && mounted) {
         // Onboarding completed but not logged in or has incomplete signup
         // Go to login
         context.pushNamedAndRemoveUntil(AppRoutes.loginScreen);
       } else {
         // First time user, show onboarding
-        context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);
+        if (mounted) {
+          context.pushNamedAndRemoveUntil(AppRoutes.onBoardingScreen);
+        }
       }
     }
   }

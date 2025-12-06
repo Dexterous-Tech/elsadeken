@@ -1,9 +1,12 @@
+import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 
 class ChatOptionsPopup extends StatelessWidget {
   final VoidCallback onDelete;
@@ -11,15 +14,21 @@ class ChatOptionsPopup extends StatelessWidget {
   final VoidCallback onBlock;
   final VoidCallback onAddToFavorites;
   final bool isChatFavorite;
+  final bool isChatReported;
+  final bool isChatMuted;
+  final bool isInFavoritesList;
 
   const ChatOptionsPopup({
-    Key? key,
+    super.key,
     required this.onDelete,
     required this.onMute,
     required this.onBlock,
     required this.onAddToFavorites,
     this.isChatFavorite = false,
-  }) : super(key: key);
+    this.isChatReported = false,
+    this.isChatMuted = false,
+    this.isInFavoritesList = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +50,8 @@ class ChatOptionsPopup extends StatelessWidget {
                 // Delete Chat
                 _buildOptionItem(
                   context,
-                  imagePath: 'assets/images/icons/trash.png',
-                  text: 'مسح الدردشة',
+                  imagePath: AppImages.trashIcon,
+                  text: AppLocalizations.of(context)!.deleteChat,
                   onTap: () {
                     Navigator.pop(context);
                     onDelete();
@@ -53,11 +62,13 @@ class ChatOptionsPopup extends StatelessWidget {
                   height: 0.5,
                   color: AppColors.grey,
                 ),
-                // Mute
+                // Mute/Unmute
                 _buildOptionItem(
                   context,
-                  imagePath: 'assets/images/icons/mute.png',
-                  text: 'وضع الصامت',
+                  imagePath: AppImages.muteIcon,
+                  text: isChatMuted
+                      ? AppLocalizations.of(context)!.unmuteChat
+                      : AppLocalizations.of(context)!.muteChat,
                   onTap: () {
                     Navigator.pop(context);
                     onMute();
@@ -68,11 +79,13 @@ class ChatOptionsPopup extends StatelessWidget {
                   height: 0.5,
                   color: AppColors.grey,
                 ),
-                // Block User
+                // Block User / Unreport User
                 _buildOptionItem(
                   context,
-                  imagePath: 'assets/images/icons/block-user.png',
-                  text: 'حظر المستخدم',
+                  imagePath: AppImages.blockUserIcon,
+                  text: isChatReported
+                      ? AppLocalizations.of(context)!.unreportUser
+                      : AppLocalizations.of(context)!.blockUser,
                   onTap: () {
                     Navigator.pop(context);
                     onBlock();
@@ -86,13 +99,12 @@ class ChatOptionsPopup extends StatelessWidget {
                 // Add to Favorites / Remove from Favorites
                 _buildOptionItem(
                   context,
-                  imagePath: 'assets/images/icons/heart.png',
-                  text: isChatFavorite ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة',
+                  imagePath: AppImages.heartIcon,
+                  text: _getFavoritesText(context),
                   onTap: () {
                     Navigator.pop(context);
                     onAddToFavorites();
                   },
-                  iconColor: isChatFavorite ? Colors.red : null,
                 ),
               ],
             ),
@@ -103,7 +115,7 @@ class ChatOptionsPopup extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            textButton: 'الغاء',
+            textButton: AppLocalizations.of(context)!.cancel,
             height: 56.h,
             radius: 10.r,
             styleTextButton: AppTextStyles.font18WhiteSemiBoldLamaSans.copyWith(
@@ -114,6 +126,18 @@ class ChatOptionsPopup extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getFavoritesText(BuildContext context) {
+    if (isInFavoritesList) {
+      // In favorites list, always show "Remove from Favorites"
+      return AppLocalizations.of(context)!.removeFromFavorites;
+    } else {
+      // In all chats list, show based on current favorite status
+      return isChatFavorite
+          ? AppLocalizations.of(context)!.removeFromFavorites
+          : AppLocalizations.of(context)!.addToFavorites;
+    }
   }
 
   Widget _buildOptionItem(
@@ -135,20 +159,27 @@ class ChatOptionsPopup extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 15.w),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                textDirection: TextDirection.rtl,
+                textDirection: LocalizationService.instance.textDirection,
                 children: [
-                  Text(
-                    text,
-                    style: AppTextStyles.font18BabyBlueRegularLamaSans,
-                    textDirection: TextDirection.rtl,
+                  Expanded(
+                    child: Text(
+                      text,
+                      style: AppTextStyles.font18BabyBlueRegularLamaSans,
+                      textDirection: LocalizationService.instance.textDirection,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                   horizontalSpace(16),
-                  Image.asset(
-                    imagePath,
-                    width: 24.w,
-                    height: 24.w,
-                    color: iconColor,
-                    fit: BoxFit.contain,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(100).r,
+                    child: Image.asset(
+                      imagePath,
+                      width: 37.w,
+                      height: 37.w,
+                      color: iconColor,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ],
               ),

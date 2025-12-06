@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../core/services/localization_service.dart';
+
 class SignupBody extends StatefulWidget {
   const SignupBody({
     super.key,
@@ -70,17 +72,12 @@ class _SignupBodyState extends State<SignupBody> {
           padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 30.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            textDirection: LocalizationService.instance.textDirection,
             children: [
               Row(
+                textDirection: LocalizationService.instance.textDirection,
                 children: [
-                  Expanded(
-                    child: SignupStepsProgress(
-                      currentStep: _currentStep + 1,
-                      totalSteps: pages.length,
-                    ),
-                  ),
                   if (_currentStep != 2) ...[
-                    horizontalSpace(8),
                     GestureDetector(
                       onTap: () {
                         if (_currentStep > 0) {
@@ -91,22 +88,31 @@ class _SignupBodyState extends State<SignupBody> {
                           context.pop();
                         }
                       },
-                      child: Image.asset(
-                        AppImages.authArrowBack,
-                        width: 14.w,
-                        height: 14.h,
+                      child: Transform.rotate(
+                        angle: LocalizationService.instance.isArabic ? 0 : 3.14,
+                        child: Image.asset(
+                          AppImages.authArrowBack,
+                          width: 14.w,
+                          height: 14.h,
+                        ),
                       ),
                     ),
+                    horizontalSpace(8),
                   ],
+                  Expanded(
+                    child: SignupStepsProgress(
+                      currentStep: _currentStep + 1,
+                      totalSteps: pages.length,
+                    ),
+                  ),
                 ],
               ),
               verticalSpace(33),
-              Align(
-                alignment: Alignment.topRight,
+              Center(
                 child: Image.asset(
-                  AppImages.authElsadekenMarriageImage,
-                  width: 170.w,
-                  height: 49.h,
+                  AppImages.splashImage,
+                  height: 140.w,
+                  fit: BoxFit.cover,
                 ),
               ),
               verticalSpace(31),

@@ -37,8 +37,10 @@ class NotificationSettingsProfileCubit
     log('🔔 _profileData.data.isNotifable type: ${_profileData?.data?.isNotifable.runtimeType}');
 
     if (_profileData?.data?.isNotifable != null) {
-      bool isEnabled = _profileData!.data!.isNotifable == 1;
+      final bool isEnabled = _profileData!.data!.isNotifable == 1;
       emit(NotificationSettingsProfileLoaded(isEnabled: isEnabled));
+      SharedPreferencesHelper.setBool(
+          SharedPreferencesKey.isNotifable, isEnabled);
       log('🔔 Notification settings loaded from profile: isNotifable=${_profileData!.data!.isNotifable}, isEnabled=$isEnabled');
     } else {
       // If no profile data, try to load from SharedPreferences as fallback
@@ -49,7 +51,7 @@ class NotificationSettingsProfileCubit
   /// Load notification settings from SharedPreferences as fallback
   void _loadFromSharedPreferencesFallback() async {
     try {
-      final bool? isNotifable = await SharedPreferencesHelper.getBool(
+      final bool? isNotifable = await SharedPreferencesHelper.getBoolNullable(
           SharedPreferencesKey.isNotifable);
 
       if (isNotifable != null) {
@@ -130,7 +132,7 @@ class NotificationSettingsProfileCubit
     try {
       emit(NotificationSettingsProfileLoading());
 
-      final bool? isNotifable = await SharedPreferencesHelper.getBool(
+      final bool? isNotifable = await SharedPreferencesHelper.getBoolNullable(
           SharedPreferencesKey.isNotifable);
 
       if (isNotifable != null) {

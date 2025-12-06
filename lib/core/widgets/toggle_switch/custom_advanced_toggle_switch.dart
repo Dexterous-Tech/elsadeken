@@ -103,9 +103,10 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
             height: 21,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: AppColors.philippineBronze),
               color: _isEnabled
                   ? AppColors.philippineBronze // Background when ON (right)
-                  : AppColors.lavenderBlush, // Background when OFF (left)
+                  : AppColors.white, // Background when OFF (left)
             ),
             child: Stack(
               children: [
@@ -113,8 +114,8 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
                 AnimatedPositioned(
                   duration: Duration(milliseconds: 200),
                   curve: Curves.easeInOut,
-                  left: _isEnabled ? 19.0 : 2.0, // 19 for right, 2 for left
-                  top: 2.0,
+                  left: _isEnabled ? 17.0 : 1.0, // 19 for right, 2 for left
+                  top: 1.0,
                   child: Container(
                     width: 17,
                     height: 17,
@@ -125,7 +126,7 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
                           : AppColors.philippineBronze, // Circle color when OFF
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 2,
                           offset: Offset(0, 1),
                         ),

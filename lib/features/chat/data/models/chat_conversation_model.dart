@@ -3,12 +3,11 @@ import 'package:elsadeken/features/chat/domain/entities/chat_message.dart';
 
 class ChatMessagesConversation {
   final int chatId;
+  final bool isOnline;
   final List<Message> messages;
 
-  ChatMessagesConversation({
-    required this.chatId,
-    required this.messages,
-  });
+  ChatMessagesConversation(
+      {required this.chatId, required this.messages, required this.isOnline});
 
   factory ChatMessagesConversation.fromJson(Map<String, dynamic> json) {
     return ChatMessagesConversation(
@@ -17,6 +16,7 @@ class ChatMessagesConversation {
               ?.map((e) => Message.fromJson(e))
               .toList() ??
           [],
+      isOnline: json['is_online'],
     );
   }
 
@@ -27,11 +27,15 @@ class ChatMessagesConversation {
     };
   }
 
-   List<ChatMessage> toChatMessages(String currentUserId, String otherUserName, String otherUserImage, String currentUserImage) {
-    return messages.map((message) => message.toChatMessage(currentUserId, otherUserName, otherUserImage, currentUserImage)).toList();
+  List<ChatMessage> toChatMessages(String currentUserId, String otherUserName,
+      String otherUserImage, String currentUserImage) {
+    return messages
+        .map((message) => message.toChatMessage(
+            currentUserId, otherUserName, otherUserImage, currentUserImage))
+        .toList();
   }
 
-   static ChatMessagesConversation fromRawJson(String str) =>
+  static ChatMessagesConversation fromRawJson(String str) =>
       ChatMessagesConversation.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
@@ -79,9 +83,10 @@ class Message {
   }
 
   /// Convert to ChatMessage entity with sender info
-  ChatMessage toChatMessage(String currentUserId, String otherUserName, String otherUserImage, String currentUserImage) {
+  ChatMessage toChatMessage(String currentUserId, String otherUserName,
+      String otherUserImage, String currentUserImage) {
     final isCurrentUser = senderId.toString() == currentUserId;
-    
+
     return ChatMessage(
       id: id.toString(),
       roomId: chatId.toString(),

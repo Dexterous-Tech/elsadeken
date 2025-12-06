@@ -1,6 +1,7 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -32,7 +33,7 @@ class ProfileDetailsCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         children: [
           Container(
             width: double.infinity,
@@ -46,7 +47,7 @@ class ProfileDetailsCard extends StatelessWidget {
             ),
             child: Text(
               cardTitle,
-              textDirection: TextDirection.rtl,
+              textDirection: LocalizationService.instance.textDirection,
               style: AppTextStyles.font18WhiteSemiBoldLamaSans,
             ),
           ),

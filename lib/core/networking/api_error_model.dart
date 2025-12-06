@@ -4,6 +4,7 @@
 * */
 class ApiErrorModel {
   final String? message;
+  final String? errorKey; // Key for localization
   final Map<String, dynamic>? fieldErrors;
   final int? statusCode;
   final bool? showToast;
@@ -11,6 +12,7 @@ class ApiErrorModel {
 
   ApiErrorModel({
     this.message,
+    this.errorKey,
     this.fieldErrors,
     this.statusCode,
     this.showToast,
@@ -104,7 +106,89 @@ class ApiErrorModel {
     }
   }
 
+  static String _getDefaultErrorKeyForStatusCode(int statusCode) {
+    switch (statusCode) {
+      case 400:
+        return 'badRequest';
+      case 401:
+        return 'unauthorized';
+      case 403:
+        return 'forbidden';
+      case 404:
+        return 'resourceNotFound';
+      case 422:
+        return 'validationError';
+      case 500:
+        return 'internalServerError';
+      default:
+        return 'unknownError';
+    }
+  }
+
+  /// Get error key for localization
+  String get localizationKey {
+    if (errorKey != null) {
+      return errorKey!;
+    }
+    if (statusCode != null) {
+      return _getDefaultErrorKeyForStatusCode(statusCode!);
+    }
+    return 'unknownError';
+  }
+
+  /// Get localized error message
+  /// Pass AppLocalizations to get the message in the current language
+  String getLocalizedMessage(dynamic localizations) {
+    // If the server returns a custom message, use it
+    if (message != null && message!.isNotEmpty && errorKey == null) {
+      return message!;
+    }
+
+    // Otherwise, use the localization key
+    try {
+      switch (localizationKey) {
+        case 'connectionError':
+          return localizations.connectionError;
+        case 'requestCancelled':
+          return localizations.requestCancelled;
+        case 'connectionTimeout':
+          return localizations.connectionTimeout;
+        case 'noInternetConnection':
+          return localizations.noInternetConnection;
+        case 'receiveTimeout':
+          return localizations.receiveTimeout;
+        case 'sendTimeout':
+          return localizations.sendTimeout;
+        case 'somethingWentWrong':
+          return localizations.somethingWentWrong;
+        case 'unknownError':
+          return localizations.unknownError;
+        case 'badRequest':
+          return localizations.badRequest;
+        case 'unauthorized':
+          return localizations.unauthorized;
+        case 'forbidden':
+          return localizations.forbidden;
+        case 'resourceNotFound':
+          return localizations.resourceNotFound;
+        case 'validationError':
+          return localizations.validationError;
+        case 'internalServerError':
+          return localizations.internalServerError;
+        case 'failedToParseError':
+          return localizations.failedToParseError;
+        case 'unexpectedErrorFormat':
+          return localizations.unexpectedErrorFormat;
+        default:
+          return message ?? localizations.unknownError;
+      }
+    } catch (e) {
+      // Fallback to original message if localization fails
+      return message ?? displayMessage;
+    }
+  }
+
   @override
   String toString() =>
-      'ApiErrorModel(message: $message, fieldErrors: $fieldErrors, statusCode: $statusCode, showToast: $showToast, rawData: $rawData)';
+      'ApiErrorModel(message: $message, errorKey: $errorKey, fieldErrors: $fieldErrors, statusCode: $statusCode, showToast: $showToast, rawData: $rawData)';
 }

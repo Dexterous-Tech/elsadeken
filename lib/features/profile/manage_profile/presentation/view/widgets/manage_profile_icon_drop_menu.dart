@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../../core/theme/app_color.dart';
@@ -11,7 +12,7 @@ class ManageProfileIconDropMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         Text(title, style: AppTextStyles.font18PhilippineBronzeRegularLamaSans,) ,
         horizontalSpace(9),

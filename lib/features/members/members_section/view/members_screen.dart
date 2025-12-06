@@ -3,6 +3,7 @@ import 'package:elsadeken/features/members/members_section/view/widgets/menu_ite
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elsadeken/core/helper/app_images.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../Health_statuses/presentation/view/health_statuses_view.dart';
 import '../../new_members/presentation/view/new_members_screen.dart';
@@ -11,64 +12,74 @@ import '../../premium_members/presentation/view/premium_members_screen.dart';
 import '../../viewers/presentation/view/viewers_screen.dart';
 
 class MembersScreen extends StatelessWidget {
-  const MembersScreen({Key? key}) : super(key: key);
+  const MembersScreen({super.key});
 
-  static const List<Map<String, dynamic>> _menuItems = [
-    {
-      'title': 'المتواجدون الان',
-      'backgroundColor': AppColors.beige,
-      'avatarAsset': 'assets/images/members/menu_items/member_item1.png',
-      'screen': 'online_members_screen',
-    },
-    {
-      'title': 'من زار بياناتي',
-      'backgroundColor': AppColors.beige,
-      'avatarAsset': 'assets/images/members/menu_items/member_item2.png',
-      'screen': 'profile_visitors_screen',
-    },
-    {
-      'title': 'اعضاء جدد',
-      'backgroundColor': AppColors.beige,
-      'avatarAsset': 'assets/images/members/menu_items/member_item3.png',
-      'screen': 'new_members_screen',
-    },
-    {
-      'title': 'الاعضاء المميزين',
-      'backgroundColor': AppColors.beige,
-      'avatarAsset': 'assets/images/members/menu_items/member_item4.png',
-      'screen': 'premium_members_screen',
-    },
-    {
-      'title': 'الحالات الصحية',
-      'backgroundColor': AppColors.beige,
-      'avatarAsset': 'assets/images/members/menu_items/member_item5.png',
-      'screen': 'health_status_screen',
-    },
-  ];
+  List<Map<String, dynamic>> _getMenuItems(BuildContext context) => [
+        {
+          'title': AppLocalizations.of(context)!.onlineMembers,
+          'backgroundColor': AppColors.beige,
+          'avatarAsset': AppImages.memberItem1,
+          'screen': 'online_members_screen',
+        },
+        {
+          'title': AppLocalizations.of(context)!.profileVisitors,
+          'backgroundColor': AppColors.beige,
+          'avatarAsset': AppImages.memberItem2,
+          'screen': 'profile_visitors_screen',
+        },
+        {
+          'title': AppLocalizations.of(context)!.newMembers,
+          'backgroundColor': AppColors.beige,
+          'avatarAsset': AppImages.memberItem3,
+          'screen': 'new_members_screen',
+        },
+        {
+          'title': AppLocalizations.of(context)!.premiumMembers,
+          'backgroundColor': AppColors.beige,
+          'avatarAsset': AppImages.memberItem4,
+          'screen': 'premium_members_screen',
+        },
+        {
+          'title': AppLocalizations.of(context)!.healthStatuses,
+          'backgroundColor': AppColors.beige,
+          'avatarAsset': AppImages.memberItem5,
+          'screen': 'health_status_screen',
+        },
+      ];
 
   void _navigateToScreen(BuildContext context, String screenName) async {
     await Future.delayed(const Duration(milliseconds: 150));
 
     switch (screenName) {
       case 'online_members_screen':
-        Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const OnlineMembersView()));
+        if (context.mounted) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const OnlineMembersView()));
+        }
         break;
       case 'profile_visitors_screen':
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const ViewersView()));
+        if (context.mounted) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const ViewersView()));
+        }
         break;
       case 'new_members_screen':
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const NewMembersView()));
+        if (context.mounted) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const NewMembersView()));
+        }
         break;
       case 'premium_members_screen':
-        Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const PremiumMembersView()));
+        if (context.mounted) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const PremiumMembersView()));
+        }
         break;
       case 'health_status_screen':
-        Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const HealthStatusesView()));
+        if (context.mounted) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const HealthStatusesView()));
+        }
       //   break;
       // case 'smart_search_screen':
       //   Navigator.push(context, MaterialPageRoute(builder: (_) => const SmartSearchScreen()));
@@ -80,10 +91,18 @@ class MembersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.white,
-      body: Stack(
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.cosmicLatte,
+            AppColors.antiqueWhite,
+          ],
+        ),
+      ),
+      child: Stack(
         alignment: Alignment.topCenter,
         children: [
           Positioned(
@@ -107,11 +126,11 @@ class MembersScreen extends StatelessWidget {
                       children: [
                         Center(
                           child: Text(
-                            'الاعضاء',
+                            AppLocalizations.of(context)!.members,
                             style: TextStyle(
-                                fontSize: 26,
+                                fontSize: 26.sp,
                                 color: Colors.black,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.w700),
                           ),
                         ),
                       ],
@@ -120,11 +139,11 @@ class MembersScreen extends StatelessWidget {
                   const SizedBox(height: 30),
                   Expanded(
                     child: ListView.separated(
-                      itemCount: _menuItems.length,
+                      itemCount: _getMenuItems(context).length,
                       separatorBuilder: (context, index) =>
                           const SizedBox(height: 18),
                       itemBuilder: (context, index) {
-                        final item = _menuItems[index];
+                        final item = _getMenuItems(context)[index];
                         return MenuItemWidget(
                           title: item['title'],
                           backgroundColor: item['backgroundColor'],

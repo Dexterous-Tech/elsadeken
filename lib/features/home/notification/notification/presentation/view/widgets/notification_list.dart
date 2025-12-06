@@ -1,9 +1,11 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../../../core/services/localization_service.dart';
 import '../../../data/model/notification_model.dart';
-import 'notification_items.dart';
+import 'notification_item.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationListWidget extends StatelessWidget {
@@ -14,13 +16,13 @@ class NotificationListWidget extends StatelessWidget {
   final VoidCallback? onRefresh;
 
   const NotificationListWidget({
-    Key? key,
+    super.key,
     required this.notifications,
     required this.scrollController,
     required this.hasNextPage,
     required this.isLoadingMore,
     this.onRefresh,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class NotificationListWidget extends StatelessWidget {
       onRefresh: () async {
         onRefresh?.call();
       },
-      color: Colors.deepOrange,
+      color: AppColors.darkSunray,
       child: ListView.builder(
         controller: scrollController,
         itemCount:
@@ -44,6 +46,8 @@ class NotificationListWidget extends StatelessWidget {
                 padding: EdgeInsets.all(16.w),
                 child: Center(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: [
                       CircularProgressIndicator(
                         color: Colors.deepOrange,
@@ -51,11 +55,13 @@ class NotificationListWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 8.h),
                       Text(
-                        'جاري تحميل المزيد...',
+                        AppLocalizations.of(context)!.loadingMore,
                         style: AppTextStyles.font12JetRegularLamaSans
                             .copyWith(color: AppColors.beer),
-                        textDirection: TextDirection.rtl,
-                      ),
+                        textAlign: LocalizationService.instance.textAlignment,
+                        textDirection:
+                            LocalizationService.instance.textDirection,
+                      ), // K                      ),
                     ],
                   ),
                 ),
@@ -65,10 +71,10 @@ class NotificationListWidget extends StatelessWidget {
                 padding: EdgeInsets.all(16.w),
                 child: Center(
                   child: Text(
-                    'اسحب للتحميل',
+                    AppLocalizations.of(context)!.dragLoading,
                     style: AppTextStyles.font12JetRegularLamaSans
                         .copyWith(color: Colors.grey),
-                    textDirection: TextDirection.rtl,
+                    textDirection: LocalizationService.instance.textDirection,
                   ),
                 ),
               );

@@ -1,11 +1,13 @@
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_edit_button.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/manage_profile_content_text.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/view/widgets/dialog/manage_profile_dialog.dart';
 import 'package:elsadeken/features/profile/manage_profile/data/models/my_profile_response_model.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,13 +27,14 @@ class ManageProfileWritingContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Determine which field to use based on the label
-    final isLifePartner = label.contains('شريكة حياتك');
+    final isLifePartner =
+        label.contains(AppLocalizations.of(context)!.partnerDescription);
     final content = isLifePartner
         ? profileData?.attribute?.lifePartner ?? ''
         : profileData?.attribute?.aboutMe ?? '';
 
     return Column(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -45,7 +48,9 @@ class ManageProfileWritingContent extends StatelessWidget {
             color: AppColors.white,
           ),
           child: ManageProfileContentText(
+            isBorder: true,
             text: content,
+            textAlign: LocalizationService.instance.textAlignment,
             isLoading: isLoading,
             textStyle: AppTextStyles.font18PhilippineBronzeRegularLamaSans,
           ),
@@ -64,7 +69,8 @@ class ManageProfileWritingContent extends StatelessWidget {
     final updateProfileCubit = context.read<UpdateProfileCubit>();
 
     // Determine which field to use based on the label
-    final isLifePartner = label.contains('شريكة حياتك');
+    final isLifePartner =
+        label.contains(AppLocalizations.of(context)!.partnerDescription);
     final currentValue = isLifePartner
         ? profileData?.attribute?.lifePartner ?? ''
         : profileData?.attribute?.aboutMe ?? '';
@@ -75,8 +81,8 @@ class ManageProfileWritingContent extends StatelessWidget {
     if (isLifePartner) {
       fields.add(
         ManageProfileField(
-          label: 'شريك الحياة',
-          hint: 'اكتب عن مواصفات شريك حياتك',
+          label: AppLocalizations.of(context)!.lifePartner,
+          hint: AppLocalizations.of(context)!.writeAboutLifePartner,
           currentValue: currentValue,
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.multiline,
@@ -86,8 +92,8 @@ class ManageProfileWritingContent extends StatelessWidget {
     } else {
       fields.add(
         ManageProfileField(
-          label: 'نبذة عني',
-          hint: 'اكتب عن نفسك',
+          label: AppLocalizations.of(context)!.aboutMe,
+          hint: AppLocalizations.of(context)!.writeAboutYourself,
           currentValue: currentValue,
           type: ManageProfileFieldType.text,
           keyboardType: TextInputType.multiline,
@@ -97,7 +103,7 @@ class ManageProfileWritingContent extends StatelessWidget {
     }
 
     final dialogData = ManageProfileDialogData(
-      title: 'تعديل المحتوى المكتوب',
+      title: AppLocalizations.of(context)!.editWrittenContent,
       cubit: updateProfileCubit,
       signUpListsCubit: null, // No lists needed for text fields
       dialogType: ManageProfileDialogType.descriptions,

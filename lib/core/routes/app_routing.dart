@@ -40,9 +40,11 @@ import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit
 import 'package:elsadeken/features/chat/presentation/manager/send_message_cubit/cubit/send_message_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
+import 'package:elsadeken/features/profile/profile_details/presentation/manager/profile_details_cubit.dart';
 
 import '../../features/profile/my_ignoring_list/presentation/view/my_ignoring_list_screen.dart';
 import 'package:elsadeken/features/profile/terms_conditions/presentation/view/terms_and_conditions_screen.dart';
+import 'package:elsadeken/features/auth/signup/presentation/manager/sign_up_lists_cubit.dart';
 
 class AppRouting {
   Route onGenerateRouting(RouteSettings setting) {
@@ -54,10 +56,31 @@ class AppRouting {
       case AppRoutes.onBoardingScreen:
         return MaterialPageRoute(builder: (_) => OnBoardingScreen());
       case AppRoutes.signupScreen:
-        return MaterialPageRoute(
-            builder: (_) => SignupScreen(
-                  gender: arguments as String,
-                ));
+        if (arguments is Map<String, dynamic>) {
+          // Handle case when coming from login with initialStep
+          final gender =
+              arguments['gender'] as String? ?? 'male'; // Default gender
+          final initialStep = arguments['initialStep'] as int? ?? 0;
+          return MaterialPageRoute(
+              builder: (_) => SignupScreen(
+                    gender: gender,
+                    initialStep: initialStep,
+                  ));
+        } else if (arguments is String) {
+          // Handle case when coming from other places with just gender
+          return MaterialPageRoute(
+              builder: (_) => SignupScreen(
+                    gender: arguments,
+                    initialStep: 0,
+                  ));
+        } else {
+          // Fallback with default values
+          return MaterialPageRoute(
+              builder: (_) => SignupScreen(
+                    gender: 'male',
+                    initialStep: 0,
+                  ));
+        }
       case AppRoutes.loginScreen:
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case AppRoutes.forgetPasswordScreen:
@@ -78,8 +101,12 @@ class AppRouting {
         return MaterialPageRoute(builder: (_) => ManageProfileScreen());
       case AppRoutes.searchScreen:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (context) => SearchCubit(sl<SearchUseCase>()),
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                  create: (context) => SearchCubit(sl<SearchUseCase>())),
+              BlocProvider(create: (context) => sl<SignUpListsCubit>()),
+            ],
             child: SearchPage(),
           ),
         );
@@ -95,7 +122,7 @@ class AppRouting {
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => SearchCubit(sl<SearchUseCase>()),
-                  child: HomeScreenWrapper(),
+                  child: HomeScreenWrapper(initialTabIndex: arguments as int?),
                 ));
       case AppRoutes.notificationScreen:
         return MaterialPageRoute(builder: (_) => NotificationScreen());
@@ -121,9 +148,12 @@ class AppRouting {
         final personId = args['personId'] as int;
         final imageUrl = args['imageUrl'] as String;
         return MaterialPageRoute(
-            builder: (_) => PersonDetailsView(
-                  personId: personId,
-                  imageUrl: imageUrl,
+            builder: (_) => BlocProvider(
+                  create: (context) => sl<ProfileDetailsCubit>(),
+                  child: PersonDetailsView(
+                    personId: personId,
+                    imageUrl: imageUrl,
+                  ),
                 ));
       case AppRoutes.profileAboutUsScreen:
         return MaterialPageRoute(builder: (_) => AboutUsScreen());
@@ -142,7 +172,10 @@ class AppRouting {
       case AppRoutes.profileContactUsScreen:
         return MaterialPageRoute(builder: (_) => ContactUsScreen());
       case AppRoutes.profileMyImageScreen:
-        return MaterialPageRoute(builder: (_) => MyImageScreen());
+        return MaterialPageRoute(
+            builder: (_) => MyImageScreen(
+                  photoVisibility: arguments as String,
+                ));
       case AppRoutes.profileTechnicalSupportScreen:
         return MaterialPageRoute(builder: (_) => TechnicalSupportScreen());
       case AppRoutes.successStoriesScreen:
@@ -169,6 +202,7 @@ class AppRouting {
               BlocProvider(create: (context) => sl<SendMessageCubit>()),
               BlocProvider(create: (context) => sl<PusherCubit>()),
               BlocProvider(create: (context) => sl<ChatListCubit>()),
+              BlocProvider(create: (context) => sl<ProfileDetailsCubit>()),
             ],
             child: ChatConversationScreen(chatRoom: chatRoom),
           ),

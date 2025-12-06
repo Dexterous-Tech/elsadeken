@@ -12,7 +12,9 @@ class CityResponseModels with ListItemModel {
     name = json['name'];
     countryCode = json['country_code'];
   }
+  @override
   int? id;
+  @override
   String? name;
   dynamic countryCode;
 

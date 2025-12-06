@@ -11,7 +11,9 @@ import 'package:elsadeken/features/profile/widgets/custom_profile_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
+import '../../../../../../core/services/localization_service.dart';
 import '../../../../../../core/theme/app_color.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/font_weight_helper.dart';
@@ -24,44 +26,7 @@ import 'package:elsadeken/features/profile/excellence_package/presentation/manag
 import 'package:elsadeken/features/profile/excellence_package/presentation/manager/packages_cubit/cubit/packages_state.dart';
 
 class ExcellencePackageBody extends StatefulWidget {
-  ExcellencePackageBody({super.key});
-
-  final List items = [
-    {
-      'title': 'باقة التميز ',
-      'subTitle':
-          'مجموعة من الخدمات و الخصائص المميزة ، تزيد من فعاليتك في تطبيق عبر عرض ملفك بشكل أفضل ونشره بشكل أوسع لتحقيق هدفك بشكل أسرع',
-    },
-    {
-      'title': 'تعزيز ملف الشخصي ',
-      'subTitle':
-          'سنعرض حسابك بطريقة فريدة ومميزة ، و نضعه في أعلى جميع القوائم وقبل أعضاء آخرين، ستلاحظ زيادة كبيرة في مشاهدات ملفك الشخصي وتفاعل أكبر في التطبيق',
-    },
-    {
-      'title': 'تغيير أسم الملف المستخدم الخاص بك ',
-      'subTitle': 'لديك الخيار لتغيير اسم المستخدم إلى أي اسم ترغب فيه ',
-    },
-    {
-      'title': 'إعدادات إستقبال الرسائل',
-      'subTitle':
-          'ستتمكن من تحديد البلدان التي تريد استقبال الرسائل منها واستعباد باقي البلدان',
-    },
-    {
-      'title': 'تمكين وضع التصفح الخفي ',
-      'subTitle':
-          'يمكنك استخدام التطبيق في وضع التصفح الخفي ، حيث ستظهر غير متصل ولا يتم عرض تواجدك لأعضاء الآخرين',
-    },
-    {
-      'title': 'قائمة الأعضاء المميزين',
-      'subTitle':
-          'سيتم عرض ملفك الشخصي على صفحة الأعضاء المميزين ، التي تلقي زيارات كثيرة من أغضاء الصادقون و الصادقات',
-    },
-    {
-      'title': 'تحقيق من دولة الإقامة الفعلية لأعضاء',
-      'subTitle':
-          'مع هذه الميزة، سنكشف عن دولة الإقامة الفعلية لأي عضو/عضوة بناء على عنوان IP الخاص به ، بدلا من البلد الذي قام بإدراجه في ملف الشخصي',
-    },
-  ];
+  const ExcellencePackageBody({super.key});
 
   @override
   State<ExcellencePackageBody> createState() => _ExcellencePackageBodyState();
@@ -69,6 +34,40 @@ class ExcellencePackageBody extends StatefulWidget {
 
 class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
   bool isUserFeatured = false;
+
+  List<Map<String, String>> getItems(BuildContext context) {
+    return [
+      {
+        'title': AppLocalizations.of(context)!.excellencePackageTitle,
+        'subTitle': AppLocalizations.of(context)!.packageDescription,
+      },
+      {
+        'title': AppLocalizations.of(context)!.enhanceProfile,
+        'subTitle': AppLocalizations.of(context)!.enhanceProfileDescription,
+      },
+      {
+        'title': AppLocalizations.of(context)!.changeUsername,
+        'subTitle': AppLocalizations.of(context)!.changeUsernameDescription,
+      },
+      {
+        'title': AppLocalizations.of(context)!.messageSettings,
+        'subTitle': AppLocalizations.of(context)!.messageSettingsDescription,
+      },
+      {
+        'title': AppLocalizations.of(context)!.invisibleMode,
+        'subTitle': AppLocalizations.of(context)!.invisibleModeDescription,
+      },
+      {
+        'title': AppLocalizations.of(context)!.premiumMembersList,
+        'subTitle': AppLocalizations.of(context)!.premiumMembersListDescription,
+      },
+      {
+        'title': AppLocalizations.of(context)!.locationVerification,
+        'subTitle':
+            AppLocalizations.of(context)!.locationVerificationDescription,
+      },
+    ];
+  }
 
   @override
   void initState() {
@@ -107,7 +106,7 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
     required String month,
   }) {
     return Row(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         Image.asset(
           AppImages.boldStar,
@@ -148,7 +147,8 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    state.response.message ?? 'تم الاشتراك بنجاح!',
+                    state.response.message ??
+                        AppLocalizations.of(context)!.registrationSuccessful,
                     textDirection: TextDirection.rtl,
                     style: AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
                       color: Colors.white,
@@ -177,105 +177,72 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
           },
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              textDirection: TextDirection.rtl,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: LocalizationService.instance.textDirection,
               children: [
-                ProfileHeader(title: 'باقـــة التميــــز'),
+                ProfileHeader(
+                    title:
+                        AppLocalizations.of(context)!.excellencePackageTitle),
                 verticalSpace(42),
-                Container(
-                  padding: EdgeInsets.only(
-                    left: 14.w,
-                    right: 14.w,
-                    top: 24.h,
-                    bottom: 19.h,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: AppColors.lightWhite,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'يمكنك الآن الإشتراك من خلال رصيد الجوال عبر وكيلنا المعتمد اتصل اللآن',
-                        style: AppTextStyles.font18JetMediumLamaSans,
-                        textAlign: TextAlign.center,
-                      ),
-                      verticalSpace(24),
-                      SizedBox(
-                        width: 186.w,
-                        child: CustomElevatedButton(
-                          height: 41.h,
-                          onPressed: () {},
-                          textButton: 'اتصل الآن',
-                          radius: 100,
-                        ),
-                      ),
-                      verticalSpace(10),
-                      Text(
-                        'أو استفسر عبر رسالة قصيرة',
-                        style:
-                            AppTextStyles.font15BistreSemiBoldLamaSans.copyWith(
-                          color: AppColors.jet,
-                          fontWeight: FontWeightHelper.medium,
-                          decoration: TextDecoration.underline,
-                          decorationColor: AppColors.jet,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                verticalSpace(32),
                 Center(
                   child: Text(
-                    'المزايـــــا',
+                    AppLocalizations.of(context)!.benefits,
                     style: AppTextStyles.font22BistreSemiBoldLamaSans.copyWith(
                       color: AppColors.jet,
                       fontWeight: FontWeightHelper.medium,
                     ),
+                    textDirection: LocalizationService.instance.textDirection,
+                    textAlign: LocalizationService.instance.textAlignment,
                   ),
                 ),
                 verticalSpace(33),
                 Column(
-                  children: List.generate(widget.items.length, (item) {
-                    final card = widget.items[item];
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  textDirection: LocalizationService.instance.textDirection,
+                  children: List.generate(getItems(context).length, (item) {
+                    final card = getItems(context)[item];
                     return ExcellencePackageItem(
-                      title: card['title'],
-                      subTitle: card['subTitle'],
+                      title: card['title']!,
+                      subTitle: card['subTitle']!,
                     );
                   }),
                 ),
                 verticalSpace(32),
-                Container(
-                  width: double.infinity,
-                  padding:
-                      EdgeInsets.only(top: 10.5.h, bottom: 10.5.h, left: 8.w),
-                  decoration: BoxDecoration(color: AppColors.lightWhite),
-                  child: Row(
-                    textDirection: TextDirection.rtl,
-                    children: [
-                      Image.asset(AppImages.boldStar,
-                          width: 32.w, height: 32.h),
-                      SizedBox(width: 18),
-                      Text(
-                        'إمتيازاتـــي الحاليـــة',
-                        style:
-                            AppTextStyles.font21PhilippineBronzeMediumLamaSans,
-                      ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          context
-                              .pushNamed(AppRoutes.profileMyExcellenceScreen);
-                        },
-                        child: Image.asset(
-                          AppImages.leftArrow,
-                          width: 24.w,
-                          height: 24.h,
+                GestureDetector(
+                  onTap: () {
+                    context.pushNamed(AppRoutes.profileMyExcellenceScreen);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding:
+                        EdgeInsets.only(top: 10.5.h, bottom: 10.5.h, left: 8.w),
+                    decoration: BoxDecoration(color: AppColors.lightWhite),
+                    child: Row(
+                      textDirection: LocalizationService.instance.textDirection,
+                      children: [
+                        Image.asset(AppImages.boldStar,
+                            width: 32.w, height: 32.h),
+                        SizedBox(width: 18),
+                        Text(
+                          AppLocalizations.of(context)!.currentBenefits,
+                          style: AppTextStyles
+                              .font21PhilippineBronzeMediumLamaSans,
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                          textAlign: LocalizationService.instance.textAlignment,
                         ),
-                      ),
-                    ],
+                        Spacer(),
+                        Transform.rotate(
+                          angle:
+                              LocalizationService.instance.isArabic ? 0 : 3.14,
+                          child: Image.asset(
+                            AppImages.leftArrow,
+                            width: 24.w,
+                            height: 24.h,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 verticalSpace(32),
@@ -289,15 +256,18 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                   ),
                   decoration: BoxDecoration(color: AppColors.lightWhite),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    textDirection: TextDirection.rtl,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    textDirection: LocalizationService.instance.textDirection,
                     children: [
                       Center(
                         child: Text(
-                          'الأسعار',
+                          AppLocalizations.of(context)!.prices,
                           style: AppTextStyles.font18JetMediumLamaSans.copyWith(
                             fontSize: 23.sp,
                           ),
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                          textAlign: LocalizationService.instance.textAlignment,
                         ),
                       ),
                       verticalSpace(19),
@@ -314,14 +284,19 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                             ));
                           } else if (state is GetPackagesSuccess) {
                             return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
                               children: state.packages.data!
                                   .map(
                                     (package) => Padding(
                                       padding: const EdgeInsets.only(bottom: 5),
                                       child: _buildPriceItem(
                                         name: package.name ?? '',
-                                        month: "${package.countMonths} أشهر",
-                                        price: "بــ ${package.price} ريـــال",
+                                        month:
+                                            "${package.countMonths} ${AppLocalizations.of(context)!.months}",
+                                        price:
+                                            "${AppLocalizations.of(context)!.forText} ${package.price} ${AppLocalizations.of(context)!.currency}",
                                       ),
                                     ),
                                   )
@@ -329,7 +304,9 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                             );
                           } else if (state is GetPackagesFailure) {
                             return Center(
-                              child: Text("فشل تحميل البيانات"),
+                              child: Text(
+                                AppLocalizations.of(context)!.failedToLoadData,
+                              ),
                             );
                           }
                           return SizedBox.shrink();
@@ -338,10 +315,13 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                       verticalSpace(32),
                       Center(
                         child: Text(
-                          'طرق الدفع',
+                          AppLocalizations.of(context)!.paymentMethods,
                           style: AppTextStyles.font18JetMediumLamaSans.copyWith(
                             fontSize: 23.sp,
                           ),
+                          textDirection:
+                              LocalizationService.instance.textDirection,
+                          textAlign: LocalizationService.instance.textAlignment,
                         ),
                       ),
                       verticalSpace(15),
@@ -351,13 +331,15 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                           padding: EdgeInsets.symmetric(vertical: 20.h),
                           child: Center(
                             child: Text(
-                              'أنت عضو مميز بالفعل',
+                              AppLocalizations.of(context)!
+                                  .youAreAlreadyPremium,
                               style: AppTextStyles.font16BlackSemiBoldLamaSans
                                   .copyWith(
                                 color: AppColors.philippineBronze,
                               ),
                               textAlign: TextAlign.center,
-                              textDirection: TextDirection.rtl,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
                             ),
                           ),
                         ),
@@ -384,7 +366,8 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                                     }
                                   }
                                 },
-                                textButton: 'اشترك الان',
+                                textButton:
+                                    AppLocalizations.of(context)!.subscribeNow,
                                 radius: 100,
                               );
                             }

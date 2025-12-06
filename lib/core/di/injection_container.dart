@@ -22,6 +22,7 @@ import 'package:elsadeken/features/chat/data/services/pusher_service.dart';
 import 'package:elsadeken/features/chat/domain/repositories/pusher_repo_interface.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_messages/cubit/chat_messages_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_list_cubit/cubit/chat_list_cubit.dart';
+import 'package:elsadeken/features/chat/presentation/manager/chat_online_setting_cubit/chat_online_setting_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/chat_settings_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/chat_settings_cubit/lists_cubit.dart';
 import 'package:elsadeken/features/chat/presentation/manager/pusher_cubit/cubit/pusher_cubit.dart';
@@ -54,7 +55,7 @@ import 'package:elsadeken/features/profile/manage_profile/data/repo/manage_profi
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/manage_profile_cubit.dart';
 import 'package:elsadeken/features/profile/manage_profile/presentation/manager/update_profile_cubit.dart';
 import 'package:elsadeken/features/profile/my_image/data/data_source/my_image_data_source.dart';
-import 'package:elsadeken/features/profile/my_image/data/repo/my_image_repo%20.dart';
+import 'package:elsadeken/features/profile/my_image/data/repo/my_image_repo.dart';
 import 'package:elsadeken/features/profile/my_image/presentation/manager/my_image_cubit.dart';
 import 'package:elsadeken/features/profile/my_excellence/data/data_source/features_data_source.dart';
 import 'package:elsadeken/features/profile/my_excellence/data/repo/features_repo.dart';
@@ -81,11 +82,9 @@ import 'package:elsadeken/features/profile/success_stories/data/repository/succe
 import 'package:elsadeken/features/profile/success_stories/domain/repository/success_storie_repo.dart';
 import 'package:elsadeken/features/profile/success_stories/domain/use_cases/get_success_story.dart';
 import 'package:elsadeken/features/profile/success_stories/presentation/cubit/success_story_cubit.dart';
-import 'package:elsadeken/features/profile/terms_conditions/data/datasources/terms_api.dart';
-import 'package:elsadeken/features/profile/terms_conditions/data/repository/blog_repo_impl.dart';
-import 'package:elsadeken/features/profile/terms_conditions/domain/repository/terms_repo.dart';
-import 'package:elsadeken/features/profile/terms_conditions/domain/use_cases/get_blog_posts.dart'
-    as terms;
+import 'package:elsadeken/features/profile/terms_conditions/data/data_source/terms_conditions_data_source.dart';
+import 'package:elsadeken/features/profile/terms_conditions/data/repo/terms_conditions_repo.dart';
+
 import 'package:elsadeken/features/profile/terms_conditions/presentation/manager/terms_and_conditions_cubit.dart';
 import 'package:elsadeken/features/search/logic/repository/search_repository.dart';
 import 'package:elsadeken/features/search/logic/repository/search_repository_impl.dart';
@@ -97,8 +96,6 @@ import '../../features/profile/members_profile/data/repo/members_profile_repo.da
 import '../../features/profile/profile/presentation/manager/notification_settings_profile_cubit.dart';
 import '../../features/home/notification/notification_setting/data/data_source/notification_setting_data_source.dart';
 import '../../features/home/notification/notification_setting/data/repo/notification_setting_repo.dart';
-import '../../features/home/notification/notification_setting/presentation/manager/notification_settings_cubit.dart'
-    as home;
 import '../../features/search/logic/use_cases/search_use_cases.dart';
 import '../../features/search/presentation/cubit/search_cubit.dart';
 import '../networking/api_services.dart';
@@ -179,9 +176,11 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<AboutUsCubit>(() => AboutUsCubit(sl()));
 
   // terms and conditions (profile)
-  sl.registerLazySingleton<TermsApi>(() => TermsApi(sl()));
-  sl.registerLazySingleton<TermsRepo>(() => TermsRepoImpl(sl()));
-  sl.registerFactory<TermsCubit>(() => TermsCubit(terms.GetBlogPosts(sl())));
+  sl.registerLazySingleton<TermsConditionsDataSource>(
+      () => TermsConditionsDataSource(sl()));
+  sl.registerLazySingleton<TermsConditionsRepoInterface>(
+      () => TermsConditionsRepoImpl(sl()));
+  sl.registerFactory<TermsCubit>(() => TermsCubit(sl()));
 
   // contact us
   sl.registerLazySingleton<ContactUsDataSource>(
@@ -279,6 +278,8 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ChatDataSource>(() => ChatDataSource(sl()));
   sl.registerLazySingleton<ChatRepoInterface>(() => ChatRepoImpl(sl()));
   sl.registerFactory<ChatListCubit>(() => ChatListCubit(sl()));
+  sl.registerFactory<ChatOnlineSettingCubit>(
+      () => ChatOnlineSettingCubit(sl()));
 
   // Chat Settings
   sl.registerLazySingleton<ChatSettingsService>(

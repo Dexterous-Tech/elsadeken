@@ -48,7 +48,7 @@ class SignupFormDataModel {
   // Job (Step 11)
   final String? financialSituation;
   final String? job;
-  final String? income;
+  final String? incomeId;
   final String? healthCondition;
 
   // Descriptions (Step 12)
@@ -82,7 +82,7 @@ class SignupFormDataModel {
     this.educationalQualification,
     this.financialSituation,
     this.job,
-    this.income,
+    this.incomeId,
     this.healthCondition,
     this.aboutMe,
     this.lifePartner,
@@ -116,7 +116,7 @@ class SignupFormDataModel {
       educationalQualification: json['educationalQualification'],
       financialSituation: json['financialSituation'],
       job: json['job'],
-      income: json['income'],
+      incomeId: json['income'],
       healthCondition: json['healthCondition'],
       aboutMe: json['aboutMe'],
       lifePartner: json['lifePartner'],
@@ -151,7 +151,7 @@ class SignupFormDataModel {
       'educationalQualification': educationalQualification,
       'financialSituation': financialSituation,
       'job': job,
-      'income': income,
+      'incomeId': incomeId,
       'healthCondition': healthCondition,
       'aboutMe': aboutMe,
       'lifePartner': lifePartner,
@@ -186,7 +186,7 @@ class SignupFormDataModel {
     String? educationalQualification,
     String? financialSituation,
     String? job,
-    String? income,
+    String? incomeId,
     String? healthCondition,
     String? aboutMe,
     String? lifePartner,
@@ -219,7 +219,7 @@ class SignupFormDataModel {
           educationalQualification ?? this.educationalQualification,
       financialSituation: financialSituation ?? this.financialSituation,
       job: job ?? this.job,
-      income: income ?? this.income,
+      incomeId: incomeId ?? this.incomeId,
       healthCondition: healthCondition ?? this.healthCondition,
       aboutMe: aboutMe ?? this.aboutMe,
       lifePartner: lifePartner ?? this.lifePartner,
@@ -276,8 +276,8 @@ class SignupFormDataModel {
         financialSituation!.isNotEmpty &&
         job != null &&
         job!.isNotEmpty &&
-        income != null &&
-        income!.isNotEmpty &&
+        incomeId != null &&
+        incomeId!.isNotEmpty &&
         healthCondition != null &&
         healthCondition!.isNotEmpty &&
         aboutMe != null &&

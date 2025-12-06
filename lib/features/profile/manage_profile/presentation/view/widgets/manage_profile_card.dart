@@ -1,3 +1,4 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -25,10 +26,10 @@ class ManageProfileCard extends StatelessWidget {
       ),
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        color: AppColors.lightCarminePink.withValues(alpha: 0.05),
+        color: AppColors.white,
       ),
       child: Column(
-        textDirection: TextDirection.rtl,
+        textDirection: LocalizationService.instance.textDirection,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(

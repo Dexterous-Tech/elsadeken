@@ -1,5 +1,7 @@
 // File: lib/presentation/widgets/range_selector.dart
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:flutter/material.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 import '../../../../../core/theme/app_color.dart';
 
@@ -22,6 +24,7 @@ class RangeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         Icon(Icons.keyboard_arrow_down, color: AppColors.primaryOrange),
         SizedBox(width: 8),
@@ -39,7 +42,7 @@ class RangeSelector extends StatelessWidget {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       hint: Text(
-                        '$toHint $unit',
+                        '$fromHint $unit',
                         style: TextStyle(
                             color: AppColors.primaryOrange, fontSize: 12),
                       ),
@@ -50,7 +53,8 @@ class RangeSelector extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 8),
-              Text('إلى', style: TextStyle(fontSize: 12)),
+              Text(AppLocalizations.of(context)!.to,
+                  style: TextStyle(fontSize: 12)),
               SizedBox(width: 8),
               Expanded(
                 child: Container(
@@ -63,7 +67,7 @@ class RangeSelector extends StatelessWidget {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       hint: Text(
-                        '$fromHint $unit',
+                        '$toHint $unit',
                         style: TextStyle(
                             color: AppColors.primaryOrange, fontSize: 12),
                       ),

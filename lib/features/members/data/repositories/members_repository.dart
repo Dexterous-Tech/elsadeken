@@ -2,78 +2,144 @@ import 'package:dio/dio.dart';
 import 'package:elsadeken/core/di/injection_container.dart';
 import 'package:elsadeken/core/networking/api_constants.dart';
 import 'package:elsadeken/core/networking/api_services.dart';
-import 'package:elsadeken/features/members/data/models/members.dart';
-import '../models/api_response.dart';
+import '../../../profile/interests_list/data/models/users_response_model.dart';
 
 class MembersRepository {
-  Future<ApiResponse<Member>> getNewMembers({int? countryId}) async {
+  Future<UsersResponseModel> getNewMembers({int? countryId, int? page}) async {
     final api = sl<ApiServices>();
+
+    // Build query parameters
+    final Map<String, dynamic> queryParams = {};
+    if (countryId != null) {
+      queryParams['country_id'] = countryId;
+    }
+    if (page != null) {
+      queryParams['page'] = page;
+    }
+
     final Response res = await api.get(
       endpoint: ApiConstants.newMembers(countryId: countryId),
       requiresAuth: true,
+      queryParameters: queryParams.isNotEmpty ? queryParams : null,
     );
-    return ApiResponse<Member>.fromJson(res.data, (e) => Member.fromJson(e));
+    return UsersResponseModel.fromJson(res.data);
   }
 
-  Future<ApiResponse<Member>> getOnlineMembers() async {
+  Future<UsersResponseModel> getOnlineMembers({int? page}) async {
     final api = sl<ApiServices>();
+
+    // Build query parameters
+    final Map<String, dynamic> queryParams = {};
+    if (page != null) {
+      queryParams['page'] = page;
+    }
+
     final Response res = await api.get(
       endpoint: ApiConstants.onlineMembers,
       requiresAuth: true,
+      queryParameters: queryParams.isNotEmpty ? queryParams : null,
     );
 
-    // Debug: Print raw API response
-    print('=== RAW API RESPONSE ===');
-    print('Status Code: ${res.statusCode}');
-    print('Response Data: ${res.data}');
-    print('Response Data Type: ${res.data.runtimeType}');
-
-    if (res.data is Map<String, dynamic>) {
-      final data = res.data as Map<String, dynamic>;
-      print('Response Keys: ${data.keys.toList()}');
-      if (data.containsKey('data') && data['data'] is List) {
-        final dataList = data['data'] as List;
-        print('Data List Length: ${dataList.length}');
-        if (dataList.isNotEmpty) {
-          print('First Item in Data: ${dataList.first}');
-          if (dataList.first is Map<String, dynamic>) {
-            final firstItem = dataList.first as Map<String, dynamic>;
-            print('First Item Keys: ${firstItem.keys.toList()}');
-            if (firstItem.containsKey('attribute')) {
-              print('Attribute Data: ${firstItem['attribute']}');
-            }
-          }
-        }
-      }
-    }
-
-    return ApiResponse<Member>.fromJson(res.data, (e) => Member.fromJson(e));
+    return UsersResponseModel.fromJson(res.data);
   }
 
-  Future<ApiResponse<Member>> getDistinguishedMembers() async {
+  Future<UsersResponseModel> getDistinguishedMembers(
+      {String? countryName}) async {
     final api = sl<ApiServices>();
     final Response res = await api.get(
       endpoint: ApiConstants.distinguishedMembers,
       requiresAuth: true,
     );
-    return ApiResponse<Member>.fromJson(res.data, (e) => Member.fromJson(e));
+    final response = UsersResponseModel.fromJson(res.data);
+
+    print('🔍 Premium Members Repository - countryName: $countryName');
+    print(
+        '🔍 Premium Members Repository - total members before filter: ${response.data?.length ?? 0}');
+
+    // If countryName is provided, filter the results on the client side
+    if (countryName != null &&
+        countryName.isNotEmpty &&
+        countryName != 'all' &&
+        response.data != null) {
+      print(
+          '🔍 Premium Members Repository - filtering by country: $countryName');
+
+      // Debug: Print all unique countries in the data
+      final uniqueCountries =
+          response.data!.map((user) => user.attribute?.country).toSet();
+      print(
+          '🔍 Premium Members Repository - unique countries in data: $uniqueCountries');
+
+      final filteredData = response.data!.where((user) {
+        final userCountry = user.attribute?.country?.toLowerCase();
+        final match = userCountry == countryName.toLowerCase();
+        if (match) {
+          print(
+              '🔍 Premium Members Repository - matched user: ${user.name} from ${user.attribute?.country}');
+        }
+        return match;
+      }).toList();
+
+      print(
+          '🔍 Premium Members Repository - filtered members count: ${filteredData.length}');
+
+      // Create a new response with filtered data
+      return UsersResponseModel(
+        data: filteredData,
+        links: response.links,
+        meta: response.meta,
+        message: response.message,
+        code: response.code,
+        type: response.type,
+      );
+    }
+
+    print(
+        '🔍 Premium Members Repository - no filtering applied, returning all data');
+    return response;
   }
 
-  Future<ApiResponse<Member>> getVisitors() async {
+  Future<UsersResponseModel> getVisitors({int? page}) async {
     final api = sl<ApiServices>();
+
+    // Build query parameters
+    final Map<String, dynamic> queryParams = {};
+    if (page != null) {
+      queryParams['page'] = page;
+    }
+
     final Response res = await api.get(
       endpoint: ApiConstants.visitorsMembers,
       requiresAuth: true,
+      queryParameters: queryParams.isNotEmpty ? queryParams : null,
     );
-    return ApiResponse<Member>.fromJson(res.data, (e) => Member.fromJson(e));
+    return UsersResponseModel.fromJson(res.data);
   }
 
-  Future<ApiResponse<Member>> getHealthConditionMembers() async {
+  Future<UsersResponseModel> getHealthConditionMembers({
+    int? healthConditionId,
+    int? countryId,
+    int? page,
+  }) async {
     final api = sl<ApiServices>();
+
+    // Build query parameters
+    final Map<String, dynamic> queryParams = {};
+    if (healthConditionId != null) {
+      queryParams['health_condition_id'] = healthConditionId;
+    }
+    if (countryId != null) {
+      queryParams['country_id'] = countryId;
+    }
+    if (page != null) {
+      queryParams['page'] = page;
+    }
+
     final Response res = await api.get(
       endpoint: ApiConstants.healthConditionMembers,
       requiresAuth: true,
+      queryParameters: queryParams.isNotEmpty ? queryParams : null,
     );
-    return ApiResponse<Member>.fromJson(res.data, (e) => Member.fromJson(e));
+    return UsersResponseModel.fromJson(res.data);
   }
 }

@@ -13,8 +13,13 @@ class VerificationEmailScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<VerificationCubit>(),
       child: Scaffold(
-          body: VerificationEmailBody(
-        email: email,
+          body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus(); // Close keyboard
+        },
+        child: VerificationEmailBody(
+          email: email,
+        ),
       )),
     );
   }

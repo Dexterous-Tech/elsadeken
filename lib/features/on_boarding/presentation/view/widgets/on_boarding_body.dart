@@ -1,15 +1,18 @@
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/on_boarding/presentation/view/widgets/oath_dialog/oath_dialog.dart';
+import 'package:elsadeken/features/on_boarding/presentation/view/widgets/on_boarding_change_language.dart';
 // import 'package:elsadeken/features/on_boarding/presentation/view/widgets/oath_dialog/oath_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 
 class OnBoardingBody extends StatelessWidget {
   const OnBoardingBody({super.key});
@@ -19,7 +22,7 @@ class OnBoardingBody extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: EdgeInsetsGeometry.only(
-        top: 76.h,
+        top: 40.h,
         right: 52.w,
         left: 52.w,
         bottom: 96.h,
@@ -38,24 +41,29 @@ class OnBoardingBody extends StatelessWidget {
         slivers: [
           SliverFillRemaining(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: LocalizationService.instance.textDirection,
               children: [
-                Image.asset(AppImages.splashImage, width: 135.w, height: 263.h),
+                OnBoardingChangeLanguage(),
+                Center(
+                    child: Image.asset(AppImages.splashImage,
+                        width: 135.w, height: 263.h)),
                 Spacer(),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'تعارف جاد للمسلمين والمسلمات',
+                      AppLocalizations.of(context)!.onboardingTitle,
                       textAlign: TextAlign.center,
+                      textDirection: LocalizationService.instance.textDirection,
                       style: AppTextStyles.font40BlackSemiBoldPlexSans
                           .copyWith(letterSpacing: 0, wordSpacing: 0),
                     ),
                     Text(
-                      'لكل من يبحث عن شريك حياة على أساس من القيم والاحترام',
+                      AppLocalizations.of(context)!.onboardingSubtitle,
                       textAlign: TextAlign.center,
+                      textDirection: LocalizationService.instance.textDirection,
                       style: AppTextStyles.font26BlackRegularPlexSans
                           .copyWith(letterSpacing: 0, wordSpacing: 0),
                     ),
@@ -69,7 +77,9 @@ class OnBoardingBody extends StatelessWidget {
                           await SharedPreferencesHelper
                               .setIsOnboardingCompleted(true);
                           // Navigate to login screen
-                          context.pushNamed(AppRoutes.loginScreen);
+                          if (context.mounted) {
+                            context.pushNamed(AppRoutes.loginScreen);
+                          }
                         },
                         // verticalPadding: 17.h,
                         buttonWidget: Row(
@@ -87,9 +97,12 @@ class OnBoardingBody extends StatelessWidget {
                             ),
                             horizontalSpace(10),
                             Text(
-                              'الدخول الان',
+                              AppLocalizations.of(context)!.loginNow,
                               style: AppTextStyles.font16CulturedMediumPlexSans
                                   .copyWith(color: AppColors.white),
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),
@@ -101,7 +114,8 @@ class OnBoardingBody extends StatelessWidget {
                         oathDialog(context: context);
                       },
                       child: Text(
-                        'التسجيل مجاناً',
+                        AppLocalizations.of(context)!
+                            .freeRegistrationOnboarding,
                         style: AppTextStyles.font16CulturedMediumPlexSans
                             .copyWith(color: AppColors.white),
                       ),

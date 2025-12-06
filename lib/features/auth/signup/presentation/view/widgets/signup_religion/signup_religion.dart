@@ -1,8 +1,10 @@
 import 'package:elsadeken/features/auth/signup/presentation/manager/signup_cubit.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../../core/services/localization_service.dart';
 import '../../../../../../../core/theme/spacing.dart';
 import '../custom_next_and_previous_button.dart';
 import '../signup_multi_choice.dart';
@@ -12,33 +14,45 @@ class SignupReligion extends StatefulWidget {
     super.key,
     required this.onNextPressed,
     required this.onPreviousPressed,
+    required this.gender,
   });
 
   final void Function() onNextPressed;
   final void Function() onPreviousPressed;
+  final String gender;
 
   @override
   State<SignupReligion> createState() => _SignupReligionState();
 }
 
 class _SignupReligionState extends State<SignupReligion> {
-  Map<String, String> get religionOptions {
-    return {
-      'irreligious': 'غير متدين',
-      'little_religious': 'متدين قليلا',
-      'religious': 'متدين',
-      'much_religious': 'متدين كثيرا',
-      'dont_say': 'أفضل الا اقول',
-    };
+  Map<String, String> religionOptions(BuildContext context) {
+    if (widget.gender.toLowerCase() == 'male' || widget.gender == 'ّذكر') {
+      return {
+        'irreligious': AppLocalizations.of(context)!.irreligious,
+        'little_religious': AppLocalizations.of(context)!.littleReligious,
+        'religious': AppLocalizations.of(context)!.religious,
+        'much_religious': AppLocalizations.of(context)!.muchReligious,
+        'dont_say': AppLocalizations.of(context)!.dontSay,
+      };
+    } else {
+      return {
+        'irreligious': AppLocalizations.of(context)!.irreligiousFemale,
+        'little_religious': AppLocalizations.of(context)!.littleReligiousFemale,
+        'religious': AppLocalizations.of(context)!.religiousFemale,
+        'much_religious': AppLocalizations.of(context)!.muchReligiousFemale,
+        'dont_say': AppLocalizations.of(context)!.dontSay,
+      };
+    }
   }
 
-  Map<String, String> get prayerOptions {
+  Map<String, String> prayerOptions(BuildContext context) {
     return {
-      'always ': 'اصلي دائما',
-      'most_times ': 'اصلي اغلب الاوقات',
-      'sometimes ': 'اصلي بعض الاحيان',
-      'no_pray': 'لا اصلي',
-      'dont_say': 'أفضل الا اقول',
+      'always ': AppLocalizations.of(context)!.prayAlways,
+      'most_times ': AppLocalizations.of(context)!.prayMostTimes,
+      'sometimes ': AppLocalizations.of(context)!.praySometimes,
+      'no_pray': AppLocalizations.of(context)!.noPray,
+      'dont_say': AppLocalizations.of(context)!.dontSay,
     };
   }
 
@@ -53,18 +67,21 @@ class _SignupReligionState extends State<SignupReligion> {
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: IntrinsicHeight(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                textDirection: LocalizationService.instance.textDirection,
                 children: [
                   // status
                   SignupMultiChoice(
                     height: 170.h,
-                    title: 'ما هي التزامك الديني ؟',
-                    options: religionOptions.values.toList(),
-                    selected: religionOptions[
-                        cubit.religiousCommitmentController.text],
+                    title: AppLocalizations.of(context)!
+                        .whatIsYourReligiousCommitment,
+                    options: religionOptions(context).values.toList(),
+                    selected: religionOptions(
+                        context)[cubit.religiousCommitmentController.text],
                     onChanged: (newStatus) {
-                      // Find the key for the selected Arabic text
-                      String? selectedKey = religionOptions.entries
+                      // Find the key for the selected text
+                      String? selectedKey = religionOptions(context)
+                          .entries
                           .firstWhere((entry) => entry.value == newStatus,
                               orElse: () => const MapEntry('', ''))
                           .key;
@@ -81,12 +98,14 @@ class _SignupReligionState extends State<SignupReligion> {
                   // multi wives
                   SignupMultiChoice(
                     height: 170.h,
-                    title: 'الصلاه ؟',
-                    options: prayerOptions.values.toList(),
-                    selected: prayerOptions[cubit.prayerController.text],
+                    title: AppLocalizations.of(context)!.prayer,
+                    options: prayerOptions(context).values.toList(),
+                    selected:
+                        prayerOptions(context)[cubit.prayerController.text],
                     onChanged: (newStatus) {
-                      // Find the key for the selected Arabic text
-                      String? selectedKey = prayerOptions.entries
+                      // Find the key for the selected text
+                      String? selectedKey = prayerOptions(context)
+                          .entries
                           .firstWhere((entry) => entry.value == newStatus,
                               orElse: () => const MapEntry('', ''))
                           .key;
@@ -117,13 +136,14 @@ class _SignupReligionState extends State<SignupReligion> {
   }
 
   bool _canProceedToNext(SignupCubit cubit) {
-    // Must select marital status
+    // Must select religious commitment
     bool hasReligion = cubit.religiousCommitmentController.text.isNotEmpty &&
-        religionOptions.containsKey(cubit.religiousCommitmentController.text);
+        religionOptions(context)
+            .containsKey(cubit.religiousCommitmentController.text);
 
-    // Must also select type of marriage (required for both genders)
+    // Must also select prayer status
     bool hasPrayer = cubit.prayerController.text.isNotEmpty &&
-        prayerOptions.containsKey(cubit.prayerController.text);
+        prayerOptions(context).containsKey(cubit.prayerController.text);
 
     return hasReligion && hasPrayer;
   }

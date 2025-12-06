@@ -1,8 +1,10 @@
+import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
 import 'package:elsadeken/features/auth/new_password/presentation/manager/reset_password_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../../core/helper/localization_helper.dart';
 import '../../../../../../core/theme/app_color.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../../core/theme/spacing.dart';
@@ -26,23 +28,27 @@ class _NewPasswordFormState extends State<NewPasswordForm> {
     return Form(
       key: cubit.formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        textDirection: LocalizationService.instance.textDirection,
         children: [
           Text(
-            'كلمه المرور الجديده',
-            textDirection: TextDirection.rtl,
+            LocalizationHelper.getLocalizedText(
+                'كلمه المرور الجديده', 'New Password'),
+            textDirection: LocalizationService.instance.textDirection,
             style: AppTextStyles.font27ChineseBlackBoldLamaSans,
           ),
           Text(
-            'قم بادخال كمله مرور جديده وقويه',
-            textDirection: TextDirection.rtl,
+            LocalizationHelper.getLocalizedText(
+                'قم بادخال كمله مرور جديده وقويه', 'Enter new strong password'),
+            textDirection: LocalizationService.instance.textDirection,
             style: AppTextStyles.font14BeerMediumLamaSans
                 .copyWith(color: AppColors.outerSpace),
           ),
           verticalSpace(24),
           Text(
-            'كلمه المرور الجديده',
-            textDirection: TextDirection.rtl,
+            LocalizationHelper.getLocalizedText(
+                'كلمه المرور الجديده', 'New Password'),
+            textDirection: LocalizationService.instance.textDirection,
             style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
           ),
           verticalSpace(8),
@@ -53,7 +59,9 @@ class _NewPasswordFormState extends State<NewPasswordForm> {
             hintText: '********',
             validator: (value) {
               if (value == null || value.length < 6) {
-                return 'كلمة المرور يجب أن تكون أكثر من 6 أحرف';
+                return LocalizationHelper.getLocalizedText(
+                    'كلمة المرور يجب أن تكون أكثر من 6 أحرف',
+                    'Password must more that 6 length');
               }
               return null;
             },
@@ -74,8 +82,9 @@ class _NewPasswordFormState extends State<NewPasswordForm> {
           ),
           verticalSpace(24),
           Text(
-            'تاكيد كلمه المرور',
-            textDirection: TextDirection.rtl,
+            LocalizationHelper.getLocalizedText(
+                'تأكيد المرور الجديده', 'Confirm new Password'),
+            textDirection: LocalizationService.instance.textDirection,
             style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans,
           ),
           verticalSpace(8),
@@ -86,10 +95,13 @@ class _NewPasswordFormState extends State<NewPasswordForm> {
             hintText: '********',
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'يجب تأكيد كلمة المرور';
+                return LocalizationHelper.getLocalizedText(
+                    'يجب تأكيد كلمة المرور', 'You must enter confirm password');
               }
               if (value != cubit.newPasswordController.text) {
-                return 'كلمة المرور غير متطابقة';
+                return LocalizationHelper.getLocalizedText(
+                    'كلمة المرور غير متطابقة',
+                    'Confirm password must match new password');
               }
               return null;
             },
@@ -117,7 +129,8 @@ class _NewPasswordFormState extends State<NewPasswordForm> {
                 cubit.resetPassword(widget.email);
               }
             },
-            textButton: 'تحديث كلمة المرور',
+            textButton: LocalizationHelper.getLocalizedText(
+                'تحديث كلمة المرور', 'Update Password'),
           ),
         ],
       ),

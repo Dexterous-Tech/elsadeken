@@ -1,8 +1,10 @@
 import 'package:elsadeken/features/auth/signup/presentation/view/widgets/signup_choice_loading.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../../core/services/localization_service.dart';
 import '../../../../../../../core/theme/spacing.dart';
 import '../../../../data/models/general_info_models.dart';
 import '../../../manager/sign_up_lists_cubit.dart';
@@ -70,86 +72,98 @@ class _SignupEducationState extends State<SignupEducation> {
         }
       },
       builder: (context, state) {
-        return SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // Educational Qualification Selection
-              if (_isLoadingEducation)
-                SignupChoiceLoading(
-                  title: 'ما هو المؤهل التعليمي ؟',
-                )
-              else
-                SignupMultiChoice(
-                  height: 120.h,
-                  title: 'ما هو المؤهل التعليمي ؟',
-                  options:
-                      _educationOptions.map((edu) => edu.name ?? '').toList(),
-                  selected: _selectedEducation?.name,
-                  onChanged: (newStatus) {
-                    final selectedEducation = _educationOptions.firstWhere(
-                      (edu) => edu.name == newStatus,
-                      orElse: () => GeneralInfoResponseModels(),
-                    );
-                    setState(() {
-                      _selectedEducation = selectedEducation;
-                    });
-                    // Store the ID in the signup cubit
-                    if (selectedEducation.id != null) {
-                      context
-                          .read<SignupCubit>()
-                          .educationalQualificationController
-                          .text = selectedEducation.id.toString();
-                    }
-                  },
+        return LayoutBuilder(builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  textDirection: LocalizationService.instance.textDirection,
+                  children: [
+                    // Educational Qualification Selection
+                    if (_isLoadingEducation)
+                      SignupChoiceLoading(
+                        title: AppLocalizations.of(context)!
+                            .whatIsYourEducationalQualification,
+                      )
+                    else
+                      SignupMultiChoice(
+                        height: 170.h,
+                        title: AppLocalizations.of(context)!
+                            .whatIsYourEducationalQualification,
+                        options: _educationOptions
+                            .map((edu) => edu.name ?? '')
+                            .toList(),
+                        selected: _selectedEducation?.name,
+                        onChanged: (newStatus) {
+                          final selectedEducation =
+                              _educationOptions.firstWhere(
+                            (edu) => edu.name == newStatus,
+                            orElse: () => GeneralInfoResponseModels(),
+                          );
+                          setState(() {
+                            _selectedEducation = selectedEducation;
+                          });
+                          // Store the ID in the signup cubit
+                          if (selectedEducation.id != null) {
+                            context
+                                .read<SignupCubit>()
+                                .educationalQualificationController
+                                .text = selectedEducation.id.toString();
+                          }
+                        },
+                      ),
+
+                    verticalSpace(20),
+
+                    // Financial Situation Selection
+                    if (_isLoadingFinancial)
+                      SignupChoiceLoading(
+                        title: AppLocalizations.of(context)!.financialStatus,
+                      )
+                    else
+                      SignupMultiChoice(
+                        height: 170.h,
+                        title: AppLocalizations.of(context)!.financialStatus,
+                        options: _financialOptions
+                            .map((financial) => financial.name ?? '')
+                            .toList(),
+                        selected: _selectedFinancial?.name,
+                        onChanged: (newStatus) {
+                          final selectedFinancial =
+                              _financialOptions.firstWhere(
+                            (financial) => financial.name == newStatus,
+                            orElse: () => GeneralInfoResponseModels(),
+                          );
+                          setState(() {
+                            _selectedFinancial = selectedFinancial;
+                          });
+                          // Store the ID in the signup cubit
+                          if (selectedFinancial.id != null) {
+                            context
+                                .read<SignupCubit>()
+                                .financialSituationController
+                                .text = selectedFinancial.id.toString();
+                          }
+                        },
+                      ),
+
+                    Expanded(child: verticalSpace(50)),
+
+                    CustomNextAndPreviousButton(
+                      onNextPressed: widget.onNextPressed,
+                      onPreviousPressed: widget.onPreviousPressed,
+                      isNextEnabled: _canProceedToNext(),
+                    ),
+                    verticalSpace(20), // Add bottom padding for scroll safety
+                  ],
                 ),
-
-              verticalSpace(40),
-
-              // Financial Situation Selection
-              if (_isLoadingFinancial)
-                SignupChoiceLoading(
-                  title: 'الوضع المادي ؟',
-                )
-              else
-                SignupMultiChoice(
-                  height: 120.h,
-                  title: 'الوضع المادي ؟',
-                  options: _financialOptions
-                      .map((financial) => financial.name ?? '')
-                      .toList(),
-                  selected: _selectedFinancial?.name,
-                  onChanged: (newStatus) {
-                    final selectedFinancial = _financialOptions.firstWhere(
-                      (financial) => financial.name == newStatus,
-                      orElse: () => GeneralInfoResponseModels(),
-                    );
-                    setState(() {
-                      _selectedFinancial = selectedFinancial;
-                    });
-                    // Store the ID in the signup cubit
-                    if (selectedFinancial.id != null) {
-                      context
-                          .read<SignupCubit>()
-                          .financialSituationController
-                          .text = selectedFinancial.id.toString();
-                    }
-                  },
-                ),
-
-              verticalSpace(50),
-              SizedBox(height: 100), // Add space for the buttons at the bottom
-
-              CustomNextAndPreviousButton(
-                onNextPressed: widget.onNextPressed,
-                onPreviousPressed: widget.onPreviousPressed,
-                isNextEnabled: _canProceedToNext(),
               ),
-              verticalSpace(20), // Add bottom padding for scroll safety
-            ],
-          ),
-        );
+            ),
+          );
+        });
       },
     );
   }

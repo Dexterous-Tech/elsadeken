@@ -13,8 +13,13 @@ class NewPasswordScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<ResetPasswordCubit>(),
       child: Scaffold(
-          body: NewPasswordBody(
-        email: email,
+          body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus(); // Close keyboard
+        },
+        child: NewPasswordBody(
+          email: email,
+        ),
       )),
     );
   }

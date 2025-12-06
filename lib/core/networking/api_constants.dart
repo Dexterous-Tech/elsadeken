@@ -1,7 +1,7 @@
 class ApiConstants {
   // may use dotenv package and make file .env to save base url
 
-  static String baseUrl = 'https://elsadkeen.sharetrip-ksa.com/api';
+  static String baseUrl = 'https://sadiqeen.com/api';
 
   // auth
   static String login = '/user/login';
@@ -16,13 +16,18 @@ class ApiConstants {
   static String qualifications = '/user/list/qualifications';
   static String financialSituations = '/user/list/financial-situations';
   static String healthConditions = '/user/list/health-conditions';
+  static String incomes = '/user/list/incomes';
+  static String jobs = '/user/list/jobs';
   static String signup = '/user/register';
   static String registerInformation = '/user/attributes';
   static String logout = '/user/logout';
   static String deleteUser = '/user/delete-account';
+  static String getOnline = '/user/get-online';
+  static String setOnline = '/user/set-online';
 
   // profile
   static String aboutUs = '/user/aboutUs';
+  static String termsConditions = '/user/terms-conditions';
   static String contactUs = '/user/contact-us';
   static String getProfile = '/user/profile';
   static String likeUser(int id) => '/user/like/user/$id';
@@ -46,8 +51,10 @@ class ApiConstants {
       '/user/update-profile/lifepartner-info';
   static String getMembersProfile = '/user/members/images';
   static String reportUser(int userId) => '/user/report-user-profile/$userId';
+  static String shareUser(int userId) => '/user/share/profile/$userId';
   static String updateImageSetting = '/user/update-image-setting';
   static String deleteImage = '/user/delete-image';
+  static String reportReasons = '/user/list/report-reasons';
 
   //search-home
   static String matchesUsers = '/user/home/matches-users';
@@ -63,7 +70,13 @@ class ApiConstants {
   static String toggleNotify = '/user/notify';
 
   static const String defaultProfileImage =
-      'https://elsadkeen.sharetrip-ksa.com/assets/img/female.png';
+      'https://sadiqeen.com/assets/img/female.png';
+  static const String maleProfileImage =
+      'https://sadiqeen.com/assets/img/male.png';
+
+  // broadcasting
+  static const String broadcastingAuthUrl =
+      'https://elsadkeen.sharetrip-ksa.com/api/broadcasting/auth';
 
   // members
   static String distinguishedMembers = '/user/members/distinguished';
@@ -91,7 +104,7 @@ class ApiConstants {
   static String deleteAllChatSettings = '/user/delete-all-chats';
 
 // nationality and country lists
-  static String getNationalities = '/user/list/nationalities';
+  static String getNationalities = '/user/list/nationalities/diverse';
   static String getCountries = '/user/list/countries';
 
   // Features

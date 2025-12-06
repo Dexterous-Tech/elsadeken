@@ -36,31 +36,32 @@ class LoginResponseModel {
 }
 
 class LoginDataModel {
-  final int id;
-  final String name;
-  final String email;
-  final String countryCode;
-  final String phone;
-  final String gender;
+  final int? id;
+  final String? name;
+  final String? email;
+  final String? countryCode;
+  final String? phone;
+  final String? gender;
   final String? image;
   String? fcmToken;
   final String token;
-  final String createdAt;
+  final bool? redirectToAttribute;
+  final String? createdAt;
   final int? isBlocked;
 
-  LoginDataModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.countryCode,
-    required this.phone,
-    required this.gender,
-    this.image,
-    this.fcmToken,
-    required this.token,
-    required this.createdAt,
-    this.isBlocked,
-  });
+  LoginDataModel(
+      {this.id,
+      this.name,
+      this.email,
+      this.countryCode,
+      this.phone,
+      this.gender,
+      this.image,
+      this.fcmToken,
+      required this.token,
+      this.createdAt,
+      this.isBlocked,
+      this.redirectToAttribute});
 
   factory LoginDataModel.fromJson(dynamic json) {
     return LoginDataModel(
@@ -75,6 +76,7 @@ class LoginDataModel {
       token: json['token'],
       createdAt: json['created_at'],
       isBlocked: json['is_blocked'],
+      redirectToAttribute: json['redirect_to_attribute'],
     );
   }
 
@@ -95,6 +97,7 @@ class LoginDataModel {
     map['token'] = token;
     map['created_at'] = createdAt;
     map['is_blocked'] = isBlocked;
+    map['redirect_to_attribute'] = redirectToAttribute;
     return map;
   }
 }

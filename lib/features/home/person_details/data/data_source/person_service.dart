@@ -49,7 +49,7 @@ class PersonService {
             throw Exception("Failed to parse person data: $parseError");
           }
         } else {
-          print("No person data found in response. Full response: ${jsonBody}");
+          print("No person data found in response. Full response: $jsonBody");
           return null;
         }
       } else {

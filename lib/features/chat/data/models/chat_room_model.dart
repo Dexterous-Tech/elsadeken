@@ -32,6 +32,7 @@ class ChatRoomModel extends ChatRoom {
     required int userId,
     required String userName,
     required String userImage,
+    bool? isOnline,
   }) {
     return ChatRoomModel(
       id: 'temp_${DateTime.now().millisecondsSinceEpoch}', // Temporary ID
@@ -40,7 +41,7 @@ class ChatRoomModel extends ChatRoom {
       lastMessage: 'ابدأ المحادثة الآن',
       lastMessageTime: DateTime.now(),
       unreadCount: 0,
-      isOnline: false,
+      isOnline: isOnline ?? false, // Use provided status or default to false
       isFavorite: false,
       receiverId: userId,
     );

@@ -24,7 +24,8 @@ class PusherRepoImpl implements PusherRepoInterface {
         return const Right(null);
       } else {
         log('[PusherRepo] Pusher initialization failed - not connected');
-        return Left(ServerFailure(message: 'Failed to establish Pusher connection'));
+        return Left(
+            ServerFailure(message: 'Failed to establish Pusher connection'));
       }
     } catch (e) {
       log('[PusherRepo] Pusher initialization error: $e');
@@ -33,7 +34,8 @@ class PusherRepoImpl implements PusherRepoInterface {
   }
 
   @override
-  Future<Either<Failure, void>> subscribeToChatChannel(int chatRoomId, String bearerToken) async {
+  Future<Either<Failure, void>> subscribeToChatChannel(
+      int chatRoomId, String bearerToken) async {
     try {
       log('[PusherRepo] Subscribing to chat channel: $chatRoomId');
 
@@ -55,7 +57,8 @@ class PusherRepoImpl implements PusherRepoInterface {
       return const Right(null);
     } catch (e) {
       log('[PusherRepo] Chat channel subscription error: $e');
-      return Left(ServerFailure(message: 'Failed to subscribe to chat channel: $e'));
+      return Left(
+          ServerFailure(message: 'Failed to subscribe to chat channel: $e'));
     }
   }
 
@@ -165,6 +168,7 @@ class PusherRepoImpl implements PusherRepoInterface {
   }
 
   /// Test message handling (for debugging)
+  @override
   void testMessageHandling() {
     log('[PusherRepo] Testing message handling...');
     try {
@@ -176,6 +180,7 @@ class PusherRepoImpl implements PusherRepoInterface {
   }
 
   /// Test full message pipeline (for debugging)
+  @override
   void testFullMessagePipeline() {
     log('[PusherRepo] Testing full message pipeline...');
     try {
@@ -187,6 +192,7 @@ class PusherRepoImpl implements PusherRepoInterface {
   }
 
   /// Force reconnection (useful for debugging connection issues)
+  @override
   Future<Either<Failure, void>> forceReconnect() async {
     try {
       log('[PusherRepo] Force reconnecting...');
@@ -206,6 +212,7 @@ class PusherRepoImpl implements PusherRepoInterface {
   }
 
   /// Get current connection status with detailed information
+  @override
   Map<String, dynamic> getConnectionStatus() {
     try {
       final status = _pusherService.getConnectionStatus();
@@ -222,6 +229,7 @@ class PusherRepoImpl implements PusherRepoInterface {
   }
 
   /// Simulate message reception for testing
+  @override
   void simulateMessage(int chatId, String messageBody) {
     log('[PusherRepo] Simulating message for testing...');
     try {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../../../core/services/localization_service.dart';
 import '../../../../../../../core/theme/spacing.dart';
 import '../custom_next_and_previous_button.dart';
 import '../../../manager/signup_cubit.dart';
@@ -37,7 +38,8 @@ class _SignupCountryState extends State<SignupCountry> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      textDirection: LocalizationService.instance.textDirection,
       children: [
         // Custom Searchable List
         Expanded(

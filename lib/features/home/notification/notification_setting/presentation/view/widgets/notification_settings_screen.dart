@@ -1,4 +1,5 @@
 import 'package:elsadeken/core/theme/app_color.dart';
+import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +9,8 @@ import 'package:elsadeken/core/di/injection_container.dart';
 
 import 'package:elsadeken/features/home/notification/notification_setting/presentation/manager/notification_settings_cubit.dart'
     as home;
+
+import '../../../../../../../core/services/localization_service.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
@@ -42,9 +45,15 @@ class _NotificationSettingsContentState
     // Load notification settings when screen initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        context
-            .read<home.NotificationSettingsCubit>()
-            .loadNotificationSettings();
+        context.read<home.NotificationSettingsCubit>().loadNotificationSettings(
+              whoAddedMeToFavorites:
+                  AppLocalizations.of(context)!.whoAddedMeToFavorites,
+              profileVisits: AppLocalizations.of(context)!.profileVisits,
+              whoAddedMeToIgnoreList:
+                  AppLocalizations.of(context)!.whoAddedMeToIgnoreList,
+              newMessages: AppLocalizations.of(context)!.newMessages,
+              successStories: AppLocalizations.of(context)!.successStories,
+            );
       }
     });
   }
@@ -52,18 +61,32 @@ class _NotificationSettingsContentState
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: LocalizationService.instance.textDirection, // K
       child: Scaffold(
-        backgroundColor: AppColors.white,
-        body: CustomProfileBody(
-          contentBody: Column(
-            children: [
-              _buildAppBar(),
-              SizedBox(height: 12.h),
-              Expanded(
-                child: _buildSettingsContent(),
-              ),
-            ],
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.cosmicLatte,
+                AppColors.antiqueWhite,
+              ],
+            ),
+          ),
+          child: CustomProfileBody(
+            contentBody: Column(
+              crossAxisAlignment:
+                  LocalizationService.instance.startCrossAxisAlignment,
+              textDirection: LocalizationService.instance.textDirection, // K
+
+              children: [
+                _buildAppBar(),
+                SizedBox(height: 12.h),
+                _buildSettingsContent(),
+              ],
+            ),
           ),
         ),
       ),
@@ -73,8 +96,12 @@ class _NotificationSettingsContentState
   // Top Bar with background
   Widget _buildAppBar() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      child: const ProfileHeader(title: 'إعدادات الإشعارات'),
+      padding:
+          EdgeInsetsDirectional.symmetric(horizontal: 16.w, vertical: 12.h),
+      child: ProfileHeader(
+          sizeContainer: 40,
+          shape: BoxShape.rectangle,
+          title: AppLocalizations.of(context)!.notificationSettings),
     );
   }
 
@@ -95,22 +122,35 @@ class _NotificationSettingsContentState
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              textDirection: LocalizationService.instance.textDirection, // K
               children: [
                 Text(
-                  'خطأ في تحميل الإعدادات',
+                  AppLocalizations.of(context)!.errorLoadingSettings,
                   style: TextStyle(
                     fontSize: 18.sp,
                     color: Colors.red,
                   ),
+                  textDirection: LocalizationService.instance.textDirection,
                 ),
                 SizedBox(height: 16.h),
                 ElevatedButton(
                   onPressed: () {
                     context
                         .read<home.NotificationSettingsCubit>()
-                        .loadNotificationSettings();
+                        .loadNotificationSettings(
+                          whoAddedMeToFavorites: AppLocalizations.of(context)!
+                              .whoAddedMeToFavorites,
+                          profileVisits:
+                              AppLocalizations.of(context)!.profileVisits,
+                          whoAddedMeToIgnoreList: AppLocalizations.of(context)!
+                              .whoAddedMeToIgnoreList,
+                          newMessages:
+                              AppLocalizations.of(context)!.newMessages,
+                          successStories:
+                              AppLocalizations.of(context)!.successStories,
+                        );
                   },
-                  child: const Text('إعادة المحاولة'),
+                  child: Text(AppLocalizations.of(context)!.tryAgain),
                 ),
               ],
             ),
@@ -148,8 +188,11 @@ class _NotificationSettingsContentState
           return _buildSettingsList(state.settings);
         }
 
-        return const Center(
-          child: Text('لا توجد إعدادات'),
+        return Center(
+          child: Text(
+            AppLocalizations.of(context)!.noData,
+            textDirection: LocalizationService.instance.textDirection,
+          ),
         );
       },
     );
@@ -157,59 +200,126 @@ class _NotificationSettingsContentState
 
   Widget _buildSettingsList(List<Map<String, dynamic>> settings) {
     return Container(
+      height: 420.h,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(8.r),
-          topRight: Radius.circular(8.r),
-        ),
+        borderRadius: BorderRadius.circular(8).r,
       ),
-      child: ListView.separated(
-        shrinkWrap: true,
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-          vertical: 8.h,
-        ),
-        itemCount: settings.length,
-        separatorBuilder: (_, __) => Divider(
-          color: Colors.grey[300],
-          thickness: 1,
-          height: 16.h,
-        ),
-        itemBuilder: (context, index) {
-          final setting = settings[index];
-          return Transform.scale(
-            scale: 0.8,
-            child: SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                setting['title'] ?? '',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 8.h,
+      ),
+      child: Column(
+        children: [
+          for (int i = 0; i < settings.length; i++) ...[
+            Transform.scale(
+              scale: 0.8,
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  settings[i]['title'] ?? '',
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                  textDirection: LocalizationService.instance.textDirection,
                 ),
+                value: settings[i]['value'] ?? false,
+                onChanged: (bool newValue) {
+                  final settingId = settings[i]['id'];
+                  if (settingId != null) {
+                    final localizations = AppLocalizations.of(context)!;
+
+                    String settingTitle =
+                        _getSettingTitle(settingId, localizations);
+                    String actionDescription = _getActionDescription(
+                        settingId, newValue, localizations);
+
+                    context
+                        .read<home.NotificationSettingsCubit>()
+                        .toggleNotificationSetting(
+                          settingId,
+                          newValue,
+                          settingTitle: settingTitle,
+                          actionDescription: actionDescription,
+                          noCurrentSettingsError:
+                              localizations.noCurrentSettingsFound,
+                          toggleError:
+                              localizations.failedToToggleNotificationSetting,
+                        );
+                  }
+                },
+                activeThumbColor: AppColors.primaryOrange,
+                activeTrackColor:
+                    AppColors.primaryOrange.withValues(alpha: 0.3),
+                inactiveThumbColor: AppColors.white,
+                inactiveTrackColor: AppColors.grey,
               ),
-              value: setting['value'] ?? false,
-              onChanged: (bool newValue) {
-                final settingId = setting['id'];
-                if (settingId != null) {
-                  context
-                      .read<home.NotificationSettingsCubit>()
-                      .toggleNotificationSetting(
-                        settingId,
-                        newValue,
-                      );
-                }
-              },
-              activeColor: AppColors.primaryOrange,
-              activeTrackColor: AppColors.primaryOrange.withValues(alpha: 0.3),
-              inactiveThumbColor: AppColors.white,
-              inactiveTrackColor: AppColors.grey,
             ),
-          );
-        },
+            if (i != settings.length - 1)
+              Divider(
+                color: Colors.grey[300],
+                thickness: 1,
+                height: 16.h,
+              ),
+          ],
+        ],
       ),
     );
+  }
+
+  /// Get localized setting title based on settingId
+  String _getSettingTitle(String settingId, AppLocalizations localizations) {
+    switch (settingId) {
+      case 'favorite_list':
+        return localizations.whoAddedMeToFavorites;
+      case 'visit_profile':
+        return localizations.profileVisits;
+      case 'ignore_list':
+        return localizations.whoAddedMeToIgnoreList;
+      case 'message':
+        return localizations.newMessages;
+      case 'blog':
+        return localizations.successStories;
+      default:
+        return localizations.settingLabel;
+    }
+  }
+
+  /// Get localized action description based on settingId and isActive
+  String _getActionDescription(
+      String settingId, bool isActive, AppLocalizations localizations) {
+    if (isActive) {
+      switch (settingId) {
+        case 'favorite_list':
+          return localizations.willNotifyWhenAddedToFavorites;
+        case 'visit_profile':
+          return localizations.willNotifyOnProfileVisit;
+        case 'ignore_list':
+          return localizations.willNotifyWhenAddedToIgnoreList;
+        case 'message':
+          return localizations.willNotifyOnNewMessages;
+        case 'blog':
+          return localizations.willNotifyOnSuccessStories;
+        default:
+          return localizations.notificationsAllowed;
+      }
+    } else {
+      switch (settingId) {
+        case 'favorite_list':
+          return localizations.willNotNotifyWhenAddedToFavorites;
+        case 'visit_profile':
+          return localizations.willNotNotifyOnProfileVisit;
+        case 'ignore_list':
+          return localizations.willNotNotifyWhenAddedToIgnoreList;
+        case 'message':
+          return localizations.willNotNotifyOnNewMessages;
+        case 'blog':
+          return localizations.willNotNotifyOnSuccessStories;
+        default:
+          return localizations.notificationsNotAllowed;
+      }
+    }
   }
 }
