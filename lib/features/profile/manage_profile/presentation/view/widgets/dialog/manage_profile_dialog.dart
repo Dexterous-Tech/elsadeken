@@ -66,32 +66,28 @@ class ManageProfileField {
   final bool obscureText;
   final int? maxLines;
   final String?
-      dependentFieldLabel; // For fields that depend on other fields (like city depends on country)
+  dependentFieldLabel; // For fields that depend on other fields (like city depends on country)
   final ManageProfileFieldDataType? dataType;
   final ValueNotifier<String>? code; // To identify what type of data to load
 
-  ManageProfileField(
-      {required this.label,
-      required this.hint,
-      required this.currentValue,
-      required this.type,
-      this.options,
-      this.keyValueOptions,
-      this.isRequired = true,
-      this.keyboardType,
-      this.obscureText = false,
-      this.maxLines,
-      this.dependentFieldLabel,
-      this.dataType,
-      this.code});
+  ManageProfileField({
+    required this.label,
+    required this.hint,
+    required this.currentValue,
+    required this.type,
+    this.options,
+    this.keyValueOptions,
+    this.isRequired = true,
+    this.keyboardType,
+    this.obscureText = false,
+    this.maxLines,
+    this.dependentFieldLabel,
+    this.dataType,
+    this.code,
+  });
 }
 
-enum ManageProfileFieldType {
-  text,
-  dropdown,
-  password,
-  phoneWithCountryCode,
-}
+enum ManageProfileFieldType { text, dropdown, password, phoneWithCountryCode }
 
 enum ManageProfileFieldDataType {
   nationality,
@@ -115,63 +111,41 @@ Future<void> manageProfileDialog(
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   // Initialize controllers and selected values
-  print(
-      'DEBUG: Dialog Initialization - Processing ${data.fields.length} fields');
   for (var field in data.fields) {
     // For key-value fields, store the key (API value) in the controller
     // For regular fields, store the display value
     String controllerValue = field.currentValue;
-    print(
-        'DEBUG: Field "${field.label}" - Initial current value: "${field.currentValue}"');
-    print(
-        'DEBUG: Field "${field.label}" - Has keyValueOptions: ${field.keyValueOptions != null}');
 
     if (field.keyValueOptions != null) {
-      print(
-          'DEBUG: Field "${field.label}" - Available options: ${field.keyValueOptions}');
-
       // Find the key for the current display value
       // Trim both values to handle potential whitespace issues
       final trimmedCurrentValue = field.currentValue.trim();
-      final key = field.keyValueOptions!.entries.firstWhere(
-        (entry) {
-          final matches = entry.value.trim() == trimmedCurrentValue;
-          if (matches) {
-            print(
-                'DEBUG: Field "${field.label}" - Found matching entry: "${entry.key}" => "${entry.value}"');
-          }
-          return matches;
-        },
-        orElse: () {
-          print(
-              'DEBUG: Field "${field.label}" - No matching key found for value "${field.currentValue}"');
-          // Try to find by key instead (in case the current value is already a key)
-          final keyEntry = field.keyValueOptions!.entries
-              .where((entry) => entry.key.trim() == trimmedCurrentValue)
-              .firstOrNull;
-          if (keyEntry != null) {
-            print(
-                'DEBUG: Field "${field.label}" - Found by key match: "${keyEntry.key}" => "${keyEntry.value}"');
-            return keyEntry;
-          }
-          return const MapEntry('', '');
-        },
-      ).key;
+      final key = field.keyValueOptions!.entries
+          .firstWhere(
+            (entry) {
+              final matches = entry.value.trim() == trimmedCurrentValue;
+              if (matches) {}
+              return matches;
+            },
+            orElse: () {
+              // Try to find by key instead (in case the current value is already a key)
+              final keyEntry = field.keyValueOptions!.entries
+                  .where((entry) => entry.key.trim() == trimmedCurrentValue)
+                  .firstOrNull;
+              if (keyEntry != null) {
+                return keyEntry;
+              }
+              return const MapEntry('', '');
+            },
+          )
+          .key;
 
-      print('DEBUG: Field "${field.label}" - Selected key: "$key"');
       controllerValue = key;
     }
 
     controllers[field.label] = TextEditingController(text: controllerValue);
     selectedValues[field.label] = controllerValue;
-
-    print(
-        'DEBUG: Field "${field.label}" - Final controller value: "$controllerValue"');
-    print('DEBUG: Field "${field.label}" - Created controller successfully');
   }
-
-  print(
-      'DEBUG: Dialog Initialization - All controllers created. Total: ${controllers.length}');
 
   return customDialog(
     context: context,
@@ -253,32 +227,18 @@ class _ManageProfileDialogContentState
   List<ManageProfileField> _getVisibleFields() {
     List<ManageProfileField> visibleFields = [];
 
-    print(
-        'DEBUG: _getVisibleFields() called - Dialog type: ${widget.data.dialogType}');
-    print('DEBUG: Total fields: ${widget.data.fields.length}');
-
     for (var field in widget.data.fields) {
-      print('DEBUG: Processing field: "${field.label}"');
-
       // For social status dialog, check if children field should be visible
       if (widget.data.dialogType == ManageProfileDialogType.socialStatus &&
           field.label == AppLocalizations.of(context)!.numberOfChildren) {
-        print(
-            'DEBUG: Found children field - checking marital status for visibility');
-
         // Check if marital status is single
         final maritalStatusLabel = AppLocalizations.of(context)!.maritalStatus;
-        print(
-            'DEBUG: Looking for marital status field with label: "$maritalStatusLabel"');
 
         final maritalStatusField = widget.data.fields.firstWhere(
           (f) {
-            print(
-                'DEBUG: Checking field "${f.label}" against "$maritalStatusLabel"');
             return f.label == maritalStatusLabel;
           },
           orElse: () {
-            print('DEBUG: ERROR - Marital status field not found!');
             return ManageProfileField(
               label: '',
               hint: '',
@@ -288,60 +248,38 @@ class _ManageProfileDialogContentState
           },
         );
 
-        print(
-            'DEBUG: Marital status field found: "${maritalStatusField.label}"');
-        print(
-            'DEBUG: Available selectedValues keys: ${widget.selectedValues.keys.toList()}');
-
         final currentMaritalStatus =
             widget.selectedValues[maritalStatusField.label];
-        print(
-            'DEBUG: Current marital status value from selectedValues: "$currentMaritalStatus"');
 
         final isSingle = _isSingleStatus(currentMaritalStatus);
-        print('DEBUG: Is single status? $isSingle');
 
         if (isSingle) {
-          print(
-              'DEBUG: HIDING children field because marital status is single');
           // Hide children field if single
           continue;
-        } else {
-          print(
-              'DEBUG: SHOWING children field because marital status is NOT single');
-        }
+        } else {}
       }
 
       visibleFields.add(field);
     }
 
-    print('DEBUG: Visible fields count: ${visibleFields.length}');
     return visibleFields;
   }
 
   /// Check if the marital status indicates single status
   /// This method checks against the API key, not the display value
   bool _isSingleStatus(String? maritalStatus) {
-    print('DEBUG: _isSingleStatus() called with value: "$maritalStatus"');
-
     if (maritalStatus == null || maritalStatus.isEmpty) {
-      print(
-          'DEBUG: _isSingleStatus() returning false - value is null or empty');
       return false;
     }
 
     final statusTrimmed = maritalStatus.trim();
-    print('DEBUG: _isSingleStatus() trimmed value: "$statusTrimmed"');
 
     // Check for 'single' API key - this is the key used in the API
     // Note: We check against the key, not the display value
     if (statusTrimmed == 'single') {
-      print('DEBUG: _isSingleStatus() returning true - matches "single" key');
       return true;
     }
 
-    print(
-        'DEBUG: _isSingleStatus() returning false - does not match "single" key');
     return false;
   }
 
@@ -391,10 +329,14 @@ class _ManageProfileDialogContentState
     if (countryField.currentValue.isNotEmpty && countriesList.isNotEmpty) {
       // Find the country ID and load cities
       final countryId = ProfileDataMappers.getCountryIdByName(
-          countryField.currentValue, countriesList);
+        countryField.currentValue,
+        countriesList,
+      );
       if (countryId != null && widget.data.signUpListsCubit != null) {
         ProfileDataLoader.loadCitiesForCountry(
-            widget.data.signUpListsCubit!, countryId);
+          widget.data.signUpListsCubit!,
+          countryId,
+        );
       }
     }
   }
@@ -417,7 +359,6 @@ class _ManageProfileDialogContentState
       if (cityController != null) {
         cityController.text = cityField.currentValue;
         widget.selectedValues[cityField.label] = cityField.currentValue;
-        print('DEBUG: Set default city to: "${cityField.currentValue}"');
       }
     }
   }
@@ -486,34 +427,23 @@ class _ManageProfileDialogContentState
               ..._getVisibleFields().map((field) {
                 return Padding(
                   padding: EdgeInsetsDirectional.only(bottom: 16.h),
-                  child:
-                      ProfileFieldBuilderFactory.getBuilder(field.type).build(
+                  child: ProfileFieldBuilderFactory.getBuilder(field.type).build(
                     field: field,
                     controller: widget.controllers[field.label]!,
                     selectedValue: widget.selectedValues[field.label],
                     onChanged: (value) {
-                      print(
-                          'DEBUG: Field "${field.label}" changed to: "$value"');
-
                       // Check if this is the marital status field
-                      final isMaritalStatusField = widget.data.dialogType ==
+                      final isMaritalStatusField =
+                          widget.data.dialogType ==
                               ManageProfileDialogType.socialStatus &&
                           field.label ==
                               AppLocalizations.of(context)!.maritalStatus;
 
-                      if (isMaritalStatusField) {
-                        print('DEBUG: *** MARITAL STATUS CHANGED ***');
-                        print('DEBUG: New marital status value: "$value"');
-                        print(
-                            'DEBUG: Previous selectedValues: ${widget.selectedValues}');
-                      }
+                      if (isMaritalStatusField) {}
 
                       widget.selectedValues[field.label] = value;
 
-                      if (isMaritalStatusField) {
-                        print(
-                            'DEBUG: Updated selectedValues: ${widget.selectedValues}');
-                      }
+                      if (isMaritalStatusField) {}
 
                       // Also update the controller for dropdown fields
                       // Only update if value is not null (null means user didn't change selection)
@@ -538,15 +468,9 @@ class _ManageProfileDialogContentState
 
                       // Always trigger a rebuild for any field change
                       // This is especially important for conditional field visibility (e.g., children field based on marital status)
-                      if (isMaritalStatusField) {
-                        print(
-                            'DEBUG: About to call setState() to trigger rebuild...');
-                      }
+                      if (isMaritalStatusField) {}
                       setState(() {});
-                      if (isMaritalStatusField) {
-                        print(
-                            'DEBUG: setState() called - UI should rebuild now');
-                      }
+                      if (isMaritalStatusField) {}
                     },
                     context: context,
                     signUpListsCubit: widget.data.signUpListsCubit,
@@ -619,8 +543,10 @@ class _ManageProfileDialogContentState
         },
       );
 
-      final validationResult =
-          validationHandler.validate(widget.controllers, context);
+      final validationResult = validationHandler.validate(
+        widget.controllers,
+        context,
+      );
 
       if (!validationResult.isValid) {
         ProfileSnackbarHandler.showSnackBarAboveDialog(
@@ -633,8 +559,9 @@ class _ManageProfileDialogContentState
 
       // Handle save logic based on dialog type
       if (widget.data.cubit != null) {
-        final updateHandler =
-            ProfileUpdateHandlerFactory.getHandler(widget.data.dialogType);
+        final updateHandler = ProfileUpdateHandlerFactory.getHandler(
+          widget.data.dialogType,
+        );
 
         // Special handling for login data to pass field data for country code
         if (widget.data.dialogType == ManageProfileDialogType.loginData) {

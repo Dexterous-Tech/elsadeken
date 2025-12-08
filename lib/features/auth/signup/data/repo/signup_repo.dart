@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -34,7 +32,7 @@ class SignupRepoImplementation implements SignupRepoInterface {
       var response = await _signupDataSource.getCities(id);
       return Right(response);
     } catch (error) {
-      log("error in cities $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -49,7 +47,7 @@ class SignupRepoImplementation implements SignupRepoInterface {
       var response = await _signupDataSource.getCountries();
       return Right(response);
     } catch (error) {
-      log("error in countries $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -65,7 +63,7 @@ class SignupRepoImplementation implements SignupRepoInterface {
       var response = await _signupDataSource.getNationalities();
       return Right(response);
     } catch (error) {
-      log("error in nationalities $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -81,7 +79,7 @@ class SignupRepoImplementation implements SignupRepoInterface {
       var response = await _signupDataSource.signup(signupRequestBody);
       return Right(response);
     } catch (error) {
-      log("error in signup $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -99,7 +97,7 @@ class SignupRepoImplementation implements SignupRepoInterface {
           await _signupDataSource.registerInformation(registerRequestModel);
       return Right(response);
     } catch (error) {
-      log("error in register information $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -115,7 +113,7 @@ class SignupRepoImplementation implements SignupRepoInterface {
       var response = await _signupDataSource.getGeneralInfo(endpoint);
       return Right(response);
     } catch (error) {
-      log("error in general info $endpoint $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

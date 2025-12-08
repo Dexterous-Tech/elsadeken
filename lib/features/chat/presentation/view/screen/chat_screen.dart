@@ -60,47 +60,39 @@ class _ChatScreenState extends State<ChatScreen>
 
   void _setupRealTimeListeners() {
     // Listen for chat list refresh requests from Firebase notifications
-    _refreshChatListSubscription =
-        ChatMessageService.instance.refreshChatListStream.listen((_) {
-      if (mounted) {
-        print(
-            '🔔 [ChatScreen] Firebase notification triggered chat list refresh');
-        // Silent background refresh - no UI indicators
-        context.read<ChatListCubit>().silentRefreshChatList();
-      }
-    });
+    _refreshChatListSubscription = ChatMessageService
+        .instance
+        .refreshChatListStream
+        .listen((_) {
+          if (mounted) {
+            // Silent background refresh - no UI indicators
+            context.read<ChatListCubit>().silentRefreshChatList();
+          }
+        });
 
     // Listen for Pusher message updates (immediate refresh when message arrives)
-    _chatUpdateSubscription =
-        ChatMessageService.instance.chatUpdateStream.listen((chatId) {
-      if (mounted) {
-        print(
-            '💬 [ChatScreen] Pusher message received for chat $chatId - refreshing chat list');
-        // Silent background refresh - no UI indicators
-        context.read<ChatListCubit>().silentRefreshChatList();
-      }
-    });
-
-    print(
-        '🔔 [ChatScreen] Chat list listening to Firebase and Pusher updates');
+    _chatUpdateSubscription = ChatMessageService.instance.chatUpdateStream
+        .listen((chatId) {
+          if (mounted) {
+            // Silent background refresh - no UI indicators
+            context.read<ChatListCubit>().silentRefreshChatList();
+          }
+        });
   }
 
   /// Start periodic refresh for chat list (every 15 seconds)
   void _startPeriodicRefresh() {
     _chatListRefreshTimer = Timer.periodic(const Duration(seconds: 15), (_) {
       if (mounted && _hasLoadedInitially) {
-        print('🔄 [ChatScreen] Periodic chat list refresh');
         context.read<ChatListCubit>().silentRefreshChatList();
       }
     });
-    print('✅ [ChatScreen] Periodic refresh started (every 15 seconds)');
   }
 
   /// Stop periodic refresh
   void _stopPeriodicRefresh() {
     _chatListRefreshTimer?.cancel();
     _chatListRefreshTimer = null;
-    print('⏹️ [ChatScreen] Periodic refresh stopped');
   }
 
   @override
@@ -122,7 +114,6 @@ class _ChatScreenState extends State<ChatScreen>
 
     // Refresh chat list when app comes back to foreground to ensure consistency
     if (state == AppLifecycleState.resumed && _hasLoadedInitially) {
-      print('🔄 [ChatScreen] App resumed, refreshing chat list');
       context.read<ChatListCubit>().silentRefreshChatList();
 
       // Resume periodic refresh
@@ -131,7 +122,6 @@ class _ChatScreenState extends State<ChatScreen>
       }
     } else if (state == AppLifecycleState.paused) {
       // Pause periodic refresh to save resources
-      print('⏸️ [ChatScreen] App paused, stopping periodic refresh');
       _stopPeriodicRefresh();
     }
   }
@@ -141,7 +131,6 @@ class _ChatScreenState extends State<ChatScreen>
     super.didChangeDependencies();
     // Refresh chat list when returning to this screen to ensure consistency
     if (_hasLoadedInitially) {
-      print('🔄 [ChatScreen] Refreshing chat list on didChangeDependencies');
       context.read<ChatListCubit>().silentRefreshChatList();
     }
   }
@@ -156,9 +145,7 @@ class _ChatScreenState extends State<ChatScreen>
           children: [
             _buildTopBar(),
             Expanded(child: _buildChatContent()),
-            ChatOptionsCard(
-              chatListCubit: context.read<ChatListCubit>(),
-            ),
+            ChatOptionsCard(chatListCubit: context.read<ChatListCubit>()),
           ],
         ),
       ),
@@ -269,7 +256,8 @@ class _ChatScreenState extends State<ChatScreen>
               return ChatRoomItem(
                 chat: chat,
                 chatListCubit: context.read<ChatListCubit>(),
-                isInFavoritesList: _selectedTabIndex ==
+                isInFavoritesList:
+                    _selectedTabIndex ==
                     1, // Pass true if we're in favorites tab
                 onTap: () {
                   // Mark this chat as read when opened
@@ -282,7 +270,8 @@ class _ChatScreenState extends State<ChatScreen>
                   );
                 },
                 onLongPress: null,
-                isOnline: chat.lastMessage?.isOnline ??
+                isOnline:
+                    chat.lastMessage?.isOnline ??
                     false, // Let ChatRoomItem handle its own long press
               );
             },

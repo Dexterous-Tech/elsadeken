@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -22,7 +21,7 @@ class PackagesRepoImpl extends PackagesRepoInterface {
       var response = await packagesDataSource.getPackages();
       return Right(response);
     } catch (error) {
-      log("error in get packages $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -36,7 +35,7 @@ class PackagesRepoImpl extends PackagesRepoInterface {
       var response = await packagesDataSource.assignPackageToUser(id);
       return Right(response);
     } catch (error) {
-      log("error in assign package to user $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

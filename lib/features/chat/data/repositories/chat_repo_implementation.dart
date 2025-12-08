@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -20,7 +18,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       var response = await chatDataSource.getAllChatList();
       return Right(response);
     } catch (error) {
-      log("error in get all chat list $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -35,7 +33,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.getChatMessages(chatId);
       return Right(response);
     } catch (error) {
-      log("error in getChatMessages: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -52,7 +50,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.sendMessage(receiverId, message);
       return Right(response);
     } catch (error) {
-      log("error in sendMessage: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -67,7 +65,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.markAllMessagesAsRead();
       return Right(response);
     } catch (error) {
-      log("error in markAllMessagesAsRead: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -82,7 +80,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.reportChat(chatId);
       return Right(response);
     } catch (error) {
-      log("error in reportChat: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -97,7 +95,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.unreportChat(chatId);
       return Right(response);
     } catch (error) {
-      log("error in unreportChat: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -112,7 +110,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.muteChat(chatId);
       return Right(response);
     } catch (error) {
-      log("error in muteChat: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -127,7 +125,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.deleteOneChat(chatId);
       return Right(response);
     } catch (error) {
-      log("error in deleteOneChat: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -141,7 +139,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.deleteAllChats();
       return Right(response);
     } catch (error) {
-      log("error in deleteAllChats: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -155,7 +153,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.getFavoriteChatList();
       return Right(response);
     } catch (error) {
-      log("error in getFavoriteChatList: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -172,7 +170,7 @@ class ChatRepoImpl extends ChatRepoInterface {
           await chatDataSource.addChatToFavorite(chatId, favourite: favourite);
       return Right(response);
     } catch (error) {
-      log("error in addChatToFavorite: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -187,7 +185,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.removeChatFromFavorite(chatId);
       return Right(response);
     } catch (error) {
-      log("error in removeChatFromFavorite: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -201,7 +199,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.getOnline();
       return Right(response);
     } catch (error) {
-      log("error in get online: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -215,7 +213,7 @@ class ChatRepoImpl extends ChatRepoInterface {
       final response = await chatDataSource.setOnline();
       return Right(response);
     } catch (error) {
-      log("error in get online: $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

@@ -11,7 +11,6 @@ class ChatDataSource {
   ChatDataSource(this._apiServices);
 
   Future<ChatListModel> getAllChatList() async {
-    print('🌐 [ChatDataSource] Calling getAllChatList API...');
     var response = await _apiServices.get(
       endpoint: ApiConstants.getChatsList,
       queryParameters: {'favorite': '0'}, // Only get non-favorite chats
@@ -19,18 +18,13 @@ class ChatDataSource {
     );
 
     // Debug: Print raw API response
-    print('🌐 [ChatDataSource] Raw API response: ${response.data}');
 
     final chatList = ChatListModel.fromJson(response.data);
-    print(
-        '🌐 [ChatDataSource] getAllChatList response: ${chatList.data.length} chats');
 
     // Debug: Print all chat IDs and names with favorite status
-    for (int i = 0; i < chatList.data.length; i++) {
-      final chat = chatList.data[i];
-      print(
-          '🌐 [ChatDataSource] Chat $i: ID=${chat.id}, Name=${chat.otherUser.name}, isFavorite=${chat.isFavorite}');
-    }
+    // for (int i = 0; i < chatList.data.length; i++) {
+    //   final chat = chatList.data[i];
+    // }
 
     return chatList;
   }
@@ -44,16 +38,10 @@ class ChatDataSource {
     return ChatMessagesConversation.fromJson(response.data);
   }
 
-  Future<SendMessageModel> sendMessage(
-    int receiverId,
-    String message,
-  ) async {
+  Future<SendMessageModel> sendMessage(int receiverId, String message) async {
     var response = await _apiServices.post(
       endpoint: ApiConstants.sendMessage,
-      requestBody: {
-        'receiver_id': receiverId,
-        'body': message,
-      },
+      requestBody: {'receiver_id': receiverId, 'body': message},
     );
 
     return SendMessageModel.fromJson(response.data);
@@ -97,11 +85,7 @@ class ChatDataSource {
   }
 
   Future<Map<String, dynamic>> deleteOneChat(int chatId) async {
-    final timestamp = DateTime.now().toIso8601String();
-    print(
-        '🌐 [ChatDataSource] Calling delete API for chat ID: $chatId at $timestamp');
-    print(
-        '🌐 [ChatDataSource] Endpoint: ${ApiConstants.deleteOneChatSettings(chatId.toString())}');
+    DateTime.now().toIso8601String();
 
     final response = await _apiServices.delete(
       endpoint: ApiConstants.deleteOneChatSettings(chatId.toString()),
@@ -109,7 +93,6 @@ class ChatDataSource {
       requiresAuth: true,
     );
 
-    print('🌐 [ChatDataSource] Delete API response: ${response.data}');
     return response.data as Map<String, dynamic>;
   }
 
@@ -134,8 +117,10 @@ class ChatDataSource {
     return ChatListModel.fromJson(response.data);
   }
 
-  Future<Map<String, dynamic>> addChatToFavorite(int chatId,
-      {int favourite = 1}) async {
+  Future<Map<String, dynamic>> addChatToFavorite(
+    int chatId, {
+    int favourite = 1,
+  }) async {
     final response = await _apiServices.get(
       endpoint: ApiConstants.addChatToFavorite(chatId),
       queryParameters: {

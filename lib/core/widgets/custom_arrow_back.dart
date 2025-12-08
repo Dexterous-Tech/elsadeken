@@ -23,26 +23,20 @@ class CustomArrowBack extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('CustomArrowBack: Back button pressed');
         if (onPressed != null) {
           onPressed!();
         } else {
           try {
             if (Navigator.of(context).canPop()) {
               Navigator.of(context).pop();
-              print('CustomArrowBack: Navigation successful');
             } else {
-              print('CustomArrowBack: Cannot pop - no previous route');
               // Try alternative navigation methods
               if (Navigator.of(context, rootNavigator: true).canPop()) {
                 Navigator.of(context, rootNavigator: true).pop();
-                print('CustomArrowBack: Root navigation successful');
-              } else {
-                print('CustomArrowBack: No navigation possible');
-              }
+              } else {}
             }
           } catch (e) {
-            print('CustomArrowBack: Navigation error: $e');
+            Navigator.of(context, rootNavigator: true).pop();
           }
         }
       },

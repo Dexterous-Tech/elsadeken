@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -23,7 +21,7 @@ class ProfileRepoImp implements ProfileRepoInterface {
 
       return Right(response);
     } catch (error) {
-      log("error in logout $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -39,7 +37,7 @@ class ProfileRepoImp implements ProfileRepoInterface {
 
       return Right(response);
     } catch (error) {
-      log("error in delete image $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -55,7 +53,7 @@ class ProfileRepoImp implements ProfileRepoInterface {
 
       return Right(response);
     } catch (error) {
-      log("error in notify $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

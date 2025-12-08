@@ -1,10 +1,8 @@
-
 import '../../domain/entities/blog.dart';
 import '../../domain/entities/blog_fetch_result.dart';
 import '../../domain/repository/blog_repo.dart';
 import '../models/blog_model.dart';
 import '../../../../../core/networking/api_services.dart';
-import 'package:flutter/foundation.dart';
 
 class BlogApi implements BlogRepo {
   final ApiServices _apiServices;
@@ -14,15 +12,12 @@ class BlogApi implements BlogRepo {
   @override
   Future<BlogFetchResult> getBlogs() async {
     final response = await _apiServices.get(endpoint: '/user/blogs');
-    debugPrint('GET /user/blogs -> HTTP ${response.statusCode}');
 
     if (response.statusCode != null &&
         response.statusCode! >= 200 &&
         response.statusCode! < 300) {
       final decoded = response.data as Map<String, dynamic>;
-      if (decoded.containsKey('code')) {
-        debugPrint('API payload code: ${decoded['code']}');
-      }
+      if (decoded.containsKey('code')) {}
       final List<dynamic> data = decoded['data'] ?? [];
       final blogs = data
           .map((item) => BlogModel.fromJson(item as Map<String, dynamic>))

@@ -10,10 +10,10 @@ class SearchUseCase {
 
   SearchUseCase(this.repository);
 
-  Future<UsersResponseModel> searchUsers(SearchFilter filter,
-      {int page = 1}) async {
-    print("Searching with filter: ${filter.toJson().toString()}, page: $page");
-
+  Future<UsersResponseModel> searchUsers(
+    SearchFilter filter, {
+    int page = 1,
+  }) async {
     return await repository.searchUsers(filter, page: page);
   }
 

@@ -25,8 +25,6 @@ class PersonModel {
 
   factory PersonModel.fromJson(Map<String, dynamic> json) {
     try {
-      print("Parsing PersonModel from JSON: $json");
-
       // Check if required fields exist
       if (json['id'] == null) {
         throw Exception("Person ID is required but not found in JSON");
@@ -48,13 +46,12 @@ class PersonModel {
         createdAt: json['created_at']?.toString() ?? '',
         lastSeen: json['last_seen']?.toString(),
         attribute: Attribute.fromJson(json['attribute']),
-        isFavorite: json['is_favorite'] == true ||
+        isFavorite:
+            json['is_favorite'] == true ||
             json['is_favorite'] == 'true' ||
             json['is_favorite'] == 1,
       );
     } catch (e) {
-      print("Error parsing PersonModel: $e");
-      print("JSON that caused error: $json");
       rethrow;
     }
   }
@@ -139,8 +136,6 @@ class Attribute {
 
   factory Attribute.fromJson(Map<String, dynamic> json) {
     try {
-      print("Parsing Attribute from JSON: $json");
-
       return Attribute(
         nationality: json['nationality']?.toString() ?? '',
         city: json['city']?.toString() ?? '',
@@ -175,8 +170,6 @@ class Attribute {
         beard: json['beard']?.toString() ?? '',
       );
     } catch (e) {
-      print("Error parsing Attribute: $e");
-      print("JSON that caused error: $json");
       rethrow;
     }
   }

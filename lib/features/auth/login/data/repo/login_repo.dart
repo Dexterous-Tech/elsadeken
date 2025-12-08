@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/features/profile/profile/data/models/profile_action_model.dart';
 import '../../../../../core/networking/api_error_handler.dart';
@@ -29,7 +27,7 @@ class LoginRepoImplementation implements LoginRepoInterface {
       var response = await _loginDataSource.login(loginRequestBodyModel);
       return Right(response);
     } catch (error) {
-      log("error in login $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -43,11 +41,10 @@ class LoginRepoImplementation implements LoginRepoInterface {
       String token) async {
     try {
       var response = await _loginDataSource.updateFcm(token);
-      log("success in fcm");
 
       return Right(response);
     } catch (error) {
-      log("error in fcm $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

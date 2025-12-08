@@ -41,13 +41,13 @@ class LoginDataUpdateHandler extends ProfileUpdateHandler {
         controllers[AppLocalizations.of(context)!.passwordOptional]?.text ?? '';
     final passwordConfirmation =
         controllers[AppLocalizations.of(context)!.confirmPasswordOptional]
-                ?.text ??
-            '';
+            ?.text ??
+        '';
 
     // Get country code from the ValueNotifier and phone number from text field separately
     String? countryCode;
-    String? phoneNumber =
-        phone.trim(); // Phone number is directly from text field
+    String? phoneNumber = phone
+        .trim(); // Phone number is directly from text field
 
     // For now, we'll use a default approach since we need to access the field data
     // This will be fixed when we pass the field data to the update handler
@@ -59,8 +59,9 @@ class LoginDataUpdateHandler extends ProfileUpdateHandler {
       phone: phoneNumber.isNotEmpty ? phoneNumber : null,
       countryCode: countryCode.isNotEmpty ? countryCode : null,
       password: password.isNotEmpty ? password : null,
-      passwordConfirmation:
-          passwordConfirmation.isNotEmpty ? passwordConfirmation : null,
+      passwordConfirmation: passwordConfirmation.isNotEmpty
+          ? passwordConfirmation
+          : null,
     );
   }
 
@@ -84,8 +85,8 @@ class LoginDataUpdateHandler extends ProfileUpdateHandler {
         controllers[AppLocalizations.of(context)!.passwordOptional]?.text ?? '';
     final passwordConfirmation =
         controllers[AppLocalizations.of(context)!.confirmPasswordOptional]
-                ?.text ??
-            '';
+            ?.text ??
+        '';
 
     // Get country code from the phone field's ValueNotifier
     String? countryCode;
@@ -109,17 +110,15 @@ class LoginDataUpdateHandler extends ProfileUpdateHandler {
       countryCode = '+966'; // Default fallback
     }
 
-    print('DEBUG: Login Data Update - Country Code: "$countryCode"');
-    print('DEBUG: Login Data Update - Phone Number: "$phoneNumber"');
-
     cubit.updateProfileLoginData(
       name: name.isNotEmpty ? name : null,
       email: email.isNotEmpty ? email : null,
       phone: phoneNumber.isNotEmpty ? phoneNumber : null,
       countryCode: countryCode.isNotEmpty ? countryCode : null,
       password: password.isNotEmpty ? password : null,
-      passwordConfirmation:
-          passwordConfirmation.isNotEmpty ? passwordConfirmation : null,
+      passwordConfirmation: passwordConfirmation.isNotEmpty
+          ? passwordConfirmation
+          : null,
     );
   }
 }
@@ -139,7 +138,8 @@ class NationalCountryUpdateHandler extends ProfileUpdateHandler {
     // This method signature doesn't have access to fields
     // So we need to use a different approach
     throw UnimplementedError(
-        'Use updateWithFieldData for NationalCountryUpdateHandler');
+      'Use updateWithFieldData for NationalCountryUpdateHandler',
+    );
   }
 
   /// Update method that accepts field data to get current values
@@ -193,15 +193,6 @@ class NationalCountryUpdateHandler extends ProfileUpdateHandler {
         controllers[AppLocalizations.of(context)!.country_residence];
     final cityController = controllers[AppLocalizations.of(context)!.city];
 
-    print('DEBUG: National Country Update - Initial values:');
-    print('DEBUG: Nationality controller: "${nationalityController?.text}"');
-    print(
-        'DEBUG: Nationality field currentValue: "${nationalityField.currentValue}"');
-    print('DEBUG: Country controller: "${countryController?.text}"');
-    print('DEBUG: Country field currentValue: "${countryField.currentValue}"');
-    print('DEBUG: City controller: "${cityController?.text}"');
-    print('DEBUG: City field currentValue: "${cityField.currentValue}"');
-
     // Get IDs from controllers or use old values
     // If controller has a value and it's different from old value, use new value
     // Otherwise, use old value
@@ -212,86 +203,84 @@ class NationalCountryUpdateHandler extends ProfileUpdateHandler {
     // Handle nationality
     // If controller is null or text is empty, user didn't change it, so use old value
     if (nationalityController == null || nationalityController.text.isEmpty) {
-      print('DEBUG: Nationality not changed (empty), using old value');
       nationalityId = ProfileDataMappers.getNationalityIdByName(
-          nationalityField.currentValue, nationalitiesList);
-      print('DEBUG: Using old nationality ID: $nationalityId');
+        nationalityField.currentValue,
+        nationalitiesList,
+      );
     } else {
       // Controller has a value - check if it's different from old value
-      final nationalityChanged = nationalityController.text.trim() !=
+      final nationalityChanged =
+          nationalityController.text.trim() !=
           nationalityField.currentValue.trim();
-      print('DEBUG: Nationality changed: $nationalityChanged');
 
       if (nationalityChanged) {
         // User changed nationality, use new value
         nationalityId = ProfileDataMappers.getNationalityIdByName(
-            nationalityController.text, nationalitiesList);
-        print('DEBUG: Using new nationality ID: $nationalityId');
+          nationalityController.text,
+          nationalitiesList,
+        );
       } else {
         // Same value, use old (this handles case where user opens dialog and doesn't change)
         nationalityId = ProfileDataMappers.getNationalityIdByName(
-            nationalityField.currentValue, nationalitiesList);
-        print('DEBUG: Using old nationality ID: $nationalityId');
+          nationalityField.currentValue,
+          nationalitiesList,
+        );
       }
     }
 
     // Handle country
     // If controller is null or text is empty, user didn't change it, so use old value
     if (countryController == null || countryController.text.isEmpty) {
-      print('DEBUG: Country not changed (empty), using old value');
       countryId = ProfileDataMappers.getCountryIdByName(
-          countryField.currentValue, countriesList);
-      print('DEBUG: Using old country ID: $countryId');
+        countryField.currentValue,
+        countriesList,
+      );
     } else {
       // Controller has a value - check if it's different from old value
       final countryChanged =
           countryController.text.trim() != countryField.currentValue.trim();
-      print('DEBUG: Country changed: $countryChanged');
 
       if (countryChanged) {
         // User changed country, use new value
-        print('DEBUG: Looking up country name: "${countryController.text}"');
-        print(
-            'DEBUG: Available countries: ${countriesList.map((c) => c.name).toList()}');
         countryId = ProfileDataMappers.getCountryIdByName(
-            countryController.text, countriesList);
-        print('DEBUG: Using new country ID: $countryId');
+          countryController.text,
+          countriesList,
+        );
       } else {
         // Same value, use old
         countryId = ProfileDataMappers.getCountryIdByName(
-            countryField.currentValue, countriesList);
-        print('DEBUG: Using old country ID: $countryId');
+          countryField.currentValue,
+          countriesList,
+        );
       }
     }
 
     // Handle city
     // If controller is null or text is empty, user didn't change it, so use old value
     if (cityController == null || cityController.text.isEmpty) {
-      print('DEBUG: City not changed (empty), using old value');
       cityId = ProfileDataMappers.getCityIdByName(
-          cityField.currentValue, citiesList);
-      print('DEBUG: Using old city ID: $cityId');
+        cityField.currentValue,
+        citiesList,
+      );
     } else {
       // Controller has a value - check if it's different from old value
       final cityChanged =
           cityController.text.trim() != cityField.currentValue.trim();
-      print('DEBUG: City changed: $cityChanged');
 
       if (cityChanged) {
         // User changed city, use new value
-        cityId =
-            ProfileDataMappers.getCityIdByName(cityController.text, citiesList);
-        print('DEBUG: Using new city ID: $cityId');
+        cityId = ProfileDataMappers.getCityIdByName(
+          cityController.text,
+          citiesList,
+        );
       } else {
         // Same value, use old
         cityId = ProfileDataMappers.getCityIdByName(
-            cityField.currentValue, citiesList);
-        print('DEBUG: Using old city ID: $cityId');
+          cityField.currentValue,
+          citiesList,
+        );
       }
     }
-
-    print(
-        'DEBUG: Final IDs - Nationality: $nationalityId, Country: $countryId, City: $cityId');
 
     // Only proceed if we have valid IDs for all required fields
     if (nationalityId != null && countryId != null && cityId != null) {
@@ -318,8 +307,8 @@ class JobUpdateHandler extends ProfileUpdateHandler {
   }) {
     final qualificationName =
         controllers[AppLocalizations.of(context)!.educationalQualification]
-                ?.text ??
-            '';
+            ?.text ??
+        '';
     final financialSituationName =
         controllers[AppLocalizations.of(context)!.financialStatus]?.text ?? '';
     final jobName = controllers[AppLocalizations.of(context)!.job]?.text ?? '';
@@ -330,15 +319,23 @@ class JobUpdateHandler extends ProfileUpdateHandler {
 
     // Get IDs from names using mapping functions
     final qualificationId = ProfileDataMappers.getQualificationIdByName(
-        qualificationName, generalDataLists);
+      qualificationName,
+      generalDataLists,
+    );
     final financialSituationId =
         ProfileDataMappers.getFinancialSituationIdByName(
-            financialSituationName, generalDataLists);
+          financialSituationName,
+          generalDataLists,
+        );
     final jobId = ProfileDataMappers.getJobIdByName(jobName, generalDataLists);
-    final incomeId =
-        ProfileDataMappers.getIncomeIdByName(incomeName, generalDataLists);
+    final incomeId = ProfileDataMappers.getIncomeIdByName(
+      incomeName,
+      generalDataLists,
+    );
     final healthConditionId = ProfileDataMappers.getHealthConditionIdByName(
-        healthConditionName, generalDataLists);
+      healthConditionName,
+      generalDataLists,
+    );
 
     cubit.updateProfileWorkData(
       qualificationId: qualificationId?.toString(),
@@ -370,20 +367,11 @@ class SocialStatusUpdateHandler extends ProfileUpdateHandler {
     final childrenStr =
         controllers[AppLocalizations.of(context)!.numberOfChildren]?.text ?? '';
 
-    print('DEBUG: Social Status Update - Raw values:');
-    print('DEBUG: Marital Status: "$maritalStatus"');
-    print('DEBUG: Type of Marriage: "$typeOfMarriage"');
-    print('DEBUG: Age: "$ageStr"');
-    print('DEBUG: Children: "$childrenStr"');
-
     // The values should now be API keys directly from the key-value mapping
     final maritalStatusValue = maritalStatus.isNotEmpty ? maritalStatus : null;
-    final typeOfMarriageValue =
-        typeOfMarriage.isNotEmpty ? typeOfMarriage : null;
-
-    print('DEBUG: Social Status Update - Mapped values:');
-    print('DEBUG: Marital Status Value: "$maritalStatusValue"');
-    print('DEBUG: Type of Marriage Value: "$typeOfMarriageValue"');
+    final typeOfMarriageValue = typeOfMarriage.isNotEmpty
+        ? typeOfMarriage
+        : null;
 
     // Convert strings to numbers
     int? age;
@@ -397,7 +385,6 @@ class SocialStatusUpdateHandler extends ProfileUpdateHandler {
       // If marital status is 'single', set children to 0
       // Otherwise, parse the children string
       if (maritalStatusValue == 'single') {
-        print('DEBUG: Marital status is single - setting children to 0');
         childrenNumber = 0;
       } else {
         childrenNumber = childrenStr.isNotEmpty ? int.parse(childrenStr) : null;
@@ -407,12 +394,6 @@ class SocialStatusUpdateHandler extends ProfileUpdateHandler {
       // If single, set to 0, otherwise null
       childrenNumber = (maritalStatusValue == 'single') ? 0 : null;
     }
-
-    print('DEBUG: Social Status Update - Final values to send:');
-    print('DEBUG: Marital Status: "$maritalStatusValue"');
-    print('DEBUG: Type of Marriage: "$typeOfMarriageValue"');
-    print('DEBUG: Age: "$age"');
-    print('DEBUG: Children Number: "$childrenNumber"');
 
     cubit.updateProfileMarriageData(
       maritalStatus: maritalStatusValue,
@@ -450,9 +431,13 @@ class BodyInfoUpdateHandler extends ProfileUpdateHandler {
 
     // Get IDs from names
     int? skinColorId = ProfileDataMappers.getSkinColorIdByName(
-        skinColorName, generalDataLists);
-    int? physiqueId =
-        ProfileDataMappers.getPhysiqueIdByName(physiqueName, generalDataLists);
+      skinColorName,
+      generalDataLists,
+    );
+    int? physiqueId = ProfileDataMappers.getPhysiqueIdByName(
+      physiqueName,
+      generalDataLists,
+    );
 
     cubit.updateProfilePhysicalData(
       weight: weight,
@@ -477,8 +462,8 @@ class EducationUpdateHandler extends ProfileUpdateHandler {
   }) {
     final qualificationName =
         controllers[AppLocalizations.of(context)!.educationalQualification]
-                ?.text ??
-            '';
+            ?.text ??
+        '';
     final financialSituationName =
         controllers[AppLocalizations.of(context)!.financialStatus]?.text ?? '';
     final jobName = controllers[AppLocalizations.of(context)!.job]?.text ?? '';
@@ -489,15 +474,23 @@ class EducationUpdateHandler extends ProfileUpdateHandler {
 
     // Get IDs from names using mapping functions
     final qualificationId = ProfileDataMappers.getQualificationIdByName(
-        qualificationName, generalDataLists);
+      qualificationName,
+      generalDataLists,
+    );
     final financialSituationId =
         ProfileDataMappers.getFinancialSituationIdByName(
-            financialSituationName, generalDataLists);
+          financialSituationName,
+          generalDataLists,
+        );
     final jobId = ProfileDataMappers.getJobIdByName(jobName, generalDataLists);
-    final incomeId =
-        ProfileDataMappers.getIncomeIdByName(incomeName, generalDataLists);
+    final incomeId = ProfileDataMappers.getIncomeIdByName(
+      incomeName,
+      generalDataLists,
+    );
     final healthConditionId = ProfileDataMappers.getHealthConditionIdByName(
-        healthConditionName, generalDataLists);
+      healthConditionName,
+      generalDataLists,
+    );
 
     cubit.updateProfileWorkData(
       qualificationId: qualificationId?.toString(),
@@ -551,25 +544,16 @@ class ReligionUpdateHandler extends ProfileUpdateHandler {
     required Map<String, List<GeneralInfoResponseModels>> generalDataLists,
   }) {
     // Get the localized field labels
-    final religiousCommitmentLabel =
-        AppLocalizations.of(context)!.religiousCommitment;
+    final religiousCommitmentLabel = AppLocalizations.of(
+      context,
+    )!.religiousCommitment;
     final prayerLabel = AppLocalizations.of(context)!.prayer;
     final smokingLabel = AppLocalizations.of(context)!.smoking;
     final hijabLabel = AppLocalizations.of(context)!.hijabTitle;
     final beardLabel = AppLocalizations.of(context)!.beardTitle;
 
-    print('DEBUG: Religion Update - Looking for controllers with labels:');
-    print('DEBUG: Religious Commitment label: "$religiousCommitmentLabel"');
-    print('DEBUG: Prayer label: "$prayerLabel"');
-    print('DEBUG: Smoking label: "$smokingLabel"');
-    print('DEBUG: Hijab label: "$hijabLabel"');
-    print('DEBUG: Beard label: "$beardLabel"');
-
     // Print all available controller keys first
-    print('DEBUG: All available controller keys:');
-    controllers.forEach((key, controller) {
-      print('DEBUG: Controller key: "$key" = "${controller.text}"');
-    });
+    controllers.forEach((key, controller) {});
 
     // Get values from controllers
     final religiousCommitment =
@@ -579,27 +563,14 @@ class ReligionUpdateHandler extends ProfileUpdateHandler {
     final hijab = controllers[hijabLabel]?.text ?? '';
     final beard = controllers[beardLabel]?.text ?? '';
 
-    print('DEBUG: Religion Update - Raw values from controllers:');
-    print('DEBUG: Religious Commitment: "$religiousCommitment"');
-    print('DEBUG: Prayer: "$prayer"');
-    print('DEBUG: Smoking: "$smokingStr"');
-    print('DEBUG: Hijab: "$hijab"');
-    print('DEBUG: Beard: "$beard"');
-
     // The values should now be API keys directly from the key-value mapping
-    final religiousCommitmentValue =
-        religiousCommitment.isNotEmpty ? religiousCommitment : null;
+    final religiousCommitmentValue = religiousCommitment.isNotEmpty
+        ? religiousCommitment
+        : null;
     final prayerValue = prayer.isNotEmpty ? prayer : null;
     final smoking = smokingStr.isNotEmpty ? int.tryParse(smokingStr) : null;
     final hijabValue = hijab.isNotEmpty ? hijab : null;
     final beardValue = beard.isNotEmpty ? beard : null;
-
-    print('DEBUG: Religion Update - Final values to send to API:');
-    print('DEBUG: Religious Commitment Value: "$religiousCommitmentValue"');
-    print('DEBUG: Prayer Value: "$prayerValue"');
-    print('DEBUG: Smoking Value: "$smoking"');
-    print('DEBUG: Hijab Value: "$hijabValue"');
-    print('DEBUG: Beard Value: "$beardValue"');
 
     cubit.updateProfileReligiousData(
       religiousCommitment: religiousCommitmentValue,

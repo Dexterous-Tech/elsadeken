@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 
@@ -44,28 +42,27 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
     } else {
       _animationController.value = 0.0;
     }
-    log('Toggle initial state loaded: $_isEnabled');
+
   }
 
   @override
   void didUpdateWidget(CustomAdvancedToggleSwitch oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initialValue != widget.initialValue) {
-      log('Toggle initialValue changed from ${oldWidget.initialValue} to ${widget.initialValue}');
+
       _isEnabled = widget.initialValue ?? false;
       if (_isEnabled) {
         _animationController.forward();
       } else {
         _animationController.reverse();
       }
-      log('Toggle state updated to: $_isEnabled');
+
     }
   }
 
   Future<void> _handleToggle() async {
     try {
       final newValue = !_isEnabled;
-      log('Toggle requested: $newValue, current value: $_isEnabled');
 
       // Immediately update the UI
       if (newValue) {
@@ -78,9 +75,8 @@ class _CustomAdvancedToggleSwitchState extends State<CustomAdvancedToggleSwitch>
       // Call the onChanged callback if provided
       widget.onChanged?.call(newValue);
 
-      log('Toggle updated to: $_isEnabled');
     } catch (e) {
-      log('Error toggling: $e');
+
       // Revert the toggle if there was an error
       if (_isEnabled) {
         _animationController.forward();

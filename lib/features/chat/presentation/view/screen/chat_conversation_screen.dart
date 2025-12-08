@@ -27,10 +27,7 @@ import 'package:elsadeken/features/chat/data/services/chat_message_service.dart'
 class ChatConversationScreen extends StatefulWidget {
   final ChatRoomModel chatRoom;
 
-  const ChatConversationScreen({
-    super.key,
-    required this.chatRoom,
-  });
+  const ChatConversationScreen({super.key, required this.chatRoom});
 
   @override
   State<ChatConversationScreen> createState() => _ChatConversationScreenState();
@@ -94,9 +91,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     try {
       _chatMessagesCubit ??= context.read<ChatMessagesCubit>();
       _pusherCubit ??= context.read<PusherCubit>();
-      print('🔗 Cubit references stored safely');
     } catch (e) {
-      print('⚠️ Error storing cubit references: $e');
+      // exception
     }
   }
 
@@ -122,9 +118,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       if (_chatMessagesCubit != null) {
         try {
           _chatMessagesCubit!.stopAutoRefresh();
-          print('✅ Auto-refresh stopped on app pause');
         } catch (e) {
-          print('⚠️ Error stopping auto-refresh on pause: $e');
+          // exception
         }
       }
 
@@ -138,11 +133,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       try {
         final isHealthy = await _pusherCubit!.checkConnectionHealth();
         if (!isHealthy) {
-          print('Connection unhealthy, re-initializing...');
           await _initializeAndSubscribePusher();
         }
       } catch (e) {
-        print('⚠️ Error checking Pusher connection health: $e');
+        // exception
       }
     }
   }
@@ -150,7 +144,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   /// Check Pusher status and start minimal refresh only if needed
   Future<void> _checkAndStartMinimalRefresh() async {
     if (_pusherCubit == null || _chatMessagesCubit == null) {
-      print('⚠️ Cubit references not available for minimal refresh check');
       return;
     }
 
@@ -158,34 +151,31 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       final isConnected = await _pusherCubit!.checkConnectionHealth();
       if (!isConnected) {
         // Only start auto-refresh as backup if Pusher is not working
-        print(
-            '🔄 Pusher not available, starting minimal backup refresh (60s interval)');
-        _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id,
-            interval: Duration(seconds: 60));
+        _chatMessagesCubit!.startAutoRefresh(
+          widget.chatRoom.id,
+          interval: Duration(seconds: 60),
+        );
       } else {
-        print('✅ Pusher is working, no backup refresh needed');
         _chatMessagesCubit!.stopAutoRefresh();
       }
     } catch (e) {
-      print('⚠️ Error checking Pusher status, starting backup refresh: $e');
       try {
-        _chatMessagesCubit!.startAutoRefresh(widget.chatRoom.id,
-            interval: Duration(seconds: 60));
+        _chatMessagesCubit!.startAutoRefresh(
+          widget.chatRoom.id,
+          interval: Duration(seconds: 60),
+        );
       } catch (refreshError) {
-        print('⚠️ Error starting backup refresh: $refreshError');
+        // exception
       }
     }
   }
 
   void _setupRealTimeListeners() {
-    print('[ChatConversationScreen] Setting up real-time listeners...');
-
     // Single message stream listener - primary path for real-time messages
-    _messageSubscription =
-        ChatMessageService.instance.messageStream.listen((message) {
+    _messageSubscription = ChatMessageService.instance.messageStream.listen((
+      message,
+    ) {
       if (mounted) {
-        print(
-            '[ChatConversationScreen] Message stream received: ${message.body}');
         _handleRealTimeMessage(message);
       }
     });
@@ -207,13 +197,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (message.chatId.toString() == widget.chatRoom.id ||
         (widget.chatRoom.id.startsWith('temp_') &&
             message.receiverId == _currentUserId)) {
-      print(
-          '[ChatConversationScreen] Processing real-time message: ${message.body}');
-
       // Check for duplicates first to avoid unnecessary processing
       final messageKey = message.id.toString();
       if (_messages.any((msg) => msg.id == messageKey)) {
-        print('[ChatConversationScreen] Duplicate message ignored: ${message.body}');
         return;
       }
 
@@ -232,7 +218,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         _messages.add(chatMessage);
       });
 
-      print('[ChatConversationScreen] Message added to UI successfully');
       _scrollToBottom();
 
       // Handle background tasks asynchronously without blocking UI
@@ -249,11 +234,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           Future.microtask(() {
             if (mounted) {
               context.read<ChatListCubit>().handleNewMessage(
-                    chatId,
-                    message.body,
-                    message.createdAt.toIso8601String(),
-                    message.senderId,
-                  );
+                chatId,
+                message.body,
+                message.createdAt.toIso8601String(),
+                message.senderId,
+              );
             }
           });
         }
@@ -274,7 +259,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
             curve: Curves.easeOutCubic,
           );
         } catch (e) {
-          print('[ChatConversationScreen] Error scrolling to bottom: $e');
+          // exception
         }
       }
     });
@@ -283,15 +268,14 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   /// Consolidated Pusher initialization and subscription
   Future<void> _initializeAndSubscribePusher() async {
     if (_currentUserId == null) {
-      print('Cannot setup Pusher without user ID');
       return;
     }
 
     try {
       final token = await SharedPreferencesHelper.getSecuredString(
-          SharedPreferencesKey.apiTokenKey);
+        SharedPreferencesKey.apiTokenKey,
+      );
       if (token.isEmpty) {
-        print('No auth token available for Pusher');
         return;
       }
 
@@ -310,23 +294,24 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       if (!widget.chatRoom.id.startsWith('temp_')) {
         final chatRoomId = int.tryParse(widget.chatRoom.id);
         if (chatRoomId != null && mounted) {
-          await context
-              .read<PusherCubit>()
-              .subscribeToChatChannel(chatRoomId, token);
+          await context.read<PusherCubit>().subscribeToChatChannel(
+            chatRoomId,
+            token,
+          );
         }
       }
 
       _isPusherSetup = true;
-      print('Pusher setup completed successfully');
     } catch (e) {
-      print('Error setting up Pusher: $e');
+      // exception
     }
   }
 
   Future<void> _loadCurrentUserFromCache() async {
     try {
       final cachedUserJson = await SharedPreferencesHelper.getSecuredString(
-          SharedPreferencesKey.userDataKey);
+        SharedPreferencesKey.userDataKey,
+      );
       final cachedImage = await SharedPreferencesHelper.getUserImage();
 
       int? cachedId = _currentUserId;
@@ -369,7 +354,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         _updateMessagesWithCorrectImages();
       }
     } catch (e) {
-      print('[ChatConversationScreen] Error loading cached user profile: $e');
+      // exception
     }
   }
 
@@ -377,9 +362,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   void _loadChatMessagesEarly() {
     // Don't load messages for temporary chat rooms
     if (!widget.chatRoom.id.startsWith('temp_')) {
-      print(
-          '[ChatConversationScreen] Early loading of messages for faster UI...');
-
       // Try to load messages, but handle 404 gracefully for deleted chats
       context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
     }
@@ -388,7 +370,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   void _loadChatMessages() {
     // Don't load messages for temporary chat rooms
     if (!widget.chatRoom.id.startsWith('temp_')) {
-      print('[ChatConversationScreen] Loading initial messages from API...');
       context.read<ChatMessagesCubit>().getChatMessages(widget.chatRoom.id);
     }
   }
@@ -396,8 +377,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   /// Update existing messages with correct user info when profile loads
   void _updateMessagesWithUserInfo() {
     if (_messages.isNotEmpty && _currentUserId != null) {
-      print(
-          '[ChatConversationScreen] Updating messages with correct user info...');
       setState(() {
         _messages = _messages.map((message) {
           // Always update the sender image to ensure correctness
@@ -408,9 +387,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 ? _currentUserId.toString()
                 : message.senderId,
             senderName: message.senderName,
-            senderImage: _getCorrectSenderImage(message.senderId == 'temp_user'
-                ? _currentUserId.toString()
-                : message.senderId),
+            senderImage: _getCorrectSenderImage(
+              message.senderId == 'temp_user'
+                  ? _currentUserId.toString()
+                  : message.senderId,
+            ),
             message: message.message,
             timestamp: message.timestamp,
             isRead: message.isRead,
@@ -434,8 +415,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (_messages.isNotEmpty &&
         _currentUserId != null &&
         _receiverImage.isNotEmpty) {
-      print(
-          '[ChatConversationScreen] Updating messages with correct sender/receiver images...');
       setState(() {
         _messages = _messages.map((message) {
           // Always update the sender image to ensure correctness
@@ -451,7 +430,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           );
         }).toList();
       });
-      print('✅ Messages updated with correct sender/receiver images');
     }
   }
 
@@ -459,26 +437,18 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   Future<void> _markMessagesAsReadOnEnter() async {
     // Don't mark as read for temporary chats
     if (widget.chatRoom.id.startsWith('temp_')) {
-      print(
-          '[ChatConversationScreen] Skipping mark as read for temporary chat');
       return;
     }
 
     // Skip if there are no unread messages
     if (widget.chatRoom.unreadCount <= 0) {
-      print('[ChatConversationScreen] No unread messages to mark as read');
       return;
     }
-
-    print(
-        '[ChatConversationScreen] Marking messages as read for chat ${widget.chatRoom.id}...');
 
     try {
       // Mark all messages as read via API (since there's no specific chat endpoint)
       final chatListCubit = context.read<ChatListCubit>();
       await chatListCubit.markAllMessagesAsRead();
-
-      print('✅ Messages marked as read successfully');
 
       // Update local message read status immediately
       _updateLocalMessagesReadStatus();
@@ -486,7 +456,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       // Refresh chat list to update unread counts
       chatListCubit.silentRefreshChatList();
     } catch (e) {
-      print('⚠️ Error marking messages as read: $e');
+      // exception
     }
   }
 
@@ -503,7 +473,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               senderId: message.senderId,
               senderName: message.senderName,
               senderImage: _getCorrectSenderImage(
-                  message.senderId), // Ensure correct image
+                message.senderId,
+              ), // Ensure correct image
               message: message.message,
               timestamp: message.timestamp,
               isRead: true, // Mark as read
@@ -512,7 +483,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
           return message;
         }).toList();
       });
-      print('✅ Local messages updated to show as read');
     }
   }
 
@@ -520,16 +490,16 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
   void _markNewMessageAsRead(PusherMessageModel message) {
     // Update UI immediately for instant feedback
     setState(() {
-      final messageIndex =
-          _messages.indexWhere((msg) => msg.id == message.id.toString());
+      final messageIndex = _messages.indexWhere(
+        (msg) => msg.id == message.id.toString(),
+      );
       if (messageIndex != -1) {
         _messages[messageIndex] = ChatMessage(
           id: _messages[messageIndex].id,
           roomId: _messages[messageIndex].roomId,
           senderId: _messages[messageIndex].senderId,
           senderName: _messages[messageIndex].senderName,
-          senderImage:
-              _getCorrectSenderImage(_messages[messageIndex].senderId),
+          senderImage: _getCorrectSenderImage(_messages[messageIndex].senderId),
           message: _messages[messageIndex].message,
           timestamp: _messages[messageIndex].timestamp,
           isRead: true, // Mark as read locally
@@ -543,10 +513,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         if (mounted) {
           final chatListCubit = context.read<ChatListCubit>();
           await chatListCubit.markAllMessagesAsRead();
-          print('✅ New message marked as read successfully');
         }
       } catch (e) {
-        print('⚠️ Error marking new message as read: $e');
+        // exception
       }
     });
   }
@@ -565,24 +534,20 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         _chatMessagesCubit!.refreshChatMessages(widget.chatRoom.id);
       }
     });
-
-    print('[ChatConversationScreen] Read status refresh started (every 3 seconds)');
   }
 
   /// Stop periodic read status refresh
   void _stopReadStatusRefresh() {
     _readStatusRefreshTimer?.cancel();
     _readStatusRefreshTimer = null;
-    print('[ChatConversationScreen] Read status refresh stopped');
   }
 
   /// Manual refresh method for pull-to-refresh
   Future<void> _refreshMessages() async {
     if (!widget.chatRoom.id.startsWith('temp_')) {
-      print('[ChatConversationScreen] Manual refresh triggered');
-      await context
-          .read<ChatMessagesCubit>()
-          .refreshChatMessages(widget.chatRoom.id);
+      await context.read<ChatMessagesCubit>().refreshChatMessages(
+        widget.chatRoom.id,
+      );
     }
   }
 
@@ -605,9 +570,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 _chatMessagesCubit != null) {
               try {
                 _chatMessagesCubit!.stopAutoRefresh();
-                print('✅ Auto-refresh stopped on navigation back');
               } catch (e) {
-                print('⚠️ Error stopping auto-refresh on back: $e');
+                // exception
               }
             }
             Navigator.of(context).pop();
@@ -615,9 +579,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         ),
         body: Column(
           children: [
-            Expanded(
-              child: _buildChatMessages(),
-            ),
+            Expanded(child: _buildChatMessages()),
             _buildMessageInput(),
           ],
         ),
@@ -631,16 +593,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
         BlocListener<ChatMessagesCubit, ChatMessagesState>(
           listener: (context, state) {
             if (state is ChatMessagesLoaded) {
-              print(
-                  '[ChatConversationScreen] API messages loaded: ${state.chatMessages.messages.length} messages');
-
               if (_currentUserId == null &&
                   state.chatMessages.messages.isNotEmpty) {
                 final sampleMessage = state.chatMessages.messages.first;
                 final inferredId =
                     sampleMessage.senderId == widget.chatRoom.receiverId
-                        ? sampleMessage.receiverId
-                        : sampleMessage.senderId;
+                    ? sampleMessage.receiverId
+                    : sampleMessage.senderId;
 
                 setState(() {
                   _currentUserId = inferredId;
@@ -653,8 +612,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
               // Use current user info if available, otherwise use temporary values
               final currentUserId = _currentUserId?.toString() ?? 'temp_user';
-              final currentUserImage =
-                  _currentUserImage.isNotEmpty ? _currentUserImage : '';
+              final currentUserImage = _currentUserImage.isNotEmpty
+                  ? _currentUserImage
+                  : '';
 
               // Only update if messages actually changed to reduce UI rebuilds
               final newMessages = state.chatMessages.toChatMessages(
@@ -700,8 +660,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               // If the chat was deleted, clear messages to show empty state immediately
               if (state.message == 'thisConversationNoLongerExists' ||
                   state.message ==
-                      AppLocalizations.of(context)!
-                          .thisConversationNoLongerExists) {
+                      AppLocalizations.of(
+                        context,
+                      )!.thisConversationNoLongerExists) {
                 setState(() {
                   _messages = []; // Clear messages to show empty chat state
                 });
@@ -716,8 +677,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 );
 
                 // Don't start auto-refresh for deleted chats
-                print(
-                    '[ChatConversationScreen] Chat deleted - will not start auto-refresh until new message sent');
               }
             }
           },
@@ -761,18 +720,17 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   final chatId = int.tryParse(widget.chatRoom.id);
                   if (chatId != null) {
                     context.read<ChatListCubit>().handleNewMessage(
-                          chatId,
-                          state.sendMessageModel.data.body,
-                          state.sendMessageModel.data.createdAt
-                              .toIso8601String(),
-                          _currentUserId!,
-                        );
+                      chatId,
+                      state.sendMessageModel.data.body,
+                      state.sendMessageModel.data.createdAt.toIso8601String(),
+                      _currentUserId!,
+                    );
                   }
 
                   // Restart auto-refresh in case it was stopped due to chat deletion
-                  context
-                      .read<ChatMessagesCubit>()
-                      .startAutoRefresh(widget.chatRoom.id);
+                  context.read<ChatMessagesCubit>().startAutoRefresh(
+                    widget.chatRoom.id,
+                  );
                 }
               }
             } else if (state is SendMessagesError) {
@@ -795,15 +753,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
             // PusherCubit listener is kept only for connection status tracking
             if (state is PusherMessageReceived) {
               // Skip - messages are handled via ChatMessageService stream
-              print('PUSHER: Message received (handled via stream)');
             } else if (state is PusherConnectionError) {
-              print(
-                  'PUSHER: Connection error (handled silently): ${state.error}');
             } else if (state is PusherInitialized) {
-              print('PUSHER: Initialized successfully');
-            } else if (state is PusherSubscribed) {
-              print('PUSHER: Subscribed to channel successfully');
-            }
+            } else if (state is PusherSubscribed) {}
           },
         ),
       ],
@@ -829,10 +781,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   SizedBox(height: 8),
                   Text(
                     state.message,
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 16),
@@ -850,8 +799,11 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.chat_bubble_outline,
-                      size: 64, color: Colors.grey[400]),
+                  Icon(
+                    Icons.chat_bubble_outline,
+                    size: 64,
+                    color: Colors.grey[400],
+                  ),
                   SizedBox(height: 16),
                   Text(
                     AppLocalizations.of(context)!.noMessagesYet,
@@ -863,12 +815,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                   ),
                   SizedBox(height: 8),
                   Text(
-                    AppLocalizations.of(context)!
-                        .startConversationBySendingMessage,
-                    style: TextStyle(
-                      color: Colors.grey[500],
-                      fontSize: 14,
-                    ),
+                    AppLocalizations.of(
+                      context,
+                    )!.startConversationBySendingMessage,
+                    style: TextStyle(color: Colors.grey[500], fontSize: 14),
                   ),
                 ],
               ),
@@ -893,7 +843,8 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                 } else {
                   final prev = _messages[index - 1].timestamp;
                   final curr = message.timestamp;
-                  showDaySeparator = prev.year != curr.year ||
+                  showDaySeparator =
+                      prev.year != curr.year ||
                       prev.month != curr.month ||
                       prev.day != curr.day;
                 }
@@ -921,12 +872,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
       margin: EdgeInsets.symmetric(vertical: 16.h),
       child: Row(
         children: [
-          Expanded(
-            child: Divider(
-              color: Colors.grey[300],
-              thickness: 1,
-            ),
-          ),
+          Expanded(child: Divider(color: Colors.grey[300], thickness: 1)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Container(
@@ -945,12 +891,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               ),
             ),
           ),
-          Expanded(
-            child: Divider(
-              color: Colors.grey[300],
-              thickness: 1,
-            ),
-          ),
+          Expanded(child: Divider(color: Colors.grey[300], thickness: 1)),
         ],
       ),
     );
@@ -958,11 +899,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
   String _formatDayLabel(DateTime date) {
     final today = DateTime.now();
-    final isSameDay = date.year == today.year &&
+    final isSameDay =
+        date.year == today.year &&
         date.month == today.month &&
         date.day == today.day;
     final yesterday = today.subtract(const Duration(days: 1));
-    final isYesterday = date.year == yesterday.year &&
+    final isYesterday =
+        date.year == yesterday.year &&
         date.month == yesterday.month &&
         date.day == yesterday.day;
 
@@ -993,10 +936,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
               decoration: BoxDecoration(
                 color: Color(0xfffff9f6),
                 borderRadius: BorderRadius.circular(15.r),
-                border: Border.all(
-                  color: Colors.grey[200]!,
-                  width: 1,
-                ),
+                border: Border.all(color: Colors.grey[200]!, width: 1),
               ),
               child: TextField(
                 controller: _messageController,
@@ -1027,8 +967,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
                       ),
                       onPressed: _sendMessage,
                       style: IconButton.styleFrom(
-                        backgroundColor:
-                            AppColors.primaryOrange.withValues(alpha: 0.1),
+                        backgroundColor: AppColors.primaryOrange.withValues(
+                          alpha: 0.1,
+                        ),
                         shape: CircleBorder(),
                         padding: EdgeInsets.all(8.w),
                       ),
@@ -1056,8 +997,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     if (_currentUserId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content:
-              Text(AppLocalizations.of(context)!.pleaseWaitWhileLoadingProfile),
+          content: Text(
+            AppLocalizations.of(context)!.pleaseWaitWhileLoadingProfile,
+          ),
           backgroundColor: Colors.orange,
         ),
       );
@@ -1069,22 +1011,19 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
 
     // Send message through API
     context.read<SendMessageCubit>().sendMessages(
-          widget.chatRoom.receiverId,
-          message,
-        );
+      widget.chatRoom.receiverId,
+      message,
+    );
   }
 
   @override
   void dispose() {
-    print('🗑️ Disposing ChatConversationScreen...');
-
     // Stop auto-refresh when disposing using stored cubit reference
     if (!widget.chatRoom.id.startsWith('temp_') && _chatMessagesCubit != null) {
       try {
         _chatMessagesCubit!.stopAutoRefresh();
-        print('✅ Auto-refresh stopped successfully');
       } catch (e) {
-        print('⚠️ Error stopping auto-refresh: $e');
+        // exception
       }
     }
 
@@ -1095,15 +1034,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     _messageController.dispose();
     _scrollController.dispose();
     _messageSubscription?.cancel();
-    print('✅ Controllers and subscriptions disposed');
 
     // Unsubscribe from Pusher channel when leaving using stored cubit reference
     if (_isPusherSetup && _pusherCubit != null) {
       try {
         _pusherCubit!.unsubscribeFromChatChannel();
-        print('✅ Pusher channel unsubscribed successfully');
       } catch (e) {
-        print('⚠️ Error unsubscribing during dispose: $e');
+        // exception
       }
     }
 
@@ -1112,7 +1049,6 @@ class _ChatConversationScreenState extends State<ChatConversationScreen>
     _pusherCubit = null;
 
     WidgetsBinding.instance.removeObserver(this);
-    print('✅ ChatConversationScreen disposed successfully');
     super.dispose();
   }
 }

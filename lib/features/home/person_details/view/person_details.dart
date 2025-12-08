@@ -31,10 +31,6 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
   @override
   void initState() {
     super.initState();
-    print("PersonDetailsView initialized with:");
-    print("  personId: ${widget.personId}");
-    print("  imageUrl: ${widget.imageUrl}");
-    print("  personId type: ${widget.personId.runtimeType}");
 
     // Validate inputs
     if (widget.personId <= 0) {
@@ -69,7 +65,6 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
         });
       }
     } catch (e) {
-      print("Error fetching person details: $e");
       setState(() {
         errorMessage = AppLocalizations.of(context)!.failedToLoadUserDetails;
         isLoading = false;
@@ -84,57 +79,47 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
       child: Scaffold(
         // backgroundColor: Colors.grey[800],
         body: isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                color: AppColors.beer,
-              ))
+            ? Center(child: CircularProgressIndicator(color: AppColors.beer))
             : errorMessage != null
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.error_outline,
-                            size: 80, color: Colors.red[300]),
-                        SizedBox(height: 16),
-                        Text(
-                          errorMessage!,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: fetchData,
-                          child: Text(AppLocalizations.of(context)!.tryAgain),
-                        ),
-                      ],
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error_outline, size: 80, color: Colors.red[300]),
+                    SizedBox(height: 16),
+                    Text(
+                      errorMessage!,
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      textAlign: TextAlign.center,
                     ),
-                  )
-                : person == null
-                    ? Center(
-                        child: Text(
-                            AppLocalizations.of(context)!.noDataFoundShort))
-                    : Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              AppColors.cosmicLatte,
-                              AppColors.antiqueWhite,
-                            ],
-                          ),
-                        ),
-                        child: Stack(
-                          children: [
-                            PersonImageHeader(imageUrl: person!.image),
-                            PersonInfoSheet(person: person!),
-                          ],
-                        ),
-                      ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: fetchData,
+                      child: Text(AppLocalizations.of(context)!.tryAgain),
+                    ),
+                  ],
+                ),
+              )
+            : person == null
+            ? Center(
+                child: Text(AppLocalizations.of(context)!.noDataFoundShort),
+              )
+            : Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [AppColors.cosmicLatte, AppColors.antiqueWhite],
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    PersonImageHeader(imageUrl: person!.image),
+                    PersonInfoSheet(person: person!),
+                  ],
+                ),
+              ),
       ),
     );
   }

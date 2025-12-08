@@ -12,22 +12,19 @@ class ListsService {
   ListsService(this._apiServices);
 
   /// Get user's gender from shared preferences
-  Future<String> _getUserGender() async {
-    try {
-      final gender = await SharedPreferencesHelper.getSecuredString(
-          SharedPreferencesKey.gender);
-      return gender.isNotEmpty ? gender : 'male'; // Default to male
-    } catch (e) {
-      print('[ListsService] Error getting user gender: $e');
-      return 'male'; // Default to male
-    }
-  }
+  // Future<String> _getUserGender() async {
+  //   try {
+  //     final gender = await SharedPreferencesHelper.getSecuredString(
+  //         SharedPreferencesKey.gender);
+  //     return gender.isNotEmpty ? gender : 'male'; // Default to male
+  //   } catch (e) {
+  //     return 'male'; // Default to male
+  //   }
+  // }
 
   /// Fetch list of nationalities with caching
   Future<ApiResponseModel<List<NationalityModel>>> getNationalities() async {
     try {
-      print('[ListsService] Getting nationalities...');
-
       // Try to get from cache first
       final cachedData = await SharedPreferencesHelper.getCachedData(
         SharedPreferencesKey.nationalitiesCacheKey,
@@ -36,10 +33,10 @@ class ListsService {
       );
 
       if (cachedData != null) {
-        print('[ListsService] Using cached nationalities data');
         final nationalitiesList = (cachedData as List)
-            .map((item) =>
-                NationalityModel.fromJson(item as Map<String, dynamic>))
+            .map(
+              (item) => NationalityModel.fromJson(item as Map<String, dynamic>),
+            )
             .toList();
 
         return ApiResponseModel<List<NationalityModel>>(
@@ -51,26 +48,18 @@ class ListsService {
         );
       }
 
-      print('[ListsService] Cache miss, fetching from API...');
-
       // Fetch from API if cache miss or expired
       final response = await _apiServices.get<List<dynamic>>(
         endpoint: ApiConstants.getNationalities,
       );
 
-      print('[ListsService] Get nationalities response: ${response.data}');
-      print(
-          '[ListsService] Get nationalities response type: ${response.data.runtimeType}');
-
       // The API returns a list directly, so we need to handle it differently
       if (response.data is List) {
         final nationalitiesList = (response.data as List)
-            .map((item) =>
-                NationalityModel.fromJson(item as Map<String, dynamic>))
+            .map(
+              (item) => NationalityModel.fromJson(item as Map<String, dynamic>),
+            )
             .toList();
-
-        print(
-            '[ListsService] Parsed ${nationalitiesList.length} nationalities');
 
         // Cache the raw API response for future use
         await SharedPreferencesHelper.cacheData(
@@ -89,10 +78,10 @@ class ListsService {
         );
       } else {
         throw Exception(
-            'Expected list response but got: ${response.data.runtimeType}');
+          'Expected list response but got: ${response.data.runtimeType}',
+        );
       }
     } catch (e) {
-      print('[ListsService] Get nationalities failed: $e');
       rethrow;
     }
   }
@@ -100,8 +89,6 @@ class ListsService {
   /// Fetch list of countries with caching
   Future<ApiResponseModel<List<CountryModel>>> getCountries() async {
     try {
-      print('[ListsService] Getting countries...');
-
       // Try to get from cache first
       final cachedData = await SharedPreferencesHelper.getCachedData(
         SharedPreferencesKey.countriesCacheKey,
@@ -110,7 +97,6 @@ class ListsService {
       );
 
       if (cachedData != null) {
-        print('[ListsService] Using cached countries data');
         final countriesList = (cachedData as List)
             .map((item) => CountryModel.fromJson(item as Map<String, dynamic>))
             .toList();
@@ -124,24 +110,16 @@ class ListsService {
         );
       }
 
-      print('[ListsService] Cache miss, fetching from API...');
-
       // Fetch from API if cache miss or expired
       final response = await _apiServices.get<List<dynamic>>(
         endpoint: ApiConstants.getCountries,
       );
-
-      print('[ListsService] Get countries response: ${response.data}');
-      print(
-          '[ListsService] Get countries response type: ${response.data.runtimeType}');
 
       // The API returns a list directly, so we need to handle it differently
       if (response.data is List) {
         final countriesList = (response.data as List)
             .map((item) => CountryModel.fromJson(item as Map<String, dynamic>))
             .toList();
-
-        print('[ListsService] Parsed ${countriesList.length} countries');
 
         // Cache the raw API response for future use
         await SharedPreferencesHelper.cacheData(
@@ -160,10 +138,10 @@ class ListsService {
         );
       } else {
         throw Exception(
-            'Expected list response but got: ${response.data.runtimeType}');
+          'Expected list response but got: ${response.data.runtimeType}',
+        );
       }
     } catch (e) {
-      print('[ListsService] Get countries failed: $e');
       rethrow;
     }
   }
@@ -172,9 +150,8 @@ class ListsService {
   Future<void> clearCache() async {
     try {
       await SharedPreferencesHelper.clearAllCaches();
-      print('[ListsService] Cleared all caches');
     } catch (e) {
-      print('[ListsService] Error clearing cache: $e');
+      // exception
     }
   }
 
@@ -182,18 +159,15 @@ class ListsService {
   Future<void> forceRefresh() async {
     try {
       await clearCache();
-      print('[ListsService] Force refresh completed');
     } catch (e) {
-      print('[ListsService] Error during force refresh: $e');
+      // exception
     }
   }
 
   /// Get nationalities with gender-appropriate names
   Future<ApiResponseModel<List<NationalityModel>>>
-      getNationalitiesWithGenderNames() async {
+  getNationalitiesWithGenderNames() async {
     try {
-      print('[ListsService] Getting nationalities with gender names...');
-
       // Get the base nationalities response
       final response = await getNationalities();
 
@@ -202,21 +176,21 @@ class ListsService {
       }
 
       // Get user's gender
-      final userGender = await _getUserGender();
-      print('[ListsService] User gender: $userGender');
+      // final userGender = await _getUserGender();
 
       // The nationalities already have the correct structure with male/female names
       // The gender-specific display will be handled in the UI layer
       return response;
     } catch (e) {
-      print('[ListsService] Error getting nationalities with gender names: $e');
       rethrow;
     }
   }
 
   /// Get nationality name for specific gender
   String getNationalityNameForGender(
-      NationalityModel nationality, String gender) {
+    NationalityModel nationality,
+    String gender,
+  ) {
     return nationality.getNameForGender(gender);
   }
 }

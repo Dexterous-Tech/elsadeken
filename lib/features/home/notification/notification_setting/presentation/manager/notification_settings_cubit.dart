@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:elsadeken/features/home/notification/notification_setting/data/model/notification_setting_model.dart';
@@ -33,12 +31,8 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
         _currentSettings = response.data;
 
         final settingsData = _currentSettings!;
-        log('Response data type: ${settingsData.runtimeType}');
-        log('Response data: $settingsData');
 
         // Convert the single data object to a list format for UI
-        log('About to call toSettingsList() on: $settingsData');
-        log('Available methods: ${settingsData.runtimeType.toString()}');
 
         // Convert settings to list with localized titles
         List<Map<String, dynamic>> settingsList = settingsData.toSettingsList(
@@ -48,15 +42,15 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
           newMessages: newMessages,
           successStories: successStories,
         );
-        log('Settings list: $settingsList');
+
         emit(NotificationSettingsLoaded(settings: settingsList));
-        log('Notification settings loaded: ${settingsList.length} settings');
+
       } else {
         emit(NotificationSettingsError(
             errorMessage ?? 'No notification settings found'));
       }
     } catch (e) {
-      log('Error loading notification settings: $e');
+
       emit(NotificationSettingsError(
           errorMessage ?? 'Failed to load notification settings'));
     }
@@ -123,8 +117,6 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
       currentData.blog = updatedValues['blog']!;
       _currentSettings = currentData;
 
-      log('Setting $settingId updated to: ${isActive ? 1 : 0}');
-
       // Update local state without reloading from API
       final currentState = state;
       List<Map<String, dynamic>>? currentSettingsList;
@@ -160,9 +152,8 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
         });
       }
 
-      log('Notification setting toggled: ID $settingId, Active: $isActive');
     } catch (e) {
-      log('Error toggling notification setting: $e');
+
       emit(NotificationSettingsError(toggleError));
     }
   }

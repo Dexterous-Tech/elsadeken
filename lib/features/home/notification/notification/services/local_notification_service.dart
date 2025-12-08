@@ -8,8 +8,7 @@ class LocalNotificationService {
 
   static Future<void> initialize() async {
     if (_initialized) return;
-    
-    print('LocalNotificationService initialized');
+
     _initialized = true;
   }
 
@@ -33,10 +32,7 @@ class LocalNotificationService {
                 color: Colors.white,
               ),
             ),
-            Text(
-              body,
-              style: const TextStyle(color: Colors.white),
-            ),
+            Text(body, style: const TextStyle(color: Colors.white)),
           ],
         ),
         backgroundColor: const Color(0xFF2196F3),
@@ -47,7 +43,6 @@ class LocalNotificationService {
           textColor: Colors.white,
           onPressed: () {
             // Navigate to notifications screen
-            print('Navigate to notifications');
           },
         ),
       ),
@@ -55,22 +50,20 @@ class LocalNotificationService {
   }
 
   static Future<void> showNotificationFromFirebaseMessage(
-      RemoteMessage message) async {
+    RemoteMessage message,
+  ) async {
     final notification = message.notification;
     if (notification == null) return;
 
-    print('Received notification: ${notification.title}');
     // For now, just log the notification
     // When flutter_local_notifications is added, implement proper local notifications
   }
 
   static Future<void> cancelNotification(int id) async {
     // TODO: Implement when flutter_local_notifications is added
-    print('Cancel notification: $id');
   }
 
   static Future<void> cancelAllNotifications() async {
     // TODO: Implement when flutter_local_notifications is added
-    print('Cancel all notifications');
   }
 }

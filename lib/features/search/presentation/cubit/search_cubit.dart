@@ -39,7 +39,6 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   void updateCountry(String country) {
-    print("updater $country");
     _currentFilter = _currentFilter.copyWith(country: country);
     emit(SearchFilterUpdated(_currentFilter));
   }
@@ -94,27 +93,33 @@ class SearchCubit extends Cubit<SearchState> {
       emit(SearchLoading());
     }
     try {
-      final results =
-          await searchUseCase.searchUsers(_currentFilter, page: page);
+      final results = await searchUseCase.searchUsers(
+        _currentFilter,
+        page: page,
+      );
 
       if (state is SearchSuccess && page > 1) {
         // Append results for pagination
         final currentState = state as SearchSuccess;
         final updatedResults = currentState.results;
-        emit(SearchSuccess(
-          updatedResults,
-          currentPage: page,
-          lastPage: page + 1, // Assuming there might be more pages
-        ));
+        emit(
+          SearchSuccess(
+            updatedResults,
+            currentPage: page,
+            lastPage: page + 1, // Assuming there might be more pages
+          ),
+        );
       } else {
         // First page or fresh search
-        emit(SearchSuccess(
-          results,
-          currentPage: page,
-          lastPage: results.data!.length >= 10
-              ? page + 1
-              : page, // Assuming 10 items per page
-        ));
+        emit(
+          SearchSuccess(
+            results,
+            currentPage: page,
+            lastPage: results.data!.length >= 10
+                ? page + 1
+                : page, // Assuming 10 items per page
+          ),
+        );
       }
     } catch (e) {
       emit(SearchError(e.toString()));

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class NotificationSettingResponseModel {
   NotificationSettingResponseModel({
     this.data,
@@ -21,8 +19,7 @@ class NotificationSettingResponseModel {
           : int.tryParse(json['status']?.toString() ?? '0');
       showToast = json['showToast'] ?? false;
     } catch (e) {
-      log('Error parsing NotificationSettingResponseModel: $e');
-      log('JSON data: $json');
+
       rethrow;
     }
   }
@@ -75,8 +72,7 @@ class NotificationSettingDataModel {
       createdAt = json['created_at']?.toString();
       updatedAt = json['updated_at']?.toString();
     } catch (e) {
-      log('Error parsing NotificationSettingDataModel: $e');
-      log('JSON data: $json');
+
       rethrow;
     }
   }

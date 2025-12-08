@@ -39,8 +39,6 @@ class _SearchResultsViewState extends State<SearchResultsView> {
     final state = cubit.state;
 
     if (state is SearchSuccess && state.hasNextPage && !_isLoadingMore) {
-      print(
-          'Loading more search results: current page ${state.currentPage}, next page ${state.currentPage + 1}');
       setState(() {
         _isLoadingMore = true;
       });
@@ -49,7 +47,6 @@ class _SearchResultsViewState extends State<SearchResultsView> {
           setState(() {
             _isLoadingMore = false;
           });
-          print('Pagination loading completed');
         }
       });
     }
@@ -59,7 +56,6 @@ class _SearchResultsViewState extends State<SearchResultsView> {
     if (_scrollController?.position.pixels != null &&
         _scrollController!.position.pixels >=
             _scrollController!.position.maxScrollExtent - 200) {
-      print('Scroll threshold reached, triggering pagination');
       _loadMoreUsers(context);
     }
   }
@@ -74,30 +70,36 @@ class _SearchResultsViewState extends State<SearchResultsView> {
             builder: (context, state) {
               if (state is SearchLoading) {
                 return CustomProfileBody(
-                    contentBody: Column(
-                  children: [
-                    ProfileHeader(
-                        title: AppLocalizations.of(context)!.searchResults),
-                    verticalSpace(42),
-                    Expanded(
-                        child:
-                            const Center(child: CircularProgressIndicator())),
-                  ],
-                ));
+                  contentBody: Column(
+                    children: [
+                      ProfileHeader(
+                        title: AppLocalizations.of(context)!.searchResults,
+                      ),
+                      verticalSpace(42),
+                      Expanded(
+                        child: const Center(child: CircularProgressIndicator()),
+                      ),
+                    ],
+                  ),
+                );
               } else if (state is SearchSuccess) {
                 final results = state.results;
                 return Column(
                   children: [
                     ProfileHeader(
-                        title: AppLocalizations.of(context)!.searchResults),
+                      title: AppLocalizations.of(context)!.searchResults,
+                    ),
                     verticalSpace(42),
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
                       child: Text(
-                        AppLocalizations.of(context)!
-                            .resultsCount(results.data!.length),
+                        AppLocalizations.of(
+                          context,
+                        )!.resultsCount(results.data!.length),
                         textAlign: LocalizationService.instance.textAlignment,
                         textDirection:
                             LocalizationService.instance.textDirection,
@@ -114,15 +116,16 @@ class _SearchResultsViewState extends State<SearchResultsView> {
 
                           return RefreshIndicator(
                             onRefresh: () async {
-                              context
-                                  .read<SearchCubit>()
-                                  .performSearch(page: 1);
+                              context.read<SearchCubit>().performSearch(
+                                page: 1,
+                              );
                             },
                             child: ListView.separated(
                               separatorBuilder: (context, index) =>
                                   verticalSpace(16),
                               controller: _scrollController,
-                              itemCount: results.data!.length +
+                              itemCount:
+                                  results.data!.length +
                                   (_isLoadingMore ? 1 : 0),
                               itemBuilder: (context, index) {
                                 if (index == results.data!.length &&
@@ -137,8 +140,9 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                                           ),
                                           const SizedBox(height: 8),
                                           Text(
-                                            AppLocalizations.of(context)!
-                                                .loadingMore,
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.loadingMore,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontSize: 12,
@@ -155,11 +159,10 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                                 return PersonCardWidget(
                                   onTap: () {
                                     // Debug: Print the person ID and its type
-                                    print(
-                                        'Person ID before navigation: ${person.id} (type: ${person.id.runtimeType})');
                                     context.pushNamed(
-                                        AppRoutes.profileDetailsScreen,
-                                        arguments: person);
+                                      AppRoutes.profileDetailsScreen,
+                                      arguments: person,
+                                    );
                                   },
                                   personData: PersonData(
                                     name: person.name ?? '',
@@ -182,31 +185,44 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                 );
               } else if (state is SearchError) {
                 return CustomProfileBody(
-                    contentBody: Column(
-                  children: [
-                    ProfileHeader(
-                        title: AppLocalizations.of(context)!.searchResults),
-                    verticalSpace(42),
-                    Expanded(
+                  contentBody: Column(
+                    children: [
+                      ProfileHeader(
+                        title: AppLocalizations.of(context)!.searchResults,
+                      ),
+                      verticalSpace(42),
+                      Expanded(
                         child: Center(
-                            child: Text(state.message,
-                                style: const TextStyle(color: Colors.red)))),
-                  ],
-                ));
+                          child: Text(
+                            state.message,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               }
 
               return CustomProfileBody(
-                  contentBody: Column(
-                children: [
-                  ProfileHeader(
-                      title: AppLocalizations.of(context)!.searchResults),
-                  verticalSpace(42),
-                  Expanded(
+                contentBody: Column(
+                  children: [
+                    ProfileHeader(
+                      title: AppLocalizations.of(context)!.searchResults,
+                    ),
+                    verticalSpace(42),
+                    Expanded(
                       child: Center(
-                          child: Text(AppLocalizations.of(context)!
-                              .startSearchToShowResults))),
-                ],
-              ));
+                        child: Text(
+                          AppLocalizations.of(
+                            context,
+                          )!.startSearchToShowResults,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
         ),

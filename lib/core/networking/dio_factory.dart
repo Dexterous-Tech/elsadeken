@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../di/injection_container.dart';
@@ -47,7 +45,6 @@ class DioFactory {
       headers.remove('Authorization'); // Explicitly remove auth header
     }
     _dio?.options.headers = headers;
-    log("🔑 Headers before request: ${_dio?.options.headers}");
   }
 
   static Future<void> setTokenIntoHeaderAfterLogin(String token) async {
@@ -58,7 +55,6 @@ class DioFactory {
       'lang': LocalizationService.instance.currentLanguageCode,
     };
     // Force recreation of Dio instance
-    log("🔑 Headers set after login: ${_dio?.options.headers}");
   }
 
   /// Update headers when language changes
@@ -66,7 +62,6 @@ class DioFactory {
     if (_dio != null) {
       _dio!.options.headers['lang'] =
           LocalizationService.instance.currentLanguageCode;
-      log("🔑 Language header updated: ${_dio?.options.headers['lang']}");
     }
   }
 

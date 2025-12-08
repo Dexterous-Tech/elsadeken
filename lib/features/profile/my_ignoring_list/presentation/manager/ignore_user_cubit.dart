@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:elsadeken/features/profile/my_ignoring_list/data/repo/ignore_user_repo.dart';
 import 'package:elsadeken/features/profile/my_ignoring_list/presentation/manager/ignore_user_state.dart';
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
@@ -14,10 +13,10 @@ class IgnoreUserCubit extends Cubit<IgnoreUserState> {
   Future<void> ignoreUsers({int? page}) async {
     try {
       if (page == 1 || page == null) {
-        log('Loading initial ignore users...');
+
         emit(IgnoreUserLoading());
       } else {
-        log('Loading more ignore users for page $page...');
+
         // Don't emit loading state for pagination to keep existing data visible
       }
 
@@ -27,7 +26,7 @@ class IgnoreUserCubit extends Cubit<IgnoreUserState> {
         emit(IgnoreUserFailure(error.displayMessage));
       }, (ignoreUsersResponseModel) {
         if (page == 1 || page == null) {
-          log('Initial ignore users loaded: ${ignoreUsersResponseModel.data?.length ?? 0} items');
+
           emit(IgnoreUserSuccess(
             ignoreUsersResponseModel,
             hasNextPage: ignoreUsersResponseModel.meta?.currentPage != null &&
@@ -45,7 +44,7 @@ class IgnoreUserCubit extends Cubit<IgnoreUserState> {
             ];
             final updatedModel =
                 ignoreUsersResponseModel.copyWith(data: updatedData);
-            log('Pagination completed: Added ${ignoreUsersResponseModel.data?.length ?? 0} items, total: ${updatedData.length}');
+
             emit(IgnoreUserSuccess(
               updatedModel,
               hasNextPage: ignoreUsersResponseModel.meta?.currentPage != null &&
@@ -58,7 +57,7 @@ class IgnoreUserCubit extends Cubit<IgnoreUserState> {
         }
       });
     } catch (e) {
-      log('Unexpected error loading ignore users: $e');
+
       emit(IgnoreUserFailure('An unexpected error occurred: $e'));
     }
   }

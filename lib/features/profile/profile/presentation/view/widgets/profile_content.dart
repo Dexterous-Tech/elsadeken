@@ -50,8 +50,6 @@ class _ProfileContentState extends State<ProfileContent> {
                 final isBlocked = state.myProfileResponseModel.data?.isBlocked;
                 if (isBlocked == 1) {
                   // User is not blocked, navigate to login
-                  print(
-                      '🚫 User is not blocked (isBlocked: $isBlocked), navigating to login');
                   context.pushNamedAndRemoveUntil(AppRoutes.loginScreen);
                 }
               }
@@ -89,328 +87,379 @@ class _ProfileContentState extends State<ProfileContent> {
                   );
                 }
               },
-              child: BlocListener<NotificationSettingsProfileCubit,
-                  NotificationSettingsProfileState>(
-                listener: (context, state) {
-                  if (state is NotificationSettingsToggleSuccess) {
-                    // Show success message
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          state.message,
-                          textDirection:
-                              LocalizationService.instance.textDirection,
-                          textAlign: TextAlign.center,
-                        ),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  } else if (state is NotificationSettingsError) {
-                    // Show error message
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          state.message,
-                          textDirection:
-                              LocalizationService.instance.textDirection,
-                          textAlign: TextAlign.center,
-                        ),
-                        backgroundColor: AppColors.coralRed,
-                      ),
-                    );
-                  }
-                },
-                child: BlocBuilder<ManageProfileCubit, ManageProfileState>(
-                  builder: (context, profileState) {
-                    return BlocBuilder<NotificationSettingsProfileCubit,
-                        NotificationSettingsProfileState>(
-                      builder: (context, notificationState) {
-                        // Load notification settings immediately on first build
-                        if (notificationState
-                            is NotificationSettingsProfileInitial) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            context
-                                .read<NotificationSettingsProfileCubit>()
-                                .loadNotificationFromPrefs();
-                          });
-                        }
-
-                        // Load profile data if not already loaded
-                        if (profileState is ManageProfileInitial) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            context.read<ManageProfileCubit>().getProfile();
-                          });
-                        }
-
-                        // Set profile data to notification cubit when profile is loaded
-                        if (profileState is ManageProfileSuccess &&
-                            !_hasLoadedSettings) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            print(
-                                '🔔 Setting profile data to notification cubit - isNotifable: ${profileState.myProfileResponseModel.data?.isNotifable}');
-                            context
-                                .read<NotificationSettingsProfileCubit>()
-                                .setProfileData(
-                                    profileState.myProfileResponseModel);
-                            _hasLoadedSettings = true;
-                          });
-                        }
-
-                        // Load notification settings on first build if no profile data
-                        if (!_hasLoadedSettings &&
-                            profileState is! ManageProfileSuccess) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            context
-                                .read<NotificationSettingsProfileCubit>()
-                                .loadNotificationFromPrefs();
-                            _hasLoadedSettings = true;
-                          });
-                        }
-
-                        final List<ProfileContentItemModel>
-                            personalInformation = [
-                          ProfileContentItemModel(
-                            image: AppImages.myProfileIcon,
-                            title: AppLocalizations.of(context)!.manageAccount,
-                            onPressed: () {
-                              context.pushNamed(AppRoutes.manageProfileScreen);
-                            },
-                          ),
-                          ProfileContentItemModel(
-                            image: AppImages.interestsListIcon,
-                            title: AppLocalizations.of(context)!.interestsList,
-                            onPressed: () {
-                              context.pushNamed(
-                                  AppRoutes.profileInterestsListScreen);
-                            },
-                          ),
-                          ProfileContentItemModel(
-                            image: AppImages.ignoringListIcon,
-                            title: AppLocalizations.of(context)!.ignoringList,
-                            onPressed: () {
-                              context.pushNamed(
-                                  AppRoutes.profileMyIgnoringListScreen);
-                            },
-                          ),
-                          ProfileContentItemModel(
-                            image: AppImages.interestingMeIcon,
-                            title: AppLocalizations.of(context)!.whoInterestsMe,
-                            onPressed: () {
-                              context.pushNamed(
-                                  AppRoutes.profileMyInterestingListScreen);
-                            },
-                          ),
-                          ProfileContentItemModel(
-                            image: AppImages.searchAdvancedIcon,
-                            title: AppLocalizations.of(context)!.advancedSearch,
-                            onPressed: () {
-                              context.pushNamed(AppRoutes.searchScreen);
-                            },
-                          ),
-                          ProfileContentItemModel(
-                            image: AppImages.membersProfileImagesIcon,
-                            title: AppLocalizations.of(context)!.membersPhotos,
-                            onPressed: () {
-                              context.pushNamed(
-                                  AppRoutes.profileMembersProfileScreen);
-                            },
-                          ),
-                          ProfileContentItemModel(
-                            image: AppImages.excellencePackageIcon,
-                            title:
-                                AppLocalizations.of(context)!.excellencePackage,
-                            onPressed: () {
-                              context.pushNamed(
-                                  AppRoutes.profileExcellencePackageScreen);
-                            },
-                          ),
-                          ProfileContentItemModel(
-                            image: AppImages.successStoryIcon,
-                            title: AppLocalizations.of(context)!.successStories,
-                            onPressed: () {
-                              context.pushNamed(AppRoutes.successStoriesScreen);
-                            },
-                          ),
-                          ProfileContentItemModel(
-                            image: AppImages.elsadekenNotesIcon,
-                            title: AppLocalizations.of(context)!.blog,
-                            onPressed: () {
-                              context.pushNamed(AppRoutes.blogScreen);
-                            },
-                          ),
-                        ];
-
-                        final List<ProfileContentItemModel> appSettings = [
-                          ProfileContentItemModel(
-                            image: AppImages.aboutUsIcon,
-                            title: AppLocalizations.of(context)!.aboutUs,
-                            onPressed: () {
-                              context.pushNamed(AppRoutes.profileAboutUsScreen);
-                            },
-                          ),
-                          ProfileContentItemModel(
-                            image: AppImages.appShareIcon,
-                            title: AppLocalizations.of(context)!.shareApp,
-                            onPressed: () {},
-                          ),
-                          ProfileContentItemModel(
-                            image: AppImages.contactUsIcon,
-                            title: AppLocalizations.of(context)!.contactUs,
-                            onPressed: () {
-                              context
-                                  .pushNamed(AppRoutes.profileContactUsScreen);
-                            },
-                          ),
-                        ];
-
-                        return Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.only(
-                            top: 21.h,
-                            right: 46.5.w,
-                            left: 66.5,
-                            bottom: 19.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.seashellColor,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              topRight: Radius.circular(40),
+              child:
+                  BlocListener<
+                    NotificationSettingsProfileCubit,
+                    NotificationSettingsProfileState
+                  >(
+                    listener: (context, state) {
+                      if (state is NotificationSettingsToggleSuccess) {
+                        // Show success message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              state.message,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              return SingleChildScrollView(
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                      minHeight: constraints.maxHeight),
-                                  child: IntrinsicHeight(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)!
-                                              .personalInfo,
-                                          style: AppTextStyles
-                                              .font12GrayMediumLamaSans,
-                                        ),
-                                        verticalSpace(16),
-                                        ...listGenerationContentItems(
-                                            items: personalInformation),
-                                        verticalSpace(24),
-                                        Text(
-                                          textDirection: LocalizationService
-                                              .instance.textDirection,
-                                          AppLocalizations.of(context)!
-                                              .appSettings,
-                                          style: AppTextStyles
-                                              .font12GrayMediumLamaSans,
-                                        ),
-                                        verticalSpace(16),
-                                        // Notification toggle widget above the notification item
-                                        // Notification item
-                                        ProfileContentItem(
-                                          image: AppImages.notificationIcon,
-                                          title: AppLocalizations.of(context)!
-                                              .notifications,
-                                          onPressed: () {
-                                            // Navigate to notification screen
-                                            // context.pushNamed(AppRoutes.notificationScreen);
-                                          },
-                                          leading: _buildNotificationToggle(
-                                              notificationState),
-                                        ),
-
-                                        verticalSpace(16),
-
-                                        ...listGenerationContentItems(
-                                            items: appSettings),
-                                        verticalSpace(15),
-                                        // Language Toggle Section
-                                        LanguageToggle(),
-                                        verticalSpace(21),
-
-                                        GestureDetector(
-                                          onTap: () {
-                                            deleteImageDialog(context);
-                                          },
-                                          child: Row(
-                                            textDirection: LocalizationService
-                                                .instance.textDirection,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(50).r,
-                                                child: Image.asset(
-                                                  AppImages.trashIcon,
-                                                  width: 44.w,
-                                                  height: 44.h,
-                                                ),
-                                              ),
-                                              horizontalSpace(16),
-                                              Text(
-                                                AppLocalizations.of(context)!
-                                                    .deleteMyPhoto,
-                                                style: AppTextStyles
-                                                    .font14CharlestonGreenMediumLamaSans
-                                                    .copyWith(
-                                                        color:
-                                                            AppColors.coralRed),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        verticalSpace(21),
-                                        GestureDetector(
-                                          onTap: () {
-                                            logoutDialog(context);
-                                          },
-                                          child: Row(
-                                            textDirection: LocalizationService
-                                                .instance.textDirection,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(50).r,
-                                                child: Image.asset(
-                                                  AppImages.logoutIcon,
-                                                  width: 44.w,
-                                                  height: 44.h,
-                                                ),
-                                              ),
-                                              horizontalSpace(16),
-                                              Text(
-                                                AppLocalizations.of(context)!
-                                                    .logout,
-                                                style: AppTextStyles
-                                                    .font14CharlestonGreenMediumLamaSans
-                                                    .copyWith(
-                                                        color:
-                                                            AppColors.coralRed),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-
-                                        verticalSpace(80)
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
+                            backgroundColor: Colors.green,
                           ),
                         );
+                      } else if (state is NotificationSettingsError) {
+                        // Show error message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              state.message,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                              textAlign: TextAlign.center,
+                            ),
+                            backgroundColor: AppColors.coralRed,
+                          ),
+                        );
+                      }
+                    },
+                    child: BlocBuilder<ManageProfileCubit, ManageProfileState>(
+                      builder: (context, profileState) {
+                        return BlocBuilder<
+                          NotificationSettingsProfileCubit,
+                          NotificationSettingsProfileState
+                        >(
+                          builder: (context, notificationState) {
+                            // Load notification settings immediately on first build
+                            if (notificationState
+                                is NotificationSettingsProfileInitial) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                context
+                                    .read<NotificationSettingsProfileCubit>()
+                                    .loadNotificationFromPrefs();
+                              });
+                            }
+
+                            // Load profile data if not already loaded
+                            if (profileState is ManageProfileInitial) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                context.read<ManageProfileCubit>().getProfile();
+                              });
+                            }
+
+                            // Set profile data to notification cubit when profile is loaded
+                            if (profileState is ManageProfileSuccess &&
+                                !_hasLoadedSettings) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                context
+                                    .read<NotificationSettingsProfileCubit>()
+                                    .setProfileData(
+                                      profileState.myProfileResponseModel,
+                                    );
+                                _hasLoadedSettings = true;
+                              });
+                            }
+
+                            // Load notification settings on first build if no profile data
+                            if (!_hasLoadedSettings &&
+                                profileState is! ManageProfileSuccess) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                context
+                                    .read<NotificationSettingsProfileCubit>()
+                                    .loadNotificationFromPrefs();
+                                _hasLoadedSettings = true;
+                              });
+                            }
+
+                            final List<ProfileContentItemModel>
+                            personalInformation = [
+                              ProfileContentItemModel(
+                                image: AppImages.myProfileIcon,
+                                title: AppLocalizations.of(
+                                  context,
+                                )!.manageAccount,
+                                onPressed: () {
+                                  context.pushNamed(
+                                    AppRoutes.manageProfileScreen,
+                                  );
+                                },
+                              ),
+                              ProfileContentItemModel(
+                                image: AppImages.interestsListIcon,
+                                title: AppLocalizations.of(
+                                  context,
+                                )!.interestsList,
+                                onPressed: () {
+                                  context.pushNamed(
+                                    AppRoutes.profileInterestsListScreen,
+                                  );
+                                },
+                              ),
+                              ProfileContentItemModel(
+                                image: AppImages.ignoringListIcon,
+                                title: AppLocalizations.of(
+                                  context,
+                                )!.ignoringList,
+                                onPressed: () {
+                                  context.pushNamed(
+                                    AppRoutes.profileMyIgnoringListScreen,
+                                  );
+                                },
+                              ),
+                              ProfileContentItemModel(
+                                image: AppImages.interestingMeIcon,
+                                title: AppLocalizations.of(
+                                  context,
+                                )!.whoInterestsMe,
+                                onPressed: () {
+                                  context.pushNamed(
+                                    AppRoutes.profileMyInterestingListScreen,
+                                  );
+                                },
+                              ),
+                              ProfileContentItemModel(
+                                image: AppImages.searchAdvancedIcon,
+                                title: AppLocalizations.of(
+                                  context,
+                                )!.advancedSearch,
+                                onPressed: () {
+                                  context.pushNamed(AppRoutes.searchScreen);
+                                },
+                              ),
+                              ProfileContentItemModel(
+                                image: AppImages.membersProfileImagesIcon,
+                                title: AppLocalizations.of(
+                                  context,
+                                )!.membersPhotos,
+                                onPressed: () {
+                                  context.pushNamed(
+                                    AppRoutes.profileMembersProfileScreen,
+                                  );
+                                },
+                              ),
+                              ProfileContentItemModel(
+                                image: AppImages.excellencePackageIcon,
+                                title: AppLocalizations.of(
+                                  context,
+                                )!.excellencePackage,
+                                onPressed: () {
+                                  context.pushNamed(
+                                    AppRoutes.profileExcellencePackageScreen,
+                                  );
+                                },
+                              ),
+                              ProfileContentItemModel(
+                                image: AppImages.successStoryIcon,
+                                title: AppLocalizations.of(
+                                  context,
+                                )!.successStories,
+                                onPressed: () {
+                                  context.pushNamed(
+                                    AppRoutes.successStoriesScreen,
+                                  );
+                                },
+                              ),
+                              ProfileContentItemModel(
+                                image: AppImages.elsadekenNotesIcon,
+                                title: AppLocalizations.of(context)!.blog,
+                                onPressed: () {
+                                  context.pushNamed(AppRoutes.blogScreen);
+                                },
+                              ),
+                            ];
+
+                            final List<ProfileContentItemModel> appSettings = [
+                              ProfileContentItemModel(
+                                image: AppImages.aboutUsIcon,
+                                title: AppLocalizations.of(context)!.aboutUs,
+                                onPressed: () {
+                                  context.pushNamed(
+                                    AppRoutes.profileAboutUsScreen,
+                                  );
+                                },
+                              ),
+                              ProfileContentItemModel(
+                                image: AppImages.appShareIcon,
+                                title: AppLocalizations.of(context)!.shareApp,
+                                onPressed: () {},
+                              ),
+                              ProfileContentItemModel(
+                                image: AppImages.contactUsIcon,
+                                title: AppLocalizations.of(context)!.contactUs,
+                                onPressed: () {
+                                  context.pushNamed(
+                                    AppRoutes.profileContactUsScreen,
+                                  );
+                                },
+                              ),
+                            ];
+
+                            return Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.only(
+                                top: 21.h,
+                                right: 46.5.w,
+                                left: 66.5,
+                                bottom: 19.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.seashellColor,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(40),
+                                  topRight: Radius.circular(40),
+                                ),
+                              ),
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  return SingleChildScrollView(
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        minHeight: constraints.maxHeight,
+                                      ),
+                                      child: IntrinsicHeight(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.personalInfo,
+                                              style: AppTextStyles
+                                                  .font12GrayMediumLamaSans,
+                                            ),
+                                            verticalSpace(16),
+                                            ...listGenerationContentItems(
+                                              items: personalInformation,
+                                            ),
+                                            verticalSpace(24),
+                                            Text(
+                                              textDirection: LocalizationService
+                                                  .instance
+                                                  .textDirection,
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.appSettings,
+                                              style: AppTextStyles
+                                                  .font12GrayMediumLamaSans,
+                                            ),
+                                            verticalSpace(16),
+                                            // Notification toggle widget above the notification item
+                                            // Notification item
+                                            ProfileContentItem(
+                                              image: AppImages.notificationIcon,
+                                              title: AppLocalizations.of(
+                                                context,
+                                              )!.notifications,
+                                              onPressed: () {
+                                                // Navigate to notification screen
+                                                // context.pushNamed(AppRoutes.notificationScreen);
+                                              },
+                                              leading: _buildNotificationToggle(
+                                                notificationState,
+                                              ),
+                                            ),
+
+                                            verticalSpace(16),
+
+                                            ...listGenerationContentItems(
+                                              items: appSettings,
+                                            ),
+                                            verticalSpace(15),
+                                            // Language Toggle Section
+                                            LanguageToggle(),
+                                            verticalSpace(21),
+
+                                            GestureDetector(
+                                              onTap: () {
+                                                deleteImageDialog(context);
+                                              },
+                                              child: Row(
+                                                textDirection:
+                                                    LocalizationService
+                                                        .instance
+                                                        .textDirection,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          50,
+                                                        ).r,
+                                                    child: Image.asset(
+                                                      AppImages.trashIcon,
+                                                      width: 44.w,
+                                                      height: 44.h,
+                                                    ),
+                                                  ),
+                                                  horizontalSpace(16),
+                                                  Text(
+                                                    AppLocalizations.of(
+                                                      context,
+                                                    )!.deleteMyPhoto,
+                                                    style: AppTextStyles
+                                                        .font14CharlestonGreenMediumLamaSans
+                                                        .copyWith(
+                                                          color: AppColors
+                                                              .coralRed,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            verticalSpace(21),
+                                            GestureDetector(
+                                              onTap: () {
+                                                logoutDialog(context);
+                                              },
+                                              child: Row(
+                                                textDirection:
+                                                    LocalizationService
+                                                        .instance
+                                                        .textDirection,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          50,
+                                                        ).r,
+                                                    child: Image.asset(
+                                                      AppImages.logoutIcon,
+                                                      width: 44.w,
+                                                      height: 44.h,
+                                                    ),
+                                                  ),
+                                                  horizontalSpace(16),
+                                                  Text(
+                                                    AppLocalizations.of(
+                                                      context,
+                                                    )!.logout,
+                                                    style: AppTextStyles
+                                                        .font14CharlestonGreenMediumLamaSans
+                                                        .copyWith(
+                                                          color: AppColors
+                                                              .coralRed,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            verticalSpace(80),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        );
                       },
-                    );
-                  },
-                ),
-              ),
+                    ),
+                  ),
             ),
           ),
         ),
@@ -423,41 +472,29 @@ class _ProfileContentState extends State<ProfileContent> {
 
     if (state is NotificationSettingsProfileLoaded) {
       isEnabled = state.isEnabled;
-      print(
-          '🔔 Notification toggle: ProfileLoaded state - isEnabled: $isEnabled');
     } else if (state is NotificationSettingsToggleSuccess) {
       isEnabled = state.isEnabled;
-      print(
-          '🔔 Notification toggle: ToggleSuccess state - isEnabled: $isEnabled');
     } else if (state is NotificationSettingsProfileInitial) {
       // When in initial state, show loading indicator
       // The loadNotificationFromPrefs() should be called in initState()
-      print(
-          '🔔 Notification toggle: Initial state - showing loading indicator');
       return const SizedBox(
         width: 50,
         height: 30,
         child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
       );
     } else if (state is NotificationSettingsProfileLoading) {
-      print(
-          '🔔 Notification toggle: Loading state - showing loading indicator');
       return const SizedBox(
         width: 50,
         height: 30,
         child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
       );
     } else if (state is NotificationSettingsError) {
-      print('🔔 Notification toggle: Error state - defaulting to false');
       // Could show an error indicator here if needed
     }
-
-    print('🔔 Final toggle value: $isEnabled');
 
     return CustomAdvancedToggleSwitch(
       initialValue: isEnabled,
       onChanged: (bool value) {
-        print('🔔 Toggle changed to: $value');
         // Handle notification toggle change using API only
         context
             .read<NotificationSettingsProfileCubit>()

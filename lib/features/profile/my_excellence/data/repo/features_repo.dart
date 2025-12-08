@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -19,7 +18,7 @@ class FeaturesRepoImpl extends FeaturesRepoInterface {
       var response = await featuresDataSource.getFeatures();
       return Right(response);
     } catch (error) {
-      log("error in get features $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:elsadeken/features/profile/interests_list/presentation/manager/fav_user_cubit.dart';
 import 'package:elsadeken/features/profile/interests_list/presentation/manager/fav_user_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +37,7 @@ class _InterestsListItemsState extends State<InterestsListItems> {
 
     if (state is FavUserSuccess && state.hasNextPage && !_isLoadingMore) {
       final nextPage = state.currentPage + 1;
-      log('Loading more fav users: current page ${state.currentPage}, next page $nextPage, hasNextPage: ${state.hasNextPage}');
+
       setState(() {
         _isLoadingMore = true;
       });
@@ -47,18 +46,18 @@ class _InterestsListItemsState extends State<InterestsListItems> {
           setState(() {
             _isLoadingMore = false;
           });
-          log('Pagination loading completed');
+
         }
       });
     } else {
-      log('Cannot load more: state is ${state.runtimeType}, hasNextPage: ${state is FavUserSuccess ? state.hasNextPage : false}, isLoadingMore: $_isLoadingMore');
+
     }
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      log('Scroll threshold reached, triggering pagination');
+
       _loadMoreUsers();
     }
   }
@@ -72,7 +71,7 @@ class _InterestsListItemsState extends State<InterestsListItems> {
     return BlocBuilder<FavUserCubit, FavUserState>(
       builder: (context, state) {
         if (state is FavUserFailure) {
-          log('Failure');
+
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +105,7 @@ class _InterestsListItemsState extends State<InterestsListItems> {
           );
         }
         if (state is FavUserSuccess) {
-          log('Success');
+
           final interestingList = state.favUserListModel.data ?? [];
 
           if (interestingList.isEmpty) {

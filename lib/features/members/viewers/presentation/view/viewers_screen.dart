@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -208,9 +206,7 @@ class _ViewersViewState extends State<ViewersView> {
                             );
                           }
                           if (state is MembersListError<UsersDataModel>) {
-                            log(
-                              state.message,
-                            );
+
                             return Expanded(
                               child: Center(
                                 child: Column(

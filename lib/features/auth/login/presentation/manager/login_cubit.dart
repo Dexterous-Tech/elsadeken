@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +41,7 @@ class LoginCubit extends Cubit<LoginState> {
         }
 
         await saveUserToken(loginResponseModel.data!.token);
-        log("save token ");
+
         Future.wait([
           SharedPreferencesHelper.deleteSecuredString(
               SharedPreferencesKey.gender),
@@ -72,16 +70,16 @@ class LoginCubit extends Cubit<LoginState> {
 
       response.fold(
         (error) {
-          log("FCM token save failed: ${error.displayMessage}");
+
           // Don't emit error state to avoid showing error to user
         },
         (fcmResponseModel) async {
-          log("FCM token saved successfully");
+
           // Don't emit success state to avoid showing success to user
         },
       );
     } catch (e) {
-      log("Error saving FCM token: $e");
+
       // Don't emit error state to avoid showing error to user
     }
   }

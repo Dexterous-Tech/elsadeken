@@ -28,7 +28,6 @@ class PusherCubit extends Cubit<PusherState> {
   Future<void> initialize() async {
     // Prevent multiple simultaneous initialization attempts
     if (_isInitializing) {
-      print('⚠️ Pusher initialization already in progress, skipping...');
       return;
     }
 
@@ -41,19 +40,13 @@ class PusherCubit extends Cubit<PusherState> {
 
       final result = await _pusherRepo.initialize();
 
-      result.fold(
-        (failure) {
-          // Handle failures silently - don't emit error state
-          print(
-              '⚠️ Pusher initialization issue (handled silently): ${failure.message}');
-          // Don't emit error - we'll retry silently
-          emit(PusherInitialized()); // Emit initialized state anyway
-        },
-        (_) => emit(PusherInitialized()),
-      );
+      result.fold((failure) {
+        // Handle failures silently - don't emit error state
+        // Don't emit error - we'll retry silently
+        emit(PusherInitialized()); // Emit initialized state anyway
+      }, (_) => emit(PusherInitialized()));
     } catch (e) {
       // Handle exceptions silently - don't emit error state
-      print('⚠️ Pusher initialization exception (handled silently): $e');
       // Don't emit error - we'll retry silently
       emit(PusherInitialized()); // Emit initialized state anyway
     } finally {
@@ -73,12 +66,14 @@ class PusherCubit extends Cubit<PusherState> {
         emit(PusherSubscribing());
       }
 
-      final result = await _pusherRepo.subscribeToChatChannel(chatRoomId, authToken);
+      final result = await _pusherRepo.subscribeToChatChannel(
+        chatRoomId,
+        authToken,
+      );
 
       result.fold(
         (failure) {
           // Handle failures gracefully - emit error but don't crash
-          print('⚠️ Pusher subscription failed: ${failure.message}');
           // Only emit if not already subscribed
           if (state is! PusherSubscribed) {
             emit(PusherSubscribed());
@@ -93,7 +88,6 @@ class PusherCubit extends Cubit<PusherState> {
       );
     } catch (e) {
       // Handle exceptions gracefully - emit error but don't crash
-      print('⚠️ Pusher subscription exception: $e');
       // Only emit if not already subscribed
       if (state is! PusherSubscribed) {
         emit(PusherSubscribed());
@@ -148,7 +142,6 @@ class PusherCubit extends Cubit<PusherState> {
     try {
       return await _pusherRepo.checkConnectionHealth();
     } catch (e) {
-      print('⚠️ Connection health check failed: $e');
       return false;
     }
   }
@@ -158,7 +151,7 @@ class PusherCubit extends Cubit<PusherState> {
     try {
       _pusherRepo.testMessageHandling();
     } catch (e) {
-      print('⚠️ Test message handling failed: $e');
+      // exception
     }
   }
 
@@ -167,7 +160,7 @@ class PusherCubit extends Cubit<PusherState> {
     try {
       _pusherRepo.testFullMessagePipeline();
     } catch (e) {
-      print('⚠️ Test message pipeline failed: $e');
+      //  exception
     }
   }
 
@@ -177,7 +170,7 @@ class PusherCubit extends Cubit<PusherState> {
       // Access the pusher service through singleton instance
       PusherService.instance.simulateMessageReceived(messageText, chatId);
     } catch (e) {
-      print('⚠️ Simulate message failed: $e');
+      // exception
     }
   }
 }

@@ -42,8 +42,6 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
 
   /// Handle favorite button press
   void _handleFavoritePress() {
-    print('Favorite button pressed for user: ${_currentPerson.name}');
-
     // Call the likeUser method from ProfileDetailsCubit
     context.read<ProfileDetailsCubit>().likeUser(_currentPerson.id);
   }
@@ -166,11 +164,14 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
           // Show success message from response
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.profileDetailsActionResponseModel.message ??
-                  (_currentPerson.isFavorite
-                      ? AppLocalizations.of(context)!
-                          .addedToFavorites(_currentPerson.name)
-                      : AppLocalizations.of(context)!.removeFromFavorites)),
+              content: Text(
+                state.profileDetailsActionResponseModel.message ??
+                    (_currentPerson.isFavorite
+                        ? AppLocalizations.of(
+                            context,
+                          )!.addedToFavorites(_currentPerson.name)
+                        : AppLocalizations.of(context)!.removeFromFavorites),
+              ),
               duration: const Duration(seconds: 2),
               backgroundColor: Colors.green,
             ),
@@ -200,10 +201,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.cosmicLatte,
-                  AppColors.antiqueWhite,
-                ],
+                colors: [AppColors.cosmicLatte, AppColors.antiqueWhite],
               ),
             ),
             child: Column(
@@ -276,17 +274,11 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
             children: [
               Text(
                 p.name,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
               ),
               Text(
                 '${p.attribute.country}, ${p.attribute.city}',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 14.sp, color: Colors.grey),
                 textDirection: LocalizationService.instance.textDirection,
               ),
             ],
@@ -319,38 +311,24 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
       children: [
         Text(
           AppLocalizations.of(context)!.aboutPerson,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           textDirection: LocalizationService.instance.textDirection,
         ),
         verticalSpace(8),
         Text(
           p.attribute.aboutMe,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.grey,
-            height: 1.5,
-          ),
+          style: const TextStyle(fontSize: 14, color: Colors.grey, height: 1.5),
         ),
         verticalSpace(16),
         Text(
           AppLocalizations.of(context)!.lifePartner,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           textDirection: LocalizationService.instance.textDirection,
         ),
         verticalSpace(8),
         Text(
           p.attribute.lifePartner,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.grey,
-            height: 1.5,
-          ),
+          style: const TextStyle(fontSize: 14, color: Colors.grey, height: 1.5),
         ),
       ],
     );
@@ -361,11 +339,11 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
     final data = [
       {
         'label': AppLocalizations.of(context)!.registeredSince,
-        'value': _getRegisteredSince(p.createdAt)
+        'value': _getRegisteredSince(p.createdAt),
       },
       {
         'label': AppLocalizations.of(context)!.lastVisitDate,
-        'value': _getLastVisit(p.lastSeen)
+        'value': _getLastVisit(p.lastSeen),
       },
     ];
 
@@ -427,7 +405,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                       Container(
                         width: 150.w,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.lighterOrange,
                           borderRadius: BorderRadius.circular(8),
@@ -455,70 +435,70 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
 
   Widget _buildDataTable() {
     final p = _currentPerson;
-    final isSingle = p.attribute.maritalStatus ==
-            AppLocalizations.of(context)!.singleMale ||
+    final isSingle =
+        p.attribute.maritalStatus == AppLocalizations.of(context)!.singleMale ||
         p.attribute.maritalStatus == AppLocalizations.of(context)!.singleFemale;
     final data = [
       {
         'label': AppLocalizations.of(context)!.nationality,
-        'value': p.attribute.nationality
+        'value': p.attribute.nationality,
       },
       {
         'label': AppLocalizations.of(context)!.residence,
-        'value': p.attribute.city
+        'value': p.attribute.city,
       },
       {'label': AppLocalizations.of(context)!.city, 'value': p.attribute.city},
       {
         'label': AppLocalizations.of(context)!.typeOfMarriage,
-        'value': p.attribute.typeOfMarriage
+        'value': p.attribute.typeOfMarriage,
       },
       {
         'label': AppLocalizations.of(context)!.maritalStatus,
-        'value': p.attribute.maritalStatus
+        'value': p.attribute.maritalStatus,
       },
       // 👇 Only add numberOfChildren if not single
       if (!isSingle)
         {
           'label': AppLocalizations.of(context)!.numberOfChildren,
-          'value': p.attribute.children.toString()
+          'value': p.attribute.children.toString(),
         },
 
       {
         'label': AppLocalizations.of(context)!.skinColor,
-        'value': p.attribute.skinColor
+        'value': p.attribute.skinColor,
       },
       {
         'label': AppLocalizations.of(context)!.height,
-        'value': "${p.attribute.height} ${AppLocalizations.of(context)!.cm}"
+        'value': "${p.attribute.height} ${AppLocalizations.of(context)!.cm}",
       },
       {
         'label': AppLocalizations.of(context)!.weight,
-        'value': "${p.attribute.weight} ${AppLocalizations.of(context)!.kg}"
+        'value': "${p.attribute.weight} ${AppLocalizations.of(context)!.kg}",
       },
       {
         'label': AppLocalizations.of(context)!.educationalQualification,
-        'value': p.attribute.qualification
+        'value': p.attribute.qualification,
       },
       {
         'label': AppLocalizations.of(context)!.financialStatusTitle,
-        'value': p.attribute.financialSituation
+        'value': p.attribute.financialSituation,
       },
       {'label': AppLocalizations.of(context)!.job, 'value': p.attribute.job},
       {
         'label': AppLocalizations.of(context)!.monthlyIncome,
-        'value': p.attribute.income
+        'value': p.attribute.income,
       },
       {
         'label': AppLocalizations.of(context)!.healthStatus,
-        'value': p.attribute.healthCondition
+        'value': p.attribute.healthCondition,
       },
       {
         'label': AppLocalizations.of(context)!.smoking,
-        'value': p.attribute.smoking
+        'value': p.attribute.smoking,
       },
       {
         'label': AppLocalizations.of(context)!.religiousCommitment,
-        'value': p.attribute.religiousCommitment
+        'value': p.attribute.religiousCommitment,
       },
       {
         'label': p.gender == 'male' || p.gender == 'ذكر'
@@ -586,7 +566,9 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                       Container(
                         width: 150.w,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.lighterOrange,
                           borderRadius: BorderRadius.circular(8),
@@ -636,53 +618,39 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                 ),
               ],
             ),
-            child: const Icon(
-              Icons.close,
-              color: Colors.red,
-            ),
+            child: const Icon(Icons.close, color: Colors.red),
           ),
         ),
         horizontalSpace(21),
         GestureDetector(
           onTap: () async {
             try {
-              print(
-                  '🔍 [PersonInfo] Message icon tapped for user ID: ${_currentPerson.id}');
-
               // Check if there's an existing chat room first
               final chatListCubit = context.read<ChatListCubit>();
 
               // Check if chat list is already loaded, if not, load it
               if (chatListCubit.state is! ChatListLoaded) {
-                print('🔄 [PersonInfo] Chat list not loaded, loading now...');
                 await chatListCubit.forceRefreshChatList();
 
                 // Wait a bit for the state to update
                 await Future.delayed(const Duration(milliseconds: 500));
-              } else {
-                print('✅ [PersonInfo] Chat list already loaded');
-              }
+              } else {}
 
               // Find existing chat room between current user and this profile user
-              final existingChatRoom =
-                  chatListCubit.findExistingChatRoom(_currentPerson.id);
+              final existingChatRoom = chatListCubit.findExistingChatRoom(
+                _currentPerson.id,
+              );
 
               if (existingChatRoom != null) {
-                print(
-                    '✅ [PersonInfo] Found existing chat room: ${existingChatRoom.id}, navigating to it');
                 // Navigate to existing chat room
                 if (mounted) {
                   Navigator.pushNamed(
                     context,
                     AppRoutes.chatConversationScreen,
-                    arguments: {
-                      "chatRoom": existingChatRoom,
-                    },
+                    arguments: {"chatRoom": existingChatRoom},
                   );
                 }
               } else {
-                print(
-                    '🆕 [PersonInfo] No existing chat room found, creating new temporary chat');
                 // Create new temporary chat room for new conversation
                 if (mounted) {
                   Navigator.pushNamed(
@@ -699,7 +667,6 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
                 }
               }
             } catch (e) {
-              print('❌ [PersonInfo] Error in message icon onTap: $e');
               // Fallback to creating new chat
               if (mounted) {
                 Navigator.pushNamed(
@@ -740,7 +707,7 @@ class _PersonInfoSheetState extends State<PersonInfoSheet> {
             ),
           ),
         ),
-        SizedBox(height: 16)
+        SizedBox(height: 16),
       ],
     );
   }

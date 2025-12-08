@@ -15,37 +15,37 @@ class MembersScreen extends StatelessWidget {
   const MembersScreen({super.key});
 
   List<Map<String, dynamic>> _getMenuItems(BuildContext context) => [
-        {
-          'title': AppLocalizations.of(context)!.onlineMembers,
-          'backgroundColor': AppColors.beige,
-          'avatarAsset': AppImages.memberItem1,
-          'screen': 'online_members_screen',
-        },
-        {
-          'title': AppLocalizations.of(context)!.profileVisitors,
-          'backgroundColor': AppColors.beige,
-          'avatarAsset': AppImages.memberItem2,
-          'screen': 'profile_visitors_screen',
-        },
-        {
-          'title': AppLocalizations.of(context)!.newMembers,
-          'backgroundColor': AppColors.beige,
-          'avatarAsset': AppImages.memberItem3,
-          'screen': 'new_members_screen',
-        },
-        {
-          'title': AppLocalizations.of(context)!.premiumMembers,
-          'backgroundColor': AppColors.beige,
-          'avatarAsset': AppImages.memberItem4,
-          'screen': 'premium_members_screen',
-        },
-        {
-          'title': AppLocalizations.of(context)!.healthStatuses,
-          'backgroundColor': AppColors.beige,
-          'avatarAsset': AppImages.memberItem5,
-          'screen': 'health_status_screen',
-        },
-      ];
+    {
+      'title': AppLocalizations.of(context)!.onlineMembers,
+      'backgroundColor': AppColors.beige,
+      'avatarAsset': AppImages.memberItem1,
+      'screen': 'online_members_screen',
+    },
+    {
+      'title': AppLocalizations.of(context)!.profileVisitors,
+      'backgroundColor': AppColors.beige,
+      'avatarAsset': AppImages.memberItem2,
+      'screen': 'profile_visitors_screen',
+    },
+    {
+      'title': AppLocalizations.of(context)!.newMembers,
+      'backgroundColor': AppColors.beige,
+      'avatarAsset': AppImages.memberItem3,
+      'screen': 'new_members_screen',
+    },
+    {
+      'title': AppLocalizations.of(context)!.premiumMembers,
+      'backgroundColor': AppColors.beige,
+      'avatarAsset': AppImages.memberItem4,
+      'screen': 'premium_members_screen',
+    },
+    {
+      'title': AppLocalizations.of(context)!.healthStatuses,
+      'backgroundColor': AppColors.beige,
+      'avatarAsset': AppImages.memberItem5,
+      'screen': 'health_status_screen',
+    },
+  ];
 
   void _navigateToScreen(BuildContext context, String screenName) async {
     await Future.delayed(const Duration(milliseconds: 150));
@@ -53,39 +53,54 @@ class MembersScreen extends StatelessWidget {
     switch (screenName) {
       case 'online_members_screen':
         if (context.mounted) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const OnlineMembersView()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const OnlineMembersView()),
+          );
         }
         break;
       case 'profile_visitors_screen':
         if (context.mounted) {
           Navigator.push(
-              context, MaterialPageRoute(builder: (_) => const ViewersView()));
+            context,
+            MaterialPageRoute(builder: (_) => const ViewersView()),
+          );
         }
         break;
       case 'new_members_screen':
         if (context.mounted) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const NewMembersView()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const NewMembersView()),
+          );
         }
         break;
       case 'premium_members_screen':
         if (context.mounted) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const PremiumMembersView()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const PremiumMembersView()),
+          );
         }
         break;
       case 'health_status_screen':
         if (context.mounted) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const HealthStatusesView()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const HealthStatusesView()),
+          );
         }
       //   break;
       // case 'smart_search_screen':
       //   Navigator.push(context, MaterialPageRoute(builder: (_) => const SmartSearchScreen()));
       //   break;
       default:
-        debugPrint('Unknown screen: $screenName');
+        if (context.mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const OnlineMembersView()),
+          );
+        }
     }
   }
 
@@ -96,10 +111,7 @@ class MembersScreen extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            AppColors.cosmicLatte,
-            AppColors.antiqueWhite,
-          ],
+          colors: [AppColors.cosmicLatte, AppColors.antiqueWhite],
         ),
       ),
       child: Stack(
@@ -128,9 +140,10 @@ class MembersScreen extends StatelessWidget {
                           child: Text(
                             AppLocalizations.of(context)!.members,
                             style: TextStyle(
-                                fontSize: 26.sp,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700),
+                              fontSize: 26.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ],
