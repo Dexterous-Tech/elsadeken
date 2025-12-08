@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -49,9 +40,19 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBTPXGE361bgh1Au0cwOESpCgOzDYpddqY',
+    appId: '1:717372017853:web:828f9072aedcc8ab22bbd4',
+    messagingSenderId: '717372017853',
+    projectId: 'elsadeken-1',
+    authDomain: 'elsadeken-1.firebaseapp.com',
+    storageBucket: 'elsadeken-1.firebasestorage.app',
+    measurementId: 'G-R3HW7HNY0Q',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA-j_CC1q3w0Jy1RfGM4oOItTbcsPKk5xU',
-    appId: '1:717372017853:android:b2fa090199ca33e722bbd4',
+    appId: '1:717372017853:android:37d39f384c6b754a22bbd4',
     messagingSenderId: '717372017853',
     projectId: 'elsadeken-1',
     storageBucket: 'elsadeken-1.firebasestorage.app',
@@ -59,10 +60,29 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAG9gmNJ63pNAhIMjQHV11TbIIDrI-1t9Q',
-    appId: '1:717372017853:ios:330b4c301ca7e2a922bbd4',
+    appId: '1:717372017853:ios:813956ff4b8e9fa822bbd4',
     messagingSenderId: '717372017853',
     projectId: 'elsadeken-1',
     storageBucket: 'elsadeken-1.firebasestorage.app',
-    iosBundleId: 'com.example.elsadeken',
+    iosBundleId: 'com.wessal.elsadeken',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyAG9gmNJ63pNAhIMjQHV11TbIIDrI-1t9Q',
+    appId: '1:717372017853:ios:813956ff4b8e9fa822bbd4',
+    messagingSenderId: '717372017853',
+    projectId: 'elsadeken-1',
+    storageBucket: 'elsadeken-1.firebasestorage.app',
+    iosBundleId: 'com.wessal.elsadeken',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyBTPXGE361bgh1Au0cwOESpCgOzDYpddqY',
+    appId: '1:717372017853:web:f61ea29886ba268822bbd4',
+    messagingSenderId: '717372017853',
+    projectId: 'elsadeken-1',
+    authDomain: 'elsadeken-1.firebaseapp.com',
+    storageBucket: 'elsadeken-1.firebasestorage.app',
+    measurementId: 'G-7MNJCVCFKR',
   );
 }

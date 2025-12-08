@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:717372017853:android:b2fa090199ca33e722bbd4",
+        "mobilesdk_app_id": "1:717372017853:android:37d39f384c6b754a22bbd4",
         "android_client_info": {
-          "package_name": "com.example.elsadeken"
+          "package_name": "com.wessal.elsadeken"
         }
       },
       "oauth_client": [],
