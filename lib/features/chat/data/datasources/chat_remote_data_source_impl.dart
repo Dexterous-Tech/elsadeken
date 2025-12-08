@@ -28,15 +28,11 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
   @override
   Future<List<ChatMessageModel>> getChatMessages(String roomId) async {
-    print("ChatRemoteDataSourceImpl: Returning mock messages for room $roomId");
     return _mockMessages[roomId] ?? [];
   }
 
   @override
   Future<void> sendMessage(String roomId, String message) async {
-    print(
-        "ChatRemoteDataSourceImpl: Adding message '$message' to room $roomId");
-
     // Create new message
     final newMessage = ChatMessageModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -57,8 +53,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     }
 
     // Update chat room's last message and time
-    final chatRoomIndex =
-        _mockChatRooms.indexWhere((room) => room.id == roomId);
+    final chatRoomIndex = _mockChatRooms.indexWhere(
+      (room) => room.id == roomId,
+    );
     if (chatRoomIndex != -1) {
       final oldRoom = _mockChatRooms[chatRoomIndex];
       _mockChatRooms[chatRoomIndex] = ChatRoomModel(
@@ -80,8 +77,6 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
   @override
   Future<void> markAsRead(String roomId) async {
-    print("ChatRemoteDataSourceImpl: Marking room $roomId as read");
-
     // Mark all messages in the room as read
     if (_mockMessages[roomId] != null) {
       for (int i = 0; i < _mockMessages[roomId]!.length; i++) {
@@ -102,8 +97,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     }
 
     // Update chat room's unread count
-    final chatRoomIndex =
-        _mockChatRooms.indexWhere((room) => room.id == roomId);
+    final chatRoomIndex = _mockChatRooms.indexWhere(
+      (room) => room.id == roomId,
+    );
     if (chatRoomIndex != -1) {
       final oldRoom = _mockChatRooms[chatRoomIndex];
       _mockChatRooms[chatRoomIndex] = ChatRoomModel(
@@ -124,8 +120,6 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
   @override
   Future<void> deleteChat(String roomId) async {
-    print("ChatRemoteDataSourceImpl: Deleting chat room $roomId");
-
     // Remove chat room
     _mockChatRooms.removeWhere((room) => room.id == roomId);
 
@@ -137,8 +131,6 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
   @override
   Future<void> markAllAsRead() async {
-    print("ChatRemoteDataSourceImpl: Marking all chats as read");
-
     // Mark all messages in all rooms as read
     for (var messages in _mockMessages.values) {
       for (int i = 0; i < messages.length; i++) {
@@ -179,8 +171,6 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
   @override
   Future<void> deleteAllChats() async {
-    print("ChatRemoteDataSourceImpl: Deleting all chats");
-
     // Clear all data
     _mockChatRooms.clear();
     _mockMessages.clear();
@@ -305,8 +295,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           senderName: 'أنا',
           senderImage: ApiConstants.maleProfileImage,
           message: 'أهلا وسهلا بك',
-          timestamp:
-              DateTime.now().subtract(const Duration(hours: 1, minutes: 55)),
+          timestamp: DateTime.now().subtract(
+            const Duration(hours: 1, minutes: 55),
+          ),
           isRead: true,
         ),
         ChatMessageModel(
@@ -339,8 +330,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           senderName: 'أنا',
           senderImage: ApiConstants.maleProfileImage,
           message: 'أهلا وسهلا، الحمد لله',
-          timestamp:
-              DateTime.now().subtract(const Duration(hours: 2, minutes: 30)),
+          timestamp: DateTime.now().subtract(
+            const Duration(hours: 2, minutes: 30),
+          ),
           isRead: true,
         ),
         ChatMessageModel(

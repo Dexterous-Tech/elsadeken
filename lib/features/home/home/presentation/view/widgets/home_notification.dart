@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
@@ -29,7 +28,7 @@ class _HomeNotificationState extends State<HomeNotification> {
   // Method to refresh notification count
   void _refreshNotificationCount() {
     if (mounted) {
-      log('Refreshing notification count...');
+
       context.read<NotificationCountCubit>().refreshCount();
     }
   }
@@ -50,7 +49,7 @@ class _HomeNotificationState extends State<HomeNotification> {
             ),
           ),
           onTap: () async {
-            log('Navigating to notification screen...');
+
             // Navigate to notification screen and wait for result
             final result = await Navigator.push(
               context,
@@ -62,10 +61,10 @@ class _HomeNotificationState extends State<HomeNotification> {
             // Refresh notification count when user returns from notification screen
             // result will be true when user navigates back from notification screen
             if (mounted && result == true) {
-              log('User returned from notification screen, refreshing count...');
+
               _refreshNotificationCount();
             } else {
-              log('User returned from notification screen but no refresh needed');
+
             }
           },
         ),

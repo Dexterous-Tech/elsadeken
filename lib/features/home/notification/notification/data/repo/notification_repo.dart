@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -72,7 +70,7 @@ class NotificationRepoImp implements NotificationRepoInterface {
 
       return Right(response);
     } catch (e) {
-      log("error in count notification $e");
+
       if (e is ApiErrorModel) {
         return Left(e);
       }

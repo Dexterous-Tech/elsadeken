@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import '../../../../../core/networking/api_error_handler.dart';
 import '../../../../../core/networking/api_error_model.dart';
@@ -26,7 +24,7 @@ class VerificationRepoImplementation implements VerificationRepoInterface {
           await _verificationDataSource.verifyOtp(verificationRequestBodyModel);
       return Right(response);
     } catch (error) {
-      log("error in verification email $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

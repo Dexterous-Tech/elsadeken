@@ -70,19 +70,15 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
   }
 
   void _onCountryFilterChanged(Map<String, dynamic> filterData) {
-    print('_onCountryFilterChanged called with: $filterData');
     setState(() {
       _selectedCountryId = filterData['id'];
       _selectedCountryName = filterData['name'] ?? '';
     });
-    print(
-        'Updated _selectedCountryId to: $_selectedCountryId, _selectedCountryName to: $_selectedCountryName');
 
     // If "all" is selected, clear the filters
     if (filterData['name'] == 'all') {
       _selectedCountryId = null;
       _selectedCountryName = '';
-      print('Cleared filters because "all" was selected');
     }
   }
 
@@ -120,13 +116,12 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = MembersListCubit<UsersDataModel>(
-      ({int? page}) async {
-        final response =
-            await sl<MembersRepository>().getOnlineMembers(page: page);
-        return response;
-      },
-    )..fetch();
+    final cubit = MembersListCubit<UsersDataModel>(({int? page}) async {
+      final response = await sl<MembersRepository>().getOnlineMembers(
+        page: page,
+      );
+      return response;
+    })..fetch();
 
     return Directionality(
       textDirection: LocalizationService.instance.textDirection,
@@ -137,10 +132,7 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                AppColors.cosmicLatte,
-                AppColors.antiqueWhite,
-              ],
+              colors: [AppColors.cosmicLatte, AppColors.antiqueWhite],
             ),
           ),
           child: Stack(
@@ -168,13 +160,16 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
                             child: ProfileHeader(
-                                title:
-                                    AppLocalizations.of(context)!.onlineMembers,
-                                titleStyle: AppTextStyles
-                                    .font20WhiteBoldLamaSans
-                                    .copyWith(color: AppColors.black)),
+                              title: AppLocalizations.of(
+                                context,
+                              )!.onlineMembers,
+                              titleStyle: AppTextStyles.font20WhiteBoldLamaSans
+                                  .copyWith(color: AppColors.black),
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsetsDirectional.all(24.0),
@@ -191,32 +186,33 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                 SizedBox(width: 20),
                                 Row(
                                   textDirection: LocalizationService
-                                      .instance.textDirection,
+                                      .instance
+                                      .textDirection,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     GestureDetector(
                                       onTap: () async {
                                         final result =
                                             await showModalBottomSheet<
-                                                Map<String, dynamic>>(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.transparent,
-                                          builder: (context) {
-                                            print(
-                                                'Creating FilterBottomSheet with selectedCountryId: $_selectedCountryId, selectedCountryName: $_selectedCountryName');
-                                            return BlocProvider(
-                                              create: (context) =>
-                                                  sl<SignUpListsCubit>(),
-                                              child: FilterBottomSheet(
-                                                selectedCountryId:
-                                                    _selectedCountryId,
-                                                selectedCountryName:
-                                                    _selectedCountryName,
-                                              ),
+                                              Map<String, dynamic>
+                                            >(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              builder: (context) {
+                                                return BlocProvider(
+                                                  create: (context) =>
+                                                      sl<SignUpListsCubit>(),
+                                                  child: FilterBottomSheet(
+                                                    selectedCountryId:
+                                                        _selectedCountryId,
+                                                    selectedCountryName:
+                                                        _selectedCountryName,
+                                                  ),
+                                                );
+                                              },
                                             );
-                                          },
-                                        );
                                         if (result != null) {
                                           _onCountryFilterChanged(result);
                                         }
@@ -224,16 +220,20 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                       child: Row(
                                         children: [
                                           Text(
-                                            AppLocalizations.of(context)!
-                                                .filter,
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.filter,
                                             style: TextStyle(
-                                                color: Color(0xFFD4AF37),
-                                                fontSize: 18),
+                                              color: Color(0xFFD4AF37),
+                                              fontSize: 18,
+                                            ),
                                           ),
                                           SizedBox(width: 6),
-                                          Icon(Icons.arrow_forward_ios,
-                                              size: 16,
-                                              color: Color(0xFFD4AF37)),
+                                          Icon(
+                                            Icons.arrow_forward_ios,
+                                            size: 16,
+                                            color: Color(0xFFD4AF37),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -246,16 +246,21 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                               _selectedCountryName != 'all')
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 8),
+                                horizontal: 24,
+                                vertical: 8,
+                              ),
                               child: Row(
                                 children: [
-                                  Icon(Icons.location_on,
-                                      color: Color(0xFFD4AF37), size: 16),
+                                  Icon(
+                                    Icons.location_on,
+                                    color: Color(0xFFD4AF37),
+                                    size: 16,
+                                  ),
                                   SizedBox(width: 8),
                                   Text(
-                                    AppLocalizations.of(context)!
-                                        .filteredByCountry(
-                                            _selectedCountryName),
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.filteredByCountry(_selectedCountryName),
                                     style: TextStyle(
                                       color: Color(0xFFD4AF37),
                                       fontSize: 14,
@@ -279,16 +284,19 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                               ),
                             ),
                           SizedBox(height: 16),
-                          BlocBuilder<MembersListCubit<UsersDataModel>,
-                              MembersListState<UsersDataModel>>(
+                          BlocBuilder<
+                            MembersListCubit<UsersDataModel>,
+                            MembersListState<UsersDataModel>
+                          >(
                             builder: (context, state) {
                               if (state is MembersListLoading<UsersDataModel>) {
                                 return Padding(
                                   padding: EdgeInsets.only(top: 24),
                                   child: Center(
-                                      child: CircularProgressIndicator(
-                                    color: AppColors.beer,
-                                  )),
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.beer,
+                                    ),
+                                  ),
                                 );
                               }
                               if (state is MembersListError<UsersDataModel>) {
@@ -306,8 +314,9 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                 return Expanded(
                                   child: Center(
                                     child: Text(
-                                      AppLocalizations.of(context)!
-                                          .noResultsCurrently,
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.noResultsCurrently,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -321,10 +330,13 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                       Container(
                                         width: double.infinity,
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 12),
+                                          horizontal: 20,
+                                          vertical: 12,
+                                        ),
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .onlineMembersCount(items.length),
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.onlineMembersCount(items.length),
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             color: Color(0xFFD4AF37),
@@ -339,22 +351,27 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                           onRefresh: () async {
                                             context
                                                 .read<
-                                                    MembersListCubit<
-                                                        UsersDataModel>>()
+                                                  MembersListCubit<
+                                                    UsersDataModel
+                                                  >
+                                                >()
                                                 .fetch(page: 1);
                                           },
                                           child: ListView.builder(
                                             controller: _scrollController,
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                            itemCount: items.length +
+                                              horizontal: 16,
+                                            ),
+                                            itemCount:
+                                                items.length +
                                                 (_isLoadingMore ? 1 : 0),
                                             itemBuilder: (context, index) {
                                               if (index == items.length &&
                                                   _isLoadingMore) {
                                                 return Padding(
                                                   padding: const EdgeInsets.all(
-                                                      16.0),
+                                                    16.0,
+                                                  ),
                                                   child: Center(
                                                     child: Column(
                                                       children: [
@@ -362,11 +379,12 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                                           strokeWidth: 2,
                                                         ),
                                                         const SizedBox(
-                                                            height: 8),
+                                                          height: 8,
+                                                        ),
                                                         Text(
                                                           AppLocalizations.of(
-                                                                  context)!
-                                                              .loadingMore,
+                                                            context,
+                                                          )!.loadingMore,
                                                           textAlign:
                                                               TextAlign.center,
                                                           style: TextStyle(
@@ -383,7 +401,8 @@ class _OnlineMembersViewState extends State<OnlineMembersView> {
                                               final m = items[index];
                                               return Padding(
                                                 padding: const EdgeInsets.only(
-                                                    bottom: 12),
+                                                  bottom: 12,
+                                                ),
                                                 child: ContainerItem(
                                                   favUser: m,
                                                 ),

@@ -10,9 +10,7 @@ import '../../../../../../core/di/injection_container.dart';
 import '../../../../../../core/theme/app_color.dart';
 
 class FilterHealthStatues extends StatefulWidget {
-  const FilterHealthStatues({
-    super.key,
-  });
+  const FilterHealthStatues({super.key});
 
   @override
   State<FilterHealthStatues> createState() => _FilterHealthStatuesState();
@@ -41,14 +39,12 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
   final LinearGradient _applyGradient = const LinearGradient(
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
-    colors: [
-      Color(0xFFF8B64C),
-      Color(0xFFF0852E),
-    ],
+    colors: [Color(0xFFF8B64C), Color(0xFFF0852E)],
   );
 
   List<_HealthOption> _parseHealthConditions(
-      List<GeneralInfoResponseModels> healthList) {
+    List<GeneralInfoResponseModels> healthList,
+  ) {
     final parsed = healthList
         .map((e) {
           final id = e.id;
@@ -63,7 +59,8 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
   }
 
   List<_Country> _parseCountries(
-      List<NationalCountryResponseModel> countriesList) {
+    List<NationalCountryResponseModel> countriesList,
+  ) {
     final parsed = countriesList
         .map((e) {
           final id = e.id;
@@ -85,18 +82,13 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
       child: Directionality(
         textDirection: LocalizationService.instance.textDirection,
         child: Container(
-          constraints: BoxConstraints(
-            maxHeight: media.size.height * 0.5,
-          ),
+          constraints: BoxConstraints(maxHeight: media.size.height * 0.5),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                AppColors.cosmicLatte,
-                AppColors.antiqueWhite,
-              ],
+              colors: [AppColors.cosmicLatte, AppColors.antiqueWhite],
             ),
           ),
           child: SafeArea(
@@ -123,7 +115,9 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsetsDirectional.symmetric(
-                        horizontal: 16, vertical: 12),
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     child: Column(
                       textDirection: LocalizationService.instance.textDirection,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,8 +139,9 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                                 state is CountriesLoading) {
                               return Center(
                                 child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 24),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 24,
+                                  ),
                                   child: Column(
                                     children: [
                                       const CircularProgressIndicator(),
@@ -166,16 +161,13 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
 
                             // Handle both states independently
                             if (state is HealthConditionsSuccess) {
-                              _healthOptions =
-                                  _parseHealthConditions(state.generalList);
-                              print(
-                                  'Health conditions loaded: ${_healthOptions.map((e) => '${e.id}:${e.name}').toList()}');
+                              _healthOptions = _parseHealthConditions(
+                                state.generalList,
+                              );
                             }
 
                             if (state is CountriesSuccess) {
                               _countries = _parseCountries(state.countriesList);
-                              print(
-                                  'Countries loaded: ${_countries.map((e) => '${e.id}:${e.name}').toList()}');
                             }
 
                             // Only show content when both data are loaded
@@ -183,8 +175,9 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                                 _countries.length <= 1) {
                               return Center(
                                 child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 24),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 24,
+                                  ),
                                   child: Column(
                                     children: [
                                       const CircularProgressIndicator(),
@@ -208,8 +201,9 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _Section(
-                                  title: AppLocalizations.of(context)!
-                                      .filterByHealthStatus,
+                                  title: AppLocalizations.of(
+                                    context,
+                                  )!.filterByHealthStatus,
                                   options: _healthOptions
                                       .map((e) => e.name)
                                       .toList(),
@@ -219,10 +213,12 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
                                 ),
                                 const SizedBox(height: 20),
                                 _Section(
-                                  title: AppLocalizations.of(context)!
-                                      .filterByCountry,
-                                  options:
-                                      _countries.map((e) => e.name).toList(),
+                                  title: AppLocalizations.of(
+                                    context,
+                                  )!.filterByCountry,
+                                  options: _countries
+                                      .map((e) => e.name)
+                                      .toList(),
                                   selectedIndex: _selectedCountryIndex,
                                   onSelect: (i) =>
                                       setState(() => _selectedCountryIndex = i),
@@ -256,25 +252,26 @@ class _FilterHealthStatuesState extends State<FilterHealthStatues> {
 
                                   // Simulate loading delay for better UX
                                   await Future.delayed(
-                                      const Duration(milliseconds: 500));
+                                    const Duration(milliseconds: 500),
+                                  );
 
                                   if (mounted) {
                                     final selectedHealth =
                                         (_selectedHealthIndex >= 0 &&
-                                                _selectedHealthIndex <
-                                                    _healthOptions.length)
-                                            ? _healthOptions[
-                                                _selectedHealthIndex]
-                                            : const _HealthOption(
-                                                id: 0, name: 'all');
+                                            _selectedHealthIndex <
+                                                _healthOptions.length)
+                                        ? _healthOptions[_selectedHealthIndex]
+                                        : const _HealthOption(
+                                            id: 0,
+                                            name: 'all',
+                                          );
 
                                     final selectedCountry =
                                         (_selectedCountryIndex >= 0 &&
-                                                _selectedCountryIndex <
-                                                    _countries.length)
-                                            ? _countries[_selectedCountryIndex]
-                                            : const _Country(
-                                                id: 0, name: 'all');
+                                            _selectedCountryIndex <
+                                                _countries.length)
+                                        ? _countries[_selectedCountryIndex]
+                                        : const _Country(id: 0, name: 'all');
 
                                     // Return the filter data to the parent screen
                                     if (context.mounted) {
@@ -384,10 +381,7 @@ class _Section extends StatelessWidget {
                       Text(
                         options[i],
                         textAlign: TextAlign.end,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: kText,
-                        ),
+                        style: const TextStyle(fontSize: 16, color: kText),
                       ),
                       Spacer(),
                       _SquareCheck(value: selected),
@@ -422,8 +416,9 @@ class _SquareCheck extends StatelessWidget {
           width: 1.4,
         ),
       ),
-      child:
-          value ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
+      child: value
+          ? const Icon(Icons.check, size: 16, color: Colors.white)
+          : null,
     );
   }
 }

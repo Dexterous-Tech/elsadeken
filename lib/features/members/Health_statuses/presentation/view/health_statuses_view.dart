@@ -51,8 +51,6 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
         state.hasNextPage &&
         !_isLoadingMore) {
       final nextPage = state.currentPage + 1;
-      print(
-          'Loading more health status members: current page ${state.currentPage}, next page $nextPage');
       setState(() {
         _isLoadingMore = true;
       });
@@ -61,7 +59,6 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
           setState(() {
             _isLoadingMore = false;
           });
-          print('Pagination loading completed');
         }
       });
     }
@@ -71,7 +68,6 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
     if (_scrollController?.position.pixels != null &&
         _scrollController!.position.pixels >=
             _scrollController!.position.maxScrollExtent - 200) {
-      print('Scroll threshold reached, triggering pagination');
       _loadMoreUsers(context);
     }
   }
@@ -117,10 +113,7 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                AppColors.cosmicLatte,
-                AppColors.antiqueWhite,
-              ],
+              colors: [AppColors.cosmicLatte, AppColors.antiqueWhite],
             ),
           ),
           child: Stack(
@@ -137,17 +130,16 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
               ),
               SafeArea(
                 child: BlocProvider<MembersListCubit<UsersDataModel>>(
-                  create: (_) => MembersListCubit<UsersDataModel>(
-                    ({int? page}) async {
-                      final response = await sl<MembersRepository>()
-                          .getHealthConditionMembers(
-                        healthConditionId: _selectedHealthId,
-                        countryId: _selectedCountryId,
-                        page: page,
-                      );
-                      return response;
-                    },
-                  )..fetch(),
+                  create: (_) =>
+                      MembersListCubit<UsersDataModel>(({int? page}) async {
+                        final response = await sl<MembersRepository>()
+                            .getHealthConditionMembers(
+                              healthConditionId: _selectedHealthId,
+                              countryId: _selectedCountryId,
+                              page: page,
+                            );
+                        return response;
+                      })..fetch(),
                   child: Builder(
                     builder: (context) {
                       // Initialize scroll controller here where context is available
@@ -158,13 +150,16 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
                             child: ProfileHeader(
-                                title: AppLocalizations.of(context)!
-                                    .healthStatuses,
-                                titleStyle: AppTextStyles
-                                    .font20WhiteBoldLamaSans
-                                    .copyWith(color: AppColors.black)),
+                              title: AppLocalizations.of(
+                                context,
+                              )!.healthStatuses,
+                              titleStyle: AppTextStyles.font20WhiteBoldLamaSans
+                                  .copyWith(color: AppColors.black),
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsetsDirectional.all(24.0),
@@ -181,31 +176,38 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                 SizedBox(width: 20),
                                 GestureDetector(
                                   onTap: () async {
-                                    final result = await showModalBottomSheet<
-                                        Map<String, dynamic>>(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      backgroundColor: Colors.transparent,
-                                      builder: (context) =>
-                                          const FilterHealthStatues(),
-                                    );
+                                    final result =
+                                        await showModalBottomSheet<
+                                          Map<String, dynamic>
+                                        >(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          backgroundColor: Colors.transparent,
+                                          builder: (context) =>
+                                              const FilterHealthStatues(),
+                                        );
                                     if (result != null && context.mounted) {
                                       _onFilterChanged(result, context);
                                     }
                                   },
                                   child: Row(
                                     textDirection: LocalizationService
-                                        .instance.textDirection,
+                                        .instance
+                                        .textDirection,
                                     children: [
                                       Text(
                                         AppLocalizations.of(context)!.filter,
                                         style: TextStyle(
-                                            color: Color(0xFFD4AF37),
-                                            fontSize: 18),
+                                          color: Color(0xFFD4AF37),
+                                          fontSize: 18,
+                                        ),
                                       ),
                                       SizedBox(width: 6),
-                                      Icon(Icons.arrow_forward_ios,
-                                          size: 16, color: Color(0xFFD4AF37)),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 16,
+                                        color: Color(0xFFD4AF37),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -218,7 +220,9 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                   _selectedCountryName != 'all')
                             Padding(
                               padding: const EdgeInsetsDirectional.symmetric(
-                                  horizontal: 24, vertical: 8),
+                                horizontal: 24,
+                                vertical: 8,
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -226,17 +230,22 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                       _selectedHealthName != 'all')
                                     Padding(
                                       padding: const EdgeInsetsDirectional.only(
-                                          bottom: 8),
+                                        bottom: 8,
+                                      ),
                                       child: Row(
                                         children: [
-                                          Icon(Icons.health_and_safety,
-                                              color: Color(0xFFD4AF37),
-                                              size: 16),
+                                          Icon(
+                                            Icons.health_and_safety,
+                                            color: Color(0xFFD4AF37),
+                                            size: 16,
+                                          ),
                                           SizedBox(width: 8),
                                           Text(
-                                            AppLocalizations.of(context)!
-                                                .filteredByHealthStatus(
-                                                    _selectedHealthName),
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.filteredByHealthStatus(
+                                              _selectedHealthName,
+                                            ),
                                             style: TextStyle(
                                               color: Color(0xFFD4AF37),
                                               fontSize: 14,
@@ -250,13 +259,18 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                       _selectedCountryName != 'all')
                                     Row(
                                       children: [
-                                        Icon(Icons.location_on,
-                                            color: Color(0xFFD4AF37), size: 16),
+                                        Icon(
+                                          Icons.location_on,
+                                          color: Color(0xFFD4AF37),
+                                          size: 16,
+                                        ),
                                         SizedBox(width: 8),
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .filteredByCountry(
-                                                  _selectedCountryName),
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.filteredByCountry(
+                                            _selectedCountryName,
+                                          ),
                                           style: TextStyle(
                                             color: Color(0xFFD4AF37),
                                             fontSize: 14,
@@ -279,18 +293,21 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                           // Refresh data after clearing filters
                                           WidgetsBinding.instance
                                               .addPostFrameCallback((_) {
-                                            if (mounted) {
-                                              context
-                                                  .read<
-                                                      MembersListCubit<
-                                                          UsersDataModel>>()
-                                                  .fetch(page: 1);
-                                            }
-                                          });
+                                                if (mounted) {
+                                                  context
+                                                      .read<
+                                                        MembersListCubit<
+                                                          UsersDataModel
+                                                        >
+                                                      >()
+                                                      .fetch(page: 1);
+                                                }
+                                              });
                                         },
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .clearFilter,
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.clearFilter,
                                           style: TextStyle(color: Colors.red),
                                         ),
                                       ),
@@ -299,16 +316,19 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                 ],
                               ),
                             ),
-                          BlocBuilder<MembersListCubit<UsersDataModel>,
-                              MembersListState<UsersDataModel>>(
+                          BlocBuilder<
+                            MembersListCubit<UsersDataModel>,
+                            MembersListState<UsersDataModel>
+                          >(
                             builder: (context, state) {
                               if (state is MembersListLoading<UsersDataModel>) {
                                 return Padding(
                                   padding: EdgeInsets.only(top: 24),
                                   child: Center(
-                                      child: CircularProgressIndicator(
-                                    color: AppColors.beer,
-                                  )),
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.beer,
+                                    ),
+                                  ),
                                 );
                               }
                               if (state is MembersListError<UsersDataModel>) {
@@ -326,8 +346,9 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                 return Expanded(
                                   child: Center(
                                     child: Text(
-                                      AppLocalizations.of(context)!
-                                          .noHealthStatuses,
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.noHealthStatuses,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -341,11 +362,13 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                       Container(
                                         width: double.infinity,
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 12),
+                                          horizontal: 20,
+                                          vertical: 12,
+                                        ),
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .healthStatusesCount(
-                                                  items.length),
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.healthStatusesCount(items.length),
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             color: Color(0xFFD4AF37),
@@ -360,22 +383,27 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                           onRefresh: () async {
                                             context
                                                 .read<
-                                                    MembersListCubit<
-                                                        UsersDataModel>>()
+                                                  MembersListCubit<
+                                                    UsersDataModel
+                                                  >
+                                                >()
                                                 .fetch(page: 1);
                                           },
                                           child: ListView.builder(
                                             controller: _scrollController,
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                            itemCount: items.length +
+                                              horizontal: 16,
+                                            ),
+                                            itemCount:
+                                                items.length +
                                                 (_isLoadingMore ? 1 : 0),
                                             itemBuilder: (context, index) {
                                               if (index == items.length &&
                                                   _isLoadingMore) {
                                                 return Padding(
                                                   padding: const EdgeInsets.all(
-                                                      16.0),
+                                                    16.0,
+                                                  ),
                                                   child: Center(
                                                     child: Column(
                                                       children: [
@@ -383,11 +411,12 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                                           strokeWidth: 2,
                                                         ),
                                                         const SizedBox(
-                                                            height: 8),
+                                                          height: 8,
+                                                        ),
                                                         Text(
                                                           AppLocalizations.of(
-                                                                  context)!
-                                                              .loadingMore,
+                                                            context,
+                                                          )!.loadingMore,
                                                           textAlign:
                                                               TextAlign.center,
                                                           style: TextStyle(
@@ -402,12 +431,13 @@ class _HealthStatusesViewState extends State<HealthStatusesView> {
                                               }
 
                                               return Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 12),
-                                                  child: ContainerItem(
-                                                    favUser: items[index],
-                                                  ));
+                                                padding: const EdgeInsets.only(
+                                                  bottom: 12,
+                                                ),
+                                                child: ContainerItem(
+                                                  favUser: items[index],
+                                                ),
+                                              );
                                             },
                                           ),
                                         ),

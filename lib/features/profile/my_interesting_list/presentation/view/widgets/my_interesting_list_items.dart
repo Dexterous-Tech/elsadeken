@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -41,7 +40,7 @@ class _MyInterestingListItemsState extends State<MyInterestingListItems> {
         state.hasNextPage &&
         !_isLoadingMore) {
       final nextPage = state.currentPage + 1;
-      log('Loading more interesting users: current page ${state.currentPage}, next page $nextPage, hasNextPage: ${state.hasNextPage}');
+
       setState(() {
         _isLoadingMore = true;
       });
@@ -50,18 +49,18 @@ class _MyInterestingListItemsState extends State<MyInterestingListItems> {
           setState(() {
             _isLoadingMore = false;
           });
-          log('Pagination loading completed');
+
         }
       });
     } else {
-      log('Cannot load more: state is ${state.runtimeType}, hasNextPage: ${state is InterestingListStateSuccess ? state.hasNextPage : false}, isLoadingMore: $_isLoadingMore');
+
     }
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      log('Scroll threshold reached, triggering pagination');
+
       _loadMoreUsers();
     }
   }
@@ -75,7 +74,7 @@ class _MyInterestingListItemsState extends State<MyInterestingListItems> {
     return BlocBuilder<InterestingListCubit, InterestingListState>(
       builder: (context, state) {
         if (state is InterestingListStateFailure) {
-          log('failure');
+
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -108,7 +107,7 @@ class _MyInterestingListItemsState extends State<MyInterestingListItems> {
             ),
           );
         } else if (state is InterestingListStateSuccess) {
-          log('Success');
+
           final interestingList = state.favUserListModel.data ?? [];
           if (interestingList.isEmpty) {
             return Center(

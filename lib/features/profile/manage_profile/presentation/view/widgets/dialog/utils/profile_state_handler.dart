@@ -169,7 +169,6 @@ class ProfileStateHandler {
           // Set flag that country has changed and city needs to be selected
           validationFlags['countryChanged'] = true;
           validationFlags['citySelected'] = false;
-          print('DEBUG: Country changed - flags set: $validationFlags');
 
           setState(); // Trigger rebuild to update UI
 
@@ -180,11 +179,9 @@ class ProfileStateHandler {
         value != null) {
       // When city is selected, clear the validation flag
       validationFlags['citySelected'] = true;
-      print('DEBUG: City selected - flags before: $validationFlags');
       if (validationFlags['countryChanged'] == true) {
         // Clear the country changed flag since city is now selected
         validationFlags['countryChanged'] = false;
-        print('DEBUG: City selected - flags after: $validationFlags');
         setState();
       }
     }
@@ -192,26 +189,25 @@ class ProfileStateHandler {
 
   /// Check if country-city validation is required
   static bool isCountryCityValidationRequired(
-      Map<String, dynamic> validationFlags) {
-    print('DEBUG: Validation flags: $validationFlags');
-    print('DEBUG: countryChanged: ${validationFlags['countryChanged']}');
-    print('DEBUG: citySelected: ${validationFlags['citySelected']}');
-    final result = validationFlags['countryChanged'] == true &&
+    Map<String, dynamic> validationFlags,
+  ) {
+    final result =
+        validationFlags['countryChanged'] == true &&
         validationFlags['citySelected'] != true;
-    print('DEBUG: Validation required: $result');
     return result;
   }
 
   /// Helper method to get country ID by name
   static int? _getCountryIdByName(
-      String countryName, List<NationalCountryResponseModel> countriesList) {
+    String countryName,
+    List<NationalCountryResponseModel> countriesList,
+  ) {
     try {
       final country = countriesList.firstWhere(
         (country) => country.name == countryName,
       );
       return country.id;
     } catch (e) {
-      print('DEBUG: Country not found: $e');
       return null;
     }
   }

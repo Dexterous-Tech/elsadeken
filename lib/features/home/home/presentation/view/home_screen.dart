@@ -44,7 +44,8 @@ class HomeScreenWrapper extends StatelessWidget {
         BlocProvider(create: (context) => sl<NotificationCountCubit>()),
         BlocProvider(create: (context) => sl<ManageProfileCubit>()),
         BlocProvider(
-            create: (context) => sl<SignUpListsCubit>()..getCountries()),
+          create: (context) => sl<SignUpListsCubit>()..getCountries(),
+        ),
       ],
       child: HomeScreen(initialTabIndex: initialTabIndex),
     );
@@ -90,8 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final currentLocale = Localizations.localeOf(context);
     if (_previousLocale != null && _previousLocale != currentLocale) {
       // Language changed, reload countries and matches
-      print(
-          '🌐 [HomeScreen] Language changed from ${_previousLocale?.languageCode} to ${currentLocale.languageCode}');
       context.read<SignUpListsCubit>().getCountries();
       _loadMatchesUsers();
     }
@@ -112,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
         widget.initialTabIndex! >= 0 &&
         widget.initialTabIndex! <= 3) {
       _currentIndex = widget.initialTabIndex!;
-      print('🏠 [HomeScreen] Initial tab index set to: $_currentIndex');
     }
 
     // Load countries for filter
@@ -121,44 +119,29 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadMatchesUsers();
 
     // Load chat list so SwipeableCard can access existing chat rooms
-    print('🏠 [HomeScreen] Initializing and loading chat list...');
     _loadChatList();
   }
 
   /// Load chat list with proper error handling and logging
   Future<void> _loadChatList() async {
     try {
-      print('🏠 [HomeScreen] Loading chat list...');
       final chatListCubit = context.read<ChatListCubit>();
 
       // Check current state
       final currentState = chatListCubit.state;
-      print(
-          '🏠 [HomeScreen] Current chat list state: ${currentState.runtimeType}');
 
       if (currentState is! ChatListLoaded) {
-        print('🏠 [HomeScreen] Chat list not loaded, calling getChatList()...');
         await chatListCubit.getChatList();
 
         // Wait a bit and check the state again
         await Future.delayed(Duration(milliseconds: 1000));
         final newState = chatListCubit.state;
-        print(
-            '🏠 [HomeScreen] Chat list state after loading: ${newState.runtimeType}');
 
         if (newState is ChatListLoaded) {
-          print(
-              '🏠 [HomeScreen] ✅ Chat list loaded successfully with ${newState.chatList.data.length} chats');
-        } else if (newState is ChatListError) {
-          print(
-              '🏠 [HomeScreen] ❌ Chat list failed to load: ${newState.message}');
-        }
-      } else {
-        print(
-            '🏠 [HomeScreen] ✅ Chat list already loaded with ${currentState.chatList.data.length} chats');
-      }
+        } else if (newState is ChatListError) {}
+      } else {}
     } catch (e) {
-      print('🏠 [HomeScreen] ❌ Error loading chat list: $e');
+      // exception
     }
   }
 
@@ -204,29 +187,24 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       setState(() {
-        currentUsers.addAll(data.map((userJson) {
-          print("Processing user JSON: $userJson");
-          print("User ID: ${userJson['id']}, Name: ${userJson['name']}");
-
-          return UserModel(
-            //
-            id: userJson['id'],
-            name: userJson['name'],
-            age: userJson['age'],
-            profession: userJson['job'],
-            city: userJson['city'],
-            country: userJson['country'],
-            imageUrl: userJson['image'],
-            matchPercentage: userJson['match_percentage'] is int
-                ? userJson['match_percentage']
-                : (userJson['match_percentage'] as double).round(),
-            isFavorite: userJson['is_favorite'] == 1,
-          );
-        }));
-
-        print("Total users loaded: ${currentUsers.length}");
-        print(
-            "First user ID: ${currentUsers.isNotEmpty ? currentUsers.first.id : 'No users'}");
+        currentUsers.addAll(
+          data.map((userJson) {
+            return UserModel(
+              //
+              id: userJson['id'],
+              name: userJson['name'],
+              age: userJson['age'],
+              profession: userJson['job'],
+              city: userJson['city'],
+              country: userJson['country'],
+              imageUrl: userJson['image'],
+              matchPercentage: userJson['match_percentage'] is int
+                  ? userJson['match_percentage']
+                  : (userJson['match_percentage'] as double).round(),
+              isFavorite: userJson['is_favorite'] == 1,
+            );
+          }),
+        );
 
         hasMore = response.data['links']['next'] != null;
         if (hasMore) currentPage++;
@@ -260,18 +238,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.likedMessage,
-              textAlign: TextAlign.center),
+          content: Text(
+            AppLocalizations.of(context)!.likedMessage,
+            textAlign: TextAlign.center,
+          ),
           backgroundColor: Colors.green,
           duration: Duration(milliseconds: 800),
         ),
       );
     } catch (e) {
-      print("error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.actionFailed,
-              textAlign: TextAlign.center),
+          content: Text(
+            AppLocalizations.of(context)!.actionFailed,
+            textAlign: TextAlign.center,
+          ),
           backgroundColor: Colors.red,
           duration: Duration(milliseconds: 800),
         ),
@@ -282,8 +263,9 @@ class _HomeScreenState extends State<HomeScreen> {
   // Handler for dislike action in carousel mode - removes card from list
   void _onCarouselDislike(int userId) {
     // Get current page index before any changes
-    final currentPage =
-        _pageController.hasClients ? (_pageController.page?.round() ?? 0) : 0;
+    final currentPage = _pageController.hasClients
+        ? (_pageController.page?.round() ?? 0)
+        : 0;
 
     // Find the user before removing to show their name in snackbar
     final userToRemove = currentUsers.firstWhere(
@@ -333,21 +315,21 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_pageController.hasClients && currentUsers.length > 1) {
       _pageController
           .animateToPage(
-        targetPage,
-        duration: Duration(milliseconds: 600),
-        curve: Curves.easeInCubic,
-      )
+            targetPage,
+            duration: Duration(milliseconds: 600),
+            curve: Curves.easeInCubic,
+          )
           .then((_) {
-        // After scrolling completes, remove the card
-        if (mounted) {
-          setState(() {
-            currentUsers.removeWhere((user) => user.id == userId);
-          });
+            // After scrolling completes, remove the card
+            if (mounted) {
+              setState(() {
+                currentUsers.removeWhere((user) => user.id == userId);
+              });
 
-          // Show snackbar with removal message
-          _showRemovalSnackbar(userToRemove.name);
-        }
-      });
+              // Show snackbar with removal message
+              _showRemovalSnackbar(userToRemove.name);
+            }
+          });
     } else {
       // If only one card or no cards, remove immediately
       setState(() {
@@ -373,14 +355,8 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Color(0xffDBAE48),
         duration: Duration(milliseconds: 2000),
         behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(
-          bottom: 32.h,
-          left: 20.w,
-          right: 20.w,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8).r,
-        ),
+        margin: EdgeInsets.only(bottom: 32.h, left: 20.w, right: 20.w),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8).r),
       ),
     );
   }
@@ -388,8 +364,6 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Refresh all home data including matches, profile, and notifications
   Future<void> _refreshHomeData() async {
     try {
-      print('🔄 [HomeScreen] Refreshing all home data...');
-
       // Reset pagination state
       setState(() {
         currentUsers = [];
@@ -404,7 +378,7 @@ class _HomeScreenState extends State<HomeScreen> {
           context.read<ManageProfileCubit>().getProfile();
         }
       } catch (e) {
-        print('🔄 [HomeScreen] ⚠️ ManageProfileCubit not available: $e');
+        // exception
       }
 
       // Refresh notification count - check if provider is available
@@ -413,7 +387,7 @@ class _HomeScreenState extends State<HomeScreen> {
           context.read<NotificationCountCubit>().refreshCount();
         }
       } catch (e) {
-        print('🔄 [HomeScreen] ⚠️ NotificationCountCubit not available: $e');
+        // exception
       }
 
       // Refresh countries - check if provider is available
@@ -422,15 +396,13 @@ class _HomeScreenState extends State<HomeScreen> {
           context.read<SignUpListsCubit>().getCountries();
         }
       } catch (e) {
-        print('🔄 [HomeScreen] ⚠️ SignUpListsCubit not available: $e');
+        // exception
       }
 
       // Load fresh matches
       await _loadMatchesUsers();
-
-      print('🔄 [HomeScreen] ✅ All home data refreshed successfully');
     } catch (e) {
-      print('🔄 [HomeScreen] ❌ Error refreshing home data: $e');
+      // exception
     }
   }
 
@@ -440,10 +412,7 @@ class _HomeScreenState extends State<HomeScreen> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            AppColors.cosmicLatte,
-            AppColors.antiqueWhite,
-          ],
+          colors: [AppColors.cosmicLatte, AppColors.antiqueWhite],
         ),
       ),
       child: SafeArea(
@@ -459,8 +428,10 @@ class _HomeScreenState extends State<HomeScreen> {
               // Header
               SliverToBoxAdapter(
                 child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 23.w, vertical: 21.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 23.w,
+                    vertical: 21.h,
+                  ),
                   child: HomeHeader(),
                 ),
               ),
@@ -474,12 +445,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     verticalSpace(16),
                     Padding(
-                      padding:
-                          EdgeInsetsDirectional.symmetric(horizontal: 23.w),
+                      padding: EdgeInsetsDirectional.symmetric(
+                        horizontal: 23.w,
+                      ),
                       child: Text(
                         AppLocalizations.of(context)!.selectCountry,
-                        style: AppTextStyles.font20JetRegularLamaSans
-                            .copyWith(color: AppColors.black),
+                        style: AppTextStyles.font20JetRegularLamaSans.copyWith(
+                          color: AppColors.black,
+                        ),
                         textAlign: LocalizationService.instance.textAlignment,
                         textDirection:
                             LocalizationService.instance.textDirection,
@@ -494,7 +467,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               padding: EdgeInsets.symmetric(horizontal: 23.w),
-                              itemCount: state.countriesList.length +
+                              itemCount:
+                                  state.countriesList.length +
                                   1, // +1 for "All"
                               itemBuilder: (context, index) {
                                 // First item is "All"
@@ -503,16 +477,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return GestureDetector(
                                     onTap: () => _onCountrySelected(null),
                                     child: Container(
-                                      margin:
-                                          EdgeInsetsDirectional.only(end: 12.w),
+                                      margin: EdgeInsetsDirectional.only(
+                                        end: 12.w,
+                                      ),
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 20.w, vertical: 10.h),
+                                        horizontal: 20.w,
+                                        vertical: 10.h,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: isSelected
                                             ? Color(0xffDBAE48)
                                             : Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(10).r,
+                                        borderRadius: BorderRadius.circular(
+                                          10,
+                                        ).r,
                                         border: isSelected
                                             ? null
                                             : Border.all(
@@ -552,10 +530,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return GestureDetector(
                                   onTap: () => _onCountrySelected(country.id),
                                   child: Container(
-                                    margin:
-                                        EdgeInsetsDirectional.only(end: 12.w),
+                                    margin: EdgeInsetsDirectional.only(
+                                      end: 12.w,
+                                    ),
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: 20.w, vertical: 10.h),
+                                      horizontal: 20.w,
+                                      vertical: 10.h,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: isSelected
                                           ? Color(0xffDBAE48)
@@ -601,158 +582,155 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: isLoading
                     ? Center(
                         child: CircularProgressIndicator(
-                        color: AppColors.meatBrown,
-                      ))
+                          color: AppColors.meatBrown,
+                        ),
+                      )
                     : errorMessage != null
-                        ? Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .failedToLoadMatches,
-                                  style: AppTextStyles.font14JetRegularLamaSans
-                                      .copyWith(color: AppColors.red),
-                                ),
-                                verticalSpace(18),
-                                ElevatedButton(
-                                  onPressed: _loadMatchesUsers,
-                                  child: Text(
-                                      AppLocalizations.of(context)!.tryAgain),
-                                ),
-                              ],
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.failedToLoadMatches,
+                              style: AppTextStyles.font14JetRegularLamaSans
+                                  .copyWith(color: AppColors.red),
                             ),
-                          )
-                        : currentUsers.isEmpty
-                            ? Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.favorite_outline,
-                                        size: 80.w, color: Colors.grey[400]),
-                                    SizedBox(height: 16.h),
-                                    Text(
-                                      AppLocalizations.of(context)!
-                                          .noNewMatches,
-                                      style: TextStyle(
-                                          fontSize: 18.sp,
-                                          color: Colors.grey[600]),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : PageView.builder(
-                                controller: _pageController,
-                                itemCount:
-                                    currentUsers.length + (hasMore ? 1 : 0),
-                                itemBuilder: (context, index) {
-                                  // Show reload button only when reaching the end of current cards
-                                  if (index == currentUsers.length && hasMore) {
-                                    return Center(
-                                      child: GestureDetector(
-                                        onTap: isLoadingMore
-                                            ? null
-                                            : () async {
-                                                print(
-                                                    '🔄 [HomeScreen] Load more button tapped');
-                                                await _loadMatchesUsers(
-                                                    loadMore: true);
-                                              },
-                                        child: Container(
-                                          width: 120.w,
-                                          height: 120.h,
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 8.w),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(15).r,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey
-                                                    .withValues(alpha: 0.2),
-                                                spreadRadius: 1,
-                                                blurRadius: 5,
-                                                offset: Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              if (isLoadingMore)
-                                                SizedBox(
-                                                  width: 30.w,
-                                                  height: 30.h,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: Color(0xffDBAE48),
-                                                    strokeWidth: 3,
-                                                  ),
-                                                )
-                                              else
-                                                Icon(
-                                                  Icons.refresh,
-                                                  size: 40.w,
-                                                  color: Color(0xffDBAE48),
-                                                ),
-                                              SizedBox(height: 8.h),
-                                              Text(
-                                                isLoadingMore
-                                                    ? (LocalizationService
-                                                                .instance
-                                                                .currentLocale
-                                                                .languageCode ==
-                                                            'ar'
-                                                        ? 'جاري التحميل...'
-                                                        : 'Loading...')
-                                                    : (LocalizationService
-                                                                .instance
-                                                                .currentLocale
-                                                                .languageCode ==
-                                                            'ar'
-                                                        ? 'تحميل المزيد'
-                                                        : 'Load More'),
-                                                style: TextStyle(
-                                                  color: Color(0xffDBAE48),
-                                                  fontSize: 14.sp,
-                                                  fontWeight:
-                                                      FontWeightHelper.medium,
-                                                  fontFamily: FontFamilyHelper
-                                                      .lamaSansArabic,
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }
-
-                                  // User card
-                                  final user = currentUsers[index];
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8.w, vertical: 10.h),
-                                    child: SwipeableCard(
-                                      user: user,
-                                      onSwipe:
-                                          null, // Disable swipe in carousel mode
-                                      onLike:
-                                          _onCarouselLike, // Enable like in carousel mode
-                                      onDislike:
-                                          _onCarouselDislike, // Enable dislike/remove in carousel mode
-                                      isTop: false, // Not swipeable
-                                      scale: 1.0,
-                                      verticalOffset: 0,
-                                    ),
-                                  );
-                                },
+                            verticalSpace(18),
+                            ElevatedButton(
+                              onPressed: _loadMatchesUsers,
+                              child: Text(
+                                AppLocalizations.of(context)!.tryAgain,
                               ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : currentUsers.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.favorite_outline,
+                              size: 80.w,
+                              color: Colors.grey[400],
+                            ),
+                            SizedBox(height: 16.h),
+                            Text(
+                              AppLocalizations.of(context)!.noNewMatches,
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : PageView.builder(
+                        controller: _pageController,
+                        itemCount: currentUsers.length + (hasMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          // Show reload button only when reaching the end of current cards
+                          if (index == currentUsers.length && hasMore) {
+                            return Center(
+                              child: GestureDetector(
+                                onTap: isLoadingMore
+                                    ? null
+                                    : () async {
+                                        await _loadMatchesUsers(loadMore: true);
+                                      },
+                                child: Container(
+                                  width: 120.w,
+                                  height: 120.h,
+                                  margin: EdgeInsets.symmetric(horizontal: 8.w),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15).r,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        spreadRadius: 1,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      if (isLoadingMore)
+                                        SizedBox(
+                                          width: 30.w,
+                                          height: 30.h,
+                                          child: CircularProgressIndicator(
+                                            color: Color(0xffDBAE48),
+                                            strokeWidth: 3,
+                                          ),
+                                        )
+                                      else
+                                        Icon(
+                                          Icons.refresh,
+                                          size: 40.w,
+                                          color: Color(0xffDBAE48),
+                                        ),
+                                      SizedBox(height: 8.h),
+                                      Text(
+                                        isLoadingMore
+                                            ? (LocalizationService
+                                                          .instance
+                                                          .currentLocale
+                                                          .languageCode ==
+                                                      'ar'
+                                                  ? 'جاري التحميل...'
+                                                  : 'Loading...')
+                                            : (LocalizationService
+                                                          .instance
+                                                          .currentLocale
+                                                          .languageCode ==
+                                                      'ar'
+                                                  ? 'تحميل المزيد'
+                                                  : 'Load More'),
+                                        style: TextStyle(
+                                          color: Color(0xffDBAE48),
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeightHelper.medium,
+                                          fontFamily:
+                                              FontFamilyHelper.lamaSansArabic,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+
+                          // User card
+                          final user = currentUsers[index];
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.w,
+                              vertical: 10.h,
+                            ),
+                            child: SwipeableCard(
+                              user: user,
+                              onSwipe: null, // Disable swipe in carousel mode
+                              onLike:
+                                  _onCarouselLike, // Enable like in carousel mode
+                              onDislike:
+                                  _onCarouselDislike, // Enable dislike/remove in carousel mode
+                              isTop: false, // Not swipeable
+                              scale: 1.0,
+                              verticalOffset: 0,
+                            ),
+                          );
+                        },
+                      ),
               ),
             ],
           ),
@@ -862,51 +840,60 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        extendBody: true, // allows body to paint behind bottomNavigationBar
-        body: getBody(),
-        bottomNavigationBar: Directionality(
-          textDirection: LocalizationService.instance.textDirection,
-          child: Container(
-            height: 60.h,
-            margin: EdgeInsets.only(
-              left: 24.w,
-              right: 24.w,
-              bottom: 24.h,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(25).r,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withValues(alpha: 0.1),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: Offset(0, -1),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Expanded(
-                  child: _buildNavItem(0, 'assets/svg/home_icon.svg',
-                      AppLocalizations.of(context)!.homeLabel),
-                ),
-                Expanded(
-                  child: _buildNavItem(1, 'assets/svg/message_icon.svg',
-                      AppLocalizations.of(context)!.messagesLabel),
-                ),
-                Expanded(
-                  child: _buildNavItem(2, 'assets/svg/group_icon.svg',
-                      AppLocalizations.of(context)!.members),
-                ),
-                Expanded(
-                  child: _buildNavItem(3, 'assets/svg/profile_icon.svg',
-                      AppLocalizations.of(context)!.accountLabel),
-                ),
-              ],
-            ),
+      extendBody: true, // allows body to paint behind bottomNavigationBar
+      body: getBody(),
+      bottomNavigationBar: Directionality(
+        textDirection: LocalizationService.instance.textDirection,
+        child: Container(
+          height: 60.h,
+          margin: EdgeInsets.only(left: 24.w, right: 24.w, bottom: 24.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(25).r,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withValues(alpha: 0.1),
+                spreadRadius: 1,
+                blurRadius: 5,
+                offset: Offset(0, -1),
+              ),
+            ],
           ),
-        ));
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Expanded(
+                child: _buildNavItem(
+                  0,
+                  'assets/svg/home_icon.svg',
+                  AppLocalizations.of(context)!.homeLabel,
+                ),
+              ),
+              Expanded(
+                child: _buildNavItem(
+                  1,
+                  'assets/svg/message_icon.svg',
+                  AppLocalizations.of(context)!.messagesLabel,
+                ),
+              ),
+              Expanded(
+                child: _buildNavItem(
+                  2,
+                  'assets/svg/group_icon.svg',
+                  AppLocalizations.of(context)!.members,
+                ),
+              ),
+              Expanded(
+                child: _buildNavItem(
+                  3,
+                  'assets/svg/profile_icon.svg',
+                  AppLocalizations.of(context)!.accountLabel,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

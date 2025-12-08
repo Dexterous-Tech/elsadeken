@@ -43,8 +43,9 @@ class MembersRepository {
     return UsersResponseModel.fromJson(res.data);
   }
 
-  Future<UsersResponseModel> getDistinguishedMembers(
-      {String? countryName}) async {
+  Future<UsersResponseModel> getDistinguishedMembers({
+    String? countryName,
+  }) async {
     final api = sl<ApiServices>();
     final Response res = await api.get(
       endpoint: ApiConstants.distinguishedMembers,
@@ -52,36 +53,21 @@ class MembersRepository {
     );
     final response = UsersResponseModel.fromJson(res.data);
 
-    print('🔍 Premium Members Repository - countryName: $countryName');
-    print(
-        '🔍 Premium Members Repository - total members before filter: ${response.data?.length ?? 0}');
-
     // If countryName is provided, filter the results on the client side
     if (countryName != null &&
         countryName.isNotEmpty &&
         countryName != 'all' &&
         response.data != null) {
-      print(
-          '🔍 Premium Members Repository - filtering by country: $countryName');
-
       // Debug: Print all unique countries in the data
-      final uniqueCountries =
-          response.data!.map((user) => user.attribute?.country).toSet();
-      print(
-          '🔍 Premium Members Repository - unique countries in data: $uniqueCountries');
+      // final uniqueCountries =
+      //     response.data!.map((user) => user.attribute?.country).toSet();
 
       final filteredData = response.data!.where((user) {
         final userCountry = user.attribute?.country?.toLowerCase();
         final match = userCountry == countryName.toLowerCase();
-        if (match) {
-          print(
-              '🔍 Premium Members Repository - matched user: ${user.name} from ${user.attribute?.country}');
-        }
+        if (match) {}
         return match;
       }).toList();
-
-      print(
-          '🔍 Premium Members Repository - filtered members count: ${filteredData.length}');
 
       // Create a new response with filtered data
       return UsersResponseModel(
@@ -94,8 +80,6 @@ class MembersRepository {
       );
     }
 
-    print(
-        '🔍 Premium Members Repository - no filtering applied, returning all data');
     return response;
   }
 

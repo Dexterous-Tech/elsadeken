@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:elsadeken/core/networking/dio_factory.dart';
 import 'package:elsadeken/core/shared/shared_preferences_helper.dart';
 import 'package:elsadeken/core/shared/shared_preferences_key.dart';
@@ -112,9 +110,8 @@ class SignupCubit extends Cubit<SignupState> {
       );
 
       await SharedPreferencesHelper.saveSignupFormData(formData.toJson());
-      log('Form data saved successfully');
     } catch (e) {
-      log('Error saving form data: $e');
+      //
     }
   }
 
@@ -158,11 +155,9 @@ class SignupCubit extends Cubit<SignupState> {
         healthConditionController.text = formData.healthCondition ?? '';
         aboutMeController.text = formData.aboutMe ?? '';
         lifePartnerController.text = formData.lifePartner ?? '';
-
-        log('Form data loaded successfully');
       }
     } catch (e) {
-      log('Error loading form data: $e');
+      //
     }
   }
 
@@ -175,7 +170,6 @@ class SignupCubit extends Cubit<SignupState> {
     );
     // Don't reset the signup success flag - we need it for caching logic
     // _isSignupSuccessful = false;
-    log('Signup data and token cleared successfully');
   }
 
   // Check if there's recent signup data
@@ -314,8 +308,9 @@ class SignupCubit extends Cubit<SignupState> {
         smoking: int.parse(smokingController.text),
         hijab: hijabController.text.isNotEmpty ? hijabController.text : null,
         beard: beardController.text.isNotEmpty ? beardController.text : null,
-        educationalQualification:
-            int.parse(educationalQualificationController.text),
+        educationalQualification: int.parse(
+          educationalQualificationController.text,
+        ),
         financialSituation: int.parse(financialSituationController.text),
         job: int.parse(jobController.text),
         income: int.parse(incomeController.text),
@@ -330,16 +325,17 @@ class SignupCubit extends Cubit<SignupState> {
         emit(RegisterInformationFailure(error.displayMessage));
       },
       (registerInformationResponseModel) async {
-        log("Register information completed successfully");
         // Don't mark user as logged in after signup - they must login first
         // await SharedPreferencesHelper.setIsLoggedIn(true);
         // Clear all shared preferences data after successful registration
         await SharedPreferencesHelper.clearAllAppState();
         // Also clear signup-specific data
         await clearSignupData();
-        emit(RegisterInformationSuccess(
-            registerInformationResponseModel:
-                registerInformationResponseModel));
+        emit(
+          RegisterInformationSuccess(
+            registerInformationResponseModel: registerInformationResponseModel,
+          ),
+        );
       },
     );
   }

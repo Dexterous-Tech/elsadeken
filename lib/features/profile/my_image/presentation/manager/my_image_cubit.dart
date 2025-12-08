@@ -31,10 +31,10 @@ class MyImageCubit extends Cubit<MyImageState> {
         emit(MyImageImageSelected(image!));
       }
     } catch (e) {
-      print('Gallery pick error: $e');
       if (e.toString().contains('permission')) {
-        emit(MyImageFailure(
-            'يرجى منح إذن الوصول إلى المعرض في إعدادات التطبيق'));
+        emit(
+          MyImageFailure('يرجى منح إذن الوصول إلى المعرض في إعدادات التطبيق'),
+        );
       } else {
         emit(MyImageFailure('فشل في اختيار الصورة من المعرض: ${e.toString()}'));
       }
@@ -53,16 +53,20 @@ class MyImageCubit extends Cubit<MyImageState> {
         emit(MyImageImageSelected(image!));
       }
     } catch (e) {
-      print('Camera pick error: $e');
       if (e.toString().contains('permission')) {
-        emit(MyImageFailure(
-            'يرجى منح إذن الوصول إلى الكاميرا في إعدادات التطبيق'));
+        emit(
+          MyImageFailure('يرجى منح إذن الوصول إلى الكاميرا في إعدادات التطبيق'),
+        );
       } else if (e.toString().contains('camera')) {
-        emit(MyImageFailure(
-            'فشل في فتح الكاميرا. تأكد من أن الكاميرا تعمل بشكل صحيح'));
+        emit(
+          MyImageFailure(
+            'فشل في فتح الكاميرا. تأكد من أن الكاميرا تعمل بشكل صحيح',
+          ),
+        );
       } else {
-        emit(MyImageFailure(
-            'فشل في التقاط الصورة من الكاميرا: ${e.toString()}'));
+        emit(
+          MyImageFailure('فشل في التقاط الصورة من الكاميرا: ${e.toString()}'),
+        );
       }
     }
   }
@@ -75,19 +79,23 @@ class MyImageCubit extends Cubit<MyImageState> {
 
     emit(MyImageLoading());
 
-    var response =
-        await myImageRepoInterface.updateImage(MyImageModel(image: image));
+    var response = await myImageRepoInterface.updateImage(
+      MyImageModel(image: image),
+    );
 
-    response.fold((l) async {
-      emit(MyImageFailure(l.displayMessage));
-    }, (r) async {
-      final newImageUrl = r.data?.image ?? '';
-      if (newImageUrl.isNotEmpty) {
-        await SharedPreferencesHelper.deleteUserImage();
-        await SharedPreferencesHelper.saveUserImage(newImageUrl);
-      }
-      emit(MyImageSuccess(r));
-    });
+    response.fold(
+      (l) async {
+        emit(MyImageFailure(l.displayMessage));
+      },
+      (r) async {
+        final newImageUrl = r.data?.image ?? '';
+        if (newImageUrl.isNotEmpty) {
+          await SharedPreferencesHelper.deleteUserImage();
+          await SharedPreferencesHelper.saveUserImage(newImageUrl);
+        }
+        emit(MyImageSuccess(r));
+      },
+    );
   }
 
   void deleteImage() {
@@ -102,10 +110,13 @@ class MyImageCubit extends Cubit<MyImageState> {
       UpdateImageSetting(photoVisibility: photoVisibility),
     );
 
-    response.fold((l) {
-      emit(UpdateImageSettingFailure(l.displayMessage));
-    }, (r) {
-      emit(UpdateImageSettingSuccess(r));
-    });
+    response.fold(
+      (l) {
+        emit(UpdateImageSettingFailure(l.displayMessage));
+      },
+      (r) {
+        emit(UpdateImageSettingSuccess(r));
+      },
+    );
   }
 }

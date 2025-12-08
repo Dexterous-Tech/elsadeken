@@ -12,10 +12,7 @@ import '../../../data/model/notification_model.dart';
 class NotificationItemWidget extends StatelessWidget {
   final NotificationModel notification;
 
-  const NotificationItemWidget({
-    super.key,
-    required this.notification,
-  });
+  const NotificationItemWidget({super.key, required this.notification});
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +31,9 @@ class NotificationItemWidget extends StatelessWidget {
           //         ],
           //       )
           //     : null,
-          color:
-              notification.readAt == null ? Colors.white : Colors.transparent,
+          color: notification.readAt == null
+              ? Colors.white
+              : Colors.transparent,
         ),
         child: Row(
           crossAxisAlignment:
@@ -46,9 +44,7 @@ class NotificationItemWidget extends StatelessWidget {
             /// 👉 ICON on the right
             ClipRRect(
               borderRadius: BorderRadius.circular(50).r,
-              child: CustomImageNetwork(
-                image: notification.icon ?? '',
-              ),
+              child: CustomImageNetwork(image: notification.icon ?? ''),
             ),
 
             SizedBox(width: 16.w),
@@ -64,28 +60,39 @@ class NotificationItemWidget extends StatelessWidget {
                     style: AppTextStyles.font14BlackSemiBoldLamaSans,
                     textAlign: TextAlign.right,
                     textDirection: LocalizationService
-                        .instance.textDirection, // Keep RTL for Arabic
+                        .instance
+                        .textDirection, // Keep RTL for Arabic
                   ),
                   verticalSpace(4),
                   RichText(
-                      textAlign: LocalizationService.instance.textAlignment,
-                      textDirection: LocalizationService
-                          .instance.textDirection, // Keep RTL for Arabic
-                      text: TextSpan(children: [
+                    textAlign: LocalizationService.instance.textAlignment,
+                    textDirection: LocalizationService
+                        .instance
+                        .textDirection, // Keep RTL for Arabic
+                    text: TextSpan(
+                      children: [
                         TextSpan(
-                            text: '${notification.body} ',
-                            style: AppTextStyles.font14JetRegularLamaSans
-                                .copyWith(color: Color(0xff404040))),
+                          text: '${notification.body} ',
+                          style: AppTextStyles.font14JetRegularLamaSans
+                              .copyWith(color: Color(0xff404040)),
+                        ),
                         TextSpan(
-                            text: '${notification.userName} ',
-                            style: AppTextStyles.font14JetRegularLamaSans
-                                .copyWith(color: Color(0xff74370A))),
-                      ])),
+                          text: '${notification.userName} ',
+                          style: AppTextStyles.font14JetRegularLamaSans
+                              .copyWith(color: Color(0xff74370A)),
+                        ),
+                      ],
+                    ),
+                  ),
                   verticalSpace(6),
                   Text(
-                    timeago.format(notification.createdAt, locale: LocalizationService.instance.currentLanguageCode),
-                    style: AppTextStyles.font12JetRegularLamaSans
-                        .copyWith(color: Color(0xffFF6700)),
+                    timeago.format(
+                      notification.createdAt,
+                      locale: LocalizationService.instance.currentLanguageCode,
+                    ),
+                    style: AppTextStyles.font12JetRegularLamaSans.copyWith(
+                      color: Color(0xffFF6700),
+                    ),
                     textAlign: LocalizationService.instance.textAlignment,
                     textDirection:
                         LocalizationService.instance.textDirection, // K
@@ -115,19 +122,21 @@ class NotificationItemWidget extends StatelessWidget {
       case 'user':
         // Navigate to profile details screen if referenceId has value
         if (notification.referenceId != null) {
-          context.pushNamed(AppRoutes.profileDetailsScreen,
-              arguments: notification.referenceId);
+          context.pushNamed(
+            AppRoutes.profileDetailsScreen,
+            arguments: notification.referenceId,
+          );
         }
         break;
 
       case 'chat':
         // Navigate to chat page (bottom navigation tab) if referenceId has value
         if (notification.referenceId != null) {
-          print(
-              '🔔 [Notification] Navigating to home screen with chat tab (index: 1)');
           // Navigate to home screen with chat tab selected
-          context.pushNamed(AppRoutes.homeScreen,
-              arguments: 1); // 1 is the chat tab index
+          context.pushNamed(
+            AppRoutes.homeScreen,
+            arguments: 1,
+          ); // 1 is the chat tab index
         }
         break;
 

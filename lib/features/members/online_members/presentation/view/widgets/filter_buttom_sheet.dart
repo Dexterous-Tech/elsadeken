@@ -36,14 +36,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   final LinearGradient _applyGradient = const LinearGradient(
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
-    colors: [
-      Color(0xFFF8B64C),
-      Color(0xFFF0852E),
-    ],
+    colors: [Color(0xFFF8B64C), Color(0xFFF0852E)],
   );
 
   List<_Country> _parseCountries(
-      List<NationalCountryResponseModel> countriesList) {
+    List<NationalCountryResponseModel> countriesList,
+  ) {
     final parsed = countriesList
         .map((e) {
           final id = e.id;
@@ -58,28 +56,19 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   void _updateSelectedIndex() {
-    print(
-        '_updateSelectedIndex called with selectedCountryId: ${widget.selectedCountryId}, countries length: ${_countries.length}');
     if (widget.selectedCountryId != null &&
         widget.selectedCountryId != 0 &&
         _countries.length > 1) {
-      final index = _countries
-          .indexWhere((country) => country.id == widget.selectedCountryId);
-      print('Found country at index: $index');
+      final index = _countries.indexWhere(
+        (country) => country.id == widget.selectedCountryId,
+      );
       if (index != -1) {
         setState(() {
           _selectedCountryIndex = index;
           _hasInitializedSelection = true;
         });
-        print('Updated _selectedCountryIndex to: $_selectedCountryIndex');
-      } else {
-        print(
-            'Country with ID ${widget.selectedCountryId} not found in countries list');
-      }
-    } else {
-      print(
-          '_updateSelectedIndex conditions not met: selectedCountryId: ${widget.selectedCountryId}, countries length: ${_countries.length}');
-    }
+      } else {}
+    } else {}
   }
 
   @override
@@ -119,18 +108,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       child: Directionality(
         textDirection: LocalizationService.instance.textDirection,
         child: Container(
-          constraints: BoxConstraints(
-            maxHeight: media.size.height * 0.5,
-          ),
+          constraints: BoxConstraints(maxHeight: media.size.height * 0.5),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                AppColors.cosmicLatte,
-                AppColors.antiqueWhite,
-              ],
+              colors: [AppColors.cosmicLatte, AppColors.antiqueWhite],
             ),
           ),
           child: SafeArea(
@@ -163,14 +147,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsetsDirectional.symmetric(
-                        horizontal: 16, vertical: 12),
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     child: Column(
                       textDirection: LocalizationService.instance.textDirection,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         BlocBuilder<SignUpListsCubit, SignUpListsState>(
                           builder: (context, state) {
-                            print('BlocBuilder state: $state');
                             // If this is the initial state, trigger countries loading
                             if (state is SignUpListsStateInitial) {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -180,31 +165,32 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
                             if (state is CountriesLoading) {
                               return Center(
-                                  child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 24),
-                                child: Column(
-                                  children: [
-                                    const CircularProgressIndicator(),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      AppLocalizations.of(context)!.loading,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Color(0xFF666666),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 24,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      const CircularProgressIndicator(),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        AppLocalizations.of(context)!.loading,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Color(0xFF666666),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ));
+                              );
                             } else if (state is CountriesSuccess) {
                               _countries = _parseCountries(state.countriesList);
-                              print(
-                                  'Countries loaded: ${_countries.map((e) => '${e.id}:${e.name}').toList()}');
                               // Update selected index after countries are loaded if we haven't initialized selection yet
                               if (!_hasInitializedSelection) {
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) {
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
                                   _updateSelectedIndex();
                                 });
                               }
@@ -213,11 +199,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                               _countries = [_Country(id: 0, name: all)];
                             }
 
-                            print(
-                                'Building _Section with selectedIndex: $_selectedCountryIndex, countries: ${_countries.map((e) => '${e.id}:${e.name}').toList()}');
                             return _Section(
-                              title:
-                                  AppLocalizations.of(context)!.filterByCountry,
+                              title: AppLocalizations.of(
+                                context,
+                              )!.filterByCountry,
                               options: _countries.map((e) => e.name).toList(),
                               selectedIndex: _selectedCountryIndex,
                               onSelect: (i) =>
@@ -250,11 +235,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
                                   // Simulate loading delay for better UX
                                   await Future.delayed(
-                                      const Duration(milliseconds: 500));
+                                    const Duration(milliseconds: 500),
+                                  );
 
                                   if (mounted) {
-                                    final selected = (_selectedCountryIndex >=
-                                                0 &&
+                                    final selected =
+                                        (_selectedCountryIndex >= 0 &&
                                             _selectedCountryIndex <
                                                 _countries.length)
                                         ? _countries[_selectedCountryIndex]
@@ -331,8 +317,6 @@ class _Section extends StatelessWidget {
         const SizedBox(height: 12),
         ...List.generate(options.length, (i) {
           final selected = i == selectedIndex;
-          print(
-              '_Section: option $i (${options[i]}) selected: $selected, selectedIndex: $selectedIndex');
           return Column(
             textDirection: LocalizationService.instance.textDirection,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -350,10 +334,7 @@ class _Section extends StatelessWidget {
                       Text(
                         options[i],
                         textAlign: TextAlign.end,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: kText,
-                        ),
+                        style: const TextStyle(fontSize: 16, color: kText),
                       ),
                       Spacer(),
                       _SquareCheck(value: selected),
@@ -388,8 +369,9 @@ class _SquareCheck extends StatelessWidget {
           width: 1.4,
         ),
       ),
-      child:
-          value ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
+      child: value
+          ? const Icon(Icons.check, size: 16, color: Colors.white)
+          : null,
     );
   }
 }

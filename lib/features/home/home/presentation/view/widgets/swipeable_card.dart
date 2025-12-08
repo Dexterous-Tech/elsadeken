@@ -139,10 +139,14 @@ class _SwipeableCardState extends State<SwipeableCard>
       setState(() {
         _dragOffset = Offset.zero;
         _isProcessingAction = false;
-        _slideAnimation = Tween<Offset>(begin: Offset.zero, end: Offset.zero)
-            .animate(_animationController);
-        _rotationAnimation =
-            Tween<double>(begin: 0, end: 0).animate(_animationController);
+        _slideAnimation = Tween<Offset>(
+          begin: Offset.zero,
+          end: Offset.zero,
+        ).animate(_animationController);
+        _rotationAnimation = Tween<double>(
+          begin: 0,
+          end: 0,
+        ).animate(_animationController);
       });
       _animationController.reset();
     });
@@ -163,10 +167,14 @@ class _SwipeableCardState extends State<SwipeableCard>
       // Land at zero without bouncing back to previous begin value
       setState(() {
         _dragOffset = Offset.zero;
-        _slideAnimation = Tween<Offset>(begin: Offset.zero, end: Offset.zero)
-            .animate(_animationController);
-        _rotationAnimation =
-            Tween<double>(begin: 0, end: 0).animate(_animationController);
+        _slideAnimation = Tween<Offset>(
+          begin: Offset.zero,
+          end: Offset.zero,
+        ).animate(_animationController);
+        _rotationAnimation = Tween<double>(
+          begin: 0,
+          end: 0,
+        ).animate(_animationController);
       });
       _animationController.reset();
     });
@@ -194,13 +202,13 @@ class _SwipeableCardState extends State<SwipeableCard>
     final bool isAnimating = _animationController.isAnimating;
     final cardOffset = widget.isTop
         ? (_isDragging
-            ? _dragOffset
-            : (isAnimating ? _slideAnimation.value : Offset.zero))
+              ? _dragOffset
+              : (isAnimating ? _slideAnimation.value : Offset.zero))
         : Offset.zero;
     final rotation = widget.isTop
         ? (_isDragging
-            ? _dragOffset.dx * 0.001
-            : (isAnimating ? _rotationAnimation.value : 0.0))
+              ? _dragOffset.dx * 0.001
+              : (isAnimating ? _rotationAnimation.value : 0.0))
         : 0.0;
 
     // Card content widget
@@ -210,11 +218,6 @@ class _SwipeableCardState extends State<SwipeableCard>
       onPanEnd: _onPanEnd,
       onTap: () {
         if (!_isProcessingAction) {
-          print("Card tapped for user:");
-          print("  User ID: ${widget.user.id}");
-          print("  User Name: ${widget.user.name}");
-          print("  User Image URL: ${widget.user.imageUrl}");
-
           Navigator.pushNamed(
             context,
             AppRoutes.personDetailsScreen,
@@ -249,303 +252,315 @@ class _SwipeableCardState extends State<SwipeableCard>
                 ],
               ),
               child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 450.h,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16).r,
-                          child: widget.user.imageUrl.isNotEmpty
-                              ? CachedNetworkImage(
-                                  imageUrl: widget.user.imageUrl,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) => Container(
-                                    color: Colors.grey[200],
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          Color(0xffFFB74D),
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 450.h,
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16).r,
+                            child: widget.user.imageUrl.isNotEmpty
+                                ? CachedNetworkImage(
+                                    imageUrl: widget.user.imageUrl,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Container(
+                                      color: Colors.grey[200],
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                Color(0xffFFB74D),
+                                              ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      Container(
+                                    errorWidget: (context, url, error) => Container(
+                                      color: Colors.grey[200],
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.person,
+                                              size: 60,
+                                              color: Colors.grey[400],
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              LocalizationHelper.getLocalizedText(
+                                                'لا يمكن تحميل الصورة',
+                                                'Image cannot be loaded.',
+                                              ),
+                                              style: TextStyle(
+                                                color: Colors.grey[600],
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Container(
                                     color: Colors.grey[200],
                                     child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.person,
-                                            size: 60,
-                                            color: Colors.grey[400],
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            LocalizationHelper.getLocalizedText(
-                                                'لا يمكن تحميل الصورة',
-                                                'Image cannot be loaded.'),
-                                            style: TextStyle(
-                                              color: Colors.grey[600],
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
+                                      child: Icon(
+                                        Icons.person,
+                                        size: 60,
+                                        color: Colors.grey[400],
                                       ),
                                     ),
                                   ),
-                                )
-                              : Container(
-                                  color: Colors.grey[200],
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.person,
-                                      size: 60,
-                                      color: Colors.grey[400],
-                                    ),
-                                  ),
-                                ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.transparent,
-                              Colors.grey.withValues(alpha: 0.3)
-                            ],
-                            stops: [0.7, 1], // from -> to
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          borderRadius: BorderRadius.circular(
-                              16), // optional rounded corners
-                        ),
-                      ),
-                      Positioned(
-                        top: 14.h,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 6.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xffDBAE48),
-                              borderRadius: BorderRadius.circular(8).r,
-                            ),
-                            child: Text(
-                              LocalizationHelper.getLocalizedText(
-                                  ' نسبة تطابق ${widget.user.matchPercentage}%',
-                                  '${widget.user.matchPercentage}% Matching percentage'),
-                              textDirection:
-                                  LocalizationService.instance.textDirection,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeightHelper.semiBold,
-                                fontFamily: FontFamilyHelper.lamaSansArabic,
-                              ),
-                            ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 14.h,
-                        left: 14.w,
-                        right: 14.w,
-                        child: Container(
+                        Container(
                           decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.08),
-                                blurRadius: 12,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.transparent,
+                                Colors.grey.withValues(alpha: 0.3),
+                              ],
+                              stops: [0.7, 1], // from -> to
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              16,
+                            ), // optional rounded corners
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            textDirection:
-                                LocalizationService.instance.textDirection,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
+                        ),
+                        Positioned(
+                          top: 14.h,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12.w,
+                                vertical: 6.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xffDBAE48),
+                                borderRadius: BorderRadius.circular(8).r,
+                              ),
+                              child: Text(
+                                LocalizationHelper.getLocalizedText(
+                                  ' نسبة تطابق ${widget.user.matchPercentage}%',
+                                  '${widget.user.matchPercentage}% Matching percentage',
+                                ),
                                 textDirection:
                                     LocalizationService.instance.textDirection,
-                                children: [
-                                  Text(
-                                    ' ${widget.user.age} ${AppLocalizations.of(context)!.year}, ${widget.user.name}',
-                                    textDirection: LocalizationService
-                                        .instance.textDirection,
-                                    textAlign: LocalizationService
-                                        .instance.textAlignment,
-                                    style: TextStyle(
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeightHelper.semiBold,
+                                  fontFamily: FontFamilyHelper.lamaSansArabic,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 14.h,
+                          left: 14.w,
+                          right: 14.w,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.08),
+                                  blurRadius: 12,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              textDirection:
+                                  LocalizationService.instance.textDirection,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  textDirection: LocalizationService
+                                      .instance
+                                      .textDirection,
+                                  children: [
+                                    Text(
+                                      ' ${widget.user.age} ${AppLocalizations.of(context)!.year}, ${widget.user.name}',
+                                      textDirection: LocalizationService
+                                          .instance
+                                          .textDirection,
+                                      textAlign: LocalizationService
+                                          .instance
+                                          .textAlignment,
+                                      style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 15.sp,
                                         fontWeight: FontWeightHelper.bold,
                                         fontFamily:
-                                            FontFamilyHelper.lamaSansArabic),
-                                  ),
-                                  Text(
-                                    widget.user.profession,
-                                    style: TextStyle(
+                                            FontFamilyHelper.lamaSansArabic,
+                                      ),
+                                    ),
+                                    Text(
+                                      widget.user.profession,
+                                      style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 14.sp,
                                         fontWeight: FontWeightHelper.regular,
                                         fontFamily:
-                                            FontFamilyHelper.lamaSansArabic),
-                                  ),
-                                ],
-                              ),
-                              Flexible(
-                                child: Container(
-                                  padding: EdgeInsetsDirectional.symmetric(
-                                    horizontal: 26.5.w,
-                                    vertical: 11.h,
-                                  ),
-                                  constraints: BoxConstraints(
-                                    maxWidth: 150.w,
-                                    minWidth: 80.w,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffDBAE48),
-                                    borderRadius: BorderRadius.circular(15).r,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      maxLines: 2,
-                                      '${widget.user.country}, ${widget.user.city}',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        overflow: TextOverflow.ellipsis,
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeightHelper.medium,
-                                        fontFamily:
                                             FontFamilyHelper.lamaSansArabic,
                                       ),
-                                      textDirection: LocalizationService
-                                          .instance.textDirection,
-                                      textAlign: LocalizationService
-                                          .instance.textAlignment,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                                Flexible(
+                                  child: Container(
+                                    padding: EdgeInsetsDirectional.symmetric(
+                                      horizontal: 26.5.w,
+                                      vertical: 11.h,
+                                    ),
+                                    constraints: BoxConstraints(
+                                      maxWidth: 150.w,
+                                      minWidth: 80.w,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffDBAE48),
+                                      borderRadius: BorderRadius.circular(15).r,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        maxLines: 2,
+                                        '${widget.user.country}, ${widget.user.city}',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeightHelper.medium,
+                                          fontFamily:
+                                              FontFamilyHelper.lamaSansArabic,
+                                        ),
+                                        textDirection: LocalizationService
+                                            .instance
+                                            .textDirection,
+                                        textAlign: LocalizationService
+                                            .instance
+                                            .textAlignment,
+                                        softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    textDirection: LocalizationService.instance.textDirection,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () => _handleButtonPress(false),
+                        child: Container(
+                          width: 44.w,
+                          height: 44.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 2,
+                                offset: Offset(0, 2),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 20.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  textDirection: LocalizationService.instance.textDirection,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () => _handleButtonPress(false),
-                      child: Container(
-                        width: 44.w,
-                        height: 44.h,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 2,
-                              offset: Offset(0, 2),
+                          child: Center(
+                            child: Icon(
+                              Icons.close,
+                              color: Color(0xffE81925),
+                              size: 14,
                             ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.close,
-                            color: Color(0xffE81925),
-                            size: 14,
                           ),
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () => _handleButtonPress(true),
-                      child: Container(
-                        width: 50.w,
-                        height: 50.h,
-                        decoration: BoxDecoration(
-                          color: Color(0xffEC4D58),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.favorite_border,
-                            color: Colors.white,
-                            size: 22,
+                      GestureDetector(
+                        onTap: () => _handleButtonPress(true),
+                        child: Container(
+                          width: 50.w,
+                          height: 50.h,
+                          decoration: BoxDecoration(
+                            color: Color(0xffEC4D58),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.favorite_border,
+                              color: Colors.white,
+                              size: 22,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        try {
-                          print(
-                              '🔍 [SwipeableCard] Message icon tapped for user ID: ${widget.user.id}');
+                      GestureDetector(
+                        onTap: () async {
+                          try {
+                            // Check if there's an existing chat room first
+                            final chatListCubit = context.read<ChatListCubit>();
 
-                          // Check if there's an existing chat room first
-                          final chatListCubit = context.read<ChatListCubit>();
+                            // Check if chat list is already loaded, if not, load it
+                            if (chatListCubit.state is! ChatListLoaded) {
+                              await chatListCubit.forceRefreshChatList();
 
-                          // Check if chat list is already loaded, if not, load it
-                          if (chatListCubit.state is! ChatListLoaded) {
-                            print(
-                                '🔄 [SwipeableCard] Chat list not loaded, loading now...');
-                            await chatListCubit.forceRefreshChatList();
-
-                            // Wait a bit for the state to update
-                            await Future.delayed(
-                                const Duration(milliseconds: 500));
-                          } else {
-                            print('✅ [SwipeableCard] Chat list already loaded');
-                          }
-
-                          // Find existing chat room between current user and this profile user
-                          final existingChatRoom = chatListCubit
-                              .findExistingChatRoom(widget.user.id);
-
-                          if (existingChatRoom != null) {
-                            print(
-                                '✅ [SwipeableCard] Found existing chat room: ${existingChatRoom.id}, navigating to it');
-                            // Navigate to existing chat room
-                            if (context.mounted) {
-                              Navigator.pushNamed(
-                                context,
-                                AppRoutes.chatConversationScreen,
-                                arguments: {
-                                  "chatRoom": existingChatRoom,
-                                },
+                              // Wait a bit for the state to update
+                              await Future.delayed(
+                                const Duration(milliseconds: 500),
                               );
+                            } else {}
+
+                            // Find existing chat room between current user and this profile user
+                            final existingChatRoom = chatListCubit
+                                .findExistingChatRoom(widget.user.id);
+
+                            if (existingChatRoom != null) {
+                              // Navigate to existing chat room
+                              if (context.mounted) {
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.chatConversationScreen,
+                                  arguments: {"chatRoom": existingChatRoom},
+                                );
+                              }
+                            } else {
+                              // Create new temporary chat room for new conversation
+                              if (context.mounted) {
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.chatConversationScreen,
+                                  arguments: {
+                                    "chatRoom": ChatRoomModel.fromUser(
+                                      userId: widget.user.id,
+                                      userName: widget.user.name,
+                                      userImage: widget.user.imageUrl,
+                                      isOnline: widget.user.isOnline,
+                                    ),
+                                  },
+                                );
+                              }
                             }
-                          } else {
-                            print(
-                                '🆕 [SwipeableCard] No existing chat room found, creating new temporary chat');
-                            // Create new temporary chat room for new conversation
+                          } catch (e) {
+                            // Fallback to creating new chat
                             if (context.mounted) {
                               Navigator.pushNamed(
                                 context,
@@ -561,53 +576,35 @@ class _SwipeableCardState extends State<SwipeableCard>
                               );
                             }
                           }
-                        } catch (e) {
-                          print(
-                              '❌ [SwipeableCard] Error in message icon onTap: $e');
-                          // Fallback to creating new chat
-                          if (context.mounted) {
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.chatConversationScreen,
-                              arguments: {
-                                "chatRoom": ChatRoomModel.fromUser(
-                                  userId: widget.user.id,
-                                  userName: widget.user.name,
-                                  userImage: widget.user.imageUrl,
-                                  isOnline: widget.user.isOnline,
-                                ),
-                              },
-                            );
-                          }
-                        }
-                      },
-                      child: Container(
-                        width: 44.w,
-                        height: 44.h,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 2,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Center(
+                        },
+                        child: Container(
+                          width: 44.w,
+                          height: 44.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 2,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Center(
                             child: Image.asset(
-                          'assets/images/home/home_outline_message.png',
-                          width: 18.w,
-                          height: 18.h,
-                        )),
+                              'assets/images/home/home_outline_message.png',
+                              width: 18.w,
+                              height: 18.h,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20.h),
-              ],
-            ),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
+                ],
+              ),
             ),
           ),
         ),

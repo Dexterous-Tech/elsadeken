@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -26,7 +24,7 @@ class ContactUsRepoImplementation implements ContactUsRepoInterface {
       var response = await _contactUsDataSource.contactUs(contactUsModel);
       return Right(response);
     } catch (error) {
-      log("error in contact us $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

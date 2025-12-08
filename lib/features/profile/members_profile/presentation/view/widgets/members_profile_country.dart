@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
@@ -35,7 +34,6 @@ class _MembersProfileCountryState extends State<MembersProfileCountry> {
   }
 
   void _loadMembersForCountry(int countryId, String countryName) {
-    log('Loading members for country: $countryName (ID: $countryId)');
     setState(() {
       selectedCountry = countryName;
       selectedCountryId = countryId;
@@ -63,7 +61,7 @@ class _MembersProfileCountryState extends State<MembersProfileCountry> {
           ),
           BlocListener<MembersProfileCubit, MembersProfileState>(
             listener: (context, state) {
-              log('Country widget: MembersProfileCubit state changed to ${state.runtimeType}');
+
             },
             child: BlocBuilder<SignUpListsCubit, SignUpListsState>(
               builder: (context, state) {
@@ -71,7 +69,6 @@ class _MembersProfileCountryState extends State<MembersProfileCountry> {
                   // Set default country to first one in the list
                   if (state.countriesList.isNotEmpty) {
                     final firstCountry = state.countriesList.first;
-                    log('Setting default country: ${firstCountry.name} (ID: ${firstCountry.id})');
 
                     // Load members for the default country
                     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -145,7 +142,6 @@ class _MembersProfileCountryState extends State<MembersProfileCountry> {
                     style: AppTextStyles.font16BlackSemiBoldLamaSans,
                   ),
                   onTap: () {
-                    log('Country selected: ${country.name} (ID: ${country.id})');
                     _loadMembersForCountry(
                       country.id ?? 1,
                       country.name ?? '',

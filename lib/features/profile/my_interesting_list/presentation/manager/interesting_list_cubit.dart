@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:elsadeken/features/profile/my_interesting_list/data/repo/interesting_list_repo.dart';
 import 'package:elsadeken/features/profile/my_interesting_list/presentation/manager/interesting_list_state.dart';
 import 'package:elsadeken/features/profile/interests_list/data/models/users_response_model.dart';
@@ -15,10 +14,10 @@ class InterestingListCubit extends Cubit<InterestingListState> {
   Future<void> favUser({int? page}) async {
     try {
       if (page == 1 || page == null) {
-        log('Loading initial interesting users...');
+
         emit(InterestingListStateLoading());
       } else {
-        log('Loading more interesting users for page $page...');
+
         // Don't emit loading state for pagination to keep existing data visible
       }
 
@@ -28,7 +27,7 @@ class InterestingListCubit extends Cubit<InterestingListState> {
         emit(InterestingListStateFailure(error.displayMessage));
       }, (favUserResponseModel) {
         if (page == 1 || page == null) {
-          log('Initial interesting users loaded: ${favUserResponseModel.data?.length ?? 0} items');
+
           emit(InterestingListStateSuccess(
             favUserResponseModel,
             hasNextPage: favUserResponseModel.meta?.currentPage != null &&
@@ -46,7 +45,7 @@ class InterestingListCubit extends Cubit<InterestingListState> {
             ];
             final updatedModel =
                 favUserResponseModel.copyWith(data: updatedData);
-            log('Pagination completed: Added ${favUserResponseModel.data?.length ?? 0} items, total: ${updatedData.length}');
+
             emit(InterestingListStateSuccess(
               updatedModel,
               hasNextPage: favUserResponseModel.meta?.currentPage != null &&
@@ -59,7 +58,7 @@ class InterestingListCubit extends Cubit<InterestingListState> {
         }
       });
     } catch (e) {
-      log('Unexpected error loading interesting users: $e');
+
       emit(InterestingListStateFailure('An unexpected error occurred: $e'));
     }
   }

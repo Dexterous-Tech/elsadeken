@@ -18,31 +18,33 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     var response = await profileRepoInterface.logout();
 
-    response.fold((error) {
-      emit(LogoutFailure(error.displayMessage));
-    }, (logoutResponseModel) async {
-      // Clear all app state data
-      await SharedPreferencesHelper.clearAllAppState();
-      await SharedPreferencesHelper.deleteUserImage();
-      // await DioFactory.resetDio();
-      emit(LogoutSuccess(logoutResponseModel));
-    });
+    response.fold(
+      (error) {
+        emit(LogoutFailure(error.displayMessage));
+      },
+      (logoutResponseModel) async {
+        // Clear all app state data
+        await SharedPreferencesHelper.clearAllAppState();
+        await SharedPreferencesHelper.deleteUserImage();
+        // await DioFactory.resetDio();
+        emit(LogoutSuccess(logoutResponseModel));
+      },
+    );
   }
 
   void deleteImage() async {
-    print('🚀 ProfileCubit: deleteImage() called');
     emit(DeleteImageLoading());
 
     var response = await profileRepoInterface.deleteImage();
 
-    response.fold((error) {
-      print('❌ ProfileCubit: deleteImage failed - ${error.displayMessage}');
-      emit(DeleteImageFailure(error.displayMessage));
-    }, (deleteImageResponseModel) async {
-      print(
-          '✅ ProfileCubit: deleteImage success - ${deleteImageResponseModel.message}');
-      // await DioFactory.resetDio();
-      emit(DeleteImageSuccess(deleteImageResponseModel));
-    });
+    response.fold(
+      (error) {
+        emit(DeleteImageFailure(error.displayMessage));
+      },
+      (deleteImageResponseModel) async {
+        // await DioFactory.resetDio();
+        emit(DeleteImageSuccess(deleteImageResponseModel));
+      },
+    );
   }
 }

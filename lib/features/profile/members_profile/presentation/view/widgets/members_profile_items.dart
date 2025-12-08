@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
@@ -43,7 +42,7 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
         state.hasNextPage &&
         !_isLoadingMore) {
       final nextPage = state.currentPage + 1;
-      log('Loading more members profile: current page ${state.currentPage}, next page $nextPage, hasNextPage: ${state.hasNextPage}');
+
       setState(() {
         _isLoadingMore = true;
       });
@@ -52,18 +51,18 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
           setState(() {
             _isLoadingMore = false;
           });
-          log('Pagination loading completed');
+
         }
       });
     } else {
-      log('Cannot load more: state is ${state.runtimeType}, hasNextPage: ${state is MembersProfileStateSuccess ? state.hasNextPage : false}, isLoadingMore: $_isLoadingMore');
+
     }
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      log('Scroll threshold reached, triggering pagination');
+
       _loadMoreUsers();
     }
   }
@@ -167,10 +166,9 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
   Widget build(BuildContext context) {
     return BlocBuilder<MembersProfileCubit, MembersProfileState>(
       builder: (context, state) {
-        log('MembersProfileItems: State changed to ${state.runtimeType}');
 
         if (state is MembersProfileStateFailure) {
-          log('Failure: ${state.error}');
+
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -207,7 +205,6 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
         }
         if (state is MembersProfileStateSuccess) {
           final membersList = state.membersProfileResponseModel.data ?? [];
-          log('Success: Loaded ${membersList.length} members');
 
           if (membersList.isEmpty) {
             return Center(
@@ -255,7 +252,7 @@ class _MembersProfileItemsState extends State<MembersProfileItems> {
             ),
           );
         } else {
-          log('Loading state');
+
           return Center(
             child: CircularProgressIndicator(
               color: AppColors.primaryOrange,

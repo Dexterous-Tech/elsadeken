@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/widgets/forms/custom_elevated_button.dart';
@@ -44,8 +43,9 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
 
   Future<void> _loadData() async {
     // Load isFeatured status from SharedPreferences
-    isUserFeatured =
-        await SharedPreferencesHelper.getBool(SharedPreferencesKey.isFeatured);
+    isUserFeatured = await SharedPreferencesHelper.getBool(
+      SharedPreferencesKey.isFeatured,
+    );
 
     // Load features from API
     await _loadFeatures();
@@ -72,12 +72,12 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
         errorMessage = 'فشل في تحميل الميزات: $e';
         isLoadingFeatures = false;
       });
-      log('Error loading features: $e');
     }
   }
 
   Future<void> _handlePackageSelection(
-      packages_model.Data selectedPackage) async {
+    packages_model.Data selectedPackage,
+  ) async {
     try {
       // Call API to assign package using PackagesCubit
       final packagesCubit = sl<PackagesCubit>();
@@ -85,12 +85,14 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
 
       // Update isFeatured status in SharedPreferences to true after successful subscription
       await SharedPreferencesHelper.setBool(
-          SharedPreferencesKey.isFeatured, true);
+        SharedPreferencesKey.isFeatured,
+        true,
+      );
 
       // Refresh the features to show updated status
       await _loadFeatures();
     } catch (e) {
-      log('Error assigning package: $e');
+      //
     }
   }
 
@@ -141,8 +143,8 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
               textDirection: LocalizationService.instance.textDirection,
               children: [
                 ProfileHeader(
-                    title:
-                        AppLocalizations.of(context)!.excellencePackageTitle),
+                  title: AppLocalizations.of(context)!.excellencePackageTitle,
+                ),
                 verticalSpace(42),
                 if (isLoadingFeatures) ...[
                   Column(
@@ -150,9 +152,7 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.beer,
-                        ),
+                        child: CircularProgressIndicator(color: AppColors.beer),
                       ),
                     ],
                   ),
@@ -165,9 +165,7 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                         Text(
                           errorMessage!,
                           style: AppTextStyles.font16BlackSemiBoldLamaSans
-                              .copyWith(
-                            color: Colors.red,
-                          ),
+                              .copyWith(color: Colors.red),
                           textDirection:
                               LocalizationService.instance.textDirection,
                           textAlign: TextAlign.center,
@@ -184,20 +182,15 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     textDirection: LocalizationService.instance.textDirection,
-                    children: List.generate(
-                      features.length,
-                      (index) {
-                        final feature = features[index];
-                        final activeValue = feature.active ?? 0;
+                    children: List.generate(features.length, (index) {
+                      final feature = features[index];
+                      final activeValue = feature.active ?? 0;
 
-                        log("FEATURE: ${feature.feature} | ACTIVE: $activeValue | isCorrect: ${activeValue == 1}");
-
-                        return MyExcellenceItem(
-                          isCorrect: activeValue == 1,
-                          title: feature.feature ?? "",
-                        );
-                      },
-                    ),
+                      return MyExcellenceItem(
+                        isCorrect: activeValue == 1,
+                        title: feature.feature ?? "",
+                      );
+                    }),
                   ),
                 ],
                 verticalSpace(15),
@@ -224,10 +217,8 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                     child: Center(
                       child: Text(
                         AppLocalizations.of(context)!.youAreAlreadyPremium,
-                        style:
-                            AppTextStyles.font16BlackSemiBoldLamaSans.copyWith(
-                          color: AppColors.philippineBronze,
-                        ),
+                        style: AppTextStyles.font16BlackSemiBoldLamaSans
+                            .copyWith(color: AppColors.philippineBronze),
                         textAlign: TextAlign.center,
                         textDirection:
                             LocalizationService.instance.textDirection,
@@ -245,20 +236,22 @@ class _MyExcellenceBodyState extends State<MyExcellenceBody> {
                                 packagesState.packages.data!.isNotEmpty) {
                               final result =
                                   await showPaymentMethodsBottomSheet(
-                                context,
-                                packages: packagesState.packages.data!,
-                              );
+                                    context,
+                                    packages: packagesState.packages.data!,
+                                  );
 
                               if (result != null &&
                                   result["selectedPackage"] != null) {
-                                final selected = result["selectedPackage"]
-                                    as packages_model.Data;
+                                final selected =
+                                    result["selectedPackage"]
+                                        as packages_model.Data;
                                 await _handlePackageSelection(selected);
                               }
                             }
                           },
-                          textButton:
-                              AppLocalizations.of(context)!.subscribeNow,
+                          textButton: AppLocalizations.of(
+                            context,
+                          )!.subscribeNow,
                           radius: 100,
                         );
                       }

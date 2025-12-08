@@ -44,10 +44,7 @@ class PersonCardWidget extends StatelessWidget {
                     height: 50,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.grey.shade300,
-                        width: 1,
-                      ),
+                      border: Border.all(color: Colors.grey.shade300, width: 1),
                     ),
                     child: ClipOval(
                       child: Image.network(
@@ -56,8 +53,6 @@ class PersonCardWidget extends StatelessWidget {
                         height: 50,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
-                          print("age: ${personData.age}");
-
                           return Container(
                             width: 50,
                             height: 50,
@@ -92,10 +87,7 @@ class PersonCardWidget extends StatelessWidget {
                   children: [
                     Text(
                       personData.name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
                       textDirection: LocalizationService.instance.textDirection,
                     ),
                     const SizedBox(height: 4),
@@ -125,8 +117,10 @@ class PersonCardWidget extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFD4AF37),
                   borderRadius: BorderRadius.circular(20),

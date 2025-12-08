@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -45,7 +43,7 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
       var response = await manageProfileDataSource.getProfile();
       return Right(response);
     } catch (error) {
-      log("error in get profile $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -60,7 +58,7 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
       var response = await manageProfileDataSource.deleteAccount(password);
       return Right(response);
     } catch (error) {
-      log("error in delete profile $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -76,7 +74,7 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
           .updateProfileLoginData(updateProfileData);
       return Right(response);
     } catch (error) {
-      log("error in update profile login data $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -93,7 +91,7 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
           .updateProfileLocationData(updateProfileData);
       return Right(response);
     } catch (error) {
-      log("error in update profile location data $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -110,7 +108,7 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
           .updateProfileMarriageData(updateProfileData);
       return Right(response);
     } catch (error) {
-      log("error in update profile marriage data $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -127,7 +125,7 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
           .updateProfilePhysicalData(updateProfileData);
       return Right(response);
     } catch (error) {
-      log("error in update profile physical data $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -144,7 +142,7 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
           .updateProfileReligiousData(updateProfileData);
       return Right(response);
     } catch (error) {
-      log("error in update profile religious data $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -160,7 +158,7 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
           .updateProfileWorkData(updateProfileData);
       return Right(response);
     } catch (error) {
-      log("error in update profile work data $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -177,7 +175,7 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
           .updateProfileAboutMeData(updateProfileData);
       return Right(response);
     } catch (error) {
-      log("error in update profile about me data $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -194,7 +192,7 @@ class ManageProfileRepoImp implements ManageProfileRepoInterface {
           .updateProfileAboutPartnerData(updateProfileData);
       return Right(response);
     } catch (error) {
-      log("error in update profile about partner data $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

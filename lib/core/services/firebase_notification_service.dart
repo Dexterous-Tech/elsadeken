@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -44,20 +43,18 @@ class FirebaseNotificationService {
   // Global variable to handle background messages
   @pragma('vm:entry-point')
   static Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
+    RemoteMessage message,
+  ) async {
     await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-    log("Handling background message: ${message.messageId}");
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
     // Check if notifications are enabled
     final prefs = await SharedPreferences.getInstance();
     final notificationsEnabled = prefs.getBool('notifications_enabled') ?? true;
 
-    log("Background notification check - enabled: $notificationsEnabled");
-
     // If notifications are disabled, don't process anything
     if (!notificationsEnabled) {
-      log("Background notification IGNORED - notifications disabled in settings");
       return;
     }
 
@@ -65,8 +62,6 @@ class FirebaseNotificationService {
     // Firebase automatically displays notifications when app is in background/terminated
     // Manually showing would cause duplicate notifications
     // Only trigger refresh logic, not notification display
-
-    log("Background message received - Firebase will auto-display notification");
 
     // Always trigger chat refresh for background messages (if it's a chat notification)
     _triggerBackgroundChatRefresh(message);
@@ -76,8 +71,6 @@ class FirebaseNotificationService {
   @pragma('vm:entry-point')
   static void _triggerBackgroundChatRefresh(RemoteMessage message) {
     try {
-      log("🔄 Triggering background chat refresh from Firebase notification: ${message.notification?.title}");
-
       // Check if this is a chat-related notification
       final notificationTitle =
           message.notification?.title?.toLowerCase() ?? '';
@@ -90,14 +83,12 @@ class FirebaseNotificationService {
           notificationBody.contains('message') ||
           message.data.containsKey('chat_id') ||
           message.data.containsKey('message_id')) {
-        log("💬 Background chat notification detected, will refresh when app becomes active");
-
         // Store a flag that the app should refresh chats when it becomes active
         // This will be handled by the main app when it resumes
         _storeChatRefreshFlag();
       }
     } catch (e) {
-      log("❌ Error triggering background chat refresh: $e");
+      // exception
     }
   }
 
@@ -108,10 +99,11 @@ class FirebaseNotificationService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('chat_refresh_needed', true);
       await prefs.setString(
-          'chat_refresh_timestamp', DateTime.now().toIso8601String());
-      log("✅ Chat refresh flag stored for when app becomes active");
+        'chat_refresh_timestamp',
+        DateTime.now().toIso8601String(),
+      );
     } catch (e) {
-      log("❌ Error storing chat refresh flag: $e");
+      // exception
     }
   }
 
@@ -122,8 +114,8 @@ class FirebaseNotificationService {
     try {
       // Initialize Firebase
       await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform);
-      log("Firebase initialized successfully");
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
       // Initialize messaging after Firebase is ready
       _messaging = FirebaseMessaging.instance;
@@ -138,7 +130,8 @@ class FirebaseNotificationService {
 
       // Set background message handler
       FirebaseMessaging.onBackgroundMessage(
-          _firebaseMessagingBackgroundHandler);
+        _firebaseMessagingBackgroundHandler,
+      );
 
       // Request notification permissions
       await _requestNotificationPermissions();
@@ -150,9 +143,7 @@ class FirebaseNotificationService {
       await _setupFirebaseMessaging();
 
       _isInitialized = true;
-      log("Firebase notification service initialized successfully");
     } catch (e) {
-      log("Error initializing Firebase notification service: $e");
       rethrow;
     }
   }
@@ -160,11 +151,10 @@ class FirebaseNotificationService {
   /// Request notification permissions
   Future<void> _requestNotificationPermissions() async {
     if (_messaging == null) {
-      log("Firebase messaging not initialized yet");
       return;
     }
 
-    NotificationSettings settings = await _messaging!.requestPermission(
+    await _messaging!.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -174,11 +164,8 @@ class FirebaseNotificationService {
       sound: true,
     );
 
-    log('User granted permission: ${settings.authorizationStatus}');
-
     // Get FCM token
-    String? token = await _messaging!.getToken();
-    log('FCM Token: $token');
+    await _messaging!.getToken();
   }
 
   /// Setup local notifications
@@ -192,28 +179,26 @@ class FirebaseNotificationService {
 
     const InitializationSettings initializationSettings =
         InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS,
+        );
 
     await _localNotifications.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        log('Notification clicked: ${response.payload}');
-      },
+      onDidReceiveNotificationResponse: (NotificationResponse response) {},
     );
 
     // Create notification channel for Android
     await _localNotifications
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(channel);
   }
 
   /// Setup Firebase messaging listeners
   Future<void> _setupFirebaseMessaging() async {
     if (_messaging == null) {
-      log("Firebase messaging not initialized yet");
       return;
     }
 
@@ -221,18 +206,14 @@ class FirebaseNotificationService {
     await _disposeListeners();
 
     // Handle foreground messages
-    _foregroundSubscription =
-        FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      log("Got message in foreground: ${message.notification?.title}");
-
+    _foregroundSubscription = FirebaseMessaging.onMessage.listen((
+      RemoteMessage message,
+    ) async {
       // Check if notifications are enabled before showing
       bool enabled = await isNotificationEnabled();
       if (enabled) {
-        log("🔔 Showing foreground notification: ${message.notification?.title}");
         _showLocalNotification(message);
-      } else {
-        log("❌ Notifications disabled, not showing foreground notification");
-      }
+      } else {}
 
       // Always trigger chat refresh when Firebase notification is received
       // This ensures chat list and conversations are updated even if local notification is disabled
@@ -240,10 +221,9 @@ class FirebaseNotificationService {
     });
 
     // Handle when app is opened from notification
-    _openedAppSubscription = FirebaseMessaging.onMessageOpenedApp
-        .listen((RemoteMessage message) async {
-      log("App opened by notification: ${message.notification?.title}");
-
+    _openedAppSubscription = FirebaseMessaging.onMessageOpenedApp.listen((
+      RemoteMessage message,
+    ) async {
       // Only handle navigation if notifications are enabled
       bool enabled = await isNotificationEnabled();
       if (enabled) {
@@ -254,8 +234,6 @@ class FirebaseNotificationService {
     // Handle initial notification when app is launched from terminated state
     RemoteMessage? initialMessage = await _messaging!.getInitialMessage();
     if (initialMessage != null) {
-      log("App launched from notification: ${initialMessage.notification?.title}");
-
       // Only handle navigation if notifications are enabled
       bool enabled = await isNotificationEnabled();
       if (enabled) {
@@ -266,15 +244,11 @@ class FirebaseNotificationService {
 
   /// Dispose Firebase messaging listeners
   Future<void> _disposeListeners() async {
-    log("Disposing Firebase messaging listeners");
-
     await _foregroundSubscription?.cancel();
     _foregroundSubscription = null;
 
     await _openedAppSubscription?.cancel();
     _openedAppSubscription = null;
-
-    log("Firebase messaging listeners disposed");
   }
 
   /// Show local notification
@@ -313,25 +287,18 @@ class FirebaseNotificationService {
           NotificationDetails(),
         );
       }
-
-      log("✅ Foreground notification displayed: ${notification.title}");
-    } else {
-      log("⚠️ No notification data to display");
-    }
+    } else {}
   }
 
   /// Handle notification navigation
   void _handleNotificationNavigation(RemoteMessage message) {
     // Handle navigation based on notification data
     // You can add your navigation logic here based on message.data
-    log("Handling notification navigation with data: ${message.data}");
   }
 
   /// Trigger chat refresh when Firebase notification is received
   void _triggerChatRefresh(RemoteMessage message) {
     try {
-      log("🔄 Triggering chat refresh from Firebase notification: ${message.notification?.title}");
-
       // Check if this is a chat-related notification
       final notificationTitle =
           message.notification?.title?.toLowerCase() ?? '';
@@ -344,8 +311,6 @@ class FirebaseNotificationService {
           notificationBody.contains('message') ||
           message.data.containsKey('chat_id') ||
           message.data.containsKey('message_id')) {
-        log("💬 Chat notification detected, refreshing chat list and conversations");
-
         // Trigger chat list refresh through the message service
         ChatMessageService.instance.triggerFirebaseChatRefresh();
 
@@ -353,15 +318,12 @@ class FirebaseNotificationService {
         if (message.data.containsKey('chat_id')) {
           final chatId = int.tryParse(message.data['chat_id'].toString());
           if (chatId != null) {
-            log("🔄 Updating specific chat: $chatId");
             ChatMessageService.instance.triggerFirebaseChatRefresh();
           }
         }
-      } else {
-        log("ℹ️ Non-chat notification, skipping chat refresh");
-      }
+      } else {}
     } catch (e) {
-      log("❌ Error triggering chat refresh: $e");
+      //
     }
   }
 
@@ -376,24 +338,18 @@ class FirebaseNotificationService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('notifications_enabled', enabled);
 
-    log('Notification setting saved: $enabled');
-
     if (enabled && _isInitialized) {
       // Re-request permissions and setup listeners if needed
       await _requestNotificationPermissions();
       await _setupFirebaseMessaging();
 
       // Get a new FCM token when enabling notifications
-      if (_messaging != null) {
-        try {
-          String? newToken = await _messaging!.getToken();
-          log("New FCM token generated: $newToken");
-        } catch (e) {
-          log("Error getting new FCM token: $e");
-        }
-      }
-
-      log("Notifications enabled - listeners activated");
+      // if (_messaging != null) {
+      //   try {
+      //     String? newToken = await _messaging!.getToken();
+      //   } catch (e) {
+      //   }
+      // }
     } else if (!enabled) {
       // Clear all notifications and dispose listeners when disabled
       await _localNotifications.cancelAll();
@@ -407,16 +363,11 @@ class FirebaseNotificationService {
         try {
           // Delete the FCM token to stop receiving messages
           await _messaging!.deleteToken();
-          log("FCM token deleted to stop receiving notifications");
         } catch (e) {
-          log("Error deleting FCM token: $e");
+          //
         }
       }
-
-      log("Notifications disabled - listeners disposed and all notifications cancelled");
     }
-
-    log('Notifications ${enabled ? 'enabled' : 'disabled'}');
   }
 
   /// Force clear all notifications (more aggressive)
@@ -428,12 +379,11 @@ class FirebaseNotificationService {
       // Cancel notifications by channel
       await _localNotifications
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.cancelAll();
-
-      log("All notifications forcefully cleared");
     } catch (e) {
-      log("Error clearing notifications: $e");
+      //
     }
   }
 
@@ -441,8 +391,6 @@ class FirebaseNotificationService {
   Future<void> forceRefreshNotificationSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final isEnabled = prefs.getBool('notifications_enabled') ?? true;
-
-    log("Force refreshing notification settings - enabled: $isEnabled");
 
     if (!isEnabled) {
       await _clearAllNotifications();
@@ -452,41 +400,34 @@ class FirebaseNotificationService {
       if (_messaging != null) {
         try {
           await _messaging!.deleteToken();
-          log("FCM token deleted during force refresh");
         } catch (e) {
-          log("Error deleting FCM token during force refresh: $e");
+          //
         }
       }
-
-      log("Force refresh: notifications disabled and listeners disposed");
     }
   }
 
   /// Get FCM token
   Future<String?> getFCMToken() async {
     if (_messaging == null) {
-      log("Firebase messaging not initialized yet");
       return null;
     }
     return await _messaging!.getToken();
   }
 
   /// Refresh FCM token
-  Future<void> refreshFCMToken() async {
-    if (_messaging == null) {
-      log("Firebase messaging not initialized yet");
-      return;
-    }
-    await _messaging!.deleteToken();
-    String? newToken = await _messaging!.getToken();
-    log('FCM Token refreshed: $newToken');
-  }
+  // Future<void> refreshFCMToken() async {
+  //   if (_messaging == null) {
+  //     return;
+  //   }
+  //   await _messaging!.deleteToken();
+  //   String? newToken = await _messaging!.getToken();
+  // }
 
   /// Dispose the service
   Future<void> dispose() async {
     await _disposeListeners();
     _isInitialized = false;
-    log("Firebase notification service disposed");
   }
 
   /// Check if chat refresh is needed and clear the flag
@@ -496,7 +437,6 @@ class FirebaseNotificationService {
       final needsRefresh = prefs.getBool('chat_refresh_needed') ?? false;
 
       if (needsRefresh) {
-        log("🔄 Chat refresh needed, clearing flag and triggering refresh");
         await prefs.setBool('chat_refresh_needed', false);
 
         // Trigger chat refresh
@@ -506,7 +446,6 @@ class FirebaseNotificationService {
 
       return false;
     } catch (e) {
-      log("❌ Error checking chat refresh flag: $e");
       return false;
     }
   }
@@ -521,7 +460,6 @@ class FirebaseNotificationService {
       }
       return null;
     } catch (e) {
-      log("❌ Error getting chat refresh timestamp: $e");
       return null;
     }
   }
@@ -530,48 +468,24 @@ class FirebaseNotificationService {
   Future<void> checkNotificationPermissions() async {
     try {
       if (_messaging == null) {
-        log("❌ Firebase messaging not initialized");
         return;
       }
 
-      final settings = await _messaging!.getNotificationSettings();
-      log('📱 Notification settings: ${settings.authorizationStatus}');
-      log('📱 Alert: ${settings.alert}');
-      log('📱 Badge: ${settings.badge}');
-      log('📱 Sound: ${settings.sound}');
-      log('📱 Critical Alert: ${settings.criticalAlert}');
-      log('📱 Announcement: ${settings.announcement}');
-      log('📱 Car Play: ${settings.carPlay}');
-      log('📱 Lock Screen: ${settings.lockScreen}');
-      log('📱 Notification Center: ${settings.notificationCenter}');
+      await _messaging!.getNotificationSettings();
 
       // Get FCM token
-      final token = await _messaging!.getToken();
-      log('🔑 FCM Token: $token');
-
-      // Check local notification settings
-      final prefs = await SharedPreferences.getInstance();
-      final notificationsEnabled =
-          prefs.getBool('notifications_enabled') ?? true;
-      log('⚙️ Local notifications enabled: $notificationsEnabled');
+      await _messaging!.getToken();
 
       // Check Android notification channel
-      if (defaultTargetPlatform == TargetPlatform.android) {
-        log('🤖 Android notification channel: ${channel.id}');
-        log('🤖 Channel importance: ${channel.importance}');
-        log('🤖 Channel playSound: ${channel.playSound}');
-        log('🤖 Channel enableVibration: ${channel.enableVibration}');
-      }
+      if (defaultTargetPlatform == TargetPlatform.android) {}
     } catch (e) {
-      log("❌ Error checking notification permissions: $e");
+      //
     }
   }
 
   /// Test foreground notification manually (for debugging)
   Future<void> testForegroundNotification() async {
     try {
-      log("🧪 Testing foreground notification...");
-
       if (defaultTargetPlatform == TargetPlatform.android) {
         await _localNotifications.show(
           999999, // Use a unique ID for test
@@ -591,7 +505,6 @@ class FirebaseNotificationService {
             ),
           ),
         );
-        log("✅ Test notification sent successfully");
       } else {
         await _localNotifications.show(
           999999,
@@ -599,10 +512,9 @@ class FirebaseNotificationService {
           'This is a test notification while app is in foreground',
           NotificationDetails(),
         );
-        log("✅ Test notification sent successfully");
       }
     } catch (e) {
-      log("❌ Error sending test notification: $e");
+      //
     }
   }
 }

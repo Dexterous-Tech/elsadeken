@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/features/profile/terms_conditions/data/data_source/terms_conditions_data_source.dart';
 
@@ -23,7 +21,6 @@ class TermsConditionsRepoImpl implements TermsConditionsRepoInterface {
 
       return Right(response);
     } catch (error) {
-      log("error in  terms conditions $error");
       if (error is ApiErrorModel) {
         return Left(error);
       }

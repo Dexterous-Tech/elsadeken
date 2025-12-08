@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -23,7 +22,7 @@ class InterestingRepoImpl implements InterestingListRepo {
           await interestingListDataSource.interestingList(page: page);
       return Right(response);
     } catch (error) {
-      log("error in interesting list $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

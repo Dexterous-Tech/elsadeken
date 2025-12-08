@@ -33,8 +33,6 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
     return BlocListener<ProfileCubit, ProfileState>(
       listener: (context, state) {
         if (state is DeleteImageSuccess) {
-          print(
-              '🎯 ProfileDataLogo: DeleteImageSuccess detected! Refreshing profile...');
           // Refresh profile data after successful image deletion
           context.read<ManageProfileCubit>().getProfile();
         }
@@ -69,9 +67,11 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    await context.pushNamed(AppRoutes.profileMyImageScreen,
-                        arguments:
-                            state.myProfileResponseModel.data?.photoVisibility);
+                    await context.pushNamed(
+                      AppRoutes.profileMyImageScreen,
+                      arguments:
+                          state.myProfileResponseModel.data?.photoVisibility,
+                    );
                     // Always refresh the profile data when returning from the image screen
                     if (context.mounted) {
                       context.read<ManageProfileCubit>().getProfile();
@@ -95,11 +95,11 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
                 ),
                 Text(
                   '${state.myProfileResponseModel.data?.email}',
-                  style:
-                      AppTextStyles.font14ChineseBlackSemiBoldLamaSans.copyWith(
-                    color: AppColors.white,
-                    fontWeight: FontWeightHelper.regular,
-                  ),
+                  style: AppTextStyles.font14ChineseBlackSemiBoldLamaSans
+                      .copyWith(
+                        color: AppColors.white,
+                        fontWeight: FontWeightHelper.regular,
+                      ),
                 ),
                 if (isFeatured) ...[
                   verticalSpace(8),
@@ -118,9 +118,7 @@ class _ProfileDataLogoState extends State<ProfileDataLogo> {
               width: 120.w,
               height: 120.h,
               child: Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.white,
-                ),
+                child: CircularProgressIndicator(color: AppColors.white),
               ),
             );
           }

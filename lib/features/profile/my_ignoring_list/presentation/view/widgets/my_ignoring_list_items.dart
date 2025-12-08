@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:elsadeken/core/theme/app_color.dart';
 import 'package:elsadeken/core/theme/app_text_styles.dart';
 import 'package:elsadeken/core/theme/spacing.dart';
@@ -39,7 +38,7 @@ class _MyIgnoringListItemsState extends State<MyIgnoringListItems> {
 
     if (state is IgnoreUserSuccess && state.hasNextPage && !_isLoadingMore) {
       final nextPage = state.currentPage + 1;
-      log('Loading more ignore users: current page ${state.currentPage}, next page $nextPage, hasNextPage: ${state.hasNextPage}');
+
       setState(() {
         _isLoadingMore = true;
       });
@@ -48,18 +47,18 @@ class _MyIgnoringListItemsState extends State<MyIgnoringListItems> {
           setState(() {
             _isLoadingMore = false;
           });
-          log('Pagination loading completed');
+
         }
       });
     } else {
-      log('Cannot load more: state is ${state.runtimeType}, hasNextPage: ${state is IgnoreUserSuccess ? state.hasNextPage : false}, isLoadingMore: $_isLoadingMore');
+
     }
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      log('Scroll threshold reached, triggering pagination');
+
       _loadMoreUsers();
     }
   }
@@ -73,7 +72,7 @@ class _MyIgnoringListItemsState extends State<MyIgnoringListItems> {
     return BlocBuilder<IgnoreUserCubit, IgnoreUserState>(
       builder: (context, state) {
         if (state is IgnoreUserFailure) {
-          log('error');
+
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +106,7 @@ class _MyIgnoringListItemsState extends State<MyIgnoringListItems> {
           );
         }
         if (state is IgnoreUserSuccess) {
-          log('Success');
+
           final ignoreList = state.ignoreUsersResponseModel.data ?? [];
 
           if (ignoreList.isEmpty) {

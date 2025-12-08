@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -24,7 +22,7 @@ class MembersProfileRepoImp implements MembersProfileRepoInterface {
           await membersProfileDataSource.getMembersProfile(countryId);
       return Right(response);
     } catch (error) {
-      log("error in get members profile $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

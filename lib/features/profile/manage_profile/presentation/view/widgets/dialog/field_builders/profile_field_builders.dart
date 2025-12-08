@@ -67,8 +67,9 @@ class TextFieldBuilder extends ProfileFieldBuilder {
           controller: controller,
           keyboardType: field.keyboardType,
           maxLines: field.maxLines,
-          inputFormatters:
-              isAboutMeOrLifePartner ? _getTextValidationFormatters() : null,
+          inputFormatters: isAboutMeOrLifePartner
+              ? _getTextValidationFormatters()
+              : null,
           validator: isAboutMeOrLifePartner
               ? (value) => _validateTextContent(value, context)
               : (value) {
@@ -84,7 +85,9 @@ class TextFieldBuilder extends ProfileFieldBuilder {
 
   /// Check if this field is "about me" or "life partner" field
   bool _isAboutMeOrLifePartnerField(
-      ManageProfileField field, BuildContext context) {
+    ManageProfileField field,
+    BuildContext context,
+  ) {
     final aboutMeLabel = AppLocalizations.of(context)!.aboutMe;
     final lifePartnerLabel = AppLocalizations.of(context)!.lifePartner;
 
@@ -115,14 +118,17 @@ class TextFieldBuilder extends ProfileFieldBuilder {
     }
 
     // Block anything that looks like a phone number (8–15 consecutive digits)
-    if (RegExp(r'[\d\u0660-\u0669\u06F0-\u06F9]{8,15}')
-        .hasMatch(trimmedValue)) {
+    if (RegExp(
+      r'[\d\u0660-\u0669\u06F0-\u06F9]{8,15}',
+    ).hasMatch(trimmedValue)) {
       return AppLocalizations.of(context)!.cannotEnterPhoneNumber;
     }
 
     // Block links
-    if (RegExp(r'(https?://|www\.|\.com|\.net|\.org)', caseSensitive: false)
-        .hasMatch(trimmedValue)) {
+    if (RegExp(
+      r'(https?://|www\.|\.com|\.net|\.org)',
+      caseSensitive: false,
+    ).hasMatch(trimmedValue)) {
       return AppLocalizations.of(context)!.textCannotContainLinks;
     }
 
@@ -172,7 +178,9 @@ class PasswordFieldBuilder extends ProfileFieldBuilder {
   }
 
   List<TextInputFormatter>? _getInputFormattersForField(
-      String label, BuildContext context) {
+    String label,
+    BuildContext context,
+  ) {
     final phoneNumber = AppLocalizations.of(context)!.phoneNumber;
     final countryCode = AppLocalizations.of(context)!.countryCode;
     final age = AppLocalizations.of(context)!.age;
@@ -228,11 +236,6 @@ class DropdownFieldBuilder extends ProfileFieldBuilder {
         hint: field.hint,
         items: field.keyValueOptions!.values.toList(),
         onChanged: (selectedDisplayValue) {
-          print(
-              'DEBUG: Dropdown "${field.label}" - Selected display value: "$selectedDisplayValue"');
-          print(
-              'DEBUG: Dropdown "${field.label}" - Available key-value options: ${field.keyValueOptions}');
-
           // Find the key for the selected display value
           final selectedKey = field.keyValueOptions!.entries
               .firstWhere(
@@ -241,17 +244,14 @@ class DropdownFieldBuilder extends ProfileFieldBuilder {
               )
               .key;
 
-          print('DEBUG: Dropdown "${field.label}" - Found key: "$selectedKey"');
-
           // Store the key (API value) in the controller
           controller.text = selectedKey;
           onChanged(selectedKey);
-
-          print(
-              'DEBUG: Dropdown "${field.label}" - Controller updated to: "${controller.text}"');
         },
-        initialValue:
-            _getDisplayValueForKey(selectedValue, field.keyValueOptions!),
+        initialValue: _getDisplayValueForKey(
+          selectedValue,
+          field.keyValueOptions!,
+        ),
       );
     } else {
       return CustomDropDownMenu(
@@ -266,7 +266,9 @@ class DropdownFieldBuilder extends ProfileFieldBuilder {
 
   /// Helper method to get display value for a given key
   String? _getDisplayValueForKey(
-      String? key, Map<String, String> keyValueOptions) {
+    String? key,
+    Map<String, String> keyValueOptions,
+  ) {
     if (key == null || key.isEmpty) return null;
     return keyValueOptions[key];
   }
@@ -373,8 +375,9 @@ class DropdownFieldBuilder extends ProfileFieldBuilder {
           case ManageProfileFieldDataType.financialSituation:
             final financialSituations = generalDataLists['financialSituations'];
             if (financialSituations != null && financialSituations.isNotEmpty) {
-              items =
-                  financialSituations.map((item) => item.name ?? '').toList();
+              items = financialSituations
+                  .map((item) => item.name ?? '')
+                  .toList();
             } else if (state is FinancialSituationsLoading) {
               isLoading = true;
             }

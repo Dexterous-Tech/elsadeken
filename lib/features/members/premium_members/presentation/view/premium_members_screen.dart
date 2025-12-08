@@ -50,8 +50,6 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
         state.hasNextPage &&
         !_isLoadingMore) {
       final nextPage = state.currentPage + 1;
-      print(
-          'Loading more premium members: current page ${state.currentPage}, next page $nextPage');
       setState(() {
         _isLoadingMore = true;
       });
@@ -60,7 +58,6 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
           setState(() {
             _isLoadingMore = false;
           });
-          print('Pagination loading completed');
         }
       });
     }
@@ -69,7 +66,6 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      print('Scroll threshold reached, triggering pagination');
       _loadMoreUsers();
     }
   }
@@ -80,13 +76,12 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = MembersListCubit<UsersDataModel>(
-      ({int? page}) async {
-        final response = await sl<MembersRepository>()
-            .getDistinguishedMembers(countryName: _selectedCountryName);
-        return response.data ?? [];
-      },
-    )..fetch();
+    final cubit = MembersListCubit<UsersDataModel>(({int? page}) async {
+      final response = await sl<MembersRepository>().getDistinguishedMembers(
+        countryName: _selectedCountryName,
+      );
+      return response.data ?? [];
+    })..fetch();
 
     return Directionality(
       textDirection: LocalizationService.instance.textDirection,
@@ -97,10 +92,7 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                AppColors.cosmicLatte,
-                AppColors.antiqueWhite,
-              ],
+              colors: [AppColors.cosmicLatte, AppColors.antiqueWhite],
             ),
           ),
           child: Stack(
@@ -122,11 +114,14 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         child: ProfileHeader(
-                            title: AppLocalizations.of(context)!.premiumMembers,
-                            titleStyle: AppTextStyles.font20WhiteBoldLamaSans
-                                .copyWith(color: AppColors.black)),
+                          title: AppLocalizations.of(context)!.premiumMembers,
+                          titleStyle: AppTextStyles.font20WhiteBoldLamaSans
+                              .copyWith(color: AppColors.black),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsetsDirectional.all(24.0),
@@ -143,50 +138,50 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                             SizedBox(width: 20),
                             GestureDetector(
                               onTap: () async {
-                                final result = await showModalBottomSheet<
-                                    Map<String, dynamic>>(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  builder: (context) => FilterBottomSheet(
-                                    selectedCountryId:
-                                        null, // We'll use country name instead
-                                  ),
-                                );
+                                final result =
+                                    await showModalBottomSheet<
+                                      Map<String, dynamic>
+                                    >(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      builder: (context) => FilterBottomSheet(
+                                        selectedCountryId:
+                                            null, // We'll use country name instead
+                                      ),
+                                    );
                                 if (result != null) {
-                                  print(
-                                      '🔍 Premium Members Screen - Filter result: $result');
                                   setState(() {
                                     _selectedCountryName =
                                         result['name'] as String?;
                                   });
-                                  print(
-                                      '🔍 Premium Members Screen - Selected country name: $_selectedCountryName');
                                   // Recreate cubit with country filter
                                   final newCubit =
-                                      MembersListCubit<UsersDataModel>(
-                                    ({int? page}) async {
-                                      print(
-                                          '🔍 Premium Members Screen - Creating new cubit with country: $_selectedCountryName');
-                                      final response =
-                                          await sl<MembersRepository>()
-                                              .getDistinguishedMembers(
+                                      MembersListCubit<UsersDataModel>(({
+                                        int? page,
+                                      }) async {
+                                        final response =
+                                            await sl<MembersRepository>()
+                                                .getDistinguishedMembers(
                                                   countryName:
-                                                      _selectedCountryName);
-                                      return response.data ?? [];
-                                    },
-                                  );
+                                                      _selectedCountryName,
+                                                );
+                                        return response.data ?? [];
+                                      });
                                   // Push a new provider scope with updated loader
                                   if (context.mounted) {
                                     Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
-                                        builder: (_) => BlocProvider<
-                                            MembersListCubit<UsersDataModel>>(
-                                          create: (_) => newCubit..fetch(),
-                                          child: PremiumMembersView(
-                                              countryName:
-                                                  _selectedCountryName),
-                                        ),
+                                        builder: (_) =>
+                                            BlocProvider<
+                                              MembersListCubit<UsersDataModel>
+                                            >(
+                                              create: (_) => newCubit..fetch(),
+                                              child: PremiumMembersView(
+                                                countryName:
+                                                    _selectedCountryName,
+                                              ),
+                                            ),
                                       ),
                                     );
                                   }
@@ -199,11 +194,16 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                                   Text(
                                     AppLocalizations.of(context)!.filter,
                                     style: TextStyle(
-                                        color: Color(0xFFD4AF37), fontSize: 18),
+                                      color: Color(0xFFD4AF37),
+                                      fontSize: 18,
+                                    ),
                                   ),
                                   SizedBox(width: 6),
-                                  Icon(Icons.arrow_forward_ios,
-                                      size: 16, color: Color(0xFFD4AF37)),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 16,
+                                    color: Color(0xFFD4AF37),
+                                  ),
                                 ],
                               ),
                             ),
@@ -211,16 +211,19 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      BlocBuilder<MembersListCubit<UsersDataModel>,
-                          MembersListState<UsersDataModel>>(
+                      BlocBuilder<
+                        MembersListCubit<UsersDataModel>,
+                        MembersListState<UsersDataModel>
+                      >(
                         builder: (context, state) {
                           if (state is MembersListLoading<UsersDataModel>) {
                             return Padding(
                               padding: EdgeInsets.only(top: 24),
                               child: Center(
-                                  child: CircularProgressIndicator(
-                                color: AppColors.beer,
-                              )),
+                                child: CircularProgressIndicator(
+                                  color: AppColors.beer,
+                                ),
+                              ),
                             );
                           }
                           if (state is MembersListError<UsersDataModel>) {
@@ -238,11 +241,13 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                             return Expanded(
                               child: Center(
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                      .noPremiumMembers,
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.noPremiumMembers,
                                   textAlign: TextAlign.center,
                                   textDirection: LocalizationService
-                                      .instance.textDirection,
+                                      .instance
+                                      .textDirection,
                                 ),
                               ),
                             );
@@ -255,10 +260,13 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                                   Container(
                                     width: double.infinity,
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 12),
+                                      horizontal: 20,
+                                      vertical: 12,
+                                    ),
                                     child: Text(
-                                      AppLocalizations.of(context)!
-                                          .premiumMembersCount(items.length),
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.premiumMembersCount(items.length),
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         color: Color(0xFFD4AF37),
@@ -274,15 +282,18 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                                       child: ListView.builder(
                                         controller: _scrollController,
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 16),
-                                        itemCount: items.length +
+                                          horizontal: 16,
+                                        ),
+                                        itemCount:
+                                            items.length +
                                             (_isLoadingMore ? 1 : 0),
                                         itemBuilder: (context, index) {
                                           if (index == items.length &&
                                               _isLoadingMore) {
                                             return Padding(
-                                              padding:
-                                                  const EdgeInsets.all(16.0),
+                                              padding: const EdgeInsets.all(
+                                                16.0,
+                                              ),
                                               child: Center(
                                                 child: Column(
                                                   children: [
@@ -292,8 +303,8 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                                                     const SizedBox(height: 8),
                                                     Text(
                                                       AppLocalizations.of(
-                                                              context)!
-                                                          .loadingMore,
+                                                        context,
+                                                      )!.loadingMore,
                                                       textAlign:
                                                           TextAlign.center,
                                                       textDirection:
@@ -314,7 +325,8 @@ class _PremiumMembersViewState extends State<PremiumMembersView> {
                                           final m = items[index];
                                           return Padding(
                                             padding: const EdgeInsets.only(
-                                                bottom: 12),
+                                              bottom: 12,
+                                            ),
                                             child: ContainerItem(
                                               favUser: m,
                                               isSpecial: true,

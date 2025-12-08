@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -27,7 +25,7 @@ class MyImageRepoImp extends MyImageRepoInterface {
 
       return Right(response);
     } catch (e) {
-      log("error in image $e");
+
       if (e is ApiErrorModel) {
         return Left(e);
       }
@@ -44,7 +42,7 @@ class MyImageRepoImp extends MyImageRepoInterface {
 
       return Right(response);
     } catch (e) {
-      log("error in image update setting $e");
+
       if (e is ApiErrorModel) {
         return Left(e);
       }

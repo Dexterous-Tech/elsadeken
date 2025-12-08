@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
@@ -168,7 +166,7 @@ class _NotificationScreenContentState extends State<NotificationScreenContent> {
     if (state is NotificationSuccess && state.hasNextPage && !_isLoadingMore) {
       // Use the current page from the state and increment it
       final nextPage = state.currentPage + 1;
-      log('Loading more notifications: current page ${state.currentPage}, next page $nextPage, hasNextPage: ${state.hasNextPage}');
+
       setState(() {
         _isLoadingMore = true;
       });
@@ -177,18 +175,18 @@ class _NotificationScreenContentState extends State<NotificationScreenContent> {
           setState(() {
             _isLoadingMore = false;
           });
-          log('Pagination loading completed');
+
         }
       });
     } else {
-      log('Cannot load more: state is ${state.runtimeType}, hasNextPage: ${state is NotificationSuccess ? state.hasNextPage : false}, isLoadingMore: $_isLoadingMore');
+
     }
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      log('Scroll threshold reached, triggering pagination');
+
       _loadMoreNotifications();
     }
   }
@@ -201,7 +199,7 @@ class _NotificationScreenContentState extends State<NotificationScreenContent> {
   Widget _buildNotificationBody() {
     return BlocConsumer<NotificationCubit, NotificationState>(
       listener: (context, state) {
-        log('Notification state changed to: ${state.runtimeType}');
+
         if (state is NotificationError) {
           setState(() {
             _isLoadingMore = false;
@@ -216,11 +214,10 @@ class _NotificationScreenContentState extends State<NotificationScreenContent> {
             ),
           );
         } else if (state is NotificationSuccess) {
-          log('Notification success: ${state.notifications.length} items, page ${state.currentPage}, hasNextPage: ${state.hasNextPage}');
+
         }
       },
       builder: (context, state) {
-        log('Building notification body with state: ${state.runtimeType}');
 
         if (state is NotificationLoading) {
           return Center(
@@ -271,7 +268,6 @@ class _NotificationScreenContentState extends State<NotificationScreenContent> {
             return const EmptyNotificationsWidget();
           }
 
-          log('Building notification list with ${state.notifications.length} items, isLoadingMore: $_isLoadingMore');
           return NotificationListWidget(
             notifications: state.notifications,
             scrollController: _scrollController,

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -36,7 +34,7 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
       var response = await profileDetailsDataSource.ignoreUser(userId);
       return Right(response);
     } catch (error) {
-      log("error in ignore user $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -51,7 +49,7 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
       var response = await profileDetailsDataSource.likeUser(userId);
       return Right(response);
     } catch (error) {
-      log("error in like user $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -66,7 +64,7 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
       var response = await profileDetailsDataSource.getProfileDetails(userId);
       return Right(response);
     } catch (error) {
-      log("error in get profile details $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -83,7 +81,7 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
           await profileDetailsDataSource.reportUser(userId, reasonId: reasonId);
       return Right(response);
     } catch (error) {
-      log("error in report user $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -98,7 +96,7 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
       var response = await profileDetailsDataSource.shareUser(userId);
       return Right(response);
     } catch (error) {
-      log("error in share user $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
@@ -113,7 +111,7 @@ class ProfileDetailsRepoImp extends ProfileDetailsRepoInterface {
       var response = await profileDetailsDataSource.getGeneralInfo(endpoint);
       return Right(response);
     } catch (error) {
-      log("error in general info $endpoint $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }

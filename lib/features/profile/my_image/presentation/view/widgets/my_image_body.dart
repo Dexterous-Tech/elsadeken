@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/services/localization_service.dart';
 import 'package:elsadeken/core/theme/app_color.dart';
@@ -47,8 +45,8 @@ class _MyImageBodyState extends State<MyImageBody> {
   Future<void> _loadUserGender() async {
     try {
       final gender = await SharedPreferencesHelper.getSecuredString(
-          SharedPreferencesKey.gender);
-      log(gender);
+        SharedPreferencesKey.gender,
+      );
       setState(() {
         userGender = gender;
         isLoadingGender = false;
@@ -64,8 +62,9 @@ class _MyImageBodyState extends State<MyImageBody> {
     // Use photoVisibility from profile response
     if (widget.photoVisibility != null) {
       setState(() {
-        selectedPrivacyOption =
-            widget.photoVisibility == 'deny' ? 'no_one' : 'all_members';
+        selectedPrivacyOption = widget.photoVisibility == 'deny'
+            ? 'no_one'
+            : 'all_members';
       });
     } else {
       // Default to all_members if no photoVisibility provided
@@ -144,7 +143,8 @@ class _MyImageBodyState extends State<MyImageBody> {
                 Navigator.pop(context); // Close loading dialog
                 successDialog(
                   context: context,
-                  message: state.profileActionResponseModel.message ??
+                  message:
+                      state.profileActionResponseModel.message ??
                       AppLocalizations.of(context)!.imageUploadedSuccessfully,
                   onPressed: () {
                     if (_isNavigating) return;
@@ -169,7 +169,9 @@ class _MyImageBodyState extends State<MyImageBody> {
               return Center(
                 child: GestureDetector(
                   onTap: () => _showImageSourceDialog(
-                      context, context.read<MyImageCubit>()),
+                    context,
+                    context.read<MyImageCubit>(),
+                  ),
                   child: state is MyImageImageSelected
                       ? Stack(
                           alignment: Alignment.bottomRight,
@@ -241,15 +243,14 @@ class _MyImageBodyState extends State<MyImageBody> {
                         children: [
                           Expanded(
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .updatingPrivacySettings,
+                              AppLocalizations.of(
+                                context,
+                              )!.updatingPrivacySettings,
                               textDirection: TextDirection.rtl,
                               textAlign: TextAlign.center,
                               style: AppTextStyles
                                   .font14PumpkinOrangeBoldLamaSans
-                                  .copyWith(
-                                color: AppColors.white,
-                              ),
+                                  .copyWith(color: AppColors.white),
                             ),
                           ),
                           SizedBox(
@@ -258,7 +259,8 @@ class _MyImageBodyState extends State<MyImageBody> {
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                  AppColors.white),
+                                AppColors.white,
+                              ),
                             ),
                           ),
                         ],
@@ -280,9 +282,7 @@ class _MyImageBodyState extends State<MyImageBody> {
                         textDirection: TextDirection.rtl,
                         textAlign: TextAlign.center,
                         style: AppTextStyles.font14PumpkinOrangeBoldLamaSans
-                            .copyWith(
-                          color: AppColors.white,
-                        ),
+                            .copyWith(color: AppColors.white),
                       ),
                       backgroundColor: AppColors.red,
                       behavior: SnackBarBehavior.floating,
@@ -298,16 +298,16 @@ class _MyImageBodyState extends State<MyImageBody> {
                     SnackBar(
                       content: Text(
                         selectedPrivacyOption == 'no_one'
-                            ? AppLocalizations.of(context)!
-                                .noOneWillSeeYourImage
-                            : AppLocalizations.of(context)!
-                                .everyoneWillSeeYourImage,
+                            ? AppLocalizations.of(
+                                context,
+                              )!.noOneWillSeeYourImage
+                            : AppLocalizations.of(
+                                context,
+                              )!.everyoneWillSeeYourImage,
                         textDirection: TextDirection.rtl,
                         textAlign: TextAlign.center,
                         style: AppTextStyles.font14PumpkinOrangeBoldLamaSans
-                            .copyWith(
-                          color: AppColors.white,
-                        ),
+                            .copyWith(color: AppColors.white),
                       ),
                       backgroundColor: AppColors.primaryOrange,
                       behavior: SnackBarBehavior.floating,
@@ -325,7 +325,8 @@ class _MyImageBodyState extends State<MyImageBody> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ContainerSuccessWay(
-                      text: AppLocalizations.of(context)!.allowedToViewMyImage),
+                    text: AppLocalizations.of(context)!.allowedToViewMyImage,
+                  ),
                   verticalSpace(30),
                   Row(
                     textDirection: LocalizationService.instance.textDirection,
@@ -341,9 +342,9 @@ class _MyImageBodyState extends State<MyImageBody> {
                             hasChanges = true;
                           });
                           // Call cubit method with 'deny'
-                          context
-                              .read<MyImageCubit>()
-                              .updateImageSetting('deny');
+                          context.read<MyImageCubit>().updateImageSetting(
+                            'deny',
+                          );
                         },
                         activeColor: AppColors.primaryOrange,
                       ),
@@ -356,17 +357,17 @@ class _MyImageBodyState extends State<MyImageBody> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                  text:
-                                      '${AppLocalizations.of(context)!.noOne} ',
-                                  style: AppTextStyles
-                                      .font14PumpkinOrangeBoldLamaSans
-                                      .copyWith(color: AppColors.black)),
+                                text: '${AppLocalizations.of(context)!.noOne} ',
+                                style: AppTextStyles
+                                    .font14PumpkinOrangeBoldLamaSans
+                                    .copyWith(color: AppColors.black),
+                              ),
                               TextSpan(
                                 text: AppLocalizations.of(context)!.hideMyImage,
                                 style: AppTextStyles
                                     .font14PumpkinOrangeBoldLamaSans
                                     .copyWith(color: AppColors.beer),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -388,9 +389,9 @@ class _MyImageBodyState extends State<MyImageBody> {
                             hasChanges = true;
                           });
                           // Call cubit method with 'allow'
-                          context
-                              .read<MyImageCubit>()
-                              .updateImageSetting('allow');
+                          context.read<MyImageCubit>().updateImageSetting(
+                            'allow',
+                          );
                         },
                         activeColor: AppColors.primaryOrange,
                       ),
@@ -427,25 +428,24 @@ class _MyImageBodyState extends State<MyImageBody> {
             Column(
               children: [
                 ContainerSuccessWay(
-                    text: AppLocalizations.of(context)!.allowedToViewMyImage),
+                  text: AppLocalizations.of(context)!.allowedToViewMyImage,
+                ),
                 verticalSpace(30),
                 Center(
                   child: Text(
                     AppLocalizations.of(context)!.noOneCanSeeYourImage,
                     textDirection: TextDirection.rtl,
                     textAlign: TextAlign.center,
-                    style:
-                        AppTextStyles.font14PumpkinOrangeBoldLamaSans.copyWith(
-                      color: AppColors.beer,
-                    ),
+                    style: AppTextStyles.font14PumpkinOrangeBoldLamaSans
+                        .copyWith(color: AppColors.beer),
                   ),
                 ),
               ],
             ),
             verticalSpace(30),
           ],
-          // Show current privacy status for males
 
+          // Show current privacy status for males
           BlocBuilder<MyImageCubit, MyImageState>(
             buildWhen: (previous, current) =>
                 current is MyImageImageSelected ||
@@ -495,8 +495,10 @@ class _MyImageBodyState extends State<MyImageBody> {
                 },
               ),
               ListTile(
-                leading:
-                    Icon(Icons.photo_library, color: AppColors.primaryOrange),
+                leading: Icon(
+                  Icons.photo_library,
+                  color: AppColors.primaryOrange,
+                ),
                 title: Text(
                   AppLocalizations.of(context)!.chooseFromGallery,
                   textDirection: TextDirection.rtl,
@@ -526,8 +528,10 @@ class _MyImageBodyState extends State<MyImageBody> {
             width: 4.w,
             height: 4.h,
             margin: EdgeInsets.only(top: 14.h),
-            decoration:
-                BoxDecoration(shape: BoxShape.circle, color: AppColors.jet),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.jet,
+            ),
           ),
           horizontalSpace(16),
           Expanded(
@@ -537,7 +541,7 @@ class _MyImageBodyState extends State<MyImageBody> {
               textAlign: LocalizationService.instance.textAlignment,
               style: AppTextStyles.font19JetRegularLamaSans,
             ),
-          )
+          ),
         ],
       ),
     );

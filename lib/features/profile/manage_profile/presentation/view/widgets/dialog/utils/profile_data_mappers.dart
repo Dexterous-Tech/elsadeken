@@ -10,19 +10,12 @@ class ProfileDataMappers {
     List<NationalCountryResponseModel> countriesList,
   ) {
     try {
-      print('DEBUG: Looking for country: "$countryName"');
-      print('DEBUG: Trimmed country name: "${countryName.trim()}"');
-      print(
-          'DEBUG: Available countries: ${countriesList.map((c) => '${c.name} (ID: ${c.id})').toList()}');
       final trimmedCountryName = countryName.trim();
       final country = countriesList.firstWhere(
         (country) => country.name?.trim() == trimmedCountryName,
       );
-      print('DEBUG: Found country ID: ${country.id}');
       return country.id;
     } catch (e) {
-      print('DEBUG: Country not found: $e');
-      print('DEBUG: Searched for: "$countryName"');
       return null;
     }
   }
@@ -33,19 +26,12 @@ class ProfileDataMappers {
     List<NationalCountryResponseModel> nationalitiesList,
   ) {
     try {
-      print('DEBUG: Looking for nationality: "$nationalityName"');
-      print('DEBUG: Trimmed nationality name: "${nationalityName.trim()}"');
-      print(
-          'DEBUG: Available nationalities: ${nationalitiesList.map((n) => '${n.name} (ID: ${n.id})').toList()}');
       final trimmedNationalityName = nationalityName.trim();
       final nationality = nationalitiesList.firstWhere(
         (nationality) => nationality.name?.trim() == trimmedNationalityName,
       );
-      print('DEBUG: Found nationality ID: ${nationality.id}');
       return nationality.id;
     } catch (e) {
-      print('DEBUG: Nationality not found: $e');
-      print('DEBUG: Searched for: "$nationalityName"');
       return null;
     }
   }
@@ -56,19 +42,12 @@ class ProfileDataMappers {
     List<CityResponseModels> citiesList,
   ) {
     try {
-      print('DEBUG: Looking for city: "$cityName"');
-      print('DEBUG: Trimmed city name: "${cityName.trim()}"');
-      print(
-          'DEBUG: Available cities: ${citiesList.map((c) => '${c.name} (ID: ${c.id})').toList()}');
       final trimmedCityName = cityName.trim();
       final city = citiesList.firstWhere(
         (city) => city.name?.trim() == trimmedCityName,
       );
-      print('DEBUG: Found city ID: ${city.id}');
       return city.id;
     } catch (e) {
-      print('DEBUG: City not found: $e');
-      print('DEBUG: Searched for: "$cityName"');
       return null;
     }
   }
@@ -176,9 +155,7 @@ class ProfileDataMappers {
     try {
       final incomes = generalDataLists['incomes'];
       if (incomes != null && incomes.isNotEmpty) {
-        final income = incomes.firstWhere(
-          (item) => item.name == incomeName,
-        );
+        final income = incomes.firstWhere((item) => item.name == incomeName);
         return income.id;
       }
       return null;
@@ -195,9 +172,7 @@ class ProfileDataMappers {
     try {
       final jobs = generalDataLists['jobs'];
       if (jobs != null && jobs.isNotEmpty) {
-        final job = jobs.firstWhere(
-          (item) => item.name == jobName,
-        );
+        final job = jobs.firstWhere((item) => item.name == jobName);
         return job.id;
       }
       return null;
@@ -209,8 +184,6 @@ class ProfileDataMappers {
   /// Convert marital status from localized text to API value
   static String? mapMaritalStatusToApiValue(String maritalStatus) {
     if (maritalStatus.isEmpty) return null;
-
-    print('DEBUG: Mapping marital status: "$maritalStatus"');
 
     // Check if it's already an API value
     if (['single', 'married', 'divorced', 'widower'].contains(maritalStatus)) {
@@ -227,8 +200,6 @@ class ProfileDataMappers {
   static String? mapTypeOfMarriageToApiValue(String typeOfMarriage) {
     if (typeOfMarriage.isEmpty) return null;
 
-    print('DEBUG: Mapping type of marriage: "$typeOfMarriage"');
-
     // Check if it's already an API value
     if (['only_one', 'multi'].contains(typeOfMarriage)) {
       return typeOfMarriage;
@@ -243,15 +214,13 @@ class ProfileDataMappers {
   static String? mapReligiousCommitmentToApiValue(String religiousCommitment) {
     if (religiousCommitment.isEmpty) return null;
 
-    print('DEBUG: Mapping religious commitment: "$religiousCommitment"');
-
     // Check if it's already an API value
     if ([
       'irreligious',
       'little_religious',
       'religious',
       'much_religious',
-      'dont_say'
+      'dont_say',
     ].contains(religiousCommitment)) {
       return religiousCommitment;
     }
@@ -265,11 +234,14 @@ class ProfileDataMappers {
   static String? mapPrayerToApiValue(String prayer) {
     if (prayer.isEmpty) return null;
 
-    print('DEBUG: Mapping prayer: "$prayer"');
-
     // Check if it's already an API value
-    if (['always', 'most_times', 'sometimes', 'no_pray', 'dont_say']
-        .contains(prayer)) {
+    if ([
+      'always',
+      'most_times',
+      'sometimes',
+      'no_pray',
+      'dont_say',
+    ].contains(prayer)) {
       return prayer;
     }
 
@@ -282,11 +254,14 @@ class ProfileDataMappers {
   static String? mapHijabToApiValue(String hijab) {
     if (hijab.isEmpty) return null;
 
-    print('DEBUG: Mapping hijab: "$hijab"');
-
     // Check if it's already an API value
-    if (['not_hijab', 'hijab', 'hijab_and_veil', 'hijab_face', 'dont_say']
-        .contains(hijab)) {
+    if ([
+      'not_hijab',
+      'hijab',
+      'hijab_and_veil',
+      'hijab_face',
+      'dont_say',
+    ].contains(hijab)) {
       return hijab;
     }
 
@@ -298,8 +273,6 @@ class ProfileDataMappers {
   /// Convert beard from localized text to API value
   static String? mapBeardToApiValue(String beard) {
     if (beard.isEmpty) return null;
-
-    print('DEBUG: Mapping beard: "$beard"');
 
     // Check if it's already an API value
     if (['beard', 'without_beard'].contains(beard)) {
@@ -314,8 +287,6 @@ class ProfileDataMappers {
   /// Convert smoking string to int (0 for "لا"/"No", 1 for "نعم"/"Yes")
   static int? mapSmokingToInt(String smokingStr) {
     if (smokingStr.isEmpty) return null;
-
-    print('DEBUG: Mapping smoking: "$smokingStr"');
 
     // Check if it's already an API value (numeric string)
     if (smokingStr == '1' || smokingStr == '0') {

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:elsadeken/features/chat/data/models/pusher_message_model.dart';
 
 /// Service for handling real-time chat message updates
@@ -58,14 +57,12 @@ class ChatMessageService {
 
   /// Trigger chat refresh from Firebase notification
   void triggerFirebaseChatRefresh() {
-    log('Chat list refresh triggered');
     _refreshChatListController.add(null);
   }
 
   /// Set Pusher connection status
   void setPusherConnectionStatus(bool isConnected) {
     _isPusherConnected = isConnected;
-    log('Pusher connection status updated: $isConnected');
 
     if (!isConnected) {
       // Clear processed messages on disconnect to allow re-processing after reconnect

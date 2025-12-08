@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:elsadeken/core/routes/app_routing.dart';
 import 'package:elsadeken/core/services/firebase_notification_service.dart';
@@ -39,7 +38,6 @@ void main() async {
     // Test foreground notification (remove this in production)
     // await FirebaseNotificationService.instance.testForegroundNotification();
   } catch (e) {
-    log("Error initializing Firebase: $e");
     // Continue without Firebase if it fails
   }
 
@@ -62,8 +60,9 @@ class Elsadeken extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-                scaffoldBackgroundColor: Colors.white,
-                fontFamily: FontFamilyHelper.lamaSansArabic),
+              scaffoldBackgroundColor: Colors.white,
+              fontFamily: FontFamilyHelper.lamaSansArabic,
+            ),
             onGenerateRoute: appRouting.onGenerateRouting,
             initialRoute: AppRoutes.splashScreen,
 

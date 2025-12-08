@@ -11,12 +11,11 @@ class SearchRepositoryImpl implements SearchRepository {
   SearchRepositoryImpl(this.dio);
 
   @override
-  Future<UsersResponseModel> searchUsers(SearchFilter filter,
-      {int page = 1}) async {
+  Future<UsersResponseModel> searchUsers(
+    SearchFilter filter, {
+    int page = 1,
+  }) async {
     try {
-      // بيانات فلتر ثابتة مؤقتًا
-      print(filter.toJson().toString());
-
       final response = await dio.post(
         "${ApiConstants.baseUrl}/user/search",
         data: filter.toJson(page: page),
@@ -26,7 +25,6 @@ class SearchRepositoryImpl implements SearchRepository {
       );
 
       if (response.statusCode == 200) {
-        print("Search response: ${response.data}");
         final data = response.data;
         if (data['type'] == 'success') {
           return UsersResponseModel.fromJson(data);
@@ -39,7 +37,6 @@ class SearchRepositoryImpl implements SearchRepository {
     } on DioException catch (e) {
       throw Exception("Network error: ${e.message}");
     } catch (e) {
-      print("Search error: $e");
       throw Exception("Search error: $e");
     }
   }

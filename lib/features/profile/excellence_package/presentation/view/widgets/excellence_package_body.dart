@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:elsadeken/core/helper/app_images.dart';
 import 'package:elsadeken/core/helper/extensions.dart';
 import 'package:elsadeken/core/routes/app_routes.dart';
@@ -63,8 +61,9 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
       },
       {
         'title': AppLocalizations.of(context)!.locationVerification,
-        'subTitle':
-            AppLocalizations.of(context)!.locationVerificationDescription,
+        'subTitle': AppLocalizations.of(
+          context,
+        )!.locationVerificationDescription,
       },
     ];
   }
@@ -77,8 +76,9 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
 
   Future<void> _loadData() async {
     // Load isFeatured status from SharedPreferences
-    isUserFeatured =
-        await SharedPreferencesHelper.getBool(SharedPreferencesKey.isFeatured);
+    isUserFeatured = await SharedPreferencesHelper.getBool(
+      SharedPreferencesKey.isFeatured,
+    );
 
     setState(() {});
   }
@@ -91,12 +91,14 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
 
       // Update isFeatured status in SharedPreferences to true after successful subscription
       await SharedPreferencesHelper.setBool(
-          SharedPreferencesKey.isFeatured, true);
+        SharedPreferencesKey.isFeatured,
+        true,
+      );
 
       // Refresh the UI
       await _loadData();
     } catch (e) {
-      log('Error assigning package: $e');
+      //
     }
   }
 
@@ -108,27 +110,26 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
     return Row(
       textDirection: LocalizationService.instance.textDirection,
       children: [
-        Image.asset(
-          AppImages.boldStar,
-          width: 32.w,
-          height: 32.h,
-        ),
+        Image.asset(AppImages.boldStar, width: 32.w, height: 32.h),
         Text(
           name,
-          style: AppTextStyles.font19PhilippineBronzeRegularLamaSans
-              .copyWith(fontSize: 17.sp),
+          style: AppTextStyles.font19PhilippineBronzeRegularLamaSans.copyWith(
+            fontSize: 17.sp,
+          ),
           textDirection: TextDirection.rtl,
         ),
         Text(
           " $month ",
-          style: AppTextStyles.font19PhilippineBronzeRegularLamaSans
-              .copyWith(fontSize: 17.sp),
+          style: AppTextStyles.font19PhilippineBronzeRegularLamaSans.copyWith(
+            fontSize: 17.sp,
+          ),
           textDirection: TextDirection.rtl,
         ),
         Text(
           " $price ",
-          style: AppTextStyles.font19PhilippineBronzeRegularLamaSans
-              .copyWith(fontSize: 17.sp),
+          style: AppTextStyles.font19PhilippineBronzeRegularLamaSans.copyWith(
+            fontSize: 17.sp,
+          ),
           textDirection: TextDirection.rtl,
         ),
       ],
@@ -181,8 +182,8 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
               textDirection: LocalizationService.instance.textDirection,
               children: [
                 ProfileHeader(
-                    title:
-                        AppLocalizations.of(context)!.excellencePackageTitle),
+                  title: AppLocalizations.of(context)!.excellencePackageTitle,
+                ),
                 verticalSpace(42),
                 Center(
                   child: Text(
@@ -214,14 +215,20 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                   },
                   child: Container(
                     width: double.infinity,
-                    padding:
-                        EdgeInsets.only(top: 10.5.h, bottom: 10.5.h, left: 8.w),
+                    padding: EdgeInsets.only(
+                      top: 10.5.h,
+                      bottom: 10.5.h,
+                      left: 8.w,
+                    ),
                     decoration: BoxDecoration(color: AppColors.lightWhite),
                     child: Row(
                       textDirection: LocalizationService.instance.textDirection,
                       children: [
-                        Image.asset(AppImages.boldStar,
-                            width: 32.w, height: 32.h),
+                        Image.asset(
+                          AppImages.boldStar,
+                          width: 32.w,
+                          height: 32.h,
+                        ),
                         SizedBox(width: 18),
                         Text(
                           AppLocalizations.of(context)!.currentBenefits,
@@ -233,8 +240,9 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                         ),
                         Spacer(),
                         Transform.rotate(
-                          angle:
-                              LocalizationService.instance.isArabic ? 0 : 3.14,
+                          angle: LocalizationService.instance.isArabic
+                              ? 0
+                              : 3.14,
                           child: Image.asset(
                             AppImages.leftArrow,
                             width: 24.w,
@@ -279,9 +287,10 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                         builder: (context, state) {
                           if (state is GetPackagesLoading) {
                             return Center(
-                                child: CircularProgressIndicator(
-                              color: AppColors.beer,
-                            ));
+                              child: CircularProgressIndicator(
+                                color: AppColors.beer,
+                              ),
+                            );
                           } else if (state is GetPackagesSuccess) {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,12 +340,11 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                           padding: EdgeInsets.symmetric(vertical: 20.h),
                           child: Center(
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .youAreAlreadyPremium,
+                              AppLocalizations.of(
+                                context,
+                              )!.youAreAlreadyPremium,
                               style: AppTextStyles.font16BlackSemiBoldLamaSans
-                                  .copyWith(
-                                color: AppColors.philippineBronze,
-                              ),
+                                  .copyWith(color: AppColors.philippineBronze),
                               textAlign: TextAlign.center,
                               textDirection:
                                   LocalizationService.instance.textDirection,
@@ -354,9 +362,10 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                                       packagesState.packages.data!.isNotEmpty) {
                                     final result =
                                         await showPaymentMethodsBottomSheet(
-                                      context,
-                                      packages: packagesState.packages.data!,
-                                    );
+                                          context,
+                                          packages:
+                                              packagesState.packages.data!,
+                                        );
 
                                     if (result != null &&
                                         result["selectedPackage"] != null) {
@@ -366,8 +375,9 @@ class _ExcellencePackageBodyState extends State<ExcellencePackageBody> {
                                     }
                                   }
                                 },
-                                textButton:
-                                    AppLocalizations.of(context)!.subscribeNow,
+                                textButton: AppLocalizations.of(
+                                  context,
+                                )!.subscribeNow,
                                 radius: 100,
                               );
                             }

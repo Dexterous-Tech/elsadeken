@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:elsadeken/core/networking/api_error_handler.dart';
 import 'package:elsadeken/core/networking/api_error_model.dart';
@@ -21,7 +20,7 @@ class IgnoreUserRepoImpl implements IgnoreUserRepoInterface {
       var response = await ignoreUserDataSource.ignoreUsers(page: page);
       return Right(response);
     } catch (error) {
-      log("error in ignore user $error");
+
       if (error is ApiErrorModel) {
         return Left(error);
       }
