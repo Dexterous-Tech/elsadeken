@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.wessal.elsadeken</string>
+	<string>techorg.wessal.elsadeken</string>
 	<key>PROJECT_ID</key>
 	<string>elsadeken-1</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:717372017853:ios:813956ff4b8e9fa822bbd4</string>
+	<string>1:717372017853:ios:8214b5f2f44d83a022bbd4</string>
 </dict>
 </plist>

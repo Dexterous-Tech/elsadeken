@@ -149,7 +149,7 @@
 }
 
 # Keep custom application class
--keep class com.wessal.elsadeken.** { *; }
+-keep class techorg.wessal.elsadeken.** { *; }
 
 # Additional rules for common issues
 -keep class androidx.** { *; }
@@ -172,8 +172,8 @@
 }
 
 # Keep all classes in the app package
--keep class com.wessal.elsadeken.** { *; }
--keepclassmembers class com.wessal.elsadeken.** { *; }
+-keep class techorg.wessal.elsadeken.** { *; }
+-keepclassmembers class techorg.wessal.elsadeken.** { *; }
 
 # Additional safety rules for R8
 # If R8 generates missing_rules.txt, add those rules here

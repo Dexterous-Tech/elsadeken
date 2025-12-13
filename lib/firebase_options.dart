@@ -42,17 +42,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyBTPXGE361bgh1Au0cwOESpCgOzDYpddqY',
-    appId: '1:717372017853:web:828f9072aedcc8ab22bbd4',
+    appId: '1:717372017853:web:a5b07585c969a94c22bbd4',
     messagingSenderId: '717372017853',
     projectId: 'elsadeken-1',
     authDomain: 'elsadeken-1.firebaseapp.com',
     storageBucket: 'elsadeken-1.firebasestorage.app',
-    measurementId: 'G-R3HW7HNY0Q',
+    measurementId: 'G-EKSR3X754R',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA-j_CC1q3w0Jy1RfGM4oOItTbcsPKk5xU',
-    appId: '1:717372017853:android:37d39f384c6b754a22bbd4',
+    appId: '1:717372017853:android:74ddd01a7e083dd022bbd4',
     messagingSenderId: '717372017853',
     projectId: 'elsadeken-1',
     storageBucket: 'elsadeken-1.firebasestorage.app',
@@ -60,29 +60,29 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAG9gmNJ63pNAhIMjQHV11TbIIDrI-1t9Q',
-    appId: '1:717372017853:ios:813956ff4b8e9fa822bbd4',
+    appId: '1:717372017853:ios:8214b5f2f44d83a022bbd4',
     messagingSenderId: '717372017853',
     projectId: 'elsadeken-1',
     storageBucket: 'elsadeken-1.firebasestorage.app',
-    iosBundleId: 'com.wessal.elsadeken',
+    iosBundleId: 'techorg.wessal.elsadeken',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAG9gmNJ63pNAhIMjQHV11TbIIDrI-1t9Q',
-    appId: '1:717372017853:ios:813956ff4b8e9fa822bbd4',
+    appId: '1:717372017853:ios:8214b5f2f44d83a022bbd4',
     messagingSenderId: '717372017853',
     projectId: 'elsadeken-1',
     storageBucket: 'elsadeken-1.firebasestorage.app',
-    iosBundleId: 'com.wessal.elsadeken',
+    iosBundleId: 'techorg.wessal.elsadeken',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyBTPXGE361bgh1Au0cwOESpCgOzDYpddqY',
-    appId: '1:717372017853:web:f61ea29886ba268822bbd4',
+    appId: '1:717372017853:web:809956dc156e6a3022bbd4',
     messagingSenderId: '717372017853',
     projectId: 'elsadeken-1',
     authDomain: 'elsadeken-1.firebaseapp.com',
     storageBucket: 'elsadeken-1.firebasestorage.app',
-    measurementId: 'G-7MNJCVCFKR',
+    measurementId: 'G-SQ02B28TYV',
   );
 }

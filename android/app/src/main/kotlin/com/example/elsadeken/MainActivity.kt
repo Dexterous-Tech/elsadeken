@@ -1,4 +1,4 @@
-package com.wessal.elsadeken
+package techorg.wessal.elsadeken
 
 import io.flutter.embedding.android.FlutterActivity
 
